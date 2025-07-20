@@ -31,6 +31,7 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
   const ecosystemItems = [
     { id: "ecosystem-explorer", label: "🌐 Ecosystem Explorer", icon: "🗺️", badge: "PLAN V1-9" },
     { id: "fruitful-marketplace", label: "🛒 Fruitful™ Marketplace", icon: "🛍️", badge: "6,005+ Brands" },
+    { id: "hotstack-codenest", label: "🔥 HotStack + CodeNest", icon: "💻", badge: "Independent Repos" },
     { id: "global-pulse", label: "Global Pulse", icon: "🌍", badge: "Analytics" },
     { id: "seedwave-admin", label: "🦁 Seedwave™ Admin", icon: "⚙️", badge: "7,038 Brands" },
     { id: "legal-hub", label: "Legal Hub", icon: "⚖️", badge: "Legal Docs" },

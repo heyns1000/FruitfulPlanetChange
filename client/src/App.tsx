@@ -12,6 +12,7 @@ import { LegalHub } from "@/components/portal/legal-hub"
 import { PaymentHub } from "@/components/portal/payment-hub"
 import { VaultMeshCheckout } from "@/components/portal/vaultmesh-checkout"
 import { FruitfulMarketplace } from "@/components/portal/fruitful-marketplace"
+import { HotStackCodeNest } from "@/components/portal/hotstack-codenest"
 import PortalHome from "@/pages/portal-home"
 import NotFound from "@/pages/not-found"
 import { useState } from "react"
@@ -55,6 +56,12 @@ function PageRouter({ activePage }: { activePage: string }) {
       return (
         <div className="p-8">
           <FruitfulMarketplace />
+        </div>
+      )
+    case "hotstack-codenest":
+      return (
+        <div className="p-8">
+          <HotStackCodeNest />
         </div>
       )
     case "payment-hub":
