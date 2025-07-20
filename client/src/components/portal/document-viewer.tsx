@@ -14,22 +14,115 @@ import {
 
 interface DocumentViewerProps {
   document: {
-    id: string
+    id: string | number
     title: string
-    type: string
+    type?: string
     category: string
     description: string
-    lastUpdated: string
-    author: string
-    status: string
-    size: string
-    priority: "high" | "medium" | "low"
+    lastUpdated?: string
+    author?: string
+    status?: string
+    size?: string
+    priority?: "high" | "medium" | "low"
+    url?: string
+    icon?: string
+    tags?: string[]
+    createdAt?: string
   }
   onBack: () => void
 }
 
 export function DocumentViewer({ document, onBack }: DocumentViewerProps) {
   const [isLoading, setIsLoading] = useState(false)
+
+  // Helper functions to get document details
+  const getDocumentType = (id: string | number) => {
+    const types: Record<string, string> = {
+      '1': 'PDF',
+      'fruitful-holdings-nda': 'PDF',
+      '2': 'HTML',
+      'securesign-portal': 'HTML',
+      '3': 'HTML',
+      'seedwave-deployment': 'HTML',
+      '4': 'HTML',
+      'faa-zone-minutes': 'HTML',
+      '5': 'HTML',
+      'firebase-integration': 'HTML',
+      '6': 'HTML',
+      'paypal-setup': 'HTML',
+      '7': 'HTML',
+      'repository-index': 'HTML',
+      '8': 'HTML',
+      'codenest-settings': 'HTML'
+    }
+    return types[String(id)] || 'HTML'
+  }
+
+  const getDocumentPriority = (id: string | number): "high" | "medium" | "low" => {
+    const priorities: Record<string, "high" | "medium" | "low"> = {
+      '1': 'high',
+      'fruitful-holdings-nda': 'high',
+      '2': 'high',
+      'securesign-portal': 'high',
+      '3': 'high',
+      'seedwave-deployment': 'high',
+      '4': 'medium',
+      'faa-zone-minutes': 'medium',
+      '5': 'medium',
+      'firebase-integration': 'medium',
+      '6': 'medium',
+      'paypal-setup': 'medium',
+      '7': 'high',
+      'repository-index': 'high',
+      '8': 'low',
+      'codenest-settings': 'low'
+    }
+    return priorities[String(id)] || 'medium'
+  }
+
+  const getDocumentSize = (id: string | number) => {
+    const sizes: Record<string, string> = {
+      '1': '1.7 MB',
+      'fruitful-holdings-nda': '1.7 MB',
+      '2': '101 KB',
+      'securesign-portal': '101 KB',
+      '3': '67 KB',
+      'seedwave-deployment': '67 KB',
+      '4': '33 KB',
+      'faa-zone-minutes': '33 KB',
+      '5': '22 KB',
+      'firebase-integration': '22 KB',
+      '6': '23 KB',
+      'paypal-setup': '23 KB',
+      '7': '126 KB',
+      'repository-index': '126 KB',
+      '8': '45 KB',
+      'codenest-settings': '45 KB'
+    }
+    return sizes[String(id)] || '50 KB'
+  }
+
+  const getDocumentAuthor = (id: string | number) => {
+    const authors: Record<string, string> = {
+      '1': 'Legal Team',
+      'fruitful-holdings-nda': 'Legal Team',
+      '2': 'Development Team',
+      'securesign-portal': 'Development Team',
+      '3': 'Operations Team',
+      'seedwave-deployment': 'Operations Team',
+      '4': 'Project Management',
+      'faa-zone-minutes': 'Project Management',
+      '5': 'Development Team',
+      'firebase-integration': 'Development Team',
+      '6': 'Payment Team',
+      'paypal-setup': 'Payment Team',
+      '7': 'Legal Team',
+      'repository-index': 'Legal Team',
+      '8': 'Development Team',
+      'codenest-settings': 'Development Team'
+    }
+    return authors[String(id)] || 'VaultMesh™ Team'
+  }
 
   // Get document content based on ID
   const getDocumentContent = () => {
@@ -343,11 +436,11 @@ src/
       `
     }
 
-    return documentContent[document.id] || `
+    return documentContent[String(document.id)] || `
       <div class="document-content">
         <h1>${document.title}</h1>
         <p>Document content is being processed...</p>
-        <p><strong>Type:</strong> ${document.type}</p>
+        <p><strong>Type:</strong> ${document.type || getDocumentType(document.id)}</p>
         <p><strong>Category:</strong> ${document.category}</p>
         <p><strong>Description:</strong> ${document.description}</p>
       </div>
@@ -360,7 +453,7 @@ src/
     setTimeout(() => {
       const link = window.document.createElement('a')
       link.href = `/api/legal-documents/${document.id}/download`
-      link.download = `${document.title}.${document.type.toLowerCase()}`
+      link.download = `${document.title}.${(document.type || getDocumentType(document.id)).toLowerCase()}`
       window.document.body.appendChild(link)
       link.click()
       window.document.body.removeChild(link)
@@ -423,7 +516,7 @@ src/
       </header>
 
       <div className="p-6">
-        {/* Document Metadata */}
+        {/* Document Information - Complete details restored */}
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -435,33 +528,40 @@ src/
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Type</p>
-                <Badge variant="outline">{document.type}</Badge>
+                <p className="font-medium">{document.type || getDocumentType(document.id)}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Status</p>
-                <Badge className={getStatusColor(document.status)}>
-                  {document.status}
+                <Badge className={getStatusColor(document.status || "active")}>
+                  {document.status || "active"}
                 </Badge>
               </div>
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Priority</p>
-                <Badge className={getPriorityColor(document.priority)}>
-                  {document.priority}
+                <Badge className={getPriorityColor(document.priority || getDocumentPriority(document.id))}>
+                  {document.priority || getDocumentPriority(document.id)}
                 </Badge>
               </div>
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Size</p>
-                <span className="text-sm">{document.size}</span>
+                <p className="font-medium">{document.size || getDocumentSize(document.id)}</p>
               </div>
             </div>
-            <div className="flex items-center gap-4 mt-4 text-sm text-gray-600 dark:text-gray-400">
-              <div className="flex items-center gap-2">
-                <User className="w-4 h-4" />
-                <span>{document.author}</span>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 pt-4 border-t">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Last Updated</p>
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-gray-400" />
+                  <p className="font-medium">{document.lastUpdated || "July 19, 2025"}</p>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4" />
-                <span>{document.lastUpdated}</span>
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Author</p>
+                <div className="flex items-center gap-2">
+                  <User className="w-4 h-4 text-gray-400" />
+                  <p className="font-medium">{document.author || getDocumentAuthor(document.id)}</p>
+                </div>
               </div>
             </div>
           </CardContent>

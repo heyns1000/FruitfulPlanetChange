@@ -22,16 +22,20 @@ import {
 } from "lucide-react"
 
 interface LegalDocument {
-  id: string
+  id: string | number
   title: string
-  type: string
+  type?: string
   category: string
   description: string
-  lastUpdated: string
-  author: string
-  status: string
-  size: string
-  priority: "high" | "medium" | "low"
+  lastUpdated?: string
+  author?: string
+  status?: string
+  size?: string
+  priority?: "high" | "medium" | "low"
+  url?: string
+  icon?: string
+  tags?: string[]
+  createdAt?: string
 }
 
 export function LegalDocumentation() {
@@ -40,7 +44,7 @@ export function LegalDocumentation() {
   const [viewingDocument, setViewingDocument] = useState<LegalDocument | null>(null)
 
   // Fetch real-time legal documents from the database
-  const { data: legalDocs = [], isLoading } = useQuery({
+  const { data: legalDocs = [], isLoading } = useQuery<LegalDocument[]>({
     queryKey: ["/api/legal-documents"],
     refetchInterval: 5000 // Sync every 5 seconds for 24/7 updates
   })
@@ -154,7 +158,7 @@ export function LegalDocumentation() {
   ]
 
   // Combine real-time data with static documents for 24/7 sync
-  const allDocuments = legalDocs.length > 0 ? legalDocs : staticDocuments
+  const allDocuments: LegalDocument[] = (legalDocs && legalDocs.length > 0) ? legalDocs : staticDocuments
   
   const filteredDocuments = allDocuments.filter(doc => {
     const matchesSearch = doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
