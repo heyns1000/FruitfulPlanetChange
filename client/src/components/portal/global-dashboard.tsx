@@ -55,31 +55,51 @@ export function GlobalDashboard() {
     setAnimationKey(prev => prev + 1)
   }, [selectedView])
 
-  // Comprehensive sector definitions matching the reference HTML
-  const comprehensiveSectors = [
-    { name: "Agriculture & Biotech", icon: "🌱", brands: 84, nodes: 12, key: "agriculture" },
-    { name: "Banking & Finance", icon: "🏦", brands: 60, nodes: 10, key: "banking" },
-    { name: "Logistics & Packaging", icon: "📦", brands: 30, nodes: 10, key: "logistics" },
-    { name: "Professional Services", icon: "💼", brands: 30, nodes: 8, key: "professional" },
-    { name: "SaaS & Licensing", icon: "💻", brands: 20, nodes: 8, key: "saas" },
-    { name: "NFT & Ownership", icon: "🎨", brands: 20, nodes: 8, key: "nft" },
-    { name: "Quantum Protocols", icon: "⚛️", brands: 20, nodes: 8, key: "quantum" },
-    { name: "Ritual & Culture", icon: "🎭", brands: 20, nodes: 8, key: "ritual" },
-    { name: "Nutrition & Food Chain", icon: "🍎", brands: 20, nodes: 8, key: "nutrition" },
-    { name: "Zero Waste", icon: "♻️", brands: 20, nodes: 8, key: "zerowaste" },
-    { name: "Voice & Audio", icon: "🎤", brands: 12, nodes: 8, key: "voice" },
-    { name: "Wellness Tech & Nodes", icon: "🧘", brands: 12, nodes: 8, key: "wellness" },
-    { name: "Utilities & Energy", icon: "⚡", brands: 12, nodes: 8, key: "utilities" },
-    { name: "Creative Tech", icon: "🎨", brands: 10, nodes: 10, key: "creative" }
-  ];
+  // Use actual sector data from database or fallback to reference data
+  const comprehensiveSectors = sectors.length > 0 ? 
+    sectors.map(sector => ({
+      name: sector.name,
+      icon: sector.emoji,
+      brands: sector.brandCount,
+      nodes: sector.subnodeCount,
+      key: sector.name.toLowerCase().replace(/[^a-z]/g, '')
+    })) :
+    [
+      { name: "Agriculture & Biotech", icon: "🌱", brands: 84, nodes: 28, key: "agriculture" },
+      { name: "Banking & Finance", icon: "🏦", brands: 60, nodes: 20, key: "banking" },
+      { name: "Food & Farming", icon: "🥦", brands: 48, nodes: 16, key: "food" },
+      { name: "Logistics & Packaging", icon: "📦", brands: 30, nodes: 10, key: "logistics" },
+      { name: "Professional Services", icon: "💼", brands: 30, nodes: 10, key: "professional" },
+      { name: "Education & IP", icon: "📚", brands: 28, nodes: 10, key: "education" },
+      { name: "Fashion & Identity", icon: "✂️", brands: 25, nodes: 9, key: "fashion" },
+      { name: "Gaming & Simulation", icon: "🎮", brands: 22, nodes: 8, key: "gaming" },
+      { name: "SaaS & Licensing", icon: "💻", brands: 20, nodes: 7, key: "saas" },
+      { name: "NFT & Ownership", icon: "🎨", brands: 20, nodes: 7, key: "nft" },
+      { name: "Quantum Protocols", icon: "⚛️", brands: 20, nodes: 7, key: "quantum" },
+      { name: "Ritual & Culture", icon: "🎭", brands: 20, nodes: 7, key: "ritual" },
+      { name: "Nutrition & Food Chain", icon: "🍎", brands: 20, nodes: 7, key: "nutrition" },
+      { name: "Health & Hygiene", icon: "🧠", brands: 20, nodes: 7, key: "health" },
+      { name: "Zero Waste", icon: "♻️", brands: 20, nodes: 7, key: "zerowaste" },
+      { name: "Housing & Infrastructure", icon: "🏗️", brands: 18, nodes: 6, key: "housing" },
+      { name: "AI, Logic & Grid", icon: "🤖", brands: 16, nodes: 6, key: "ai" },
+      { name: "Media & Sonic", icon: "📺", brands: 15, nodes: 5, key: "media" },
+      { name: "Transport & Mobility", icon: "🚗", brands: 14, nodes: 5, key: "transport" },
+      { name: "Mining & Resources", icon: "⛏️", brands: 13, nodes: 5, key: "mining" },
+      { name: "Voice & Audio", icon: "🎤", brands: 12, nodes: 4, key: "voice" },
+      { name: "Wellness Tech & Nodes", icon: "🧘", brands: 12, nodes: 4, key: "wellness" },
+      { name: "Utilities & Energy", icon: "⚡", brands: 12, nodes: 4, key: "utilities" },
+      { name: "Justice & Legal", icon: "⚖️", brands: 12, nodes: 4, key: "justice" },
+      { name: "Retail & Commerce", icon: "🛍️", brands: 11, nodes: 4, key: "retail" },
+      { name: "Creative Tech", icon: "🎨", brands: 10, nodes: 3, key: "creative" }
+    ];
 
   // Calculate sector distribution from comprehensive data
   const sectorDistribution = comprehensiveSectors.map(sector => ({
     name: sector.name,
-    count: sector.brands,
-    nodes: sector.nodes,
+    count: sector.brands || 0,
+    nodes: sector.nodes || 0,
     key: sector.key
-  })).sort((a, b) => b.count - a.count)
+  })).sort((a, b) => (b.count || 0) - (a.count || 0))
 
   // Calculate integration tier data
   const integrationData = [
@@ -285,21 +305,21 @@ export function GlobalDashboard() {
                       <span className="text-xl">{sector.icon}</span>
                       <h4 className="font-semibold text-sm">{sector.name}</h4>
                     </div>
-                    <span className="text-xl font-bold">{sector.brands}</span>
+                    <span className="text-xl font-bold">{sector.brands || 0}</span>
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400">
                       <span>Brands</span>
-                      <span className="font-bold">{sector.brands}</span>
+                      <span className="font-bold">{sector.brands || 0}</span>
                     </div>
                     <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400">
                       <span>Nodes</span>
-                      <span className="font-bold">{sector.nodes}</span>
+                      <span className="font-bold">{sector.nodes || 0}</span>
                     </div>
                     <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 mt-2">
                       <div 
                         className="bg-gradient-to-r from-blue-500 to-cyan-500 h-1.5 rounded-full transition-all duration-1000"
-                        style={{ width: `${(sector.brands / comprehensiveSectors[0]?.brands) * 100}%` }}
+                        style={{ width: `${((sector.brands || 0) / (comprehensiveSectors[0]?.brands || 1)) * 100}%` }}
                       />
                     </div>
                   </div>
