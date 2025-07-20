@@ -137,14 +137,17 @@ export function DocumentViewer({ document, onClose }: DocumentViewerProps) {
   const handleDownload = () => {
     setIsLoading(true);
     setTimeout(() => {
-      const link = document.createElement('a');
-      link.href = `/api/legal-documents/${document.id}/download`;
-      link.download = `${document.title}.${getDocumentType(document.id).toLowerCase()}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      // Use window.open instead of document.createElement for better compatibility
+      const downloadUrl = `/api/legal-documents/${document.id}/download`;
+      window.open(downloadUrl, '_blank');
       setIsLoading(false);
     }, 1000);
+  };
+
+  const handleOpenInSecureSign = () => {
+    // Navigate to SecureSign portal integration
+    const secureSignUrl = `/securesign/document/${document.id}`;
+    window.open(secureSignUrl, '_blank');
   };
 
   const getPriorityColor = (priority: string) => {
@@ -218,7 +221,12 @@ export function DocumentViewer({ document, onClose }: DocumentViewerProps) {
                 <Download className="w-4 h-4" />
                 <span>{isLoading ? 'Downloading...' : 'Download'}</span>
               </Button>
-              <Button variant="outline" size="sm" className="flex items-center space-x-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleOpenInSecureSign}
+                className="flex items-center space-x-2"
+              >
                 <ExternalLink className="w-4 h-4" />
                 <span>Open in SecureSign™</span>
               </Button>
