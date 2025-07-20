@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+import { DocumentViewer } from "./document-viewer"
 import { 
   FileText, 
   Download, 
@@ -34,6 +35,7 @@ interface LegalDocument {
 export function LegalDocumentation() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
+  const [viewingDocument, setViewingDocument] = useState<LegalDocument | null>(null)
 
   // Legal documents from your repository structure
   const legalDocuments: LegalDocument[] = [
@@ -164,9 +166,8 @@ export function LegalDocumentation() {
 
   // Handle document viewing
   const handleViewDocument = (doc: LegalDocument) => {
-    // Open document in new tab for viewing
-    const documentUrl = `/legal-docs/${doc.id}`
-    window.open(documentUrl, '_blank')
+    // Open document within the portal interface
+    setViewingDocument(doc)
   }
 
   // Handle document download
@@ -196,6 +197,16 @@ export function LegalDocumentation() {
       case "draft": return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
       default: return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
     }
+  }
+
+  // If viewing a specific document, show the document viewer
+  if (viewingDocument) {
+    return (
+      <DocumentViewer 
+        document={viewingDocument} 
+        onBack={() => setViewingDocument(null)} 
+      />
+    )
   }
 
   return (
