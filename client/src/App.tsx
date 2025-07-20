@@ -5,6 +5,9 @@ import { Toaster } from "@/components/ui/toaster"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { ThemeProvider } from "@/components/ui/theme-provider"
 import { Sidebar } from "@/components/portal/sidebar"
+import { GlobalPulse } from "@/components/portal/global-pulse"
+import { SeedwaveAdmin } from "@/components/portal/seedwave-admin"
+import { EcosystemExplorer } from "@/components/portal/ecosystem-explorer"
 import { LegalHub } from "@/components/portal/legal-hub"
 import { PaymentHub } from "@/components/portal/payment-hub"
 import { VaultMeshCheckout } from "@/components/portal/vaultmesh-checkout"
@@ -23,6 +26,24 @@ function PageRouter({ activePage }: { activePage: string }) {
     case "integrations":
     case "settings":
       return <PortalHome />
+    case "global-pulse":
+      return (
+        <div className="p-8">
+          <GlobalPulse />
+        </div>
+      )
+    case "seedwave-admin":
+      return (
+        <div className="p-8">
+          <SeedwaveAdmin />
+        </div>
+      )
+    case "ecosystem-explorer":
+      return (
+        <div className="p-8">
+          <EcosystemExplorer />
+        </div>
+      )
     case "legal-hub":
       return (
         <div className="p-8">

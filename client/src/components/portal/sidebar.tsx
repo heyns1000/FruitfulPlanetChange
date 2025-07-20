@@ -29,6 +29,9 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
   ]
 
   const ecosystemItems = [
+    { id: "ecosystem-explorer", label: "🌐 Ecosystem Explorer", icon: "🗺️", badge: "PLAN V1-9" },
+    { id: "global-pulse", label: "Global Pulse", icon: "🌍", badge: "Analytics" },
+    { id: "seedwave-admin", label: "🦁 Seedwave™ Admin", icon: "⚙️", badge: "7,038 Brands" },
     { id: "legal-hub", label: "Legal Hub", icon: "⚖️", badge: "Legal Docs" },
     { id: "payment-hub", label: "Payment Portal", icon: "💳", badge: "SSO" },
     { id: "vaultmesh-checkout", label: "VaultMesh™ Checkout", icon: "🔐", badge: "Banimal Loop" },
