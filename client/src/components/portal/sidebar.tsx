@@ -28,9 +28,15 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
     { id: "settings", label: "Settings", icon: "⚙️" },
   ]
 
+  const ecosystemItems = [
+    { id: "legal-hub", label: "Legal Hub", icon: "⚖️", badge: "Legal Docs" },
+    { id: "payment-hub", label: "Payment Portal", icon: "💳", badge: "SSO" },
+    { id: "vaultmesh-checkout", label: "VaultMesh™ Checkout", icon: "🔐", badge: "Banimal Loop" },
+  ]
+
   const adminItems = [
     { id: "interns", label: "Interns", icon: "👨‍🎓" },
-    { id: "legal", label: "Legal Index", icon: "⚖️" },
+    { id: "compliance", label: "Compliance", icon: "🛡️" },
   ]
 
   const toggleMobile = () => setIsMobileOpen(!isMobileOpen)
@@ -117,6 +123,37 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
             </button>
           ))}
         </nav>
+
+        {/* Ecosystem Section */}
+        <div className="pt-6 border-t border-gray-200 dark:border-gray-800 mb-8">
+          <h3 className="text-sm font-semibold text-gray-500 mb-3">FRUITFUL ECOSYSTEM</h3>
+          <div className="space-y-2">
+            {ecosystemItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  onPageChange(item.id)
+                  setIsMobileOpen(false)
+                }}
+                className={`
+                  w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left
+                  ${activePage === item.id
+                    ? 'bg-orange-500 bg-opacity-10 text-orange-500'
+                    : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }
+                `}
+              >
+                <span className="text-lg">{item.icon}</span>
+                <span className="font-medium flex-1">{item.label}</span>
+                {item.badge && (
+                  <span className="text-xs bg-orange-500 text-white px-2 py-1 rounded-full">
+                    {item.badge}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Admin Section */}
         <div className="pt-6 border-t border-gray-200 dark:border-gray-800">

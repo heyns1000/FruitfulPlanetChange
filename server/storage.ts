@@ -1,4 +1,26 @@
-import { users, sectors, brands, systemStatus, type User, type InsertUser, type Sector, type InsertSector, type Brand, type InsertBrand, type SystemStatus, type InsertSystemStatus } from "@shared/schema";
+import { 
+  users, 
+  sectors, 
+  brands, 
+  systemStatus, 
+  legalDocuments, 
+  repositories, 
+  payments,
+  type User, 
+  type InsertUser, 
+  type Sector, 
+  type InsertSector, 
+  type Brand, 
+  type InsertBrand, 
+  type SystemStatus, 
+  type InsertSystemStatus,
+  type LegalDocument,
+  type InsertLegalDocument,
+  type Repository,
+  type InsertRepository,
+  type Payment,
+  type InsertPayment
+} from "@shared/schema";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -21,6 +43,18 @@ export interface IStorage {
   getAllSystemStatus(): Promise<SystemStatus[]>;
   getSystemStatus(service: string): Promise<SystemStatus | undefined>;
   updateSystemStatus(service: string, status: string): Promise<SystemStatus>;
+  
+  // Legal Documents
+  getLegalDocuments(): Promise<LegalDocument[]>;
+  createLegalDocument(doc: InsertLegalDocument): Promise<LegalDocument>;
+  
+  // Repositories
+  getRepositories(): Promise<Repository[]>;
+  createRepository(repo: InsertRepository): Promise<Repository>;
+  
+  // Payments
+  getPayments(): Promise<Payment[]>;
+  createPayment(payment: InsertPayment): Promise<Payment>;
 }
 
 export class MemStorage implements IStorage {
@@ -28,18 +62,30 @@ export class MemStorage implements IStorage {
   private sectors: Map<number, Sector>;
   private brands: Map<number, Brand>;
   private systemStatuses: Map<string, SystemStatus>;
+  private legalDocuments: Map<string, LegalDocument>;
+  private repositories: Map<string, Repository>;
+  private payments: Map<string, Payment>;
   private currentUserId: number;
   private currentSectorId: number;
   private currentBrandId: number;
+  private currentDocId: number;
+  private currentRepoId: number;
+  private currentPaymentId: number;
 
   constructor() {
     this.users = new Map();
     this.sectors = new Map();
     this.brands = new Map();
     this.systemStatuses = new Map();
+    this.legalDocuments = new Map();
+    this.repositories = new Map();
+    this.payments = new Map();
     this.currentUserId = 1;
     this.currentSectorId = 1;
     this.currentBrandId = 1;
+    this.currentDocId = 1;
+    this.currentRepoId = 1;
+    this.currentPaymentId = 1;
     
     // Initialize with sample data based on the provided brand counts
     this.initializeSampleData();
@@ -190,6 +236,54 @@ export class MemStorage implements IStorage {
     };
     this.systemStatuses.set(service, updated);
     return updated;
+  }
+
+  // Legal Documents methods
+  async getLegalDocuments(): Promise<LegalDocument[]> {
+    return Array.from(this.legalDocuments.values());
+  }
+
+  async createLegalDocument(insertDoc: InsertLegalDocument): Promise<LegalDocument> {
+    const id = this.currentDocId++.toString();
+    const doc: LegalDocument = {
+      ...insertDoc,
+      id,
+      createdAt: new Date().toISOString()
+    };
+    this.legalDocuments.set(id, doc);
+    return doc;
+  }
+
+  // Repository methods
+  async getRepositories(): Promise<Repository[]> {
+    return Array.from(this.repositories.values());
+  }
+
+  async createRepository(insertRepo: InsertRepository): Promise<Repository> {
+    const id = this.currentRepoId++.toString();
+    const repo: Repository = {
+      ...insertRepo,
+      id,
+      createdAt: new Date().toISOString()
+    };
+    this.repositories.set(id, repo);
+    return repo;
+  }
+
+  // Payment methods
+  async getPayments(): Promise<Payment[]> {
+    return Array.from(this.payments.values());
+  }
+
+  async createPayment(insertPayment: InsertPayment): Promise<Payment> {
+    const id = this.currentPaymentId++.toString();
+    const payment: Payment = {
+      ...insertPayment,
+      id,
+      createdAt: new Date().toISOString()
+    };
+    this.payments.set(id, payment);
+    return payment;
   }
 }
 

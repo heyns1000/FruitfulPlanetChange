@@ -1,7 +1,13 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertBrandSchema, insertSectorSchema } from "@shared/schema";
+import { 
+  insertBrandSchema, 
+  insertSectorSchema, 
+  insertLegalDocumentSchema,
+  insertRepositorySchema,
+  insertPaymentSchema 
+} from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Sectors API
@@ -112,6 +118,114 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(stats);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch dashboard stats" });
+    }
+  });
+
+  // Legal documents endpoints
+  app.get("/api/legal-documents", async (req, res) => {
+    try {
+      const docs = await storage.getLegalDocuments();
+      res.json(docs);
+    } catch (error: any) {
+      console.error("Error fetching legal documents:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.post("/api/legal-documents", async (req, res) => {
+    try {
+      const result = insertLegalDocumentSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid input", errors: result.error.issues });
+      }
+      
+      const doc = await storage.createLegalDocument(result.data);
+      res.status(201).json(doc);
+    } catch (error: any) {
+      console.error("Error creating legal document:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Repository endpoints
+  app.get("/api/repositories", async (req, res) => {
+    try {
+      const repos = await storage.getRepositories();
+      res.json(repos);
+    } catch (error: any) {
+      console.error("Error fetching repositories:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.post("/api/repositories", async (req, res) => {
+    try {
+      const result = insertRepositorySchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid input", errors: result.error.issues });
+      }
+      
+      const repo = await storage.createRepository(result.data);
+      res.status(201).json(repo);
+    } catch (error: any) {
+      console.error("Error creating repository:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Payment endpoints
+  app.get("/api/payments", async (req, res) => {
+    try {
+      const payments = await storage.getPayments();
+      res.json(payments);
+    } catch (error: any) {
+      console.error("Error fetching payments:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.post("/api/payments/create", async (req, res) => {
+    try {
+      const result = insertPaymentSchema.safeParse({
+        ...req.body,
+        userId: 1 // Default user for demo
+      });
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid input", errors: result.error.issues });
+      }
+      
+      const payment = await storage.createPayment(result.data);
+      res.status(201).json(payment);
+    } catch (error: any) {
+      console.error("Error creating payment:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // VaultMesh checkout endpoint
+  app.post("/api/vaultmesh/checkout", async (req, res) => {
+    try {
+      // Simulate checkout processing
+      const { product, customer } = req.body;
+      
+      // In a real application, this would integrate with PayPal SDK
+      const payment = await storage.createPayment({
+        userId: 1,
+        planName: product.name,
+        amount: product.price.toString(),
+        currency: product.currency,
+        status: "completed"
+      });
+
+      res.json({
+        success: true,
+        paymentId: payment.id,
+        orderId: `VM-${Date.now()}`,
+        message: "Checkout completed successfully"
+      });
+    } catch (error: any) {
+      console.error("Error processing VaultMesh checkout:", error);
+      res.status(500).json({ message: "Checkout processing failed" });
     }
   });
 
