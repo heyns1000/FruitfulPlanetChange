@@ -161,12 +161,12 @@ export default function BrandsPage() {
           <div className="flex flex-wrap gap-4 items-center">
             <div className="flex items-center gap-2">
               <label className="text-sm font-medium">Sector:</label>
-              <Select value={selectedSector?.toString() || ""} onValueChange={(value) => setSelectedSector(value ? parseInt(value) : null)}>
+              <Select value={selectedSector?.toString() || "all"} onValueChange={(value) => setSelectedSector(value === "all" ? null : parseInt(value))}>
                 <SelectTrigger className="w-48">
                   <SelectValue placeholder="All Sectors" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Sectors</SelectItem>
+                  <SelectItem value="all">All Sectors</SelectItem>
                   {sectors.map((sector) => (
                     <SelectItem key={sector.id} value={sector.id.toString()}>
                       {sector.emoji} {sector.name}

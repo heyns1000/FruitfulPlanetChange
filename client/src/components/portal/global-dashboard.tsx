@@ -65,9 +65,9 @@ export function GlobalDashboard() {
 
   // Calculate integration tier data
   const integrationData = [
-    { name: 'VaultMesh™ Core', value: dashboardStats?.integrationTiers.tier1 || 120 },
-    { name: 'HotStack Deploy', value: dashboardStats?.integrationTiers.tier2 || 89 },
-    { name: 'FAA.ZONE™ Hub', value: dashboardStats?.integrationTiers.tier3 || 64 }
+    { name: 'VaultMesh™ Core', value: dashboardStats?.integrationTiers?.tier1 || 120 },
+    { name: 'HotStack Deploy', value: dashboardStats?.integrationTiers?.tier2 || 89 },
+    { name: 'FAA.ZONE™ Hub', value: dashboardStats?.integrationTiers?.tier3 || 64 }
   ]
 
   // Monthly growth data
