@@ -212,14 +212,14 @@ export function LegalDocumentation() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6">
-        <div className="flex items-center justify-between">
+      <div className="bg-white dark:bg-gray-800 p-6">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
-              📋 Legal Documentation Hub
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Seedwave™ Portal
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-2">
-              Comprehensive legal documentation, contracts, meeting minutes, and technical guides
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Powered by VaultMesh™
             </p>
           </div>
           <div className="flex items-center gap-4">
@@ -233,7 +233,7 @@ export function LegalDocumentation() {
             </Badge>
           </div>
         </div>
-      </header>
+      </div>
 
       <div className="p-6">
         {/* Search and Filters */}

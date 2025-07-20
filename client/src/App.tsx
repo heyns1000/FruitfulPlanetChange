@@ -10,6 +10,7 @@ import { SeedwaveAdmin } from "@/components/portal/seedwave-admin"
 import EcosystemExplorer from "@/components/portal/ecosystem-explorer"
 import { LegalHub } from "@/components/portal/legal-hub"
 import { LegalDocumentation } from "@/components/portal/legal-documentation"
+import { APIKeyManager } from "@/components/portal/api-key-manager"
 import { PaymentHub } from "@/components/portal/payment-hub"
 import { VaultMeshCheckout } from "@/components/portal/vaultmesh-checkout"
 import { FruitfulMarketplace } from "@/components/portal/fruitful-marketplace"
@@ -72,6 +73,8 @@ function PageRouter({ activePage }: { activePage: string }) {
       )
     case "legal-hub":
       return <LegalDocumentation />
+    case "api-keys":
+      return <APIKeyManager />
     case "fruitful-marketplace":
       return (
         <div className="p-8">
