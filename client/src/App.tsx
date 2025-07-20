@@ -17,6 +17,7 @@ import { FruitfulMarketplace } from "@/components/portal/fruitful-marketplace"
 import { HotStackCodeNest } from "@/components/portal/hotstack-codenest"
 import { BrandIdentityManager } from "@/components/portal/brand-identity-manager"
 import { GlobalDashboard } from "@/components/portal/global-dashboard"
+import { FruitfulSmartToys } from "@/components/portal/fruitful-smart-toys"
 import PortalHome from "@/pages/portal-home"
 import BrandsPage from "@/pages/brands"
 import SectorsPage from "@/pages/sectors"
@@ -145,6 +146,8 @@ function PageRouter({ activePage }: { activePage: string }) {
       )
     case "omnilevel":
       return <OmnilevelPage />
+    case "fruitful-smart-toys":
+      return <FruitfulSmartToys />
     default:
       return <NotFound />
   }
