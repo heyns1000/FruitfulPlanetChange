@@ -30,6 +30,7 @@ import { OmniGridFAAZonePage } from "@/pages/omnigrid-faa-zone"
 import Landing from "@/pages/landing"
 import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react"
+import { GlobalFooter } from "@/components/ui/global-footer"
 
 // Page router component that renders content based on active page
 function PageRouter({ activePage }: { activePage: string }) {
@@ -197,11 +198,14 @@ function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; s
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
-      <Sidebar activePage={activePage} onPageChange={setActivePage} />
-      <main className="flex-1 ml-0 md:ml-80 transition-all duration-300">
-        <PageRouter activePage={activePage} />
-      </main>
+    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="flex flex-1">
+        <Sidebar activePage={activePage} onPageChange={setActivePage} />
+        <main className="flex-1 ml-0 md:ml-80 transition-all duration-300">
+          <PageRouter activePage={activePage} />
+        </main>
+      </div>
+      <GlobalFooter className="ml-0 md:ml-80" />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Rocket, Shield, Users, Zap } from "lucide-react";
+import { GlobalFooter } from "@/components/ui/global-footer";
 
 export default function Landing() {
   return (
@@ -71,13 +72,10 @@ export default function Landing() {
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="text-center mt-16 pt-8 border-t border-slate-200 dark:border-slate-700">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Powered by VaultMesh™ • Enterprise-grade security and scalable infrastructure
-          </p>
-        </div>
       </div>
+      
+      {/* Global Footer with Banimal Integration */}
+      <GlobalFooter />
     </div>
   );
 }
