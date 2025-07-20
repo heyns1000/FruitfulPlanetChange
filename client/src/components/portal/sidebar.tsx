@@ -4,6 +4,8 @@ import { Menu, X } from "lucide-react"
 import { useTheme } from "@/hooks/use-theme"
 import { SystemStatus } from "./system-status"
 import type { Sector } from "@shared/schema"
+import { motion, AnimatePresence } from "framer-motion"
+import { InteractiveCard, PulseIndicator, RippleEffect } from "@/components/ui/micro-interactions"
 
 interface SidebarProps {
   activePage: string
@@ -121,7 +123,20 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
         <SystemStatus />
 
         {/* Navigation */}
-        <nav className="space-y-2 mb-8">
+        <motion.nav 
+          className="space-y-2 mb-8"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.05
+              }
+            }
+          }}
+        >
           {navItems.map((item) => (
             <button
               key={item.id}
@@ -146,7 +161,7 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
               )}
             </button>
           ))}
-        </nav>
+        </motion.nav>
 
         {/* Main Sections */}
         <div className="pt-6 border-t border-gray-200 dark:border-gray-800 mb-8">
