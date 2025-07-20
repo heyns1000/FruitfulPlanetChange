@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a full-stack TypeScript application built with React frontend and Express backend, designed as a brand management portal for the "Fruitful Global" ecosystem. The application provides a dashboard interface for managing sectors, brands, and their associated metadata across various technology platforms including VaultMesh™, HotStack, and FAA.ZONE™.
+This is a full-stack TypeScript application built with React frontend and Express backend, designed as a comprehensive brand management portal for the "Fruitful Global" ecosystem. The application provides a complete dashboard interface for managing 6,005+ brands across multiple sectors, featuring advanced legal document management through SecureSign™ VIP, King Price insurance partnership integration, and complete deployment infrastructure for www.fruitfulcratedance.com.
 
 ## User Preferences
 
@@ -36,16 +36,24 @@ The application follows a monorepo structure with clear separation between clien
 - **Environment**: Development/production modes with appropriate middleware
 
 ### Database Schema
-The application uses four main entities:
+The application uses comprehensive entities including:
 - **Users**: Authentication and user management
-- **Sectors**: Business sector categorization (33 sectors total)
-- **Brands**: Brand entities with metadata (6,005+ brand elements)
+- **Sectors**: Business sector categorization (45+ sectors total including Fruitful Crate Dance)
+- **Brands**: Brand entities with metadata (6,005+ brand elements across all ecosystems)
 - **System Status**: Service health monitoring
+- **SecureSign™ Infrastructure**:
+  - **Legal Documents**: Complete document management system
+  - **NDA Records**: Non-disclosure agreement processing and tracking
+  - **API Keys**: Secure API key management for external integrations
+  - **Document Templates**: Reusable legal document templates
+  - **Audit Trail**: Complete security and compliance logging
 
 Key relationships:
 - Brands belong to sectors (one-to-many)
 - Brands can have parent/child relationships for subnodes
-- Flexible JSON metadata storage for additional brand properties
+- NDA records link to legal documents and participants
+- API keys support role-based permissions and audit trails
+- Flexible JSON metadata storage for all entities
 
 ## Data Flow
 
@@ -55,10 +63,15 @@ Key relationships:
 4. **Response**: JSON data flows back through the query system to React components
 
 The application supports:
-- Search functionality across brands
-- Sector-based filtering
+- **Fruitful Crate Dance Management**: Complete 6,005+ brand ecosystem for www.fruitfulcratedance.com
+- **SecureSign™ VIP Portal**: Enterprise-grade legal document management and NDA processing
+- **King Price Partnership Integration**: Comprehensive sponsorship management system
+- Search functionality across all brand ecosystems
+- Sector-based filtering and brand categorization
 - Real-time system status monitoring
+- Complete deployment infrastructure management
 - Theme switching (light/dark/hyper modes)
+- Legal compliance and audit trail management
 
 ## External Dependencies
 

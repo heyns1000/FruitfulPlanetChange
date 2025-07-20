@@ -23,6 +23,16 @@ import {
   COMPREHENSIVE_BRAND_DATA
 } from "@shared/schema";
 import { FRUITFUL_CRATE_DANCE_SECTORS } from "@shared/fruitful-crate-dance-ecosystem";
+import { 
+  SECURESIGN_API_KEYS, 
+  DOCUMENT_TEMPLATES,
+  type NDARecord,
+  type InsertNDARecord,
+  type SecureSignApiKey,
+  type InsertSecureSignApiKey,
+  type DocumentTemplate,
+  type InsertDocumentTemplate
+} from "@shared/securesign-schema";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;

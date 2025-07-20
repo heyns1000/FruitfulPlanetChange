@@ -17,6 +17,7 @@ import { BrandIdentityManager } from "@/components/portal/brand-identity-manager
 import PortalHome from "@/pages/portal-home"
 import NotFound from "@/pages/not-found"
 import { FruitfulCrateDancePage } from "@/pages/fruitful-crate-dance"
+import { SecureSign } from "@/components/portal/secure-sign"
 import { useState } from "react"
 
 // Page router component that renders content based on active page
@@ -76,6 +77,12 @@ function PageRouter({ activePage }: { activePage: string }) {
       return (
         <div className="p-8">
           <FruitfulCrateDancePage />
+        </div>
+      )
+    case "secure-sign":
+      return (
+        <div className="p-8">
+          <SecureSign />
         </div>
       )
     case "payment-hub":
