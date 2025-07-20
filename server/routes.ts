@@ -170,6 +170,90 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Legal document viewing and download endpoints
+  app.get("/api/legal-documents/:id/download", async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      // Map document IDs to actual file paths from your legal repository
+      const documentPaths: Record<string, string> = {
+        'fruitful-holdings-nda': 'attached_assets/legal-main/public/fruitful_holdings_nda.pdf',
+        'securesign-portal': 'attached_assets/legal-main/public/securesign_portal.html',
+        'seedwave-deployment': 'attached_assets/legal-main/public/fruitful_seedwave_deployment_manual.html',
+        'faa-zone-minutes': 'attached_assets/legal-main/public/respitories/faa_zone_minutes_of_meeting.html',
+        'firebase-integration': 'attached_assets/legal-main/public/firebase_core_minutes.html',
+        'paypal-setup': 'attached_assets/legal-main/public/paypal_setup.html',
+        'repository-index': 'attached_assets/legal-main/public/respitories/index.html',
+        'codenest-settings': 'attached_assets/legal-main/public/respitories/codenest_settings.html'
+      };
+
+      const filePath = documentPaths[id];
+      if (!filePath) {
+        return res.status(404).json({ error: "Document file not found" });
+      }
+
+      const fs = require('fs');
+      const path = require('path');
+      
+      const fullPath = path.resolve(filePath);
+      if (!fs.existsSync(fullPath)) {
+        return res.status(404).json({ error: "Document file not found on disk" });
+      }
+
+      const fileName = path.basename(fullPath);
+      res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+      res.sendFile(fullPath);
+    } catch (error: any) {
+      console.error("Error downloading legal document:", error);
+      res.status(500).json({ error: "Failed to download legal document" });
+    }
+  });
+
+  // Serve legal document for viewing
+  app.get("/legal-docs/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      // Map document IDs to actual file paths from your legal repository
+      const documentPaths: Record<string, string> = {
+        'fruitful-holdings-nda': 'attached_assets/legal-main/public/fruitful_holdings_nda.pdf',
+        'securesign-portal': 'attached_assets/legal-main/public/securesign_portal.html',
+        'seedwave-deployment': 'attached_assets/legal-main/public/fruitful_seedwave_deployment_manual.html',
+        'faa-zone-minutes': 'attached_assets/legal-main/public/respitories/faa_zone_minutes_of_meeting.html',
+        'firebase-integration': 'attached_assets/legal-main/public/firebase_core_minutes.html',
+        'paypal-setup': 'attached_assets/legal-main/public/paypal_setup.html',
+        'repository-index': 'attached_assets/legal-main/public/respitories/index.html',
+        'codenest-settings': 'attached_assets/legal-main/public/respitories/codenest_settings.html'
+      };
+
+      const filePath = documentPaths[id];
+      if (!filePath) {
+        return res.status(404).send("<h1>Document not found</h1>");
+      }
+
+      const fs = require('fs');
+      const path = require('path');
+      
+      const fullPath = path.resolve(filePath);
+      if (!fs.existsSync(fullPath)) {
+        return res.status(404).send("<h1>Document file not found</h1>");
+      }
+
+      // Set appropriate content type
+      const ext = path.extname(fullPath).toLowerCase();
+      if (ext === '.html') {
+        res.setHeader('Content-Type', 'text/html');
+      } else if (ext === '.pdf') {
+        res.setHeader('Content-Type', 'application/pdf');
+      }
+
+      res.sendFile(fullPath);
+    } catch (error: any) {
+      console.error("Error serving legal document:", error);
+      res.status(500).send("<h1>Error loading document</h1>");
+    }
+  });
+
   // Repository endpoints
   app.get("/api/repositories", async (req, res) => {
     try {

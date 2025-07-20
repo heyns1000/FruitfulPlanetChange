@@ -150,6 +150,36 @@ export function LegalDocumentation() {
     return matchesSearch && matchesCategory
   })
 
+  // Calculate statistics
+  const getStatistics = () => {
+    return {
+      totalDocuments: legalDocuments.length,
+      activeContracts: legalDocuments.filter(d => d.status === 'active' && d.category === 'contracts').length,
+      technicalDocs: legalDocuments.filter(d => d.category === 'technical').length,
+      meetingMinutes: legalDocuments.filter(d => d.category === 'minutes').length
+    }
+  }
+
+  const statistics = getStatistics()
+
+  // Handle document viewing
+  const handleViewDocument = (doc: LegalDocument) => {
+    // Open document in new tab for viewing
+    const documentUrl = `/legal-docs/${doc.id}`
+    window.open(documentUrl, '_blank')
+  }
+
+  // Handle document download
+  const handleDownloadDocument = (doc: LegalDocument) => {
+    // Simulate download - in real implementation, this would fetch the actual file
+    const link = document.createElement('a')
+    link.href = `/api/legal-documents/${doc.id}/download`
+    link.download = `${doc.title}.${doc.type.toLowerCase()}`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "high": return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
@@ -188,7 +218,7 @@ export function LegalDocumentation() {
             </Badge>
             <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
               <FileText className="w-3 h-3 mr-1" />
-              {legalDocuments.length} Documents
+              {statistics.totalDocuments} Documents
             </Badge>
           </div>
         </div>
@@ -231,7 +261,7 @@ export function LegalDocumentation() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">Total Documents</p>
-                  <p className="text-2xl font-bold">{legalDocuments.length}</p>
+                  <p className="text-2xl font-bold">{statistics.totalDocuments}</p>
                 </div>
                 <FileText className="h-8 w-8 text-purple-500" />
               </div>
@@ -243,7 +273,7 @@ export function LegalDocumentation() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">Active Contracts</p>
-                  <p className="text-2xl font-bold">{legalDocuments.filter(d => d.status === 'active' && d.category === 'contracts').length}</p>
+                  <p className="text-2xl font-bold">{statistics.activeContracts}</p>
                 </div>
                 <Gavel className="h-8 w-8 text-green-500" />
               </div>
@@ -255,7 +285,7 @@ export function LegalDocumentation() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">Technical Docs</p>
-                  <p className="text-2xl font-bold">{legalDocuments.filter(d => d.category === 'technical').length}</p>
+                  <p className="text-2xl font-bold">{statistics.technicalDocs}</p>
                 </div>
                 <BookOpen className="h-8 w-8 text-blue-500" />
               </div>
@@ -267,7 +297,7 @@ export function LegalDocumentation() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">Meeting Minutes</p>
-                  <p className="text-2xl font-bold">{legalDocuments.filter(d => d.category === 'minutes').length}</p>
+                  <p className="text-2xl font-bold">{statistics.meetingMinutes}</p>
                 </div>
                 <Clock className="h-8 w-8 text-orange-500" />
               </div>
@@ -317,11 +347,21 @@ export function LegalDocumentation() {
                   </div>
 
                   <div className="flex gap-2 pt-4">
-                    <Button size="sm" variant="outline" className="flex-1">
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="flex-1 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300"
+                      onClick={() => handleViewDocument(doc)}
+                    >
                       <Eye className="w-4 h-4 mr-2" />
                       View
                     </Button>
-                    <Button size="sm" variant="outline" className="flex-1">
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="flex-1 hover:bg-green-50 hover:text-green-600 hover:border-green-300"
+                      onClick={() => handleDownloadDocument(doc)}
+                    >
                       <Download className="w-4 h-4 mr-2" />
                       Download
                     </Button>
