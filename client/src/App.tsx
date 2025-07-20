@@ -26,6 +26,7 @@ import { FruitfulCrateDancePage } from "@/pages/fruitful-crate-dance"
 import { SecureSign } from "@/components/portal/secure-sign"
 import VaultMeshPage from "@/pages/vaultmesh"
 import { OmnilevelPage } from "@/pages/omnilevel"
+import { OmniGridFAAZonePage } from "@/pages/omnigrid-faa-zone"
 import Landing from "@/pages/landing"
 import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react"
@@ -146,6 +147,8 @@ function PageRouter({ activePage }: { activePage: string }) {
       )
     case "omnilevel":
       return <OmnilevelPage />
+    case "omnigrid-faa-zone":
+      return <OmniGridFAAZonePage />
     case "fruitful-smart-toys":
       return <FruitfulSmartToys />
     default:
