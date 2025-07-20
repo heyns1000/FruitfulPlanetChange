@@ -8,6 +8,8 @@ import {
   insertRepositorySchema,
   insertPaymentSchema 
 } from "@shared/schema";
+import { IntegrationManager } from "./services/integration-manager";
+import { getAPIConfig } from "../shared/api-config";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Sectors API
@@ -370,6 +372,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error("Error processing VaultMesh checkout:", error);
       res.status(500).json({ message: "Checkout processing failed" });
+    }
+  });
+
+  // API Integrations and Health Check
+  const integrationManager = new IntegrationManager();
+
+  app.get("/api/integrations/health", async (req, res) => {
+    try {
+      const services = await integrationManager.getServicesHealth();
+      res.json(services);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to check services health" });
+    }
+  });
+
+  app.get("/api/integrations/oauth-urls", async (req, res) => {
+    try {
+      const urls = integrationManager.getOAuthUrls();
+      res.json(urls);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get OAuth URLs" });
+    }
+  });
+
+  app.get("/api/integrations/config", async (req, res) => {
+    try {
+      const config = getAPIConfig();
+      // Return only public configuration (never secrets)
+      const publicConfig = {
+        paypal: {
+          clientId: config.paypal.clientId,
+          environment: config.paypal.environment,
+          currency: config.paypal.currency
+        },
+        firebase: {
+          ...config.firebase
+        },
+        services: {
+          spotify: !!config.spotify.clientId,
+          xero: !!config.xero.clientId,
+          paypal: !!config.paypal.clientId,
+          firebase: !!config.firebase.apiKey
+        }
+      };
+      res.json(publicConfig);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get configuration" });
     }
   });
 

@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useQuery } from "@tanstack/react-query"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -14,7 +15,9 @@ import {
   Settings,
   Database,
   CreditCard,
-  Cloud
+  Cloud,
+  ExternalLink,
+  RefreshCw
 } from "lucide-react"
 
 interface APIKey {
@@ -35,6 +38,22 @@ export function APIKeyManager() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
   const [visibleKeys, setVisibleKeys] = useState<Set<string>>(new Set())
+
+  // Fetch live integration health status
+  const { data: integrationHealth = [] } = useQuery<any[]>({
+    queryKey: ["/api/integrations/health"],
+    refetchInterval: 30000 // Refresh every 30 seconds
+  })
+
+  // Fetch OAuth URLs
+  const { data: oauthUrls = {} } = useQuery<Record<string, string>>({
+    queryKey: ["/api/integrations/oauth-urls"]
+  })
+
+  // Fetch public configuration
+  const { data: publicConfig = {} } = useQuery<any>({
+    queryKey: ["/api/integrations/config"]
+  })
 
   // Extracted API keys and configurations from legal documents
   const apiKeys: APIKey[] = [
@@ -229,6 +248,15 @@ export function APIKeyManager() {
               <AlertTriangle className="w-3 h-3 mr-1" />
               {apiKeys.filter(k => k.status === "expired").length} Expired
             </Badge>
+            <Button 
+              size="sm" 
+              variant="outline"
+              onClick={() => window.location.reload()}
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className="w-3 h-3" />
+              Refresh Status
+            </Button>
           </div>
         </div>
       </div>
@@ -313,6 +341,71 @@ export function APIKeyManager() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Integration Status Cards */}
+        <div className="mb-8">
+          <h2 className="text-xl font-bold mb-4">Live Integration Status</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {integrationHealth.map((service: any) => (
+              <Card key={service.name} className="hover:shadow-lg transition-shadow">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-semibold">{service.name}</h3>
+                    {service.status === 'operational' ? (
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                    ) : (
+                      <AlertTriangle className="w-5 h-5 text-red-500" />
+                    )}
+                  </div>
+                  <Badge 
+                    className={service.status === 'operational' 
+                      ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                      : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                    }
+                  >
+                    {service.status === 'operational' ? 'Connected' : 'Setup Needed'}
+                  </Badge>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Last checked: {new Date(service.lastChecked).toLocaleTimeString()}
+                  </p>
+                  {service.status === 'configuration_needed' && (
+                    <p className="text-xs text-red-600 mt-1">{service.error}</p>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* OAuth Integration Section */}
+        {oauthUrls && Object.keys(oauthUrls).length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-xl font-bold mb-4">OAuth Integration Links</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {Object.entries(oauthUrls).map(([service, url]) => (
+                <Card key={service}>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold capitalize">{service} OAuth</h3>
+                        <p className="text-sm text-gray-600">Connect your {service} account</p>
+                      </div>
+                      <Button 
+                        size="sm" 
+                        onClick={() => window.open(url, '_blank')}
+                        className="flex items-center gap-2"
+                        disabled={!url || url.includes('client_id=&')}
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        {!url || url.includes('client_id=&') ? 'Setup Required' : 'Connect'}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* API Keys Grid */}
         <div className="grid grid-cols-1 gap-6">
