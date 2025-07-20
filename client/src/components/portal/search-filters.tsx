@@ -13,6 +13,7 @@ interface SearchFiltersProps {
 
 export function SearchFilters({ onSearch, onSectorFilter, selectedSector }: SearchFiltersProps) {
   const [searchQuery, setSearchQuery] = useState("")
+  const [showAllSectors, setShowAllSectors] = useState(false)
 
   const { data: sectors = [] } = useQuery<Sector[]>({
     queryKey: ["/api/sectors"],
@@ -27,7 +28,9 @@ export function SearchFilters({ onSearch, onSectorFilter, selectedSector }: Sear
     onSearch(value)
   }, [onSearch])
 
-  const popularSectors = sectors.slice(0, 6) // Show first 6 sectors
+  // Show first 6 sectors initially, then all when expanded
+  const displayedSectors = showAllSectors ? sectors : sectors.slice(0, 6)
+  const remainingSectors = sectors.length - 6
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
@@ -38,7 +41,7 @@ export function SearchFilters({ onSearch, onSectorFilter, selectedSector }: Sear
         </div>
         <Input
           type="text"
-          placeholder="Search across 6,005 brand elements..."
+          placeholder={`Search across ${stats?.totalElements?.toLocaleString() || 610} brand elements...`}
           value={searchQuery}
           onChange={(e) => handleSearch(e.target.value)}
           className="pl-12 pr-16 py-3 border-2 border-gray-200 dark:border-gray-700 focus:border-cyan-500 rounded-lg text-lg"
@@ -69,7 +72,7 @@ export function SearchFilters({ onSearch, onSectorFilter, selectedSector }: Sear
           >
             All Sectors
           </Button>
-          {popularSectors.map((sector) => (
+          {displayedSectors.map((sector) => (
             <Button
               key={sector.id}
               variant={selectedSector === sector.id ? "default" : "outline"}
@@ -85,9 +88,24 @@ export function SearchFilters({ onSearch, onSectorFilter, selectedSector }: Sear
               {sector.emoji} {sector.name}
             </Button>
           ))}
-          {sectors.length > 6 && (
-            <Button variant="outline" size="sm" disabled>
-              +{sectors.length - 6} more
+          {sectors.length > 6 && !showAllSectors && (
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => setShowAllSectors(true)}
+              className="border-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+            >
+              +{remainingSectors} more
+            </Button>
+          )}
+          {showAllSectors && sectors.length > 6 && (
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => setShowAllSectors(false)}
+              className="border-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+            >
+              Show Less
             </Button>
           )}
         </div>
