@@ -16,6 +16,7 @@ import { HotStackCodeNest } from "@/components/portal/hotstack-codenest"
 import { BrandIdentityManager } from "@/components/portal/brand-identity-manager"
 import PortalHome from "@/pages/portal-home"
 import NotFound from "@/pages/not-found"
+import { FruitfulCrateDancePage } from "@/pages/fruitful-crate-dance"
 import { useState } from "react"
 
 // Page router component that renders content based on active page
@@ -69,6 +70,12 @@ function PageRouter({ activePage }: { activePage: string }) {
       return (
         <div className="p-8">
           <BrandIdentityManager />
+        </div>
+      )
+    case "fruitful-crate-dance":
+      return (
+        <div className="p-8">
+          <FruitfulCrateDancePage />
         </div>
       )
     case "payment-hub":

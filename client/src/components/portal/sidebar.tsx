@@ -20,6 +20,7 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
 
   const navItems = [
     { id: "home", label: "Portal Home", icon: "🏠" },
+    { id: "fruitful-crate-dance", label: "Fruitful Crate Dance", icon: "🕺", badge: "6,005+ Brands" },
     { id: "brand-identity-manager", label: "Brand Identity Manager", icon: "🏢", badge: "6,005 Individual Sites" },
     { id: "brands", label: "Brand Elements", icon: "🧩", badge: "6,005" },
     { id: "sectors", label: "Sectors", icon: "🗂️", badge: "33" },

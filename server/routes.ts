@@ -53,6 +53,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/brands/:param", async (req, res) => {
+    try {
+      const param = req.params.param;
+      
+      // Check if param is a sector filter like "sectorId=1"
+      if (param.startsWith("sectorId=")) {
+        const sectorId = parseInt(param.split("=")[1]);
+        const brands = await storage.getBrandsBySector(sectorId);
+        return res.json(brands);
+      }
+      
+      // Otherwise treat as regular brand ID
+      const id = parseInt(param);
+      const brand = await storage.getBrand(id);
+      if (!brand) {
+        return res.status(404).json({ message: "Brand not found" });
+      }
+      res.json(brand);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch brand" });
+    }
+  });
+
   app.get("/api/brands/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);

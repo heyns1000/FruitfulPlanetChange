@@ -22,6 +22,7 @@ import {
   type InsertPayment,
   COMPREHENSIVE_BRAND_DATA
 } from "@shared/schema";
+import { FRUITFUL_CRATE_DANCE_SECTORS } from "@shared/fruitful-crate-dance-ecosystem";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -117,9 +118,23 @@ export class MemStorage implements IStorage {
         id: this.currentSectorId++,
         name: mapping.name,
         emoji: mapping.emoji,
-        description: mapping.description,
+        description: mapping.description || null,
         brandCount: sectorData.brands.length,
         subnodeCount: sectorData.nodes.length
+      };
+      this.sectors.set(newSector.id, newSector);
+
+    });
+
+    // Add Fruitful Crate Dance sectors - comprehensive 6,005+ brand ecosystem
+    Object.entries(FRUITFUL_CRATE_DANCE_SECTORS).forEach(([sectorKey, sectorData]) => {
+      const newSector: Sector = {
+        id: this.currentSectorId++,
+        name: sectorData.name,
+        emoji: sectorData.name.split(' ')[0], // Extract emoji from name
+        description: sectorData.description,
+        brandCount: sectorData.brands.length,
+        subnodeCount: Math.floor(sectorData.brands.length * 0.3) // 30% subnodes per sector
       };
       this.sectors.set(newSector.id, newSector);
     });
@@ -267,13 +282,16 @@ export class MemStorage implements IStorage {
   }
 
   async createLegalDocument(insertDoc: InsertLegalDocument): Promise<LegalDocument> {
-    const id = this.currentDocId++.toString();
+    const id = this.currentDocId++;
     const doc: LegalDocument = {
       ...insertDoc,
       id,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      icon: insertDoc.icon || "📄",
+      category: insertDoc.category || "legal",
+      tags: insertDoc.tags || []
     };
-    this.legalDocuments.set(id, doc);
+    this.legalDocuments.set(id.toString(), doc);
     return doc;
   }
 
@@ -283,13 +301,16 @@ export class MemStorage implements IStorage {
   }
 
   async createRepository(insertRepo: InsertRepository): Promise<Repository> {
-    const id = this.currentRepoId++.toString();
+    const id = this.currentRepoId++;
     const repo: Repository = {
       ...insertRepo,
       id,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      description: insertRepo.description || null,
+      category: insertRepo.category || "documentation",
+      status: insertRepo.status || "active"
     };
-    this.repositories.set(id, repo);
+    this.repositories.set(id.toString(), repo);
     return repo;
   }
 
@@ -299,13 +320,16 @@ export class MemStorage implements IStorage {
   }
 
   async createPayment(insertPayment: InsertPayment): Promise<Payment> {
-    const id = this.currentPaymentId++.toString();
+    const id = this.currentPaymentId++;
     const payment: Payment = {
       ...insertPayment,
       id,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      metadata: insertPayment.metadata || {},
+      status: insertPayment.status || "pending",
+      currency: insertPayment.currency || "USD"
     };
-    this.payments.set(id, payment);
+    this.payments.set(id.toString(), payment);
     return payment;
   }
 }
