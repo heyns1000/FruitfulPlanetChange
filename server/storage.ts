@@ -33,6 +33,9 @@ import {
   type DocumentTemplate,
   type InsertDocumentTemplate
 } from "@shared/securesign-schema";
+import { db } from "./db";
+import { eq, ilike, or } from "drizzle-orm";
+import { update } from "drizzle-orm/pg-core";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -67,6 +70,148 @@ export interface IStorage {
   // Payments
   getPayments(): Promise<Payment[]>;
   createPayment(payment: InsertPayment): Promise<Payment>;
+}
+
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  // Sectors
+  async getAllSectors(): Promise<Sector[]> {
+    return await db.select().from(sectors);
+  }
+
+  async getSector(id: number): Promise<Sector | undefined> {
+    const [sector] = await db.select().from(sectors).where(eq(sectors.id, id));
+    return sector || undefined;
+  }
+
+  async createSector(insertSector: InsertSector): Promise<Sector> {
+    const [sector] = await db
+      .insert(sectors)
+      .values(insertSector)
+      .returning();
+    return sector;
+  }
+
+  // Brands
+  async getAllBrands(): Promise<Brand[]> {
+    return await db.select().from(brands);
+  }
+
+  async getBrandsBySearch(query: string): Promise<Brand[]> {
+    if (!query) {
+      return await db.select().from(brands);
+    }
+    
+    return await db.select().from(brands).where(
+      or(
+        ilike(brands.name, `%${query}%`),
+        ilike(brands.description, `%${query}%`)
+      )
+    );
+  }
+
+  async getBrandsBySector(sectorId: number): Promise<Brand[]> {
+    return await db.select().from(brands).where(eq(brands.sectorId, sectorId));
+  }
+
+  async getBrand(id: number): Promise<Brand | undefined> {
+    const [brand] = await db.select().from(brands).where(eq(brands.id, id));
+    return brand || undefined;
+  }
+
+  async createBrand(insertBrand: InsertBrand): Promise<Brand> {
+    const [brand] = await db
+      .insert(brands)
+      .values(insertBrand)
+      .returning();
+    return brand;
+  }
+
+  // System Status
+  async getAllSystemStatus(): Promise<SystemStatus[]> {
+    return await db.select().from(systemStatus);
+  }
+
+  async getSystemStatus(service: string): Promise<SystemStatus | undefined> {
+    const [status] = await db.select().from(systemStatus).where(eq(systemStatus.service, service));
+    return status || undefined;
+  }
+
+  async updateSystemStatus(service: string, status: string): Promise<SystemStatus> {
+    // Try to update first
+    const existing = await this.getSystemStatus(service);
+    if (existing) {
+      const [updated] = await db
+        .update(systemStatus)
+        .set({ status, lastChecked: new Date().toISOString() })
+        .where(eq(systemStatus.service, service))
+        .returning();
+      return updated;
+    } else {
+      // Create new if doesn't exist
+      const [created] = await db
+        .insert(systemStatus)
+        .values({ service, status })
+        .returning();
+      return created;
+    }
+  }
+
+  // Legal Documents
+  async getLegalDocuments(): Promise<LegalDocument[]> {
+    return await db.select().from(legalDocuments);
+  }
+
+  async createLegalDocument(insertDoc: InsertLegalDocument): Promise<LegalDocument> {
+    const [doc] = await db
+      .insert(legalDocuments)
+      .values(insertDoc)
+      .returning();
+    return doc;
+  }
+
+  // Repositories
+  async getRepositories(): Promise<Repository[]> {
+    return await db.select().from(repositories);
+  }
+
+  async createRepository(insertRepo: InsertRepository): Promise<Repository> {
+    const [repo] = await db
+      .insert(repositories)
+      .values(insertRepo)
+      .returning();
+    return repo;
+  }
+
+  // Payments
+  async getPayments(): Promise<Payment[]> {
+    return await db.select().from(payments);
+  }
+
+  async createPayment(insertPayment: InsertPayment): Promise<Payment> {
+    const [payment] = await db
+      .insert(payments)
+      .values(insertPayment)
+      .returning();
+    return payment;
+  }
 }
 
 export class MemStorage implements IStorage {
@@ -344,4 +489,4 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
