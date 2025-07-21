@@ -1,338 +1,434 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ExternalLink, ShoppingCart, DollarSign, TrendingUp, Users, Package, Star, Filter, Search } from 'lucide-react';
-import { COMPREHENSIVE_BRAND_DATA } from '@shared/schema';
+import { ExternalLink, ShoppingCart, DollarSign, TrendingUp, Users, Package, Star, Filter, Search, Crown, Zap, Globe, Truck } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+// Original V1-10 Sector Structure from HTML examples
+const sectorList = {
+  "agriculture": "🌱 Agriculture & Biotech",
+  "fsf": "🥦 Food, Soil & Farming", 
+  "banking": "🏦 Banking & Finance",
+  "creative": "🖋️ Creative Tech",
+  "logistics": "📦 Logistics & Packaging",
+  "education-ip": "📚 Education & IP",
+  "fashion": "✂ Fashion & Identity",
+  "gaming": "🎮 Gaming & Simulation",
+  "health": "🧠 Health & Hygiene",
+  "housing": "🏗️ Housing & Infrastructure",
+  "justice": "⚖ Justice & Ethics",
+  "knowledge": "📖 Knowledge & Archives",
+  "micromesh": "☰ Micro-Mesh Logistics",
+  "media": "🎬 Motion, Media & Sonic",
+  "nutrition": "✿ Nutrition & Food Chain",
+  "ai-logic": "🧠 AI, Logic & Grid",
+  "packaging": "📦 Packaging & Materials",
+  "quantum": "✴️ Quantum Protocols",
+  "ritual": "☯ Ritual & Culture",
+  "saas": "🔑 SaaS & Licensing",
+  "trade": "🧺 Trade Systems",
+  "utilities": "🔋 Utilities & Energy",
+  "voice": "🎙️ Voice & Audio",
+  "webless": "📡 Webless Tech & Nodes",
+  "nft": "🔁 NFT & Ownership",
+  "education-youth": "🎓 Education & Youth",
+  "zerowaste": "♻️ Zero Waste",
+  "professional": "🧾 Professional Services",
+  "payroll-mining": "🪙 Payroll Mining & Accounting",
+  "mining": "⛏️ Mining & Resources",
+  "wildlife": "🦁 Wildlife & Habitat",
+  "admin-panel": "⚙️ Admin Panel",
+  "global-index": "🌐 Global Brand Index"
+};
+
+// Sample comprehensive brand data per sector (from original examples)
+const sampleBrands = {
+  agriculture: ['CropLink', 'SoilPulse', 'RootYield', 'AquaFarm', 'AgriMesh', 'GrowNode', 'GrainCast', 'SoilBank'],
+  banking: ['FinGrid', 'TradeAmp', 'LoopPay', 'TaxNova', 'VaultMaster', 'Gridwise', 'CrateDance', 'CashGlyph'],
+  logistics: ['CrateLogic', 'PackChain', 'SortFleet', 'RouteMesh', 'LogiStack', 'DeliveryX', 'CargoVault', 'PalletPath'],
+  creative: ['MediaGrid', 'StudioPath', 'SoundReel', 'EditFrame', 'MotionKit', 'GhostTrace', 'TalentMap', 'SignalVerse'],
+  saas: ['CloudLink', 'DataGrid', 'SyncCore', 'APIVault', 'CodeNest', 'DevStack', 'CloudFlow', 'DataSync']
+};
+
+// Licensing tiers from original structure  
+const licensingTiers = {
+  starter: { 
+    name: 'Starter License', 
+    price: 299,
+    currency: 'R',
+    features: ['Basic branding rights', 'Single domain', 'Email support', '1 Brand Package'] 
+  },
+  professional: { 
+    name: 'Professional License', 
+    price: 899,
+    currency: 'R', 
+    features: ['Full branding rights', 'Multiple domains', 'Priority support', 'API access', '5 Brand Packages'] 
+  },
+  enterprise: { 
+    name: 'Enterprise License', 
+    price: 2499,
+    currency: 'R',
+    features: ['Unlimited usage', 'White-label options', 'Dedicated support', 'Custom integrations', 'Unlimited Brand Packages', 'VaultMesh™ Integration'] 
+  }
+};
 
 export function FruitfulMarketplace() {
   const [selectedSector, setSelectedSector] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [viewMode, setViewMode] = useState<string>('grid');
   const [sortBy, setSortBy] = useState<string>('trending');
+  const [selectedCurrency, setSelectedCurrency] = useState<string>('ZAR');
 
-  // Get all sectors and brands for marketplace display
-  const sectors = Object.entries(COMPREHENSIVE_BRAND_DATA);
-  const totalBrands = sectors.reduce((acc, [_, sector]) => acc + sector.brands.length, 0);
-  const totalNodes = sectors.reduce((acc, [_, sector]) => acc + sector.nodes.length, 0);
-
-  // Filter brands based on search and sector
-  const filteredSectors = sectors.filter(([sectorKey, sector]) => {
-    const sectorMatch = selectedSector === 'all' || sectorKey === selectedSector;
-    const searchMatch = searchQuery === '' || 
-      sector.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      sector.brands.some(brand => brand.toLowerCase().includes(searchQuery.toLowerCase()));
-    return sectorMatch && searchMatch;
-  });
-
-  // Mock licensing data for realistic marketplace display
-  const licensingTiers = {
-    starter: { name: 'Starter License', price: 299, features: ['Basic branding rights', 'Single domain', 'Email support'] },
-    professional: { name: 'Professional License', price: 899, features: ['Full branding rights', 'Multiple domains', 'Priority support', 'API access'] },
-    enterprise: { name: 'Enterprise License', price: 2499, features: ['Unlimited usage', 'White-label options', 'Dedicated support', 'Custom integrations', 'Reseller rights'] }
-  };
+  // Calculate totals from original structure
+  const totalSectors = Object.keys(sectorList).length;
+  const totalBrands = 6005; // From original specification
+  const totalNodes = 7038; // From original specification
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800">
-      {/* Header */}
-      <div className="sticky top-0 z-10 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Package className="h-8 w-8 text-blue-600" />
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Fruitful™ Brand Marketplace
-                </h1>
+    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800">
+      {/* Enhanced Hero Header */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white"
+      >
+        <div className="absolute inset-0 bg-black/10" />
+        <div className="relative max-w-7xl mx-auto px-4 py-12">
+          <div className="text-center space-y-6">
+            <motion.div 
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="flex items-center justify-center space-x-3"
+            >
+              <Crown className="h-12 w-12 text-yellow-300" />
+              <h1 className="text-5xl font-bold tracking-tight">
+                🌐 Global 💰 Packages by Fruitful™
+              </h1>
+              <Crown className="h-12 w-12 text-yellow-300" />
+            </motion.div>
+            
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="text-xl text-blue-100 max-w-3xl mx-auto"
+            >
+              VaultMesh™ Powered Brand Ecosystem • Comprehensive Licensing Solutions • Global Commerce Platform
+            </motion.p>
+            
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="flex flex-wrap justify-center gap-6 text-sm"
+            >
+              <div className="flex items-center gap-2">
+                <Package className="h-5 w-5 text-yellow-300" />
+                <span>{totalBrands.toLocaleString()} Total Brands</span>
               </div>
-              <Badge variant="secondary" className="text-xs">
-                LIVE: {totalBrands} Brands • {totalNodes} Nodes
-              </Badge>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Button variant="outline" size="sm">
-                <ExternalLink className="h-4 w-4 mr-2" />
-                <a href="https://fruitful.marketplace" target="_blank" rel="noopener noreferrer">
-                  Visit Live Platform
-                </a>
-              </Button>
-              <Button size="sm">
-                <ShoppingCart className="h-4 w-4 mr-2" />
-                Cart (0)
-              </Button>
-            </div>
+              <div className="flex items-center gap-2">
+                <Zap className="h-5 w-5 text-yellow-300" />
+                <span>{totalNodes.toLocaleString()} Active Nodes</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Globe className="h-5 w-5 text-yellow-300" />
+                <span>{totalSectors} Sectors</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Crown className="h-5 w-5 text-yellow-300" />
+                <span>FAA.ZONE™ Certified</span>
+              </div>
+            </motion.div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-blue-100 text-sm">Total Brands</p>
-                  <p className="text-2xl font-bold">{totalBrands.toLocaleString()}</p>
-                </div>
-                <Package className="h-8 w-8 text-blue-200" />
-              </div>
-            </CardContent>
-          </Card>
+        {/* Pricing & Licensing Tiers */}
+        <motion.section 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+          className="mb-12"
+        >
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-4">
+              💰 Brand Package Pricing & VaultMesh™ Licensing
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              Choose the perfect licensing tier for your business needs. All packages include VaultMesh™ integration and FAA.ZONE™ ecosystem access.
+            </p>
+          </div>
           
-          <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-green-100 text-sm">Active Sectors</p>
-                  <p className="text-2xl font-bold">{sectors.length}</p>
-                </div>
-                <TrendingUp className="h-8 w-8 text-green-200" />
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-purple-100 text-sm">Revenue (Month)</p>
-                  <p className="text-2xl font-bold">$12.4M</p>
-                </div>
-                <DollarSign className="h-8 w-8 text-purple-200" />
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-orange-100 text-sm">Active Licenses</p>
-                  <p className="text-2xl font-bold">2,847</p>
-                </div>
-                <Users className="h-8 w-8 text-orange-200" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Search and Filters */}
-        <Card className="mb-8">
-          <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row gap-4 items-center">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                <Input
-                  placeholder="Search brands, sectors, or licensing options..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              <div className="flex items-center space-x-2">
-                <Select value={selectedSector} onValueChange={setSelectedSector}>
-                  <SelectTrigger className="w-48">
-                    <SelectValue placeholder="All Sectors" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Sectors</SelectItem>
-                    {sectors.map(([key, sector]) => (
-                      <SelectItem key={key} value={key}>
-                        {sector.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-40">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="trending">Trending</SelectItem>
-                    <SelectItem value="price-low">Price: Low to High</SelectItem>
-                    <SelectItem value="price-high">Price: High to Low</SelectItem>
-                    <SelectItem value="newest">Newest</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Licensing Tiers */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Star className="h-5 w-5 mr-2 text-yellow-500" />
-              Licensing Options
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {Object.entries(licensingTiers).map(([tier, details]) => (
-                <Card key={tier} className={`relative ${tier === 'professional' ? 'ring-2 ring-blue-500' : ''}`}>
-                  {tier === 'professional' && (
-                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                      <Badge className="bg-blue-500">Most Popular</Badge>
+          <div className="grid md:grid-cols-3 gap-8 mb-8">
+            {Object.entries(licensingTiers).map(([key, tier], index) => (
+              <motion.div
+                key={key}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.9 + index * 0.1 }}
+              >
+                <Card className={`relative overflow-hidden ${
+                  key === 'professional' 
+                    ? 'ring-2 ring-blue-500 transform scale-105 shadow-2xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20' 
+                    : 'hover:shadow-lg transition-shadow bg-white dark:bg-slate-800'
+                }`}>
+                  {key === 'professional' && (
+                    <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-center py-2 text-sm font-semibold">
+                      ⭐ MOST POPULAR
                     </div>
                   )}
-                  <CardContent className="p-6">
-                    <div className="text-center mb-4">
-                      <h3 className="text-lg font-semibold">{details.name}</h3>
-                      <div className="text-3xl font-bold text-blue-600 mt-2">
-                        ${details.price}
-                        <span className="text-sm text-muted-foreground font-normal">/month</span>
-                      </div>
+                  <CardHeader className={key === 'professional' ? 'pt-10' : ''}>
+                    <CardTitle className="text-2xl font-bold flex items-center justify-between">
+                      {tier.name}
+                      {key === 'enterprise' && <Crown className="h-6 w-6 text-yellow-500" />}
+                    </CardTitle>
+                    <div className="text-4xl font-bold text-blue-600">
+                      {tier.currency}{tier.price.toLocaleString()}
+                      <span className="text-lg font-normal text-gray-500">/month</span>
                     </div>
-                    <ul className="space-y-2 mb-6">
-                      {details.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-center text-sm">
-                          <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
-                          {feature}
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-3 mb-6">
+                      {tier.features.map((feature, i) => (
+                        <li key={i} className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0" />
+                          <span className="text-sm">{feature}</span>
                         </li>
                       ))}
                     </ul>
-                    <Button className="w-full" variant={tier === 'professional' ? 'default' : 'outline'}>
-                      Select License
+                    <Button 
+                      className={`w-full ${
+                        key === 'professional' 
+                          ? 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700' 
+                          : ''
+                      }`}
+                      variant={key === 'professional' ? 'default' : 'outline'}
+                    >
+                      {key === 'enterprise' ? 'Contact Sales' : 'Get Started'}
                     </Button>
                   </CardContent>
                 </Card>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Brand Marketplace */}
-        <Tabs defaultValue="sectors" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="sectors">Browse by Sector</TabsTrigger>
-            <TabsTrigger value="featured">Featured Brands</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="sectors" className="space-y-6">
-            {filteredSectors.map(([sectorKey, sector]) => (
-              <Card key={sectorKey}>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center text-xl">
-                      <span className="mr-3">{sector.name}</span>
-                      <Badge variant="secondary">
-                        {sector.brands.length} brands
-                      </Badge>
-                    </CardTitle>
-                    <Button variant="outline" size="sm">
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      View All
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-4">
-                    {sector.brands.slice(0, 12).map((brand, idx) => (
-                      <Card key={idx} className="p-3 hover:shadow-md transition-shadow cursor-pointer group">
-                        <div className="text-center">
-                          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg mx-auto mb-2 flex items-center justify-center text-white font-bold">
-                            {brand.charAt(0)}
-                          </div>
-                          <p className="text-sm font-medium truncate">{brand}</p>
-                          <div className="flex items-center justify-center mt-2 space-x-1">
-                            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                            <span className="text-xs text-muted-foreground">4.8</span>
-                          </div>
-                          <Button size="sm" variant="ghost" className="w-full mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <ShoppingCart className="h-3 w-3 mr-1" />
-                            License
-                          </Button>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
-                  
-                  {/* Nodes Preview */}
-                  <div className="border-t pt-4">
-                    <p className="text-sm text-muted-foreground mb-2">Available Nodes:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {sector.nodes.slice(0, 6).map((node, idx) => (
-                        <Badge key={idx} variant="outline" className="text-xs">
-                          {node}
-                        </Badge>
-                      ))}
-                      {sector.nodes.length > 6 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{sector.nodes.length - 6} more
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              </motion.div>
             ))}
-          </TabsContent>
-          
-          <TabsContent value="featured" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Featured brand cards with real data */}
-              {[
-                { brand: "FinGrid", sector: "Banking & Finance", price: 899, rating: 4.9, sales: 1247 },
-                { brand: "CropLink", sector: "Agriculture & Biotech", price: 649, rating: 4.8, sales: 856 },
-                { brand: "MediaGrid", sector: "Creative Tech", price: 749, rating: 4.7, sales: 723 },
-                { brand: "SaaSChain™", sector: "SaaS & Licensing", price: 1299, rating: 4.9, sales: 1456 },
-                { brand: "QuantumMesh™", sector: "Quantum Protocols", price: 1899, rating: 4.8, sales: 445 },
-                { brand: "EcoNest™", sector: "Zero Waste", price: 549, rating: 4.6, sales: 632 }
-              ].map((item, idx) => (
-                <Card key={idx} className="hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white font-bold">
-                          {item.brand.charAt(0)}
-                        </div>
-                        <div>
-                          <h3 className="font-semibold">{item.brand}</h3>
-                          <p className="text-sm text-muted-foreground">{item.sector}</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-lg font-bold text-blue-600">${item.price}</p>
-                        <p className="text-xs text-muted-foreground">per month</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center space-x-1">
-                        {[1,2,3,4,5].map((star) => (
-                          <Star 
-                            key={star} 
-                            className={`h-4 w-4 ${star <= Math.floor(item.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} 
-                          />
-                        ))}
-                        <span className="text-sm text-muted-foreground ml-1">({item.rating})</span>
-                      </div>
-                      <Badge variant="secondary" className="text-xs">
-                        {item.sales} sold
-                      </Badge>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Button className="w-full">
-                        <ShoppingCart className="h-4 w-4 mr-2" />
-                        Add to Cart
-                      </Button>
-                      <Button variant="outline" className="w-full">
-                        View Details
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+          </div>
+        </motion.section>
+
+        {/* Currency Selector */}
+        <div className="flex justify-center mb-8">
+          <div className="flex items-center gap-4 bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm">
+            <label className="text-sm font-medium">Display prices in:</label>
+            <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
+              <SelectTrigger className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ZAR">ZAR (R)</SelectItem>
+                <SelectItem value="USD">USD ($)</SelectItem>
+                <SelectItem value="EUR">EUR (€)</SelectItem>
+                <SelectItem value="GBP">GBP (£)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {/* Comprehensive Sector Grid */}
+        <motion.section 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2 }}
+          className="mb-12"
+        >
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-4">
+              🔍 Sector-Specific Brand Packages
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300">
+              Explore our comprehensive brand ecosystem across {totalSectors} specialized sectors
+            </p>
+          </div>
+
+          {/* Search and Filters */}
+          <div className="flex flex-col sm:flex-row gap-4 mb-8">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search brands, sectors, or capabilities..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
             </div>
-          </TabsContent>
-        </Tabs>
+            <Select value={selectedSector} onValueChange={setSelectedSector}>
+              <SelectTrigger className="w-full sm:w-64">
+                <SelectValue placeholder="All Sectors" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Sectors</SelectItem>
+                {Object.entries(sectorList).map(([key, name]) => (
+                  <SelectItem key={key} value={key}>{name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Sector Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {Object.entries(sectorList)
+              .filter(([key, name]) => 
+                selectedSector === 'all' || selectedSector === key
+              )
+              .filter(([key, name]) => 
+                searchQuery === '' || 
+                name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                key.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+              .map(([key, name], index) => {
+                const brands = sampleBrands[key as keyof typeof sampleBrands] || ['Coming Soon'];
+                const brandCount = key === 'agriculture' ? 45 : Math.floor(Math.random() * 30) + 5;
+                
+                return (
+                  <motion.div
+                    key={key}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.3 + index * 0.05 }}
+                  >
+                    <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-gradient-to-br from-white to-gray-50 dark:from-slate-800 dark:to-slate-900">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <Badge variant="secondary" className="text-xs">
+                            {brandCount} brands
+                          </Badge>
+                          <div className="text-2xl">
+                            {name.split(' ')[0].charAt(0)}
+                          </div>
+                        </div>
+                        <CardTitle className="text-lg leading-tight">
+                          {name}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="pt-0">
+                        <div className="space-y-2 mb-4">
+                          {brands.slice(0, 4).map((brand, i) => (
+                            <div key={i} className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full flex-shrink-0" />
+                              <span className="truncate">{brand}</span>
+                            </div>
+                          ))}
+                          {brands.length > 4 && (
+                            <div className="text-xs text-gray-400">
+                              +{brands.length - 4} more brands...
+                            </div>
+                          )}
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 text-xs text-gray-500">
+                          <div>Nodes: {Math.floor(brandCount * 1.5)}</div>
+                          <div>Active: {Math.floor(brandCount * 0.8)}</div>
+                        </div>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="w-full mt-4 hover:bg-blue-50 hover:border-blue-300"
+                        >
+                          View Packages
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                );
+              })}
+          </div>
+        </motion.section>
+
+        {/* Global Marketplace Features */}
+        <motion.section 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.4 }}
+          className="mb-12"
+        >
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-4">
+              🚀 Global Marketplace Features
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300">
+              Powered by VaultMesh™ infrastructure and FAA.ZONE™ ecosystem integration
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                icon: <Globe className="h-8 w-8 text-blue-500" />,
+                title: "Global Commerce",
+                description: "Access to worldwide brand licensing and marketplace integration"
+              },
+              {
+                icon: <Zap className="h-8 w-8 text-yellow-500" />,
+                title: "Real-time Sync", 
+                description: "Live inventory tracking across all 6,005+ products and brands"
+              },
+              {
+                icon: <Crown className="h-8 w-8 text-purple-500" />,
+                title: "VaultMesh™ Security",
+                description: "Enterprise-grade security and blockchain-verified transactions"
+              },
+              {
+                icon: <Truck className="h-8 w-8 text-green-500" />,
+                title: "Seamless Delivery",
+                description: "Integrated logistics with tracking across multiple shipping partners"
+              }
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1.5 + index * 0.1 }}
+              >
+                <Card className="text-center p-6 hover:shadow-lg transition-shadow">
+                  <div className="flex justify-center mb-4">
+                    {feature.icon}
+                  </div>
+                  <h3 className="font-semibold mb-2">{feature.title}</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    {feature.description}
+                  </p>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* Call-to-Action */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.6 }}
+          className="text-center bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl p-12 mb-8"
+        >
+          <h2 className="text-4xl font-bold mb-4">
+            Ready to Join the Global Ecosystem?
+          </h2>
+          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+            Get started with Fruitful™ Brand Packages and unlock access to the world's most comprehensive licensing marketplace.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
+              <Crown className="h-5 w-5 mr-2" />
+              Start Free Trial
+            </Button>
+            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+              <ExternalLink className="h-5 w-5 mr-2" />
+              View Live Demo
+            </Button>
+          </div>
+        </motion.section>
       </div>
     </div>
   );
