@@ -41,6 +41,7 @@ import FruitfulMarketplaceMarketing from "@/pages/fruitful-marketplace-marketing
 import Landing from "@/pages/landing"
 import SectorDashboard from "@/pages/sector-dashboard"
 import SectorList from "@/pages/sector-list"
+import SettingsPage from "@/pages/settings"
 import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react"
 import { GlobalFooter } from "@/components/ui/global-footer"
@@ -50,10 +51,15 @@ function PageRouter({ activePage }: { activePage: string }) {
   switch (activePage) {
     case "home":
     case "marketplace":
-    case "settings":
       return <PortalHome />
     case "analytics":
       return <FruitfulCrateDancePage />
+    case "settings":
+      return (
+        <div className="p-8">
+          <SettingsPage />
+        </div>
+      )
     case "integrations":
       return (
         <div className="p-8">
