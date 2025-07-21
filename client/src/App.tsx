@@ -50,9 +50,10 @@ function PageRouter({ activePage }: { activePage: string }) {
   switch (activePage) {
     case "home":
     case "marketplace":
-    case "analytics":
     case "settings":
       return <PortalHome />
+    case "analytics":
+      return <FruitfulCrateDancePage />
     case "integrations":
       return (
         <div className="p-8">

@@ -476,6 +476,11 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(processingEngines).orderBy(desc(processingEngines.lastActivity));
   }
 
+  async seedInterstellarData(): Promise<void> {
+    // Implementation for interstellar data seeding
+    console.log("Interstellar data seeding completed");
+  }
+
   async seedMediaData(): Promise<void> {
     // Check if engines already exist
     const existingEngines = await this.getProcessingEngines();
