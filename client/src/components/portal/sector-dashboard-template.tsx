@@ -48,6 +48,7 @@ import {
   MorphingButton,
   ProgressRing 
 } from "@/components/ui/micro-interactions"
+import { LegalRepositoryHub } from "./legal-repository-hub"
 import type { Sector, Brand } from "@shared/schema"
 
 interface SectorDashboardProps {
@@ -340,11 +341,12 @@ export function SectorDashboardTemplate({ sector, brands = [], className = "" }:
 
       {/* Main Dashboard Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="sales">Sales Pipeline</TabsTrigger>
           <TabsTrigger value="brands">Brand Portfolio</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="legal">Legal Hub</TabsTrigger>
           <TabsTrigger value="reports">Reports</TabsTrigger>
         </TabsList>
 
@@ -529,6 +531,14 @@ export function SectorDashboardTemplate({ sector, brands = [], className = "" }:
               <p className="text-sm">Chart visualizations and data insights coming soon...</p>
             </div>
           </InteractiveCard>
+        </TabsContent>
+
+        {/* Legal Repository Hub Tab */}
+        <TabsContent value="legal" className="space-y-6">
+          <LegalRepositoryHub 
+            sectorId={sector.id} 
+            sectorName={sector.name}
+          />
         </TabsContent>
 
         {/* Reports Tab */}
