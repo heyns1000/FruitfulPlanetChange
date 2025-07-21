@@ -252,7 +252,7 @@ interface OmniGridFAAZoneProps {
 }
 
 export function OmniGridFAAZone({ className }: OmniGridFAAZoneProps) {
-  const [selectedSector, setSelectedSector] = useState<string>("");
+  const [selectedSector, setSelectedSector] = useState<any>(null);
   const [selectedEngine, setSelectedEngine] = useState<string>("");
   const [monitoringActive, setMonitoringActive] = useState(false);
   const [systemMetrics, setSystemMetrics] = useState({
@@ -287,9 +287,7 @@ export function OmniGridFAAZone({ className }: OmniGridFAAZoneProps) {
 
   // Handler functions for sector actions
   const handleSectorView = (sector: any) => {
-    setSelectedSector(sector.name);
-    // Create modal or detailed view for the sector
-    alert(`Viewing ${sector.name}\n\nBrands: ${sector.brands}\nNodes: ${sector.nodes.toLocaleString()}\nTier: ${sector.tier}\nRegion: ${sector.region}\nMonthly Fee: $${sector.monthlyFee}\n\n${sector.description}`);
+    setSelectedSector(sector);
   };
 
   const handleSectorDeploy = (sector: any) => {
@@ -664,7 +662,10 @@ export function OmniGridFAAZone({ className }: OmniGridFAAZoneProps) {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="sector-select">📂 Sector</Label>
-                    <Select value={selectedSector} onValueChange={setSelectedSector}>
+                    <Select value={selectedSector?.name || ""} onValueChange={(value) => {
+                      const sector = pulseTradeSectors.find(s => s.name === value);
+                      setSelectedSector(sector || null);
+                    }}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select sector..." />
                       </SelectTrigger>
@@ -765,6 +766,71 @@ export function OmniGridFAAZone({ className }: OmniGridFAAZoneProps) {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Sector Detail Modal */}
+      {selectedSector && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={() => setSelectedSector(null)}>
+          <div className="bg-background rounded-lg max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <span className="text-3xl">{selectedSector.glyph}</span>
+                <div>
+                  <h3 className="text-2xl font-bold">{selectedSector.name}</h3>
+                  <p className="text-muted-foreground">{selectedSector.description}</p>
+                </div>
+              </div>
+              <Button variant="ghost" size="sm" onClick={() => setSelectedSector(null)} className="text-xl">×</Button>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="space-y-4">
+                <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-4 rounded-lg">
+                  <Label className="text-sm text-muted-foreground">Core Brands</Label>
+                  <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{selectedSector.brands}</p>
+                </div>
+                <div className="bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-4 rounded-lg">
+                  <Label className="text-sm text-muted-foreground">Active Nodes</Label>
+                  <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">{selectedSector.nodes.toLocaleString()}</p>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-4 rounded-lg">
+                  <Label className="text-sm text-muted-foreground">Monthly Fee</Label>
+                  <p className="text-3xl font-bold text-green-600 dark:text-green-400">${selectedSector.monthlyFee}</p>
+                </div>
+                <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-800/20 p-4 rounded-lg">
+                  <Label className="text-sm text-muted-foreground">Annual Fee</Label>
+                  <p className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">${selectedSector.annualFee}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div className="text-center p-4 bg-muted/50 rounded-lg">
+                <Label className="text-sm text-muted-foreground">Tier Classification</Label>
+                <Badge variant={selectedSector.tier === "A+" ? "default" : "secondary"} className="text-lg px-3 py-1 mt-2">
+                  {selectedSector.tier}
+                </Badge>
+              </div>
+              <div className="text-center p-4 bg-muted/50 rounded-lg">
+                <Label className="text-sm text-muted-foreground">Regional Coverage</Label>
+                <p className="font-bold text-lg mt-2">{selectedSector.region}</p>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <Button onClick={() => handleSectorDeploy(selectedSector)} className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700">
+                <Upload className="h-4 w-4 mr-2" />
+                Deploy Sector
+              </Button>
+              <Button variant="outline" onClick={() => setSelectedSector(null)} className="flex-1">
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* User Detail Modal */}
       {selectedUser && (
