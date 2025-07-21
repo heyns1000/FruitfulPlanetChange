@@ -34,7 +34,7 @@ export function SystemStatus() {
   }
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6">
+    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6" data-tour="system-status">
       <h3 className="font-semibold mb-3 text-sm">System Status</h3>
       <div className="space-y-2">
         {statuses.map((status) => (

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query"
 import { Menu, X } from "lucide-react"
 import { useTheme } from "@/hooks/use-theme"
 import { SystemStatus } from "./system-status"
+import { OnboardingTrigger } from "@/components/onboarding/onboarding-trigger"
 import type { Sector } from "@shared/schema"
 import { motion, AnimatePresence } from "framer-motion"
 import { PulseIndicator, RippleButton, SparkleEffect } from "@/components/ui/micro-interactions"
@@ -326,6 +327,13 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
                 <span className="font-medium">{item.label}</span>
               </button>
             ))}
+          </div>
+        </div>
+
+        {/* Help & Onboarding */}
+        <div className="pt-6 border-t border-gray-200 dark:border-gray-800">
+          <div className="flex justify-center" data-tour="user-menu">
+            <OnboardingTrigger />
           </div>
         </div>
       </aside>

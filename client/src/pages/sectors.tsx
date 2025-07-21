@@ -219,13 +219,14 @@ export default function SectorsPage() {
               const completionPercentage = stats ? Math.round((stats.activeBrands / Math.max(stats.totalBrands, 1)) * 100) : 0
               
               return viewMode === "grid" ? (
-                <SectorNavigationCard 
-                  key={sector.id} 
-                  sector={sector}
-                  className="hover:shadow-lg transition-all"
-                />
+                <div key={sector.id} data-tour={sector.id === 1 ? "sector-card" : undefined}>
+                  <SectorNavigationCard 
+                    sector={sector}
+                    className="hover:shadow-lg transition-all"
+                  />
+                </div>
               ) : (
-                <Card key={sector.id} className="hover:shadow-lg transition-all cursor-pointer group">
+                <Card key={sector.id} className="hover:shadow-lg transition-all cursor-pointer group" data-tour={sector.id === 1 ? "sector-card" : undefined}>
                   <CardHeader className="pb-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">

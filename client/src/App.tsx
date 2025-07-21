@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query"
 import { Toaster } from "@/components/ui/toaster"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { ThemeProvider } from "@/components/ui/theme-provider"
+import { OnboardingProvider } from "@/components/onboarding/onboarding-provider"
 import InternPortalNestPage from "@/pages/intern-portalnest"
 import BanimalIntegrationPage from "@/pages/banimal-integration"
 import MotionMediaSonic from "@/pages/motion-media-sonic"
@@ -203,8 +204,10 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" storageKey="seedwave-ui-theme">
         <TooltipProvider>
-          <AuthenticatedApp activePage={activePage} setActivePage={setActivePage} />
-          <Toaster />
+          <OnboardingProvider>
+            <AuthenticatedApp activePage={activePage} setActivePage={setActivePage} />
+            <Toaster />
+          </OnboardingProvider>
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>

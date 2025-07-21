@@ -75,7 +75,7 @@ export default function PortalHome() {
       </header>
 
       {/* Search and Filters */}
-      <section className="p-6">
+      <section className="p-6" data-tour="dashboard-stats">
         <SearchFilters
           onSearch={setSearchQuery}
           onSectorFilter={setSelectedSector}
@@ -84,7 +84,7 @@ export default function PortalHome() {
       </section>
 
       {/* Brand Elements Grid */}
-      <section className="p-6">
+      <section className="p-6" data-tour="sectors-grid">
         <div className="mb-6">
           <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">
             Brand Elements
@@ -110,13 +110,14 @@ export default function PortalHome() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {displayedBrands.map((brand) => (
-              <BrandCard
-                key={brand.id}
-                brand={brand}
-                sector={brand.sectorId ? sectorMap[brand.sectorId] : undefined}
-                onClick={() => console.log('Brand clicked:', brand.name)}
-              />
+            {displayedBrands.map((brand, index) => (
+              <div key={brand.id} data-tour={index === 0 ? "sector-card" : undefined}>
+                <BrandCard
+                  brand={brand}
+                  sector={brand.sectorId ? sectorMap[brand.sectorId] : undefined}
+                  onClick={() => console.log('Brand clicked:', brand.name)}
+                />
+              </div>
             ))}
 
             {/* Load More Button */}
@@ -136,7 +137,7 @@ export default function PortalHome() {
       </section>
 
       {/* Quick Actions */}
-      <section className="p-6">
+      <section className="p-6" data-tour="recent-activity">
         <div className="bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl p-8 text-white">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
