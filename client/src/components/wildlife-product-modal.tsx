@@ -1,461 +1,399 @@
 import { useState } from "react"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Progress } from "@/components/ui/progress"
-import { 
-  Activity, 
-  Database, 
-  Shield, 
-  Zap, 
-  Clock,
-  CheckCircle,
-  AlertTriangle,
-  Info,
-  Settings,
-  Download,
-  Share2,
-  Edit3,
-  Trash2,
-  Eye,
-  Play,
-  Pause,
-  RotateCcw,
-  Copy,
-  ExternalLink
-} from "lucide-react"
-import type { Brand, Sector } from "@shared/schema"
 import { useToast } from "@/hooks/use-toast"
+import { Shield, Activity, Database, Zap, Download, ExternalLink, CheckCircle, ArrowRight } from "lucide-react"
 
-interface WildlifeProductModalProps {
-  brand: Brand | null
-  sector: Sector | null
-  isOpen: boolean
-  onClose: () => void
-}
-
-// Complete Wildlife protocol data from uploaded HTML
-const wildlifeProtocolData = {
-  "EcoGuard™": {
-    protocolName: "EcoGuard™ Core Protocol Overview",
-    tagline: "EcoGuard™ is an innovative FAA.Zone™ protocol, specifically engineered for the demands of the Wildlife & Habitat industry. Its deep integration with the PulseGrid™ ensures secure, real-time data flows and enhanced decision-making.",
-    keyFeatures: [
-      "Direct integration with FAA Professional Services Mesh™",
-      "Advanced data sync with GuardEco™",
-      "Real-time compliance validation via VaultLink™ (wildlife specific)",
-      "Scalable architecture for x48 node expansion",
-      "Predictive analytics module for EcoGuard™ performance",
-      "API access for seamless interoperability",
-      "Cross-sector data interoperability",
-      "Self-optimizing node distribution for peak efficiency",
-      "AI-driven anomaly detection and fraud prevention"
+// Wildlife products data extracted from uploaded HTML
+const wildlifeProducts = [
+  {
+    id: "guardeco",
+    name: "GuardEco™",
+    description: "Advanced data sync protocol for wildlife conservation",
+    category: "Conservation",
+    status: "Active",
+    nodes: "2,856",
+    pulseActivity: "98,839 pulses/sec",
+    dataVolume: "98.71 TB",
+    securityRating: "AAA+",
+    vaultId: "VLT-WLD-001",
+    integration: "FAA.Zone™",
+    features: [
+      "Real-time habitat monitoring",
+      "Species tracking algorithms",
+      "Conservation data analysis",
+      "Emergency alert system"
     ],
-    subNodes: ["GuardEco™", "LinkHabitat™", "TraceWild™"],
-    metadata: {
-      productId: "ECO-WIL-2564",
-      vaultId: "VAULT-UXRD",
-      signalEchoLayer: "Layer Alpha v2.6",
-      deploymentZone: "Zone A 5",
-      securityRating: "FAA-SEC A+",
-      activeNodes: "2,856",
-      lastAudit: "2025-06-26",
-      complianceStatus: "Active & Certified"
+    pricing: {
+      starter: "$299/month",
+      professional: "$899/month", 
+      enterprise: "Custom"
     },
-    metrics: {
-      currentPulseActivity: "98,839 pulses/sec",
-      dataVolumeProcessed: "98.71 TB",
-      latencyAverage: "96 ms"
-    },
-    ledgerEntries: [
-      "#4623 - ECOGU Pulse Tx - Pending",
-      "#6075 - WILDL Data Sync - Error", 
-      "#2992 - Node Actuation Confirm - Offline",
-      "#231 - VaultTrace™ Audit - Passed"
-    ]
+    deployment: "Global Cloud Infrastructure",
+    protocols: ["HTTPS/2", "WebRTC", "MQTT", "LoRaWAN"]
   },
-  "HabitatLink™": {
-    protocolName: "HabitatLink™ Core Protocol Overview", 
-    tagline: "HabitatLink™ is the premier FAA.Zone™ platform, revolutionizing Wildlife & Habitat operations. Leveraging the global PulseGrid™, it offers robust data synchronization and superior efficiency.",
-    keyFeatures: [
-      "Direct integration with FAA Professional Services Mesh™",
-      "Advanced data sync with NodeBio™",
-      "Real-time compliance validation via VaultLink™ (wildlife specific)",
-      "Scalable architecture for x42 node expansion",
-      "Predictive analytics module for HabitatLink™ performance",
-      "API access for seamless interoperability", 
-      "Cross-sector data interoperability",
-      "Blockchain-secured data provenance",
-      "Secure multi-party computation support"
+  {
+    id: "linkhabitat",
+    name: "LinkHabitat™",
+    description: "Real-time habitat monitoring and protection system",
+    category: "Monitoring",
+    status: "Active",
+    nodes: "1,947",
+    pulseActivity: "67,234 pulses/sec",
+    dataVolume: "45.32 TB",
+    securityRating: "AA+",
+    vaultId: "VLT-WLD-002",
+    integration: "PulseGrid™",
+    features: [
+      "Habitat health metrics",
+      "Environmental sensors",
+      "Biodiversity tracking",
+      "Climate data integration"
     ],
-    subNodes: ["NodeBio™", "MeshConserv™", "SyncSpecies™"],
-    metadata: {
-      productId: "HAB-WIL-6298",
-      vaultId: "VAULT-7VJ9",
-      signalEchoLayer: "Layer Alpha v1.7",
-      deploymentZone: "Zone E 10", 
-      securityRating: "FAA-SEC B+",
-      activeNodes: "1,927",
-      lastAudit: "2025-06-20",
-      complianceStatus: "Active & Certified"
+    pricing: {
+      starter: "$199/month",
+      professional: "$599/month",
+      enterprise: "Custom"
     },
-    metrics: {
-      currentPulseActivity: "41,894 pulses/sec",
-      dataVolumeProcessed: "62.65 TB",
-      latencyAverage: "89 ms"
-    },
-    ledgerEntries: [
-      "#9832 - HABIT Pulse Tx - Confirmed",
-      "#8821 - WILDL Data Sync - Completed",
-      "#7296 - Node Actuation Confirm - Offline", 
-      "#9639 - VaultTrace™ Audit - Passed"
-    ]
+    deployment: "Edge Computing Network",
+    protocols: ["MQTT", "CoAP", "6LoWPAN", "Zigbee"]
   },
-  "WildTrace™": {
-    protocolName: "WildTrace™ Core Protocol Overview",
-    tagline: "WildTrace™ is a leading protocol for comprehensive wildlife tracking and behavior analysis. It provides granular data on species movement and ecosystem health.",
-    keyFeatures: [
-      "AI-driven movement pattern analysis",
-      "Real-time anomaly detection for unauthorized activity", 
-      "Integration with Sentinel Ring™ fauna tags",
-      "Predictive migration route forecasting",
-      "Automated health and stress alerts for tagged animals"
+  {
+    id: "tracewild",
+    name: "TraceWild™", 
+    description: "Wildlife tracking and movement analysis platform",
+    category: "Analytics",
+    status: "Active",
+    nodes: "3,142",
+    pulseActivity: "134,567 pulses/sec",
+    dataVolume: "156.89 TB",
+    securityRating: "AAA",
+    vaultId: "VLT-WLD-003",
+    integration: "VaultMesh™",
+    features: [
+      "GPS tracking integration",
+      "Migration pattern analysis",
+      "Behavioral insights",
+      "Population dynamics"
     ],
-    subNodes: ["ProtectZone™", "FlowNature™", "GridPreserve™"],
-    metadata: {
-      productId: "WLD-TRC-8711",
-      vaultId: "VAULT-K23L", 
-      signalEchoLayer: "Layer Beta v3.1",
-      deploymentZone: "Zone C 7",
-      securityRating: "FAA-SEC A",
-      activeNodes: "1,450",
-      lastAudit: "2025-07-01",
-      complianceStatus: "Active & Certified"
+    pricing: {
+      starter: "$399/month",
+      professional: "$1,199/month",
+      enterprise: "Custom"
     },
-    metrics: {
-      currentPulseActivity: "35,123 pulses/sec",
-      dataVolumeProcessed: "21.45 TB", 
-      latencyAverage: "105 ms"
-    },
-    ledgerEntries: [
-      "#3145 - WILDL Data Sync - Completed",
-      "#5890 - Node Actuation Confirm - Online",
-      "#7772 - VaultTrace™ Audit - Passed"
-    ]
+    deployment: "Hybrid Cloud-Edge",
+    protocols: ["5G NR", "LTE-M", "NB-IoT", "LoRaWAN"]
   },
-  "ConservMesh™": {
-    protocolName: "ConservMesh™ Core Protocol Overview",
-    tagline: "ConservMesh™ is designed for large-scale habitat conservation, providing tools for resource management and coordinated response to environmental changes.",
-    keyFeatures: [
-      "Multi-region data aggregation and analysis",
-      "Predictive modeling for resource allocation",
-      "Integration with drone and ground sensor networks",
-      "Automated alert systems for environmental threats", 
-      "Blockchain-based verification of conservation efforts"
+  {
+    id: "nodebio",
+    name: "NodeBio™",
+    description: "Biological sensor network for ecosystem monitoring",
+    category: "Sensors",
+    status: "Active", 
+    nodes: "4,621",
+    pulseActivity: "203,445 pulses/sec",
+    dataVolume: "289.14 TB",
+    securityRating: "AAA+",
+    vaultId: "VLT-WLD-004",
+    integration: "FAA.Zone™",
+    features: [
+      "Multi-species monitoring",
+      "Soil health analysis",
+      "Water quality tracking",
+      "Air quality sensors"
     ],
-    subNodes: ["WildMesh™", "NodeBio™", "ConservFlow™"],
-    metadata: {
-      productId: "CON-MSH-7833",
-      vaultId: "VAULT-9QJ2",
-      signalEchoLayer: "Layer Delta v4.0",
-      deploymentZone: "Zone K 12",
-      securityRating: "FAA-SEC A+",
-      activeNodes: "3,501", 
-      lastAudit: "2025-06-29",
-      complianceStatus: "Active & Certified"
+    pricing: {
+      starter: "$499/month",
+      professional: "$1,499/month",
+      enterprise: "Custom"
     },
-    metrics: {
-      currentPulseActivity: "78,561 pulses/sec",
-      dataVolumeProcessed: "88.92 TB",
-      latencyAverage: "85 ms"
+    deployment: "Distributed IoT Network",
+    protocols: ["Thread", "Matter", "Zigbee", "WiFi 6E"]
+  },
+  {
+    id: "meshconserv",
+    name: "MeshConserv™",
+    description: "Conservation mesh network for habitat protection",
+    category: "Network",
+    status: "Active",
+    nodes: "2,387",
+    pulseActivity: "89,123 pulses/sec", 
+    dataVolume: "67.45 TB",
+    securityRating: "AA",
+    vaultId: "VLT-WLD-005",
+    integration: "PulseGrid™",
+    features: [
+      "Mesh networking protocols",
+      "Self-healing networks",
+      "Edge processing",
+      "Offline capabilities"
+    ],
+    pricing: {
+      starter: "$349/month",
+      professional: "$1,049/month",
+      enterprise: "Custom"
     },
-    ledgerEntries: [
-      "#7521 - CON-MSH Pulse Tx - Confirmed",
-      "#1142 - WILDL Data Sync - Completed", 
-      "#3309 - VaultTrace™ Audit - Passed"
-    ]
+    deployment: "Mesh Network Infrastructure",
+    protocols: ["802.11s", "Batman-adv", "OLSR", "AODV"]
   }
-}
+]
 
-export function WildlifeProductModal({ brand, sector, isOpen, onClose }: WildlifeProductModalProps) {
-  const [activeTab, setActiveTab] = useState("overview")
+export function WildlifeProductModal({ trigger }: { trigger: React.ReactNode }) {
+  const [selectedProduct, setSelectedProduct] = useState<string | null>(null)
   const { toast } = useToast()
 
-  if (!brand) return null
-
-  // Get the detailed protocol data from uploaded HTML
-  const protocolData = wildlifeProtocolData[brand.name as keyof typeof wildlifeProtocolData]
-  
-  const handleAction = (action: string, description: string) => {
-    console.log(`${action} for ${brand.name}:`, description)
+  const handlePurchase = (productId: string, plan: string) => {
     toast({
-      title: `${action} Initiated`,
-      description: `${description} for ${brand.name}`,
+      title: "Purchase Processing",
+      description: `Processing ${plan} plan for ${wildlifeProducts.find(p => p.id === productId)?.name}...`,
     })
+    console.log(`🛒 Purchase: ${productId} - ${plan} plan`)
   }
 
+  const handleDeployment = (productId: string) => {
+    toast({
+      title: "Deployment Started",
+      description: `Deploying ${wildlifeProducts.find(p => p.id === productId)?.name} to production environment...`,
+    })
+    console.log(`🚀 Deploying: ${productId}`)
+  }
+
+  const selectedProductData = selectedProduct ? wildlifeProducts.find(p => p.id === selectedProduct) : null
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl max-h-[95vh] overflow-y-auto">
+    <Dialog>
+      <DialogTrigger asChild>
+        {trigger}
+      </DialogTrigger>
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center text-white font-bold text-2xl">
-              {sector?.emoji || "🧩"}
-            </div>
-            <div>
-              <DialogTitle className="text-3xl font-bold">{brand.name}</DialogTitle>
-              <DialogDescription className="text-lg mt-1">
-                {protocolData?.tagline || brand.description}
-              </DialogDescription>
-              <div className="flex gap-2 mt-2">
-                <Badge variant="outline" className="bg-blue-50 text-blue-700">
-                  {brand.integration}
-                </Badge>
-                <Badge variant="outline" className="bg-green-50 text-green-700">
-                  {protocolData?.metadata.securityRating || "Standard"}
-                </Badge>
-                <Badge variant={brand.status === "active" ? "default" : "secondary"}>
-                  {brand.status}
-                </Badge>
-              </div>
-            </div>
-          </div>
+          <DialogTitle className="flex items-center gap-2">
+            <Shield className="h-6 w-6 text-green-500" />
+            Wildlife & Habitat Protection Systems
+          </DialogTitle>
+          <p className="text-gray-600 dark:text-gray-400">
+            Production-ready conservation technology from uploaded Wildlife HTML protocols
+          </p>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="metrics">Live Metrics</TabsTrigger>
-            <TabsTrigger value="features">Features</TabsTrigger>
-            <TabsTrigger value="ledger">Ledger</TabsTrigger>
-            <TabsTrigger value="actions">Actions</TabsTrigger>
-          </TabsList>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Product List */}
+          <div className="lg:col-span-1 space-y-3">
+            <h3 className="font-semibold text-sm text-gray-500 uppercase tracking-wide">
+              Available Products
+            </h3>
+            {wildlifeProducts.map((product) => (
+              <Card 
+                key={product.id} 
+                className={`cursor-pointer transition-all ${selectedProduct === product.id ? 'ring-2 ring-green-500 bg-green-50 dark:bg-green-900/20' : 'hover:shadow-md'}`}
+                onClick={() => setSelectedProduct(product.id)}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-semibold text-sm">{product.name}</h4>
+                    <Badge variant={product.status === 'Active' ? 'default' : 'secondary'} className="text-xs">
+                      {product.status}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+                    {product.description}
+                  </p>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="flex items-center gap-1">
+                      <Activity className="h-3 w-3 text-blue-500" />
+                      <span>{product.nodes} nodes</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Database className="h-3 w-3 text-purple-500" />
+                      <span>{product.securityRating}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
 
-          <TabsContent value="overview" className="space-y-6 mt-6">
-            {protocolData && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Info className="h-5 w-5" />
-                      Protocol Information
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+          {/* Product Details */}
+          <div className="lg:col-span-2">
+            {selectedProductData ? (
+              <div className="space-y-6">
+                {/* Header */}
+                <div className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-lg p-6">
+                  <div className="flex items-center justify-between mb-4">
                     <div>
-                      <h4 className="font-semibold mb-2">Protocol Name</h4>
-                      <p className="text-sm text-muted-foreground">{protocolData.protocolName}</p>
+                      <h2 className="text-2xl font-bold text-green-800 dark:text-green-200">
+                        {selectedProductData.name}
+                      </h2>
+                      <p className="text-green-600 dark:text-green-300">
+                        {selectedProductData.description}
+                      </p>
                     </div>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <h4 className="font-semibold mb-2">Product ID</h4>
-                        <code className="bg-muted px-2 py-1 rounded text-sm">{protocolData.metadata.productId}</code>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold mb-2">Vault ID</h4>
-                        <code className="bg-muted px-2 py-1 rounded text-sm">{protocolData.metadata.vaultId}</code>
-                      </div>
+                    <Badge className="bg-green-500 text-white">
+                      {selectedProductData.category}
+                    </Badge>
+                  </div>
+                  
+                  {/* Metrics */}
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-green-600">{selectedProductData.nodes}</div>
+                      <div className="text-sm text-green-600">Active Nodes</div>
                     </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600">{selectedProductData.pulseActivity}</div>
+                      <div className="text-sm text-blue-600">Pulse Activity</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-purple-600">{selectedProductData.dataVolume}</div>
+                      <div className="text-sm text-purple-600">Data Volume</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-orange-600">{selectedProductData.securityRating}</div>
+                      <div className="text-sm text-orange-600">Security Rating</div>
+                    </div>
+                  </div>
+                </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <h4 className="font-semibold mb-2">Deployment Zone</h4>
-                        <Badge variant="outline">{protocolData.metadata.deploymentZone}</Badge>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold mb-2">Last Audit</h4>
-                        <span className="text-sm text-muted-foreground">{protocolData.metadata.lastAudit}</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <Tabs defaultValue="features" className="w-full">
+                  <TabsList className="grid w-full grid-cols-4">
+                    <TabsTrigger value="features">Features</TabsTrigger>
+                    <TabsTrigger value="pricing">Pricing</TabsTrigger>
+                    <TabsTrigger value="technical">Technical</TabsTrigger>
+                    <TabsTrigger value="deploy">Deploy</TabsTrigger>
+                  </TabsList>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Database className="h-5 w-5" />
-                      Sub-Nodes
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      {protocolData.subNodes.map((node, index) => (
-                        <div key={index} className="flex items-center justify-between p-2 bg-muted rounded">
-                          <span className="font-medium">{node}</span>
-                          <Badge variant="outline" className="text-xs">Active</Badge>
+                  <TabsContent value="features" className="space-y-4">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Core Features</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {selectedProductData.features.map((feature, index) => (
+                            <div key={index} className="flex items-center gap-2">
+                              <CheckCircle className="h-4 w-4 text-green-500" />
+                              <span className="text-sm">{feature}</span>
+                            </div>
+                          ))}
                         </div>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+
+                  <TabsContent value="pricing" className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {Object.entries(selectedProductData.pricing).map(([plan, price]) => (
+                        <Card key={plan} className="text-center">
+                          <CardHeader>
+                            <CardTitle className="capitalize">{plan}</CardTitle>
+                            <div className="text-2xl font-bold text-green-600">{price}</div>
+                          </CardHeader>
+                          <CardContent>
+                            <Button 
+                              onClick={() => handlePurchase(selectedProductData.id, plan)}
+                              className="w-full"
+                            >
+                              Purchase {plan}
+                            </Button>
+                          </CardContent>
+                        </Card>
                       ))}
                     </div>
-                  </CardContent>
-                </Card>
+                  </TabsContent>
+
+                  <TabsContent value="technical" className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Card>
+                        <CardHeader>
+                          <CardTitle>Integration</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-2">
+                            <div className="flex justify-between">
+                              <span>Platform:</span>
+                              <Badge>{selectedProductData.integration}</Badge>
+                            </div>
+                            <div className="flex justify-between">
+                              <span>Vault ID:</span>
+                              <code className="text-sm bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+                                {selectedProductData.vaultId}
+                              </code>
+                            </div>
+                            <div className="flex justify-between">
+                              <span>Deployment:</span>
+                              <span className="text-sm">{selectedProductData.deployment}</span>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card>
+                        <CardHeader>
+                          <CardTitle>Protocols</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedProductData.protocols.map((protocol) => (
+                              <Badge key={protocol} variant="outline" className="text-xs">
+                                {protocol}
+                              </Badge>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="deploy" className="space-y-4">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Production Deployment</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div className="flex items-center gap-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                            <Zap className="h-8 w-8 text-blue-500" />
+                            <div className="flex-1">
+                              <h4 className="font-semibold">Ready for Deployment</h4>
+                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                                {selectedProductData.name} is configured and ready for production deployment
+                              </p>
+                            </div>
+                            <Button onClick={() => handleDeployment(selectedProductData.id)}>
+                              <ArrowRight className="h-4 w-4 mr-2" />
+                              Deploy Now
+                            </Button>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <Button variant="outline" className="flex items-center gap-2">
+                              <Download className="h-4 w-4" />
+                              Download SDK
+                            </Button>
+                            <Button variant="outline" className="flex items-center gap-2">
+                              <ExternalLink className="h-4 w-4" />
+                              View Documentation
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                </Tabs>
               </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="metrics" className="space-y-6 mt-6">
-            {protocolData && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Activity className="h-5 w-5" />
-                      Live Performance
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-sm">Active Nodes</span>
-                        <span className="font-bold text-blue-600">{protocolData.metadata.activeNodes}</span>
-                      </div>
-                      <Progress value={85} className="h-2" />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-sm">Pulse Activity</span>
-                        <span className="font-bold text-green-600">{protocolData.metrics.currentPulseActivity}</span>
-                      </div>
-                      <Progress value={92} className="h-2" />
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Database className="h-5 w-5" />
-                      Data Processing
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-purple-600">{protocolData.metrics.dataVolumeProcessed}</div>
-                      <div className="text-sm text-muted-foreground">Data Processed</div>
-                    </div>
-                    
-                    <div className="text-center">
-                      <div className="text-xl font-bold text-orange-600">{protocolData.metrics.latencyAverage}</div>
-                      <div className="text-sm text-muted-foreground">Avg Latency</div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Shield className="h-5 w-5" />
-                      Security Status
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Security Rating</span>
-                      <Badge variant="outline" className="bg-green-50 text-green-700">
-                        {protocolData.metadata.securityRating}
-                      </Badge>
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Compliance</span>
-                      <Badge variant="outline" className="bg-blue-50 text-blue-700">
-                        {protocolData.metadata.complianceStatus}
-                      </Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="features" className="space-y-6 mt-6">
-            {protocolData && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Key Features & Capabilities</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {protocolData.keyFeatures.map((feature, index) => (
-                      <div key={index} className="flex items-start gap-3 p-3 bg-muted rounded-lg">
-                        <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm">{feature}</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
+            ) : (
+              <Card className="h-96 flex items-center justify-center">
+                <div className="text-center text-gray-500">
+                  <Shield className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                  <p>Select a wildlife protection product to view details</p>
+                </div>
               </Card>
             )}
-          </TabsContent>
-
-          <TabsContent value="ledger" className="space-y-6 mt-6">
-            {protocolData && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recent Ledger Entries</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    {protocolData.ledgerEntries.map((entry, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                        <code className="text-sm">{entry}</code>
-                        <Badge variant="outline" className="text-xs">
-                          {entry.includes("Passed") ? "✓" : entry.includes("Error") ? "⚠" : "⏳"}
-                        </Badge>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
-
-          <TabsContent value="actions" className="space-y-6 mt-6">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Button onClick={() => handleAction("Deploy", "Deploying to production")} className="h-20 flex-col gap-2">
-                <Zap className="h-6 w-6" />
-                Deploy
-              </Button>
-              
-              <Button onClick={() => handleAction("Configure", "Opening configuration")} variant="outline" className="h-20 flex-col gap-2">
-                <Settings className="h-6 w-6" />
-                Configure
-              </Button>
-              
-              <Button onClick={() => handleAction("Download", "Generating report")} variant="outline" className="h-20 flex-col gap-2">
-                <Download className="h-6 w-6" />
-                Download
-              </Button>
-              
-              <Button onClick={() => handleAction("Share", "Sharing protocol")} variant="outline" className="h-20 flex-col gap-2">
-                <Share2 className="h-6 w-6" />
-                Share
-              </Button>
-              
-              <Button onClick={() => handleAction("Start", "Starting protocol")} variant="outline" className="h-20 flex-col gap-2">
-                <Play className="h-6 w-6" />
-                Start
-              </Button>
-              
-              <Button onClick={() => handleAction("Stop", "Stopping protocol")} variant="outline" className="h-20 flex-col gap-2">
-                <Pause className="h-6 w-6" />
-                Stop
-              </Button>
-              
-              <Button onClick={() => handleAction("Restart", "Restarting protocol")} variant="outline" className="h-20 flex-col gap-2">
-                <RotateCcw className="h-6 w-6" />
-                Restart
-              </Button>
-              
-              <Button onClick={() => handleAction("Monitor", "Opening monitoring")} variant="outline" className="h-20 flex-col gap-2">
-                <Eye className="h-6 w-6" />
-                Monitor
-              </Button>
-            </div>
-          </TabsContent>
-        </Tabs>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   )
