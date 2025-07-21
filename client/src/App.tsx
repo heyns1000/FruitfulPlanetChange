@@ -186,7 +186,9 @@ function Router() {
           <Route path="/" component={PortalHome} />
           <Route path="/portal-home" component={PortalHome} />
           <Route path="/sector-list" component={SectorList} />
-          <Route path="/sector/:sectorId" component={SectorDashboard} />
+          <Route path="/sector/:sectorId">
+            {(params) => <SectorDashboard />}
+          </Route>
         </>
       )}
       <Route component={NotFound} />
@@ -218,12 +220,19 @@ function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; s
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="flex flex-1">
-        <Sidebar activePage={activePage} onPageChange={setActivePage} />
-        <main className="flex-1 ml-0 md:ml-80 transition-all duration-300">
-          <PageRouter activePage={activePage} />
-        </main>
-      </div>
+      <Switch>
+        <Route path="/sector/:sectorId">
+          <SectorDashboard />
+        </Route>
+        <Route>
+          <div className="flex flex-1">
+            <Sidebar activePage={activePage} onPageChange={setActivePage} />
+            <main className="flex-1 ml-0 md:ml-80 transition-all duration-300">
+              <PageRouter activePage={activePage} />
+            </main>
+          </div>
+        </Route>
+      </Switch>
       <GlobalFooter className="ml-0 md:ml-80" />
     </div>
   );
