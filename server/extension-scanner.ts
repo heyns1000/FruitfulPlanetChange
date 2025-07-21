@@ -218,6 +218,8 @@ export class ExtensionScanner {
           description: `Extension: ${folderId}`,
           version: '1.0.0',
           author: 'Unknown',
+          keywords: [],
+          tags: [],
           category: 'unknown',
           status: 'active',
           installDate: new Date().toISOString(),
@@ -234,6 +236,7 @@ export class ExtensionScanner {
         main: manifestData.main,
         scripts: manifestData.scripts,
         keywords: manifestData.keywords || manifestData.tags || [],
+        tags: manifestData.keywords || manifestData.tags || [],
         category: this.categorizeExtension(manifestData),
         permissions: manifestData.permissions || manifestData.capabilities || [],
         status: 'active',
@@ -286,16 +289,17 @@ export class ExtensionScanner {
   }
 
   private getFallbackExtensions(): ReplitExtension[] {
-    // Return the extensions we know about from the screenshots
+    // Return the extensions we know about from the screenshots with proper tags property
     return [
       {
         id: 'csv-editor',
         name: 'CSV Editor',
-        description: 'An extension for editing CSV files',
+        description: 'An extension for editing CSV files with advanced table editing capabilities',
         version: '1.2.3',
         author: 'LuisAFK',
         category: 'data',
         keywords: ['csv', 'files', 'viewer', 'editor', 'tables'],
+        tags: ['csv', 'files', 'viewer', 'editor', 'tables'],
         status: 'active',
         installDate: new Date().toISOString(),
       },
@@ -307,6 +311,7 @@ export class ExtensionScanner {
         author: 'LouwHopley',
         category: 'development',
         keywords: ['root', 'insurance', 'workbench', 'platform'],
+        tags: ['root', 'insurance', 'workbench', 'platform'],
         status: 'active',
         installDate: new Date().toISOString(),
       }

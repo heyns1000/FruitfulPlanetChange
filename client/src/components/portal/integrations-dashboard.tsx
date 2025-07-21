@@ -56,7 +56,7 @@ export function IntegrationsDashboard() {
     queryKey: ["/api/extensions/stats"],
   })
 
-  // Built-in Seedwave integrations
+  // Built-in Seedwave integrations - ensure all have required properties
   const seedwaveIntegrations: Extension[] = [
     {
       id: "vaultmesh-core",
@@ -203,7 +203,7 @@ export function IntegrationsDashboard() {
   const filteredExtensions = allExtensions.filter(ext => {
     const matchesSearch = ext.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          ext.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         ext.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+                         (ext.tags || []).some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
     const matchesCategory = selectedCategory === "all" || ext.category === selectedCategory
     return matchesSearch && matchesCategory
   })
@@ -308,36 +308,36 @@ export function IntegrationsDashboard() {
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="text-2xl">{extension.icon}</div>
+                        <div className="text-2xl">{extension.icon || '🔧'}</div>
                         <div>
                           <CardTitle className="text-lg">{extension.name}</CardTitle>
                           <p className="text-sm text-muted-foreground">
-                            by {extension.author}
+                            by {extension.author || 'Unknown'}
                           </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        {getIntegrationIcon(extension.integrationLevel)}
+                        {getIntegrationIcon(extension.integrationLevel || 'native')}
                         <Badge variant="outline" className="text-xs">
-                          v{extension.version}
+                          v{extension.version || '1.0.0'}
                         </Badge>
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
-                      {extension.description}
+                      {extension.description || 'No description available'}
                     </p>
                     
                     <div className="flex flex-wrap gap-1 mb-4">
-                      {extension.tags.slice(0, 3).map((tag) => (
+                      {(extension.tags || []).slice(0, 3).map((tag) => (
                         <Badge key={tag} variant="secondary" className="text-xs">
                           #{tag}
                         </Badge>
                       ))}
-                      {extension.tags.length > 3 && (
+                      {(extension.tags || []).length > 3 && (
                         <Badge variant="secondary" className="text-xs">
-                          +{extension.tags.length - 3}
+                          +{(extension.tags || []).length - 3}
                         </Badge>
                       )}
                     </div>
@@ -345,11 +345,11 @@ export function IntegrationsDashboard() {
                     <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
                       <span className="flex items-center gap-1">
                         <Download className="h-3 w-3" />
-                        {extension.downloads.toLocaleString()} downloads
+                        {(extension.downloads || 0).toLocaleString()} downloads
                       </span>
                       <span className="flex items-center gap-1">
-                        {getIntegrationIcon(extension.integrationLevel)}
-                        {getIntegrationLabel(extension.integrationLevel)}
+                        {getIntegrationIcon(extension.integrationLevel || 'native')}
+                        {getIntegrationLabel(extension.integrationLevel || 'native')}
                       </span>
                     </div>
 
