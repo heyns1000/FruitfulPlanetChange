@@ -33,6 +33,7 @@ import { SecureSign } from "@/components/portal/secure-sign"
 import VaultMeshPage from "@/pages/vaultmesh"
 import { OmnilevelPage } from "@/pages/omnilevel"
 import { OmniGridFAAZonePage } from "@/pages/omnigrid-faa-zone"
+import SamFoxCreativeStudio from "@/pages/samfox-creative-studio"
 import Landing from "@/pages/landing"
 import SectorDashboard from "@/pages/sector-dashboard"
 import SectorList from "@/pages/sector-list"
@@ -170,6 +171,8 @@ function PageRouter({ activePage }: { activePage: string }) {
       return <OmnilevelInterstellar />
     case "fruitful-smart-toys":
       return <FruitfulSmartToys />
+    case "samfox-creative-studio":
+      return <SamFoxCreativeStudio />
     default:
       return <NotFound />
   }

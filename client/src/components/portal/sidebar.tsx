@@ -50,6 +50,7 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
   ]
 
   const ecosystemItems = [
+    { id: "samfox-creative-studio", label: "🎨 SamFox Creative Studio", icon: "✨", badge: "Featured" },
     { id: "fruitful-marketplace", label: "🛒 Fruitful™ Marketplace", icon: "🛍️", badge: "610 Core Brands" },
     { id: "fruitful-smart-toys", label: "🧸 Fruitful Smart Toys™", icon: "🎮", badge: "5 Products" },
     { id: "hotstack-codenest", label: "🔥 HotStack + CodeNest", icon: "💻", badge: "Independent Repos" },
@@ -277,29 +278,53 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
         <div className="pt-6 border-t border-gray-200 dark:border-gray-800 mb-8">
           <h3 className="text-sm font-semibold text-gray-500 mb-3">ECOSYSTEM PROJECTS</h3>
           <div className="space-y-2">
-            {ecosystemItems.map((item) => (
-              <button
+            {ecosystemItems.map((item, index) => (
+              <motion.div
                 key={item.id}
-                onClick={() => {
-                  onPageChange(item.id)
-                  setIsMobileOpen(false)
-                }}
-                className={`
-                  w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left
-                  ${activePage === item.id
-                    ? 'bg-orange-500 bg-opacity-10 text-orange-500'
-                    : 'hover:bg-gray-100 dark:hover:bg-gray-800'
-                  }
-                `}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 + index * 0.05 }}
               >
-                <span className="text-lg">{item.icon}</span>
-                <span className="font-medium flex-1">{item.label}</span>
-                {item.badge && (
-                  <span className="text-xs bg-orange-500 text-white px-2 py-1 rounded-full">
-                    {item.badge}
-                  </span>
-                )}
-              </button>
+                <SparkleEffect trigger={activePage === item.id}>
+                  <RippleButton
+                    onClick={() => {
+                      onPageChange(item.id)
+                      setIsMobileOpen(false)
+                    }}
+                    className={`
+                      w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left
+                      ${activePage === item.id
+                        ? 'bg-orange-500 bg-opacity-10 text-orange-500'
+                        : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                      }
+                      ${item.id === 'samfox-creative-studio' ? 'ring-2 ring-rose-400 ring-opacity-50' : ''}
+                    `}
+                    variant={activePage === item.id ? "success" : "default"}
+                  >
+                    <motion.span 
+                      className="text-lg"
+                      whileHover={{ scale: 1.2, rotate: item.id === 'samfox-creative-studio' ? 360 : -10 }}
+                      transition={{ type: "spring", stiffness: 400 }}
+                    >
+                      {item.icon}
+                    </motion.span>
+                    <span className="font-medium flex-1">{item.label}</span>
+                    {item.badge && (
+                      <motion.span 
+                        className={`text-xs px-2 py-1 rounded-full ${
+                          item.id === 'samfox-creative-studio' 
+                            ? 'bg-gradient-to-r from-rose-500 to-purple-500 text-white' 
+                            : 'bg-orange-500 text-white'
+                        }`}
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                      >
+                        <PulseIndicator active={activePage === item.id} size="sm" color="purple" />
+                        {item.badge}
+                      </motion.span>
+                    )}
+                  </RippleButton>
+                </SparkleEffect>
+              </motion.div>
             ))}
           </div>
         </div>
