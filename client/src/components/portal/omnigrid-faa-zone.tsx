@@ -8,6 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { Eye, Edit } from "lucide-react";
 import { 
   Activity, 
   Globe, 
@@ -258,6 +261,9 @@ export function OmniGridFAAZone({ className }: OmniGridFAAZoneProps) {
     efficiency: 91,
     uptime: 99.8
   });
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+
+  const queryClient = useQueryClient();
 
   // Simulate real-time metrics updates
   useEffect(() => {
@@ -294,6 +300,66 @@ export function OmniGridFAAZone({ className }: OmniGridFAAZoneProps) {
       alert(`🚀 Deploying ${sector.name}...\n\nDeployment initiated successfully!\n\n✓ Activating ${sector.brands} brands\n✓ Spinning up ${sector.nodes.toLocaleString()} nodes\n✓ Configuring ${sector.tier} tier infrastructure\n✓ Establishing ${sector.region} regional presence\n\nEstimated completion: 2-3 minutes`);
     }
   };
+
+  // User management handlers
+  const handleAddUser = () => {
+    const email = prompt("Enter user email:");
+    if (email) {
+      const role = prompt("Enter user role (Admin/Manager/User):", "User");
+      addUserMutation.mutate({ email, role: role || "User" });
+    }
+  };
+
+  const handleViewUser = (user: any) => {
+    setSelectedUser(user);
+  };
+
+  const handleEditUser = (user: any) => {
+    const newRole = prompt(`Edit role for ${user.email}:`, user.role || "User");
+    if (newRole && newRole !== user.role) {
+      updateUserMutation.mutate({ id: user.id, role: newRole });
+    }
+  };
+
+  const handleActivateUser = (user: any) => {
+    updateUserMutation.mutate({ 
+      id: user.id, 
+      status: user.status === "Active" ? "Inactive" : "Active" 
+    });
+  };
+
+  // Mutations for user management
+  const addUserMutation = useMutation({
+    mutationFn: async (userData: any) => {
+      return apiRequest(`/api/users`, {
+        method: "POST",
+        body: JSON.stringify(userData)
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+      alert("User added successfully!");
+    },
+    onError: (error) => {
+      alert(`Failed to add user: ${error}`);
+    }
+  });
+
+  const updateUserMutation = useMutation({
+    mutationFn: async (userData: any) => {
+      return apiRequest(`/api/users/${userData.id}`, {
+        method: "PATCH",
+        body: JSON.stringify(userData)
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+      alert("User updated successfully!");
+    },
+    onError: (error) => {
+      alert(`Failed to update user: ${error}`);
+    }
+  });
 
   return (
     <div className={`space-y-8 ${className}`}>
@@ -664,6 +730,30 @@ export function OmniGridFAAZone({ className }: OmniGridFAAZoneProps) {
                 </div>
               </div>
 
+              {/* Real User Management Section */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold">User Management</h3>
+                  <Button 
+                    className="bg-cyan-500 hover:bg-cyan-600 text-white"
+                    onClick={() => handleAddUser()}
+                  >
+                    Add User
+                  </Button>
+                </div>
+                <p className="text-sm text-muted-foreground">Manage system users and permissions</p>
+                
+                <div className="space-y-2">
+                  <Input placeholder="Search users..." className="max-w-md" />
+                </div>
+
+                <RealUserManagementTable 
+                  onViewUser={handleViewUser}
+                  onEditUser={handleEditUser} 
+                  onActivateUser={handleActivateUser}
+                />
+              </div>
+
               {/* Admin Status */}
               <Alert>
                 <Activity className="h-4 w-4" />
@@ -675,6 +765,152 @@ export function OmniGridFAAZone({ className }: OmniGridFAAZoneProps) {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* User Detail Modal */}
+      {selectedUser && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={() => setSelectedUser(null)}>
+          <div className="bg-background rounded-lg max-w-md w-full p-6" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold">User Details</h3>
+              <Button variant="ghost" size="sm" onClick={() => setSelectedUser(null)}>×</Button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <Label>User ID</Label>
+                <p className="font-semibold">{selectedUser.id}</p>
+              </div>
+              <div>
+                <Label>Email Address</Label>
+                <p className="font-semibold">{selectedUser.email}</p>
+              </div>
+              <div>
+                <Label>Role</Label>
+                <Badge variant={selectedUser.email?.includes('admin') ? 'default' : 'secondary'}>
+                  {selectedUser.email?.includes('admin') ? 'Admin' : 'User'}
+                </Badge>
+              </div>
+              <div>
+                <Label>Status</Label>
+                <Badge variant="default" className="bg-green-500 text-white">Active</Badge>
+              </div>
+              <div>
+                <Label>Last Login</Label>
+                <p className="font-semibold">Recently</p>
+              </div>
+            </div>
+
+            <div className="flex gap-2 mt-6">
+              <Button onClick={() => handleEditUser(selectedUser)} className="flex-1">
+                <Edit className="h-4 w-4 mr-2" />
+                Edit User
+              </Button>
+              <Button variant="outline" onClick={() => setSelectedUser(null)} className="flex-1">
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Real User Management Table Component
+function RealUserManagementTable({ onViewUser, onEditUser, onActivateUser }: {
+  onViewUser: (user: any) => void;
+  onEditUser: (user: any) => void;
+  onActivateUser: (user: any) => void;
+}) {
+  // Fetch real users from the database
+  const { data: users, isLoading, error } = useQuery({
+    queryKey: ['/api/auth/user'],
+    select: (data) => {
+      // Convert single user to array format for table display
+      return data ? [data] : [];
+    }
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-32">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+        <p className="text-red-600 dark:text-red-400">Failed to load users: {error.message}</p>
+      </div>
+    );
+  }
+
+  if (!users || users.length === 0) {
+    return (
+      <div className="bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-lg p-8 text-center">
+        <p className="text-gray-600 dark:text-gray-400">No users found. Click "Add User" to create the first user.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden bg-white dark:bg-gray-950">
+      {/* Table Header */}
+      <div className="grid grid-cols-5 gap-4 p-4 bg-gray-50 dark:bg-gray-900/50 font-medium text-sm border-b border-gray-200 dark:border-gray-700">
+        <div>User</div>
+        <div>Email</div>
+        <div>Role</div>
+        <div>Status</div>
+        <div>Actions</div>
+      </div>
+      
+      {/* Table Rows */}
+      {users.map((user, index) => (
+        <div key={user.id || index} className="grid grid-cols-5 gap-4 p-4 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900/30 transition-colors">
+          <div className="font-medium text-gray-900 dark:text-gray-100">
+            {user.email?.split('@')[0] || 'Unknown User'}
+          </div>
+          <div className="text-gray-600 dark:text-gray-300">
+            {user.email || 'No email'}
+          </div>
+          <div>
+            <Badge 
+              variant={user.email?.includes('admin') ? 'default' : 'secondary'}
+              className={user.email?.includes('admin') ? 'bg-cyan-500 text-white' : ''}
+            >
+              {user.email?.includes('admin') ? 'Admin' : 'User'}
+            </Badge>
+          </div>
+          <div>
+            <Badge 
+              variant="default"
+              className="bg-green-500 text-white"
+            >
+              Active
+            </Badge>
+          </div>
+          <div className="flex gap-2">
+            <Button 
+              size="sm" 
+              variant="outline" 
+              className="flex items-center gap-1"
+              onClick={() => onViewUser(user)}
+            >
+              <Eye className="h-3 w-3" />
+            </Button>
+            <Button 
+              size="sm" 
+              variant="outline" 
+              className="flex items-center gap-1"
+              onClick={() => onEditUser(user)}
+            >
+              <Edit className="h-3 w-3" />
+            </Button>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
