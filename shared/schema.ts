@@ -205,6 +205,43 @@ export type SonicGridConnection = typeof sonicGridConnections.$inferSelect;
 export type InsertVaultAction = z.infer<typeof insertVaultActionSchema>;
 export type VaultAction = typeof vaultActions.$inferSelect;
 
+// Motion, Media & Sonic Studio Tables
+export const mediaProjects = pgTable("media_projects", {
+  id: serial("id").primaryKey(),
+  projectId: varchar("project_id").unique().notNull(),
+  name: varchar("name").notNull(),
+  type: varchar("type").notNull(), // audio, video, motion, sonic
+  status: varchar("status").default("draft"), // draft, processing, completed, published
+  progress: integer("progress").default(0),
+  description: text("description"),
+  tags: jsonb("tags").default("[]"),
+  userId: varchar("user_id").notNull(),
+  fileUrl: text("file_url"),
+  processingSettings: jsonb("processing_settings"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const processingEngines = pgTable("processing_engines", {
+  id: serial("id").primaryKey(),
+  engineId: varchar("engine_id").unique().notNull(),
+  name: varchar("name").notNull(),
+  type: varchar("type").notNull(), // audio_processing, video_processing, motion_graphics, sonic_engineering
+  status: varchar("status").default("active"), // active, idle, maintenance, error
+  usage: integer("usage").default(0), // percentage 0-100
+  lastActivity: timestamp("last_activity").defaultNow(),
+  configuration: jsonb("configuration"),
+  capabilities: jsonb("capabilities"),
+});
+
+export const insertMediaProjectSchema = createInsertSchema(mediaProjects);
+export const insertProcessingEngineSchema = createInsertSchema(processingEngines);
+
+export type InsertMediaProject = z.infer<typeof insertMediaProjectSchema>;
+export type MediaProject = typeof mediaProjects.$inferSelect;
+export type InsertProcessingEngine = z.infer<typeof insertProcessingEngineSchema>;
+export type ProcessingEngine = typeof processingEngines.$inferSelect;
+
 // Comprehensive Fruitful Global Ecosystem Data - 7,038 Total Brands across 33 Sectors
 export const COMPREHENSIVE_SECTOR_LIST = {
   "agriculture": "🌱 Agriculture & Biotech",

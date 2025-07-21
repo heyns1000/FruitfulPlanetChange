@@ -600,6 +600,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Motion, Media & Sonic Studio API endpoints
+  app.get("/api/media/projects", isAuthenticated, async (req, res) => {
+    try {
+      const projects = await storage.getMediaProjects();
+      res.json(projects);
+    } catch (error) {
+      console.error("Error fetching media projects:", error);
+      res.status(500).json({ message: "Failed to fetch media projects" });
+    }
+  });
+
+  app.post("/api/media/projects", isAuthenticated, async (req, res) => {
+    try {
+      const project = await storage.createMediaProject(req.body);
+      res.json(project);
+    } catch (error) {
+      console.error("Error creating media project:", error);
+      res.status(500).json({ message: "Failed to create media project" });
+    }
+  });
+
+  app.post("/api/media/projects/:id/process", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const result = await storage.processMediaProject(id, req.body);
+      res.json(result);
+    } catch (error) {
+      console.error("Error processing media project:", error);
+      res.status(500).json({ message: "Failed to process media project" });
+    }
+  });
+
+  app.get("/api/media/engines", isAuthenticated, async (req, res) => {
+    try {
+      const engines = await storage.getProcessingEngines();
+      res.json(engines);
+    } catch (error) {
+      console.error("Error fetching processing engines:", error);
+      res.status(500).json({ message: "Failed to fetch processing engines" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

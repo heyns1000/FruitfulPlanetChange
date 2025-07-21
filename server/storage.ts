@@ -10,6 +10,8 @@ import {
   charitableDistributions,
   sonicGridConnections,
   vaultActions,
+  mediaProjects,
+  processingEngines,
   type User, 
   type InsertUser, 
   type Sector, 
@@ -32,6 +34,10 @@ import {
   type InsertSonicGridConnection,
   type VaultAction,
   type InsertVaultAction,
+  type MediaProject,
+  type InsertMediaProject,
+  type ProcessingEngine,
+  type InsertProcessingEngine,
   COMPREHENSIVE_BRAND_DATA
 } from "@shared/schema";
 import { FRUITFUL_CRATE_DANCE_SECTORS } from "@shared/fruitful-crate-dance-ecosystem";
@@ -46,7 +52,7 @@ import {
   type InsertDocumentTemplate
 } from "@shared/securesign-schema";
 import { db } from "./db";
-import { eq, ilike, or } from "drizzle-orm";
+import { eq, ilike, or, desc } from "drizzle-orm";
 // Remove invalid import - update is not exported from drizzle-orm/pg-core
 
 export interface IStorage {
@@ -95,6 +101,13 @@ export interface IStorage {
   
   createVaultAction(action: InsertVaultAction): Promise<VaultAction>;
   getVaultActions(): Promise<VaultAction[]>;
+
+  // Motion, Media & Sonic Studio operations
+  getMediaProjects(): Promise<MediaProject[]>;
+  createMediaProject(project: InsertMediaProject): Promise<MediaProject>;
+  processMediaProject(projectId: string, settings: any): Promise<{ success: boolean, message: string }>;
+  getProcessingEngines(): Promise<ProcessingEngine[]>;
+  seedMediaData(): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -399,6 +412,121 @@ export class DatabaseStorage implements IStorage {
     } catch (error) {
       console.error("❌ Error seeding Banimal data:", error);
     }
+  }
+
+  // Motion, Media & Sonic Studio operations
+  async getMediaProjects(): Promise<MediaProject[]> {
+    return await db.select().from(mediaProjects).orderBy(desc(mediaProjects.createdAt));
+  }
+
+  async createMediaProject(projectData: InsertMediaProject): Promise<MediaProject> {
+    const projectId = `MED-${Date.now()}`;
+    const [project] = await db
+      .insert(mediaProjects)
+      .values({ ...projectData, projectId })
+      .returning();
+    return project;
+  }
+
+  async processMediaProject(projectId: string, settings: any): Promise<{ success: boolean, message: string }> {
+    await db
+      .update(mediaProjects)
+      .set({ 
+        status: 'processing', 
+        processingSettings: settings,
+        updatedAt: new Date()
+      })
+      .where(eq(mediaProjects.projectId, projectId));
+    
+    // Simulate processing progress
+    setTimeout(async () => {
+      await db
+        .update(mediaProjects)
+        .set({ 
+          status: 'completed', 
+          progress: 100,
+          updatedAt: new Date()
+        })
+        .where(eq(mediaProjects.projectId, projectId));
+    }, 5000);
+
+    return { success: true, message: 'Processing started' };
+  }
+
+  async getProcessingEngines(): Promise<ProcessingEngine[]> {
+    return await db.select().from(processingEngines).orderBy(desc(processingEngines.lastActivity));
+  }
+
+  async seedMediaData(): Promise<void> {
+    // Check if engines already exist
+    const existingEngines = await this.getProcessingEngines();
+    if (existingEngines.length > 0) {
+      console.log("✅ Media engines already seeded, skipping...");
+      return;
+    }
+
+    console.log("🎬 Seeding Media processing engines...");
+
+    // Seed processing engines
+    const engines = [
+      {
+        engineId: 'SONIC-CORE-001',
+        name: 'SonicCore™ Engine',
+        type: 'audio_processing',
+        status: 'active' as const,
+        usage: 87,
+        configuration: {
+          maxConcurrentJobs: 50,
+          supportedFormats: ['mp3', 'wav', 'flac', 'aac'],
+          features: ['noise_reduction', 'eq', 'compression', 'reverb']
+        },
+        capabilities: {
+          realtime: true,
+          batch: true,
+          aiEnhanced: true
+        }
+      },
+      {
+        engineId: 'MOTION-FLOW-001',
+        name: 'MotionFlow™ Renderer',
+        type: 'video_processing',
+        status: 'active' as const,
+        usage: 62,
+        configuration: {
+          maxConcurrentJobs: 25,
+          supportedFormats: ['mp4', 'avi', 'mov', 'webm'],
+          features: ['color_grading', 'transitions', 'effects', 'encoding']
+        },
+        capabilities: {
+          realtime: true,
+          batch: true,
+          aiEnhanced: true
+        }
+      },
+      {
+        engineId: 'MEDIA-SYNC-001',
+        name: 'MediaSync™ Processor',
+        type: 'multi_media',
+        status: 'active' as const,
+        usage: 45,
+        configuration: {
+          maxConcurrentJobs: 30,
+          supportedFormats: ['all'],
+          features: ['sync', 'merge', 'split', 'convert']
+        },
+        capabilities: {
+          realtime: false,
+          batch: true,
+          aiEnhanced: true
+        }
+      }
+    ];
+
+    for (const engine of engines) {
+      await db.insert(processingEngines).values(engine);
+    }
+
+    console.log("✅ Media processing engines seeded successfully");
   }
 }
 
