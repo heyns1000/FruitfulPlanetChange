@@ -401,7 +401,7 @@ export function IntegrationsDashboard() {
                               <div>
                                 <p className="font-medium text-sm">{ext.name}</p>
                                 <p className="text-xs text-muted-foreground">
-                                  {ext.downloads.toLocaleString()} downloads
+                                  {(ext.downloads || 0).toLocaleString()} downloads
                                 </p>
                               </div>
                             </div>

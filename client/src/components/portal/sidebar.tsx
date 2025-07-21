@@ -30,7 +30,7 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
     { id: "sectors", label: "Sectors", icon: "🗂️", badge: "33" },
     { id: "marketplace", label: "Marketplace", icon: "🛒" },
     { id: "analytics", label: "Analytics", icon: "📊" },
-    { id: "integrations", label: "Integrations", icon: "🔌" },
+    { id: "integrations", label: "Integrations", icon: "🔌", badge: "Extensions" },
     { id: "settings", label: "Settings", icon: "⚙️" },
   ]
 
