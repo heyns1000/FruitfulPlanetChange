@@ -291,12 +291,15 @@ export function OmniGridFAAZone({ className }: OmniGridFAAZoneProps) {
   };
 
   const handleSectorDeploy = (sector: any) => {
-    // Deployment logic for the sector
-    const deploymentConfirm = confirm(`Deploy ${sector.name} sector?\n\nThis will activate:\n• ${sector.brands} brands\n• ${sector.nodes.toLocaleString()} nodes\n• ${sector.tier} tier infrastructure\n• ${sector.region} regional coverage\n\nContinue with deployment?`);
-    
-    if (deploymentConfirm) {
-      alert(`🚀 Deploying ${sector.name}...\n\nDeployment initiated successfully!\n\n✓ Activating ${sector.brands} brands\n✓ Spinning up ${sector.nodes.toLocaleString()} nodes\n✓ Configuring ${sector.tier} tier infrastructure\n✓ Establishing ${sector.region} regional presence\n\nEstimated completion: 2-3 minutes`);
-    }
+    // Real deployment logic for the sector
+    deployMutation.mutate({
+      sectorName: sector.name,
+      brands: sector.brands,
+      nodes: sector.nodes,
+      tier: sector.tier,
+      region: sector.region,
+      monthlyFee: sector.monthlyFee
+    });
   };
 
   // User management handlers
@@ -356,6 +359,25 @@ export function OmniGridFAAZone({ className }: OmniGridFAAZoneProps) {
     },
     onError: (error) => {
       alert(`Failed to update user: ${error}`);
+    }
+  });
+
+  // Real deployment mutation
+  const deployMutation = useMutation({
+    mutationFn: async (deploymentData: any) => {
+      return apiRequest('/api/sectors/deploy', {
+        method: 'POST',
+        body: JSON.stringify(deploymentData)
+      });
+    },
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/sectors'] });
+      setSelectedSector(null);
+      // Show real deployment confirmation
+      alert(`Deployment completed successfully!\n\nSector: ${result.sectorName}\nStatus: ${result.status}\nDeployment ID: ${result.deploymentId}`);
+    },
+    onError: (error) => {
+      alert(`Deployment failed: ${error.message}`);
     }
   });
 
