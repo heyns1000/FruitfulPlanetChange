@@ -35,6 +35,7 @@ import { OmnilevelPage } from "@/pages/omnilevel"
 import { OmniGridFAAZonePage } from "@/pages/omnigrid-faa-zone"
 import SamFoxCreativeStudio from "@/pages/samfox-creative-studio"
 import FAAQuantumNexus from "@/pages/faa-quantum-nexus"
+import FruitfulBusinessPlan from "@/pages/fruitful-business-plan"
 import Landing from "@/pages/landing"
 import SectorDashboard from "@/pages/sector-dashboard"
 import SectorList from "@/pages/sector-list"
@@ -176,6 +177,8 @@ function PageRouter({ activePage }: { activePage: string }) {
       return <SamFoxCreativeStudio />
     case "faa-quantum-nexus":
       return <FAAQuantumNexus />
+    case "fruitful-business-plan":
+      return <FruitfulBusinessPlan />
     default:
       return <NotFound />
   }

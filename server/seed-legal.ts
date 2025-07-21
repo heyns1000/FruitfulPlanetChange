@@ -20,6 +20,14 @@ export async function seedLegalDocuments() {
       icon: "🚀"
     },
     {
+      title: "Fruitful Holdings Business Plan - Crate Dance Showcase Global Strategy",
+      description: "Comprehensive business strategy document for the Crate Dance Showcase, a premier global youth culture platform with projected R391 million revenue, featuring sponsorship models, franchise operations, and community impact initiatives",
+      url: "/legal-docs/Change_1753063971221.docx",
+      category: "business",
+      tags: ["fruitful", "business-plan", "crate-dance", "youth-culture", "sponsorship", "franchise"],
+      icon: "💼"
+    },
+    {
       title: "Fruitful Holdings NDA",
       description: "Non-disclosure agreement for Fruitful Holdings operations and partnerships",
       url: "/legal-docs/fruitful-holdings-nda",

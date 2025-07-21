@@ -50,7 +50,8 @@ export function Sidebar({ activePage, onPageChange }: SidebarProps) {
   ]
 
   const ecosystemItems = [
-    { id: "faa-quantum-nexus", label: "⚡ FAA Quantum Nexus™", icon: "🚀", badge: "AI Expansion" },
+    { id: "faa-quantum-nexus", label: "🚀 FAA Quantum Nexus™", icon: "⚡", badge: "AI Economic" },
+    { id: "fruitful-business-plan", label: "💼 Fruitful Business Plan", icon: "📊", badge: "R391M Strategy" },
     { id: "samfox-creative-studio", label: "🎨 SamFox Creative Studio", icon: "✨", badge: "Featured" },
     { id: "fruitful-marketplace", label: "🛒 Fruitful™ Marketplace", icon: "🛍️", badge: "610 Core Brands" },
     { id: "fruitful-smart-toys", label: "🧸 Fruitful Smart Toys™", icon: "🎮", badge: "5 Products" },
