@@ -663,7 +663,8 @@ export class MemStorage implements IStorage {
         emoji: mapping.emoji,
         description: mapping.description || null,
         brandCount: sectorData.brands.length,
-        subnodeCount: sectorData.nodes.length
+        subnodeCount: sectorData.nodes.length,
+        metadata: null
       };
       this.sectors.set(newSector.id, newSector);
 
@@ -677,7 +678,8 @@ export class MemStorage implements IStorage {
         emoji: sectorData.name.split(' ')[0], // Extract emoji from name
         description: sectorData.description,
         brandCount: sectorData.brands.length,
-        subnodeCount: Math.floor(sectorData.brands.length * 0.3) // 30% subnodes per sector
+        subnodeCount: Math.floor(sectorData.brands.length * 0.3), // 30% subnodes per sector
+        metadata: null
       };
       this.sectors.set(newSector.id, newSector);
     });
@@ -739,7 +741,11 @@ export class MemStorage implements IStorage {
 
   async upsertUser(userData: InsertUser): Promise<User> {
     const user: User = {
-      ...userData,
+      id: userData.id,
+      email: userData.email || null,
+      firstName: userData.firstName || null,
+      lastName: userData.lastName || null,
+      profileImageUrl: userData.profileImageUrl || null,
       createdAt: userData.createdAt || new Date(),
       updatedAt: new Date(),
     };
@@ -762,7 +768,8 @@ export class MemStorage implements IStorage {
       id,
       description: insertSector.description || null,
       brandCount: insertSector.brandCount || null,
-      subnodeCount: insertSector.subnodeCount || null
+      subnodeCount: insertSector.subnodeCount || null,
+      metadata: insertSector.metadata || null
     };
     this.sectors.set(id, sector);
     return sector;
@@ -889,20 +896,7 @@ export class MemStorage implements IStorage {
 
 
 
-  async getCosmicMetrics(): Promise<any> {
-    const nodes = await this.getInterstellarNodes();
-    const config = await this.getGlobalLogicConfig();
-    
-    return {
-      total_nodes: nodes.length,
-      active_connections: nodes.filter(n => n.status === 'active').length,
-      processing_capacity: `${(nodes.reduce((sum, n) => sum + (n.processingPower || 0), 0) / nodes.length || 0).toFixed(1)} EXA`,
-      quantum_coherence: 99.7 + Math.random() * 0.2,
-      neural_efficiency: 94.8 + Math.random() * 2,
-      dimensional_stability: 87.2 + Math.random() * 5,
-      cosmic_synchronization: 96.4 + Math.random() * 1.5
-    };
-  }
+
 
   // Omnilevel Interstellar operations implementation
   async getInterstellarNodes(): Promise<InterstellarNode[]> {
@@ -958,11 +952,38 @@ export class MemStorage implements IStorage {
     const [newConfig] = await db.insert(globalLogicConfigs).values({
       ...config,
       configId: `CONFIG-${Date.now()}`,
-      isActive: true,
-      updatedAt: new Date()
+      isActive: true
     }).returning();
 
     return newConfig;
+  }
+
+  async getCosmicMetrics(): Promise<any> {
+    try {
+      const nodes = await db.select().from(interstellarNodes);
+      const activeNodes = nodes.filter(node => node.status === 'active');
+      const totalConnections = activeNodes.reduce((sum, node) => sum + (node.connections || 0), 0);
+      const avgProcessingPower = activeNodes.reduce((sum, node) => sum + (node.processingPower || 0), 0) / activeNodes.length || 0;
+
+      return {
+        totalNodes: nodes.length,
+        activeNodes: activeNodes.length,
+        totalConnections,
+        avgProcessingPower: Math.round(avgProcessingPower),
+        systemStatus: activeNodes.length > 0 ? 'operational' : 'offline',
+        lastSync: new Date().toISOString()
+      };
+    } catch (error) {
+      console.error('Error getting cosmic metrics:', error);
+      return {
+        totalNodes: 0,
+        activeNodes: 0,
+        totalConnections: 0,
+        avgProcessingPower: 0,
+        systemStatus: 'error',
+        lastSync: new Date().toISOString()
+      };
+    }
   }
 
   async seedInterstellarData(): Promise<void> {
@@ -1079,12 +1100,12 @@ export class MemStorage implements IStorage {
         processingClusters: 18,
         dataCompressionRatio: 92,
         securityProtocols: JSON.stringify(['quantum_encryption', 'neural_firewall', 'cosmic_shielding']),
-        syncFrequency: 3.2,
+        syncFrequency: "3.2",
         autonomousLearning: true,
         isActive: true
       };
 
-      await db.insert(globalLogicConfigs).values(defaultConfig);
+      await db.insert(globalLogicConfigs).values([defaultConfig]);
       
       console.log('✅ Interstellar nodes and global config seeded successfully');
     } catch (error) {
