@@ -125,8 +125,6 @@ export async function seedDatabase() {
     // Insert brands from comprehensive data
     let brandCount = 0;
     for (const [sectorKey, sectorData] of Object.entries(COMPREHENSIVE_BRAND_DATA)) {
-      // Skip mining sector as we already added MineCore™ brands
-      if (sectorKey === 'mining') continue;
       
       const sector = createdSectors.get(sectorKey);
       if (sector) {
