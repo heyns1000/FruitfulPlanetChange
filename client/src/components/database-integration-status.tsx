@@ -10,24 +10,24 @@ export function DatabaseIntegrationStatus() {
   const { toast } = useToast()
 
   // Real-time database queries showing live connection
-  const { data: brands = [], isLoading: brandsLoading } = useQuery({
+  const { data: brands = [], isLoading: brandsLoading } = useQuery<any[]>({
     queryKey: ["/api/brands"],
     refetchInterval: 10000, // Update every 10 seconds
     retry: false
   })
 
-  const { data: sectors = [] } = useQuery({
+  const { data: sectors = [] } = useQuery<any[]>({
     queryKey: ["/api/sectors"],
     refetchInterval: 10000,
     retry: false
   })
 
-  const { data: systemStatus = [] } = useQuery({
+  const { data: systemStatus = [] } = useQuery<any[]>({
     queryKey: ["/api/system-status"],
     refetchInterval: 5000, // Real-time monitoring
   })
 
-  const { data: dashboardStats = {} } = useQuery({
+  const { data: dashboardStats = {} } = useQuery<any>({
     queryKey: ["/api/dashboard/stats"],
     refetchInterval: 30000,
   })
@@ -52,49 +52,49 @@ export function DatabaseIntegrationStatus() {
   const integrationStatus = [
     {
       name: "Brands Database",
-      count: brands.length,
-      status: brands.length > 0 ? "connected" : "disconnected",
-      description: `PostgreSQL table with ${brands.length} active brand records`,
+      count: (brands as any[]).length,
+      status: (brands as any[]).length > 0 ? "connected" : "disconnected",
+      description: `PostgreSQL table with ${(brands as any[]).length} active brand records`,
       table: "brands"
     },
     {
       name: "Sectors Database", 
-      count: sectors.length || 48, // Real sector count from database
+      count: (sectors as any[]).length || 48, // Real sector count from database
       status: "connected", // Database is active with sectors
-      description: `PostgreSQL table with ${sectors.length || 48} sector categories`,
+      description: `PostgreSQL table with ${(sectors as any[]).length || 48} sector categories`,
       table: "sectors"
     },
     {
       name: "System Status",
-      count: systemStatus.length,
-      status: systemStatus.length > 0 ? "connected" : "disconnected", 
-      description: `Live monitoring of ${systemStatus.length} system services`,
+      count: (systemStatus as any[]).length,
+      status: (systemStatus as any[]).length > 0 ? "connected" : "disconnected", 
+      description: `Live monitoring of ${(systemStatus as any[]).length} system services`,
       table: "system_status"
     },
     {
       name: "Legal Documents", 
-      count: dashboardStats.legalDocuments || 89, // Default from seeded data
+      count: (dashboardStats as any)?.legalDocuments || 89, // Default from seeded data
       status: "connected", // SecureSign™ VIP system is active
       description: "SecureSign™ VIP document management system",
       table: "legal_documents"
     },
     {
       name: "Payments System",
-      count: dashboardStats.totalPayments || 0,
+      count: (dashboardStats as any)?.totalPayments || 0,
       status: "connected",
       description: "Transaction processing and payment records",
       table: "payments"
     },
     {
       name: "Media Projects",
-      count: dashboardStats.mediaProjects || 0,
+      count: (dashboardStats as any)?.mediaProjects || 0,
       status: "connected",
       description: "Motion, Media & Sonic project database",
       table: "media_projects"
     },
     {
       name: "Repositories",
-      count: dashboardStats.repositories || 0,
+      count: (dashboardStats as any)?.repositories || 0,
       status: "connected",
       description: "Code repository and deployment tracking",
       table: "repositories"
@@ -224,7 +224,7 @@ export function DatabaseIntegrationStatus() {
                 <span className="text-sm font-medium">Brand Database Query</span>
               </div>
               <Badge variant="outline" className="text-xs">
-                {brands.length} records loaded
+                {(brands as any[]).length} records loaded
               </Badge>
             </div>
             
@@ -234,7 +234,7 @@ export function DatabaseIntegrationStatus() {
                 <span className="text-sm font-medium">Sectors Database Query</span>
               </div>
               <Badge variant="outline" className="text-xs">
-                {sectors.length} sectors active
+                {(sectors as any[]).length} sectors active
               </Badge>
             </div>
             
@@ -244,7 +244,7 @@ export function DatabaseIntegrationStatus() {
                 <span className="text-sm font-medium">System Status Monitor</span>
               </div>
               <Badge variant="outline" className="text-xs">
-                {systemStatus.length} services monitored
+                {(systemStatus as any[]).length} services monitored
               </Badge>
             </div>
           </div>
