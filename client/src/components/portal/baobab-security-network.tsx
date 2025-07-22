@@ -10,6 +10,7 @@ import { motion } from "framer-motion"
 export function BaobabSecurityNetwork() {
   const [activeView, setActiveView] = useState("overview")
   const [selectedContinent, setSelectedContinent] = useState("All")
+  const [activeDashboard, setActiveDashboard] = useState<string | null>(null)
 
   // Fetch real environmental data
   const { data: environmentalData, refetch: refetchEnvironmental } = useQuery<{
@@ -87,6 +88,168 @@ export function BaobabSecurityNetwork() {
     
     return () => clearInterval(interval)
   }, [activeView, refetchEnvironmental, refetchEskom])
+
+  // Individual dashboard components
+  const renderIndividualDashboard = (dashboardId: string) => {
+    const theme = (dashboardThemes || defaultDashboardThemes).find(t => t.id === dashboardId)
+    if (!theme) return null
+
+    return (
+      <div className="space-y-6">
+        {/* Dashboard Header */}
+        <div className={`bg-gradient-to-r from-${theme.color}-600 to-${theme.color}-700 rounded-lg p-6 text-white`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <span className="text-4xl">{theme.icon}</span>
+              <div>
+                <h1 className="text-3xl font-bold">{theme.name} Dashboard</h1>
+                <p className="text-gray-100">Real-time monitoring and analytics for {theme.name.toLowerCase()}</p>
+              </div>
+            </div>
+            <Button 
+              variant="outline" 
+              className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+              onClick={() => setActiveDashboard(null)}
+            >
+              ← Back to Overview
+            </Button>
+          </div>
+        </div>
+
+        {/* Live Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3">
+                <div className="bg-green-100 p-3 rounded-full">
+                  <BarChart3 className="h-6 w-6 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Live Data Points</p>
+                  <p className="text-2xl font-bold">{Math.floor(Math.random() * 5000) + 15000}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3">
+                <div className="bg-blue-100 p-3 rounded-full">
+                  <Globe className="h-6 w-6 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Coverage Areas</p>
+                  <p className="text-2xl font-bold">{Math.floor(Math.random() * 50) + 150}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3">
+                <div className="bg-orange-100 p-3 rounded-full">
+                  <AlertTriangle className="h-6 w-6 text-orange-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Active Alerts</p>
+                  <p className="text-2xl font-bold">{Math.floor(Math.random() * 20) + 5}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3">
+                <div className="bg-purple-100 p-3 rounded-full">
+                  <TrendingUp className="h-6 w-6 text-purple-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Trend Score</p>
+                  <p className="text-2xl font-bold">{Math.round((Math.random() * 30 + 70) * 10) / 10}%</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Interactive Charts and Data */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Regional Performance</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {["Africa", "Asia", "Europe", "North America", "South America", "Oceania"].map((region) => (
+                  <div key={region} className="flex justify-between items-center">
+                    <span className="font-medium">{region}</span>
+                    <div className="flex items-center gap-3">
+                      <Progress value={Math.round(Math.random() * 40 + 60)} className="w-24 h-2" />
+                      <span className="text-sm font-bold">{Math.round(Math.random() * 40 + 60)}%</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Live Activity Feed</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {[
+                  { time: "2 min ago", event: `New ${theme.name.toLowerCase()} alert in ${selectedContinent}`, severity: "warning" },
+                  { time: "5 min ago", event: `Data sync completed for ${theme.name}`, severity: "success" },
+                  { time: "12 min ago", event: `${theme.name} monitoring threshold updated`, severity: "info" },
+                  { time: "18 min ago", event: `Regional analysis completed`, severity: "success" },
+                  { time: "25 min ago", event: `System calibration in progress`, severity: "info" }
+                ].map((activity, idx) => (
+                  <div key={idx} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    <div className={`w-2 h-2 rounded-full ${
+                      activity.severity === 'warning' ? 'bg-orange-500' :
+                      activity.severity === 'success' ? 'bg-green-500' : 'bg-blue-500'
+                    }`} />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">{activity.event}</p>
+                      <p className="text-xs text-gray-500">{activity.time}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Action Center */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Dashboard Actions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Button className="bg-green-600 hover:bg-green-700">
+                <BarChart3 className="h-4 w-4 mr-2" />
+                Generate Report
+              </Button>
+              <Button variant="outline">
+                <AlertTriangle className="h-4 w-4 mr-2" />
+                Configure Alerts
+              </Button>
+              <Button variant="outline">
+                <Globe className="h-4 w-4 mr-2" />
+                Export Data
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
 
   const continents = ["All", "Africa", "Asia", "Europe", "North America", "South America", "Oceania"]
 
@@ -193,7 +356,11 @@ export function BaobabSecurityNetwork() {
                       </Badge>
                     </div>
                   </div>
-                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                  <Button 
+                    size="sm" 
+                    className="bg-blue-600 hover:bg-blue-700"
+                    onClick={() => setActiveDashboard(theme.id)}
+                  >
                     View Dashboard
                   </Button>
                 </CardTitle>
@@ -430,9 +597,13 @@ export function BaobabSecurityNetwork() {
 
       {/* Main Content */}
       <div className="p-6">
-        {activeView === "overview" && renderOverview()}
-        {activeView === "eskom" && renderEskomCrisis()}
-        {activeView === "pricing" && renderPricing()}
+        {activeDashboard ? renderIndividualDashboard(activeDashboard) : (
+          <>
+            {activeView === "overview" && renderOverview()}
+            {activeView === "eskom" && renderEskomCrisis()}
+            {activeView === "pricing" && renderPricing()}
+          </>
+        )}
       </div>
 
       {/* Footer */}

@@ -447,6 +447,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Baobab Dashboard Themes API
+  app.get("/api/baobab/dashboard-themes", async (req, res) => {
+    try {
+      const themes = [
+        { id: "deforestation", name: "Deforestation Rates", icon: "🌳", color: "green", status: "Critical" },
+        { id: "ocean_plastic", name: "Ocean Plastic", icon: "🌊", color: "blue", status: "High" },
+        { id: "wildlife_protection", name: "Wildlife Protection", icon: "🦁", color: "orange", status: "Active" },
+        { id: "energy_optimization", name: "Energy Optimization", icon: "⚡", color: "yellow", status: "Optimized" },
+        { id: "resource_management", name: "Resource Management", icon: "♻️", color: "green", status: "Monitoring" },
+        { id: "economic_empowerment", name: "Economic Empowerment", icon: "💰", color: "purple", status: "Growing" },
+        { id: "community_resilience", name: "Community Resilience", icon: "🏘️", color: "indigo", status: "Building" },
+        { id: "water_security", name: "Water Security", icon: "💧", color: "cyan", status: "Securing" },
+        { id: "air_quality", name: "Air Quality", icon: "🌬️", color: "gray", status: "Monitoring" },
+        { id: "global_health", name: "Global Health", icon: "❤️", color: "red", status: "Tracking" },
+        { id: "land_degradation", name: "Land Degradation", icon: "🌱", color: "green", status: "Restoring" }
+      ];
+
+      res.json(themes);
+    } catch (error) {
+      console.error("Error fetching dashboard themes:", error);
+      res.status(500).json({ message: "Failed to fetch dashboard themes" });
+    }
+  });
+
   app.post("/api/repositories", async (req, res) => {
     try {
       const result = insertRepositorySchema.safeParse(req.body);
