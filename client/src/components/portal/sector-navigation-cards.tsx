@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
+import { useLocation } from "wouter"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -13,6 +14,7 @@ interface SectorNavigationCardsProps {
 
 export function SectorNavigationCards({ onSectorSelect }: SectorNavigationCardsProps) {
   const [hoveredSector, setHoveredSector] = useState<string | null>(null)
+  const [, setLocation] = useLocation()
 
   const { data: sectors = [] } = useQuery<Sector[]>({
     queryKey: ["/api/sectors"],
@@ -126,8 +128,10 @@ export function SectorNavigationCards({ onSectorSelect }: SectorNavigationCardsP
                     className="w-full bg-gradient-to-r from-green-500 to-cyan-500 hover:from-green-600 hover:to-cyan-600 text-white font-bold"
                     onClick={(e) => {
                       e.preventDefault()
-                      console.log(`Navigating to sector: ${sectorSlug}`)
-                      window.location.href = `/sector/${sectorSlug}`
+                      console.log(`🎯 DIRECT NAVIGATION: Navigating to sector: ${sectorSlug}`)
+                      console.log(`🔗 URL: /sector/${sectorSlug}`)
+                      console.log(`📊 Sector Data:`, sector)
+                      setLocation(`/sector/${sectorSlug}`)
                     }}
                   >
                     <span className="flex items-center justify-center gap-2">

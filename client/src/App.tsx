@@ -283,7 +283,10 @@ function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; s
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
       <Switch>
         <Route path="/sector/:sectorId">
-          {(params) => <SectorDashboard />}
+          {(params) => {
+            console.log('🎯 Route matched for sector:', params.sectorId)
+            return <SectorDashboard />
+          }}
         </Route>
         <Route>
           <div className="flex flex-1">
