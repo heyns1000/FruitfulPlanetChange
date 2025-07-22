@@ -125,7 +125,7 @@ export function GlobalDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-cyan-600">
-              {formatNumber(dashboardStats?.totalElements || GLOBAL_ECOSYSTEM_METRICS.totalBrands)}
+              {formatNumber(dashboardStats?.totalElements || 6005)}
             </div>
             <p className="text-xs text-gray-500 mt-1">+{dashboardStats?.growthRate || 23.6}% this month</p>
           </CardContent>
@@ -137,7 +137,7 @@ export function GlobalDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">
-              {formatNumber(dashboardStats?.coreBrands || GLOBAL_ECOSYSTEM_METRICS.coreBrands)}
+              {formatNumber(dashboardStats?.coreBrands || 630)}
             </div>
             <p className="text-xs text-gray-500 mt-1">Active deployments</p>
           </CardContent>
@@ -149,7 +149,7 @@ export function GlobalDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-orange-600">
-              {formatNumber(dashboardStats?.subNodes || GLOBAL_ECOSYSTEM_METRICS.totalNodes)}
+              {formatNumber(dashboardStats?.subNodes || 7038)}
             </div>
             <p className="text-xs text-gray-500 mt-1">Nested integrations</p>
           </CardContent>
@@ -161,7 +161,7 @@ export function GlobalDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-purple-600">
-              {dashboardStats?.sectors || GLOBAL_ECOSYSTEM_METRICS.totalSectors}
+              {dashboardStats?.sectors || 45}
             </div>
             <p className="text-xs text-gray-500 mt-1">Industry coverage</p>
           </CardContent>
@@ -184,7 +184,7 @@ export function GlobalDashboard() {
               <CardHeader>
                 <CardTitle>Sector Distribution</CardTitle>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Brand distribution across {GLOBAL_ECOSYSTEM_METRICS.totalSectors} sectors
+                  Brand distribution across {sectors.length || 45} sectors
                 </p>
               </CardHeader>
               <CardContent>

@@ -1,14 +1,22 @@
 
+import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { BarChart3, TrendingUp, Eye } from "lucide-react"
-import type { Sector } from "@shared/schema"
+import { BarChart3, TrendingUp, Eye, ArrowLeft } from "lucide-react"
+import { SectorDashboardTemplate } from "@/components/portal/sector-dashboard-template"
+import type { Sector, Brand } from "@shared/schema"
 
 export default function SectorListPage() {
+  const [selectedSector, setSelectedSector] = useState<Sector | null>(null)
+  
   const { data: sectors = [], isLoading } = useQuery<Sector[]>({
     queryKey: ["/api/sectors"],
+  })
+
+  const { data: brands = [] } = useQuery<Brand[]>({
+    queryKey: ["/api/brands"],
   })
 
   if (isLoading) {
@@ -20,6 +28,31 @@ export default function SectorListPage() {
               Loading Sectors...
             </h1>
           </div>
+        </div>
+      </div>
+    )
+  }
+
+  // If a sector is selected, show the comprehensive dashboard
+  if (selectedSector) {
+    const sectorBrands = brands.filter(brand => brand.sectorId === selectedSector.id)
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-6">
+            <Button 
+              onClick={() => setSelectedSector(null)}
+              variant="outline" 
+              className="border-gray-600 hover:bg-gray-700"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Sectors
+            </Button>
+          </div>
+          <SectorDashboardTemplate 
+            sector={selectedSector} 
+            brands={sectorBrands}
+          />
         </div>
       </div>
     )
@@ -84,9 +117,8 @@ export default function SectorListPage() {
                 {/* Access Button */}
                 <Button 
                   onClick={() => {
-                    // Create slug from sector name for routing
-                    const slug = sector.name.toLowerCase().replace(/[^a-z0-9]/g, '')
-                    window.location.href = `/sector/${slug}`
+                    console.log('🎯 SECTOR DASHBOARD ACCESS:', sector.name, sector.id)
+                    setSelectedSector(sector)
                   }}
                   className="w-full group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 transition-all"
                 >
