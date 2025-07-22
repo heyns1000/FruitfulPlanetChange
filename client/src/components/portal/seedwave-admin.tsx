@@ -249,14 +249,10 @@ export function SeedwaveAdmin() {
       {/* Admin Navigation Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border">
-          <TabsList className="grid grid-cols-8 w-full">
+          <TabsList className="grid grid-cols-7 w-full">
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
               <Home className="w-4 h-4" />
               Dashboard
-            </TabsTrigger>
-            <TabsTrigger value="admin-portal" className="flex items-center gap-2">
-              <Building className="w-4 h-4" />
-              Admin Portal
             </TabsTrigger>
             <TabsTrigger value="users" className="flex items-center gap-2">
               <Users className="w-4 h-4" />
@@ -285,78 +281,202 @@ export function SeedwaveAdmin() {
           </TabsList>
         </div>
 
-        {/* Dashboard Content */}
+        {/* Dashboard Content - Integrated with Admin Panel Backend Data */}
         <TabsContent value="dashboard" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center gap-4">
-                  <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                    <Users className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Total Users</p>
-                    <p className="text-2xl font-bold">{adminStats.totalUsers.toLocaleString()}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center gap-4">
-                  <div className="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
-                    <ShoppingCart className="w-6 h-6 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Total Orders</p>
-                    <p className="text-2xl font-bold">{adminStats.totalOrders.toLocaleString()}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center gap-4">
-                  <div className="p-2 bg-yellow-100 dark:bg-yellow-900 rounded-lg">
-                    <DollarSign className="w-6 h-6 text-yellow-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Monthly Revenue</p>
-                    <p className="text-2xl font-bold">${adminStats.monthlyRevenue.toLocaleString()}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center gap-4">
-                  <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
-                    <Package className="w-6 h-6 text-purple-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Total Products</p>
-                    <p className="text-2xl font-bold">{adminStats.totalProducts}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Analytics Chart */}
-          <Card>
+          
+          {/* Admin Portal Section - 4 Access Control Buttons */}
+          <Card className="border-2 border-green-500/20 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950 dark:to-blue-950">
             <CardHeader>
-              <CardTitle>Revenue Analytics</CardTitle>
-              <CardDescription>Monthly revenue trends and projections</CardDescription>
+              <CardTitle className="text-xl font-bold">🛠️ Seedwave™ Admin Portal</CardTitle>
+              <CardDescription>Core brand management & AI logic deployment center with comprehensive access controls</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-64 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 rounded-lg flex items-center justify-center">
-                <canvas ref={chartRef} width="600" height="200" className="rounded-lg" />
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <Shield className="w-6 h-6 text-white" />
+                  </div>
+                  <h4 className="font-semibold">🔒 Loyalty Access</h4>
+                </div>
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <Users className="w-6 h-6 text-white" />
+                  </div>
+                  <h4 className="font-semibold">🫂 Shareholder Access</h4>
+                </div>
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <Settings className="w-6 h-6 text-white" />
+                  </div>
+                  <h4 className="font-semibold">🛡️ Service Provider</h4>
+                </div>
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <Building className="w-6 h-6 text-white" />
+                  </div>
+                  <h4 className="font-semibold">👥 Family Access</h4>
+                </div>
               </div>
             </CardContent>
           </Card>
+
+          {/* Add Brand & Subnodes */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Add Brand & Subnodes</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="sector-select">📍 Sector</Label>
+                  <Select>
+                    <SelectTrigger className="bg-gray-700 border-gray-600">
+                      <SelectValue placeholder="Select sector..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="banking">🏦 Banking & Finance</SelectItem>
+                      <SelectItem value="agriculture">🌱 Agriculture & Biotech</SelectItem>
+                      <SelectItem value="creative">🖋️ Creative Tech</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="brand-name">🏷️ Brand Name</Label>
+                  <Input id="brand-name" placeholder="e.g. OmniCore™" className="bg-gray-700 border-gray-600" />
+                </div>
+                <div>
+                  <Label htmlFor="subnodes">✨ Subnodes</Label>
+                  <Input id="subnodes" placeholder="e.g. VaultSync, OmniClaim" className="bg-gray-700 border-gray-600" />
+                </div>
+              </div>
+              <div className="mt-4 flex justify-end">
+                <Button className="bg-cyan-600 hover:bg-cyan-700">
+                  ➕ Add Brand
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* FAA.ZONE INDEX — Expanded Table Structure with Backend Data */}
+          <Card>
+            <CardHeader>
+              <CardTitle>FAA.ZONE INDEX — Expanded Table Structure</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border border-gray-300 dark:border-gray-700">
+                  <thead>
+                    <tr className="bg-gray-100 dark:bg-gray-800">
+                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Sector</th>
+                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Core Brands</th>
+                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Total Nodes</th>
+                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Monthly Fee</th>
+                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Tier</th>
+                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {adminPanelStats?.sectorBreakdown ? Object.entries(adminPanelStats.sectorBreakdown).map(([sectorKey, sector]: [string, any]) => (
+                      <tr key={sectorKey} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                        <td className="border border-gray-300 dark:border-gray-700 p-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xl">{sector.sectorEmoji}</span>
+                            <span className="font-medium">{sector.sectorName}</span>
+                          </div>
+                        </td>
+                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
+                          <Badge variant="outline">{sector.brandCount}</Badge>
+                        </td>
+                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
+                          <Badge variant="outline">{sector.subNodeCount}</Badge>
+                        </td>
+                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">$88</td>
+                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
+                          <Badge variant="default" className="bg-green-600">A+</Badge>
+                        </td>
+                        <td className="border border-gray-300 dark:border-gray-700 p-3">
+                          <div className="flex gap-2">
+                            <Button size="sm" variant="outline">View</Button>
+                            <Button size="sm" variant="outline">Deploy</Button>
+                          </div>
+                        </td>
+                      </tr>
+                    )) : (
+                      <tr>
+                        <td colSpan={6} className="border border-gray-300 dark:border-gray-700 p-3 text-center text-muted-foreground">
+                          Loading admin panel data...
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* User Management */}
+          <Card>
+            <CardHeader>
+              <CardTitle>User Management</CardTitle>
+              <CardDescription>Manage system users and permissions</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex gap-4">
+                  <Input placeholder="Search users..." className="flex-1 bg-gray-700 border-gray-600" />
+                  <Button>
+                    <Users className="w-4 h-4 mr-2" />
+                    Add User
+                  </Button>
+                </div>
+                <div className="border rounded-lg overflow-hidden">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b bg-muted/50">
+                        <th className="p-3 text-left">User</th>
+                        <th className="p-3 text-left">Email</th>
+                        <th className="p-3 text-left">Role</th>
+                        <th className="p-3 text-left">Status</th>
+                        <th className="p-3 text-left">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-b hover:bg-muted/30">
+                        <td className="p-3 font-medium">heynsschoeman</td>
+                        <td className="p-3">heynsschoeman@gmail.com</td>
+                        <td className="p-3">
+                          <Badge variant="default">Owner</Badge>
+                        </td>
+                        <td className="p-3">
+                          <Badge variant="default" className="bg-green-600">Active</Badge>
+                        </td>
+                        <td className="p-3">
+                          <div className="flex gap-2">
+                            <Button size="sm" variant="outline">
+                              <Eye className="w-3 h-3" />
+                            </Button>
+                            <Button size="sm" variant="outline">
+                              <Settings className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Admin Status */}
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-sm text-muted-foreground">
+                ⚡ Admin Status: Ready to receive input. System operational with 0.0% uptime.
+              </div>
+            </CardContent>
+          </Card>
+
         </TabsContent>
 
         {/* Users Management */}
@@ -538,187 +658,7 @@ export function SeedwaveAdmin() {
           </Card>
         </TabsContent>
 
-        {/* Admin Portal - OmniGrid FAA.zone Integration */}
-        <TabsContent value="admin-portal" className="space-y-6">
-          {/* Admin Portal Header */}
-          <Card className="border-2 border-green-500/20 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950 dark:to-blue-950">
-            <CardHeader>
-              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
-                🛠️ OmniGrid™ FAA.zone Admin Portal
-              </CardTitle>
-              <CardDescription>
-                Comprehensive brand management from interns.seedwave.faa.zone backend data
-              </CardDescription>
-            </CardHeader>
-          </Card>
 
-          {/* Admin Panel Stats */}
-          {adminPanelStats && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4">
-                    <div className="p-2 bg-blue-500 rounded-lg">
-                      <Package className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Total Brands</p>
-                      <p className="text-2xl font-bold">{adminPanelStats.totalBrands}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-950 dark:to-green-900">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4">
-                    <div className="p-2 bg-green-500 rounded-lg">
-                      <Building className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Total Sectors</p>
-                      <p className="text-2xl font-bold">{adminPanelStats.totalSectors}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4">
-                    <div className="p-2 bg-purple-500 rounded-lg">
-                      <Activity className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Active Brands</p>
-                      <p className="text-2xl font-bold">{adminPanelStats.activeBrands}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4">
-                    <div className="p-2 bg-orange-500 rounded-lg">
-                      <Zap className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Sub Nodes</p>
-                      <p className="text-2xl font-bold">{adminPanelStats.totalSubNodes}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-
-          {/* FAA.ZONE INDEX — Expanded Table Structure */}
-          <Card>
-            <CardHeader>
-              <CardTitle>FAA.ZONE INDEX — Expanded Table Structure</CardTitle>
-              <CardDescription>Backend integration with interns.seedwave.faa.zone comprehensive sector arrays</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse border border-gray-300 dark:border-gray-700">
-                  <thead>
-                    <tr className="bg-gray-100 dark:bg-gray-800">
-                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Sector</th>
-                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Core Brands</th>
-                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Total Nodes</th>
-                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Monthly Fee</th>
-                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Tier</th>
-                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {adminPanelStats?.sectorBreakdown && Object.entries(adminPanelStats.sectorBreakdown).map(([sectorKey, sector]) => (
-                      <tr key={sectorKey} className="hover:bg-gray-50 dark:hover:bg-gray-800">
-                        <td className="border border-gray-300 dark:border-gray-700 p-3">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xl">{sector.sectorEmoji}</span>
-                            <span className="font-medium">{sector.sectorName}</span>
-                          </div>
-                        </td>
-                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
-                          <Badge variant="outline">{sector.brandCount}</Badge>
-                        </td>
-                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
-                          <Badge variant="outline">{sector.subNodeCount}</Badge>
-                        </td>
-                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">$79</td>
-                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
-                          <Badge variant="default" className="bg-green-600">A+</Badge>
-                        </td>
-                        <td className="border border-gray-300 dark:border-gray-700 p-3">
-                          <div className="flex gap-2">
-                            <Button size="sm" variant="outline">View</Button>
-                            <Button size="sm" variant="outline">Deploy</Button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Add Brand & Subnodes */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Add Brand & Subnodes</CardTitle>
-              <CardDescription>Add new brands to the admin panel ecosystem</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label htmlFor="sector-select">Sector</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select sector..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {adminPanelStats?.sectorBreakdown && Object.entries(adminPanelStats.sectorBreakdown).map(([key, sector]) => (
-                        <SelectItem key={key} value={key}>
-                          {sector.sectorEmoji} {sector.sectorName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="brand-name">Brand Name</Label>
-                  <Input id="brand-name" placeholder="e.g. OmniCore™" />
-                </div>
-                <div>
-                  <Label htmlFor="subnodes">Subnodes</Label>
-                  <Input id="subnodes" placeholder="e.g. VaultSync, OmniClaim" />
-                </div>
-              </div>
-              <div className="mt-4 flex justify-end">
-                <Button className="bg-cyan-600 hover:bg-cyan-700">
-                  ➕ Add Brand
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* System Status */}
-          <Card>
-            <CardHeader>
-              <CardTitle>⚡ Admin Status: Ready to receive input. System operational with 0.0% uptime.</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-sm text-muted-foreground">
-                Integration Status: {adminPanelStats?.integrationStatus || 'Unknown'} | 
-                Data Source: {adminPanelStats?.dataSource || 'Unknown'} | 
-                Last Update: {adminPanelStats?.lastUpdate ? new Date(adminPanelStats.lastUpdate).toLocaleString() : 'Never'}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         {/* Settings */}
         <TabsContent value="settings" className="space-y-6">
