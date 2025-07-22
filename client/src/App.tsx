@@ -19,6 +19,7 @@ import { APIKeyManager } from "@/components/portal/api-key-manager"
 import { PaymentHub } from "@/components/portal/payment-hub"
 import { VaultMeshCheckout } from "@/components/portal/vaultmesh-checkout"
 import { FruitfulMarketplace } from "@/components/portal/fruitful-marketplace"
+import { AuthenticMarketplace } from "@/components/portal/authentic-marketplace"
 import { IntegrationsDashboard } from "@/components/portal/integrations-dashboard"
 import { HotStackCodeNest } from "@/components/portal/hotstack-codenest"
 import { RepositoryHub } from "@/components/portal/repository-hub"
@@ -120,7 +121,7 @@ function PageRouter({ activePage }: { activePage: string }) {
     case "fruitful-marketplace":
       return (
         <div className="p-8">
-          <FruitfulMarketplace />
+          <AuthenticMarketplace />
         </div>
       )
     case "hotstack-codenest":
