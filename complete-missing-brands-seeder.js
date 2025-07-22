@@ -1,7 +1,7 @@
-// Complete Missing Brands Seeder - Fill all empty sectors with proper brands
+// Complete Missing Brands Seeder - Map all 817 admin panel brands correctly
 import { Pool, neonConfig } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-serverless';
-import { brands, sectors } from './shared/schema.ts';
+import { brands, sectors, adminPanelBrands } from './shared/schema.ts';
 import { eq } from 'drizzle-orm';
 import ws from "ws";
 
@@ -12,299 +12,151 @@ if (!process.env.DATABASE_URL) {
 }
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-const db = drizzle({ client: pool, schema: { brands, sectors } });
+const db = drizzle({ client: pool, schema: { brands, sectors, adminPanelBrands } });
 
-// Enhanced brand data for empty sectors
-const sectorBrandMappings = {
-  // Zero Waste sector
-  "Zero Waste": [
-    "WasteForge™", "RecycleCore™", "ZeroFlow™", "CleanSync™", "GreenVault™",
-    "EcoFlow™", "WasteMaster™", "RecycleFlow™", "CleanCore™", "GreenSync™"
-  ],
-  
-  // Event Management
-  "Event Management": [
-    "EventForge™", "PlanCore™", "VenueFlow™", "EventSync™", "CelebrationVault™",
-    "PartyFlow™", "EventMaster™", "GatheringCore™", "OccasionSync™", "FestivalFlow™"
-  ],
-  
-  // Content Creation
-  "Content Creation": [
-    "ContentForge™", "CreativeCore™", "MediaFlow™", "StorySync™", "DesignVault™",
-    "VideoFlow™", "AudioCore™", "GraphicSync™", "ContentMaster™", "CreativeFlow™"
-  ],
-  
-  // Talent Development
-  "Talent Development": [
-    "TalentForge™", "SkillCore™", "DevFlow™", "TalentSync™", "SkillVault™",
-    "TrainingFlow™", "TalentMaster™", "DevCore™", "SkillSync™", "TalentFlow™"
-  ],
-  
-  // Payroll Mining & Accounting
-  "Payroll Mining & Accounting": [
-    "PayrollForge™", "AccountCore™", "PayFlow™", "TaxSync™", "PayVault™",
-    "SalaryFlow™", "BenefitCore™", "PayrollSync™", "AccountFlow™"
-  ],
-  
-  // Global Brand Index
-  "Global Brand Index": [
-    "IndexForge™", "BrandCore™", "GlobalFlow™", "IndexSync™"
-  ],
-  
-  // Admin Panel
-  "Admin Panel": [
-    "AdminForge™", "PanelCore™", "ControlFlow™", "AdminSync™", "ManageVault™"
-  ],
-  
-  // Wildlife & Habitat
-  "Wildlife & Habitat": [
-    "WildForge™", "HabitatCore™", "EcoFlow™", "WildSync™", "NatureVault™",
-    "ConservationFlow™", "WildlifeMaster™", "EcoCore™", "HabitatFlow™", "BiodiversitySync™",
-    "WildlifeFlow™", "EcoSync™", "ConservationCore™"
-  ],
-  
-  // Sponsorship Management
-  "Sponsorship Management": [
-    "SponsorForge™", "PartnerCore™", "SponsorFlow™", "DealSync™", "SponsorVault™", "PartnerFlow™"
-  ],
-  
-  // Voice & Audio
-  "Voice & Audio": [
-    "VoiceForge™", "AudioCore™", "SoundFlow™", "VoiceSync™", "AudioVault™",
-    "SonicFlow™", "VoiceMaster™", "AudioFlow™", "SoundCore™", "VoiceFlow™"
-  ],
-  
-  // Webless Tech & Nodes
-  "Webless Tech & Nodes": [
-    "NodeForge™", "TechCore™", "WeblessFlow™", "NodeSync™", "TechVault™",
-    "NetworkFlow™", "NodeMaster™", "TechFlow™", "WeblessCore™", "NodeFlow™"
-  ],
-  
-  // Education & Youth
-  "Education & Youth": [
-    "YouthForge™", "EduCore™", "LearnFlow™", "StudentSync™", "EduVault™",
-    "YouthFlow™", "LearnCore™", "StudentFlow™", "EduSync™", "YouthMaster™"
-  ],
-  
-  // Education & IP
-  "Education & IP": [
-    "IPForge™", "LearnCore™", "PropertyFlow™", "IPSync™", "EduVault™",
-    "PatentFlow™", "IPMaster™", "LearningFlow™", "PropertyCore™", "IPFlow™"
-  ],
-  
-  // Gaming & Simulation
-  "Gaming & Simulation": [
-    "GameForge™", "SimCore™", "PlayFlow™", "GameSync™", "VirtualVault™",
-    "SimFlow™", "GameMaster™", "PlayCore™", "VirtualFlow™", "GameFlow™"
-  ],
-  
-  // Health & Hygiene
-  "Health & Hygiene": [
-    "HealthForge™", "HygieneCore™", "WellnessFlow™", "HealthSync™", "CareVault™",
-    "MedFlow™", "HealthMaster™", "WellnessCore™", "HygieneFlow™", "CareFlow™"
-  ],
-  
-  // Housing & Infrastructure
-  "Housing & Infrastructure": [
-    "BuildForge™", "HousingCore™", "ConstructFlow™", "BuildSync™", "InfraVault™",
-    "StructureFlow™", "BuildMaster™", "HousingFlow™", "InfraCore™", "ConstructSync™"
-  ],
-  
-  // Knowledge & Archives
-  "Knowledge & Archives": [
-    "KnowledgeForge™", "ArchiveCore™", "DataFlow™", "InfoSync™", "KnowledgeVault™",
-    "LibraryFlow™", "ArchiveFlow™", "DataCore™", "InfoFlow™", "KnowledgeSync™"
-  ],
-  
-  // Motion, Media & Sonic
-  "Motion, Media & Sonic": [
-    "MotionForge™", "MediaCore™", "SonicFlow™", "MotionSync™", "MediaVault™",
-    "AudioFlow™", "MotionMaster™", "SonicCore™", "MediaFlow™", "MotionFlow™"
-  ],
-  
-  // Utilities & Energy
-  "Utilities & Energy": [
-    "EnergyForge™", "UtilityCore™", "PowerFlow™", "EnergySync™", "UtilityVault™",
-    "GridFlow™", "EnergyMaster™", "PowerCore™", "UtilityFlow™", "EnergyFlow™"
-  ],
-  
-  // Dance & Movement
-  "Dance & Movement": [
-    "DanceForge™", "MoveCore™", "FlowMaster™", "DanceSync™", "MoveVault™",
-    "RhythmFlow™", "DanceMaster™", "MovementCore™", "BeatFlow™", "DanceFlow™"
-  ],
-  
-  // Music & Sound Design
-  "Music & Sound Design": [
-    "SoundForge™", "MusicCore™", "BeatFlow™", "SoundSync™", "MusicVault™",
-    "AudioMaster™", "SoundFlow™", "MusicFlow™", "BeatCore™", "AudioFlow™"
-  ],
-  
-  // Packaging & Materials
-  "Packaging & Materials": [
-    "PackForge™", "MaterialCore™", "PackFlow™", "MaterialSync™", "PackVault™",
-    "ContainerFlow™", "PackMaster™", "MaterialFlow™", "PackCore™", "BoxFlow™"
-  ],
-  
-  // Quantum Protocols
-  "Quantum Protocols": [
-    "QuantumForge™", "ProtocolCore™", "QuantumFlow™", "ProtocolSync™", "QuantumVault™",
-    "QubitFlow™", "QuantumMaster™", "ProtocolFlow™", "QuantumCore™", "QubitSync™"
-  ],
-  
-  // Trade Systems
-  "Trade Systems": [
-    "TradeForge™", "CommerceCore™", "MarketFlow™", "TradeSync™", "CommerceVault™",
-    "TradeFlow™", "MarketCore™", "CommerceFLow™", "TradeMaster™", "MarketSync™"
-  ],
-  
-  // Community Engagement
-  "Community Engagement": [
-    "CommunityForge™", "EngageCore™", "SocialFlow™", "CommunitySync™", "EngageVault™",
-    "SocialMaster™", "CommunityFlow™", "EngageFlow™", "SocialCore™", "CommunityMaster™"
-  ],
-  
-  // Tech Infrastructure
-  "Tech Infrastructure": [
-    "InfraForge™", "TechCore™", "SystemFlow™", "InfraSync™", "TechVault™",
-    "ServerFlow™", "InfraMaster™", "TechFlow™", "SystemCore™", "InfraFlow™"
-  ],
-  
-  // Logistics & Operations
-  "Logistics & Operations": [
-    "LogiForge™", "OpsCore™", "LogiFlow™", "OpsSync™", "LogiVault™",
-    "SupplyFlow™", "LogiMaster™", "OpsFlow™", "LogiCore™", "OperationsFlow™"
-  ],
-  
-  // Financial Management
-  "Financial Management": [
-    "FinanceForge™", "MoneyCore™", "FinFlow™", "FinanceSync™", "MoneyVault™",
-    "CashFlow™", "FinanceMaster™", "MoneyFlow™", "FinCore™", "InvestFlow™"
-  ],
-  
-  // Marketing & Branding
-  "Marketing & Branding": [
-    "BrandForge™", "MarketCore™", "BrandFlow™", "MarketSync™", "BrandVault™",
-    "CampaignFlow™", "BrandMaster™", "MarketFlow™", "BrandCore™", "MarketingFlow™"
-  ],
-  
-  // Partnership & Collaboration
-  "Partnership & Collaboration": [
-    "PartnerForge™", "CollabCore™", "PartnerFlow™", "CollabSync™", "PartnerVault™"
-  ],
-  
-  // Analytics & Insights
-  "Analytics & Insights": [
-    "DataForge™", "AnalyticsCore™", "InsightFlow™", "DataSync™", "AnalyticsVault™",
-    "MetricFlow™", "DataMaster™", "InsightCore™", "AnalyticsFlow™", "DataFlow™"
-  ],
-  
-  // Sustainability & Impact
-  "Sustainability & Impact": [
-    "SustainForge™", "ImpactCore™", "GreenFlow™", "SustainSync™", "ImpactVault™",
-    "EcoMaster™", "SustainFlow™", "ImpactFlow™", "GreenCore™", "SustainMaster™"
-  ]
+// Exact sector mapping from admin panel to sectors table
+const SECTOR_MAPPING = {
+  'AI, Logic & Grid': '🧠 AI, Logic & Grid',
+  'Packaging & Materials': '📦 Packaging & Materials',
+  'Quantum Protocols': '✴️ Quantum Protocols',
+  'SaaS & Licensing': '🔑 SaaS & Licensing',
+  'Trade Systems': '🧺 Trade Systems',
+  'Utilities & Energy': '🔋 Utilities & Energy',
+  'Voice & Audio': '🎙️ Voice & Audio',
+  'Housing & Infrastructure': '🏗️ Housing & Infrastructure',
+  'Knowledge & Archives': '📖 Knowledge & Archives',
+  'Webless Tech & Nodes': '📡 Webless Tech & Nodes',
+  'Gaming & Simulation': '🎮 Gaming & Simulation',
+  'Education & Youth': '🎓 Education & Youth',
+  'Motion, Media & Sonic': '🎬 Motion, Media & Sonic',
+  'Logistics & Packaging': '📦 Logistics & Packaging',
+  'Banking & Finance': '🏦 Banking & Finance',
+  'Agriculture & Biotech': '🌱 Agriculture & Biotech',
+  'Food, Soil & Farming': '🥦 Food, Soil & Farming',
+  'Education & IP': '📚 Education & IP',
+  'Creative Tech': '🖋️ Creative Tech',
+  'Health & Hygiene': '🧠 Health & Hygiene',
+  'Justice & Ethics': '⚖ Justice & Ethics',
+  'Micro-Mesh Logistics': '☰ Micro-Mesh Logistics',
+  'Fashion & Identity': '✂ Fashion & Identity',
+  'Nutrition & Food Chain': '✿ Nutrition & Food Chain',
+  'Ritual & Culture': '☯ Ritual & Culture',
+  'NFT & Ownership': '🔁 NFT & Ownership',
+  'Zero Waste': '♻️ Zero Waste',
+  'Professional Services': '🧾 Professional Services',
+  'Payroll Mining & Accounting': '🪙 Payroll Mining & Accounting',
+  'Mining & Resources': '⛏️ Mining & Resources',
+  'Wildlife & Habitat': '🦁 Wildlife & Habitat'
 };
 
 async function seedMissingBrands() {
-  console.log('🌱 Starting missing brands seeding...');
+  console.log('🔄 Seeding ALL missing admin panel brands...');
 
   try {
-    // Get all sectors with 0 brands
-    const emptySectors = await db.select({
-      id: sectors.id,
-      name: sectors.name,
-      brandCount: sectors.brandCount
-    }).from(sectors);
+    // Get all admin panel brands
+    const adminBrands = await db.select().from(adminPanelBrands);
+    console.log(`📊 Found ${adminBrands.length} admin panel brands`);
+    
+    // Get all sectors
+    const allSectors = await db.select().from(sectors);
+    const sectorIdMap = {};
+    allSectors.forEach(sector => {
+      sectorIdMap[sector.name] = sector.id;
+    });
 
-    console.log(`📊 Found ${emptySectors.length} sectors to check`);
+    console.log('🗺️  Sector mapping ready');
 
-    for (const sector of emptySectors) {
-      // Check if sector has any brands
-      const existingBrands = await db.select().from(brands)
-        .where(eq(brands.sectorId, sector.id));
+    // Get existing brands to avoid duplicates
+    const existingBrands = await db.select().from(brands);
+    const existingBrandNames = new Set(existingBrands.map(b => b.name));
+    
+    let totalSeeded = 0;
+    let skippedCount = 0;
 
-      if (existingBrands.length > 0) {
-        console.log(`✅ Sector "${sector.name}" already has ${existingBrands.length} brands, skipping...`);
+    for (const adminBrand of adminBrands) {
+      // Skip if brand already exists
+      if (existingBrandNames.has(adminBrand.brandName)) {
+        skippedCount++;
         continue;
       }
 
-      // Clean sector name to match our mapping
-      const cleanName = sector.name.replace(/^[🌱🏦📦🧾🔑🔁⛏️🖋️♻️🎪🎬🌟🤝🪙🌐⚙️🦁🥦🔋✂📡🧠🎮📚🏗️⚖📖☰🎙️✿✴️☯🧺🧭👥💡🔧🎯🔮🛡️⚗️🎨🎵🔬💰🌍📱💎🎪]\s*/g, '').trim();
+      // Map sector name
+      const mappedSectorName = SECTOR_MAPPING[adminBrand.sectorName] || adminBrand.sectorName;
+      const sectorId = sectorIdMap[mappedSectorName];
       
-      const brandNames = sectorBrandMappings[cleanName];
-      if (!brandNames) {
-        console.log(`⚠️  No brand mapping found for: "${cleanName}" (original: "${sector.name}")`);
+      if (!sectorId) {
+        console.log(`⚠️  No sector mapping for: "${adminBrand.sectorName}" -> "${mappedSectorName}"`);
         continue;
       }
 
-      console.log(`🏗️  Creating ${brandNames.length} brands for sector: ${cleanName}`);
-
-      // Create core brands
-      const corebrands = [];
-      for (let i = 0; i < brandNames.length; i++) {
-        const brandName = brandNames[i];
-        
-        const newBrand = await db.insert(brands).values({
-          name: brandName,
-          description: `Advanced ${brandName} ${cleanName.toLowerCase()} management system with comprehensive VaultMesh™ integration and operational excellence.`,
-          sectorId: sector.id,
-          integration: 'VaultMesh™',
-          status: 'active',
-          isCore: true,
-          metadata: {
-            category: cleanName,
-            features: [`${brandName} Core`, `${brandName} Analytics`, `${brandName} Security`],
-            integrations: ['VaultMesh™', 'SecureSign™', 'PulseTrade™'],
-            tier: i < 3 ? 'A+' : i < 6 ? 'A' : 'B+',
-            pricing: i < 3 ? 199.99 : i < 6 ? 149.99 : 99.99
+      try {
+        // Extract pricing from metadata
+        let pricing = 79.99;
+        if (adminBrand.metadata && typeof adminBrand.metadata === 'object') {
+          const pricingStr = adminBrand.metadata.pricing || '';
+          const priceMatch = pricingStr.match(/\$(\d+)/);
+          if (priceMatch) {
+            pricing = parseFloat(priceMatch[1]);
           }
-        }).returning();
-
-        corebrands.push(newBrand[0]);
-      }
-
-      // Create 2-3 subnodes for each core brand
-      for (const coreBrand of corebrands) {
-        const subnodeCount = Math.floor(Math.random() * 2) + 2; // 2-3 subnodes
-        for (let j = 0; j < subnodeCount; j++) {
-          await db.insert(brands).values({
-            name: `${coreBrand.name.replace('™', '')} Node ${j + 1}™`,
-            description: `Specialized ${coreBrand.name} subnode for enhanced ${cleanName.toLowerCase()} operations.`,
-            sectorId: sector.id,
-            parentId: coreBrand.id,
-            integration: 'HotStack',
-            status: 'active',
-            isCore: false,
-            metadata: {
-              category: `${cleanName} - Subnode`,
-              parentBrand: coreBrand.name,
-              nodeType: 'processing',
-              tier: 'B',
-              pricing: 49.99
-            }
-          });
         }
+
+        // Insert the brand
+        await db.insert(brands).values({
+          name: adminBrand.brandName,
+          description: `Authentic ${adminBrand.brandName} from admin panel for ${adminBrand.sectorName} sector with comprehensive VaultMesh™ integration and operational excellence.`,
+          sectorId: sectorId,
+          integration: adminBrand.isCore ? 'VaultMesh™' : 'HotStack',
+          status: adminBrand.status || 'active',
+          isCore: adminBrand.isCore || false,
+          metadata: {
+            category: adminBrand.sectorName,
+            tier: adminBrand.metadata?.tier || 'B+',
+            subNodes: adminBrand.subNodes || [],
+            originalAdminId: adminBrand.id,
+            authentic: true,
+            pricing: pricing,
+            sectorKey: adminBrand.sectorKey,
+            mappedSector: mappedSectorName
+          }
+        });
+
+        totalSeeded++;
+        existingBrandNames.add(adminBrand.brandName);
+
+      } catch (error) {
+        console.log(`⚠️  Error seeding ${adminBrand.brandName}:`, error.message);
       }
-
-      // Update sector brand count
-      const allBrands = await db.select().from(brands)
-        .where(eq(brands.sectorId, sector.id));
-      
-      const coreCount = allBrands.filter(b => !b.parentId).length;
-      const subnodeCount = allBrands.filter(b => b.parentId).length;
-      
-      await db.update(sectors)
-        .set({ 
-          brandCount: coreCount,
-          subnodeCount: subnodeCount 
-        })
-        .where(eq(sectors.id, sector.id));
-
-      console.log(`✅ Created ${coreCount} core brands + ${subnodeCount} subnodes for ${cleanName}`);
     }
 
-    console.log('🎉 Missing brands seeding completed successfully!');
+    // Update sector brand counts
+    const sectorCounts = {};
+    const allBrands = await db.select().from(brands);
+    
+    for (const brand of allBrands) {
+      if (!brand.parentId) { // Only count core brands
+        if (!sectorCounts[brand.sectorId]) {
+          sectorCounts[brand.sectorId] = 0;
+        }
+        sectorCounts[brand.sectorId]++;
+      }
+    }
+
+    for (const [sectorId, count] of Object.entries(sectorCounts)) {
+      await db.update(sectors)
+        .set({ brandCount: count })
+        .where(eq(sectors.id, parseInt(sectorId)));
+    }
+
+    // Final count
+    const finalBrands = await db.select().from(brands);
+    const finalCoreCount = finalBrands.filter(b => !b.parentId).length;
+    const finalTotal = finalBrands.length;
+
+    console.log('🎉 MISSING BRANDS SEEDING COMPLETE!');
+    console.log(`📊 Brands seeded this run: ${totalSeeded}`);
+    console.log(`📊 Brands skipped (existing): ${skippedCount}`);
+    console.log(`📊 Total core brands in database: ${finalCoreCount}`);
+    console.log(`📊 Total brands in database: ${finalTotal}`);
     
   } catch (error) {
     console.error('❌ Error during missing brands seeding:', error);
@@ -315,10 +167,10 @@ async function seedMissingBrands() {
 // Run the seeder
 seedMissingBrands()
   .then(() => {
-    console.log('🚀 Missing brands seeding process completed successfully!');
+    console.log('🚀 MISSING BRANDS SEEDING COMPLETED!');
     process.exit(0);
   })
   .catch((error) => {
-    console.error('💥 Missing brands seeding failed:', error);
+    console.error('💥 Seeding failed:', error);
     process.exit(1);
   });
