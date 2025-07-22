@@ -274,7 +274,7 @@ export class DatabaseStorage implements IStorage {
 
   // Brands
   async getAllBrands(): Promise<Brand[]> {
-    return await db.select().from(brands);
+    return await db.select().from(brands).orderBy(brands.id);
   }
 
   async getBrandsBySearch(query: string): Promise<Brand[]> {
@@ -291,7 +291,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getBrandsBySector(sectorId: number): Promise<Brand[]> {
-    return await db.select().from(brands).where(eq(brands.sectorId, sectorId));
+    return await db.select().from(brands).where(eq(brands.sectorId, sectorId)).orderBy(brands.id);
   }
 
   async getBrand(id: number): Promise<Brand | undefined> {
