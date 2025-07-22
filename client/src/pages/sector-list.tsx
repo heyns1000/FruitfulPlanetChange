@@ -33,15 +33,29 @@ export default function SectorListPage() {
     )
   }
 
+  // Debug state management
+  console.log('🔍 SECTOR LIST STATE:', {
+    selectedSector: selectedSector?.name,
+    selectedSectorId: selectedSector?.id,
+    sectorsCount: sectors.length,
+    brandsCount: brands.length
+  })
+
   // If a sector is selected, show the comprehensive dashboard
   if (selectedSector) {
+    console.log('✅ RENDERING SECTOR DASHBOARD for:', selectedSector.name)
     const sectorBrands = brands.filter(brand => brand.sectorId === selectedSector.id)
+    console.log('📊 Sector brands filtered:', sectorBrands.length, 'for sector ID:', selectedSector.id)
+    
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-6">
         <div className="max-w-7xl mx-auto">
           <div className="mb-6">
             <Button 
-              onClick={() => setSelectedSector(null)}
+              onClick={() => {
+                console.log('🔙 BACK TO SECTORS clicked')
+                setSelectedSector(null)
+              }}
               variant="outline" 
               className="border-gray-600 hover:bg-gray-700"
             >
@@ -121,7 +135,14 @@ export default function SectorListPage() {
                     e.stopPropagation()
                     console.log('🎯 SECTOR DASHBOARD ACCESS:', sector.name, sector.id)
                     console.log('🔧 Setting selected sector:', sector)
+                    console.log('🔧 Current selectedSector before:', selectedSector?.name)
                     setSelectedSector(sector)
+                    console.log('🔧 setSelectedSector called with:', sector.name)
+                    
+                    // Force re-render check
+                    setTimeout(() => {
+                      console.log('🔧 selectedSector after timeout:', selectedSector?.name)
+                    }, 100)
                   }}
                   className="w-full group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 transition-all"
                 >
