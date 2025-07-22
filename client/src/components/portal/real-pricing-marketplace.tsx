@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ShoppingCart, Search, Filter, Star, DollarSign } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { CurrencyConverter } from '@/components/ui/currency-converter';
 
 type Brand = {
   id: number;
@@ -162,13 +163,16 @@ export function RealPricingMarketplace() {
                   {/* Real Pricing Display */}
                   <div className="space-y-2">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-2xl font-bold text-blue-600">{displayPrice}</span>
+                      <CurrencyConverter usdAmount={parseFloat(displayPrice.replace('$', ''))} showConverter={false} />
                       <span className="text-sm text-gray-500">/month</span>
                     </div>
                     
                     {pricing?.annual && (
                       <div className="text-sm text-green-600">
-                        <span className="font-medium">${(pricing.annual / 12).toFixed(2)}/month</span>
+                        <span className="font-medium">
+                          <CurrencyConverter usdAmount={pricing.annual / 12} showConverter={false} />
+                          /month
+                        </span>
                         <span className="ml-1 text-xs">when paid annually</span>
                         <br />
                         <span className="text-xs">{pricing.savings}</span>

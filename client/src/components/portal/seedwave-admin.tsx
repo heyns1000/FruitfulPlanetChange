@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { CurrencyConverter } from '@/components/ui/currency-converter';
 
 interface AdminStats {
   totalUsers: number;
@@ -400,7 +401,9 @@ export function SeedwaveAdmin() {
                         <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
                           <Badge variant="outline">{sector.totalNodes}</Badge>
                         </td>
-                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">${sector.monthlyFee}</td>
+                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
+                          <CurrencyConverter usdAmount={sector.monthlyFee} />
+                        </td>
                         <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
                           <Badge variant="default" className={
                             sector.tier === 'A++' ? "bg-purple-600" :

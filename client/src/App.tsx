@@ -21,6 +21,7 @@ import { VaultMeshCheckout } from "@/components/portal/vaultmesh-checkout"
 import { FruitfulMarketplace } from "@/components/portal/fruitful-marketplace"
 import { AuthenticMarketplace } from "@/components/portal/authentic-marketplace"
 import { RealPricingMarketplace } from "@/components/portal/real-pricing-marketplace"
+import { CompleteSectorListing } from "@/components/portal/complete-sector-listing"
 import { IntegrationsDashboard } from "@/components/portal/integrations-dashboard"
 import { HotStackCodeNest } from "@/components/portal/hotstack-codenest"
 import { RepositoryHub } from "@/components/portal/repository-hub"
@@ -123,6 +124,12 @@ function PageRouter({ activePage }: { activePage: string }) {
       return (
         <div className="p-8">
           <RealPricingMarketplace />
+        </div>
+      )
+    case "complete-sectors":
+      return (
+        <div className="p-8">
+          <CompleteSectorListing />
         </div>
       )
     case "hotstack-codenest":
