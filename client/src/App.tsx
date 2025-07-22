@@ -283,11 +283,11 @@ function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; s
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
       <Switch>
         <Route path="/sector/:sectorId">
-          <SectorDashboard />
+          {(params) => <SectorDashboard />}
         </Route>
         <Route>
           <div className="flex flex-1">
-            <Sidebar activePage={activePage} onPageChange={setActivePage} />
+            <Sidebar activePage={activePage} setActivePage={setActivePage} />
             <main className="flex-1 ml-0 md:ml-80 transition-all duration-300">
               <PageRouter activePage={activePage} />
             </main>

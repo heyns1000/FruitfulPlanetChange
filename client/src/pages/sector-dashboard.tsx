@@ -14,9 +14,18 @@ export default function SectorDashboard() {
   })
 
   // Find sector by slug or ID
+  console.log('Looking for sector:', sectorId)
+  console.log('Available sectors:', sectors.map(s => ({ 
+    id: s.id, 
+    name: s.name, 
+    slug: s.name.toLowerCase().replace(/[^a-z0-9]/g, '').replace(/^[⚡🌱💼🏢📦🔧🎮🎨🎭🍎♻️🎵💊⚡🏠]/g, '') 
+  })))
+  
   const sector = sectors.find(s => {
     const sectorSlug = s.name.toLowerCase().replace(/[^a-z0-9]/g, '').replace(/^[⚡🌱💼🏢📦🔧🎮🎨🎭🍎♻️🎵💊⚡🏠]/g, '')
-    return sectorSlug === sectorId || s.id.toString() === sectorId
+    const match = sectorSlug === sectorId || s.id.toString() === sectorId
+    console.log(`Comparing: ${sectorSlug} === ${sectorId} OR ${s.id} === ${sectorId} => ${match}`)
+    return match
   })
 
   const sectorLoading = false
@@ -48,6 +57,19 @@ export default function SectorDashboard() {
           <p className="text-gray-600 dark:text-gray-400">
             The requested sector dashboard could not be loaded.
           </p>
+          <div className="mt-4 text-sm text-gray-500">
+            <p>Looking for sector ID: {sectorId}</p>
+            <p>Available sectors: {sectors.length}</p>
+            {sectors.length > 0 && (
+              <div className="mt-2">
+                {sectors.slice(0, 3).map(s => (
+                  <div key={s.id}>
+                    {s.name} (ID: {s.id}) - Slug: {s.name.toLowerCase().replace(/[^a-z0-9]/g, '').replace(/^[⚡🌱💼🏢📦🔧🎮🎨🎭🍎♻️🎵💊⚡🏠]/g, '')}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     )

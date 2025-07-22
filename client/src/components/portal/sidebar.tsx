@@ -10,10 +10,15 @@ import { PulseIndicator, RippleButton, SparkleEffect } from "@/components/ui/mic
 
 interface SidebarProps {
   activePage: string
-  onPageChange: (page: string) => void
+  onPageChange?: (page: string) => void
+  setActivePage?: (page: string) => void
 }
 
-export function Sidebar({ activePage, onPageChange }: SidebarProps) {
+export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProps) {
+  const handlePageChange = (page: string) => {
+    if (onPageChange) onPageChange(page)
+    if (setActivePage) setActivePage(page)
+  }
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const { theme, toggleTheme, toggleHyperMode, isHyperMode } = useTheme()
 
