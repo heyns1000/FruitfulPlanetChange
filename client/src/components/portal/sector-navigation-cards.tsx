@@ -128,10 +128,10 @@ export function SectorNavigationCards({ onSectorSelect }: SectorNavigationCardsP
                     className="w-full bg-gradient-to-r from-green-500 to-cyan-500 hover:from-green-600 hover:to-cyan-600 text-white font-bold"
                     onClick={(e) => {
                       e.preventDefault()
-                      console.log(`🎯 DIRECT NAVIGATION: Navigating to sector: ${sectorSlug}`)
-                      console.log(`🔗 URL: /sector/${sectorSlug}`)
+                      console.log(`🎯 DIRECT NAVIGATION: Navigating to sector ID: ${sector.id}`)
+                      console.log(`🔗 URL: /sector/${sector.id}`)
                       console.log(`📊 Sector Data:`, sector)
-                      setLocation(`/sector/${sectorSlug}`)
+                      setLocation(`/sector/${sector.id}`)
                     }}
                   >
                     <span className="flex items-center justify-center gap-2">

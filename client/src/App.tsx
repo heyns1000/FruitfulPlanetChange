@@ -43,6 +43,7 @@ import FruitfulBusinessPlan from "@/pages/fruitful-business-plan"
 import FruitfulMarketplaceMarketing from "@/pages/fruitful-marketplace-marketing"
 import Landing from "@/pages/landing"
 import SectorDashboard from "@/pages/sector-dashboard"
+import SectorIndividualPage from "@/pages/sector-individual"
 import SectorList from "@/pages/sector-list"
 import SettingsPage from "@/pages/settings"
 import AnalyticsPage from "@/pages/analytics"
@@ -243,8 +244,11 @@ function Router() {
           <Route path="/" component={PortalHome} />
           <Route path="/portal-home" component={PortalHome} />
           <Route path="/sector-list" component={SectorList} />
-          <Route path="/sector/:sectorId">
-            {(params) => <SectorDashboard />}
+          <Route path="/sector/:id">
+            {(params) => <SectorIndividualPage />}
+          </Route>
+          <Route path="/sectors/:id">
+            {(params) => <SectorIndividualPage />}
           </Route>
         </>
       )}
