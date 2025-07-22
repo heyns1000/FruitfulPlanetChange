@@ -6,6 +6,7 @@ import { seedLegalDocuments } from "./seed-legal";
 import { seedAllMiningBrands } from "./mining-brands-seeder";
 import { updateSectorPricing } from "./update-sector-pricing";
 import { seedComprehensiveBrands } from "./comprehensive-brand-seeder";
+import { seedMineNestComprehensive } from "./minenest-comprehensive-seeder";
 import { storage } from "./storage";
 
 const app = express();
@@ -56,6 +57,8 @@ app.use((req, res, next) => {
       await updateSectorPricing();
       console.log("🌐 Seeding comprehensive brand ecosystem from HTML data...");
       await seedComprehensiveBrands();
+      console.log("⛏️ Seeding MineNest™ comprehensive mining ecosystem...");
+      await seedMineNestComprehensive();
       console.log("🐻 Seeding Banimal ecosystem for charitable giving...");
       await storage.seedBanimalData();
       console.log("🎬 Seeding Motion, Media & Sonic engines...");

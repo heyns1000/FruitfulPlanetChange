@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, TrendingUp, Users, Building, Globe, Zap, Shield, DollarSign, MapPin, Calendar, Activity, Settings, BarChart3, Truck, Pickaxe } from "lucide-react"
 import { motion } from "framer-motion"
 import { useLocation } from "wouter"
-import { ComprehensiveMineNestDashboard } from '@/components/mining/comprehensive-minenest-dashboard'
+import { MineNestAuthenticDashboard } from '@/components/mining/minenest-authentic-dashboard'
 
 export default function SectorIndividualPage() {
   const params = useParams()
@@ -23,14 +23,15 @@ export default function SectorIndividualPage() {
     }
   })
 
-  // Fetch sector brands
+  // Fetch sector brands - use proper sector-specific endpoint
   const { data: brands = [], isLoading: brandsLoading } = useQuery({
     queryKey: ["/api/brands", "sector", sectorId],
     queryFn: async () => {
       const response = await fetch(`/api/brands/sector/${sectorId}`)
       if (!response.ok) throw new Error('Failed to fetch brands')
       return response.json()
-    }
+    },
+    enabled: !!sectorId // Only fetch when sectorId is available
   })
 
   // Fetch mining-specific dashboard data if this is the mining sector
@@ -162,7 +163,7 @@ export default function SectorIndividualPage() {
       <div className="p-6 space-y-6">
         {/* Comprehensive MineNest™ Dashboard for Mining Sector */}
         {isMining ? (
-          <ComprehensiveMineNestDashboard brands={brands} />
+          <MineNestAuthenticDashboard />
         ) : null}
 
         {/* Original Mining Dashboard - keeping as fallback */}
