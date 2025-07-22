@@ -27,6 +27,7 @@ import { HotStackCodeNest } from "@/components/portal/hotstack-codenest"
 import { RepositoryHub } from "@/components/portal/repository-hub"
 import { SectorOnboardingFlow } from "@/components/portal/sector-onboarding-flow"
 import { SectorNavigationCards } from "@/components/portal/sector-navigation-cards"
+import { SectorRelationshipMapping } from "@/components/portal/sector-relationship-mapping"
 import { BrandIdentityManager } from "@/components/portal/brand-identity-manager"
 import { GlobalDashboard } from "@/components/portal/global-dashboard"
 import { FruitfulSmartToys } from "@/components/portal/fruitful-smart-toys"
@@ -168,6 +169,12 @@ function PageRouter({ activePage }: { activePage: string }) {
       return (
         <div className="p-8">
           <SectorMapping />
+        </div>
+      )
+    case "sector-relationship-mapping":
+      return (
+        <div className="p-8">
+          <SectorRelationshipMapping />
         </div>
       )
     case "fruitful-crate-dance":
