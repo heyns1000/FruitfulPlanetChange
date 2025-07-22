@@ -143,16 +143,10 @@ export function SectorNavigationCards({ onSectorSelect }: SectorNavigationCardsP
                     className="w-full bg-gradient-to-r from-green-500 to-cyan-500 hover:from-green-600 hover:to-cyan-600 text-white font-bold"
                     onClick={(e) => {
                       e.preventDefault()
-                      console.log(`🎯 SECTOR TRANSITION: Starting transition to sector ID: ${sector.id}`)
+                      console.log(`🎯 SECTOR DASHBOARD ACCESS:`, sector.name, sector.id)
                       
-                      // Start transition with current and target sectors
-                      startTransition("Current Dashboard", sector.name)
-                      
-                      // Navigate after transition completes
-                      setTimeout(() => {
-                        setLocation(`/sector/${sector.id}`)
-                        completeTransition()
-                      }, 3000)
+                      // Navigate immediately to sector dashboard
+                      setLocation(`/sector/${sector.id}`)
                     }}
                   >
                     <span className="flex items-center justify-center gap-2">
