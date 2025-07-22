@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ChevronRight, BarChart3, TrendingUp, Users, Settings } from "lucide-react"
 import { motion } from "framer-motion"
+import SectorTransitionLoader from "@/components/loading/SectorTransitionLoader"
+import { useSectorTransition } from "@/hooks/useSectorTransition"
 import type { Sector, Brand } from "@shared/schema"
 
 interface SectorNavigationCardsProps {
@@ -15,6 +17,7 @@ interface SectorNavigationCardsProps {
 export function SectorNavigationCards({ onSectorSelect }: SectorNavigationCardsProps) {
   const [hoveredSector, setHoveredSector] = useState<string | null>(null)
   const [, setLocation] = useLocation()
+  const { isTransitioning, currentSector, targetSector, startTransition, completeTransition } = useSectorTransition()
 
   const { data: sectors = [] } = useQuery<Sector[]>({
     queryKey: ["/api/sectors"],
@@ -140,10 +143,16 @@ export function SectorNavigationCards({ onSectorSelect }: SectorNavigationCardsP
                     className="w-full bg-gradient-to-r from-green-500 to-cyan-500 hover:from-green-600 hover:to-cyan-600 text-white font-bold"
                     onClick={(e) => {
                       e.preventDefault()
-                      console.log(`🎯 DIRECT NAVIGATION: Navigating to sector ID: ${sector.id}`)
-                      console.log(`🔗 URL: /sector/${sector.id}`)
-                      console.log(`📊 Sector Data:`, sector)
-                      setLocation(`/sector/${sector.id}`)
+                      console.log(`🎯 SECTOR TRANSITION: Starting transition to sector ID: ${sector.id}`)
+                      
+                      // Start transition with current and target sectors
+                      startTransition("Current Dashboard", sector.name)
+                      
+                      // Navigate after transition completes
+                      setTimeout(() => {
+                        setLocation(`/sector/${sector.id}`)
+                        completeTransition()
+                      }, 3000)
                     }}
                   >
                     <span className="flex items-center justify-center gap-2">
@@ -178,6 +187,14 @@ export function SectorNavigationCards({ onSectorSelect }: SectorNavigationCardsP
           </CardContent>
         </Card>
       )}
+
+      {/* Sector Transition Loader */}
+      <SectorTransitionLoader
+        isVisible={isTransitioning}
+        currentSector={currentSector}
+        targetSector={targetSector}
+        onComplete={completeTransition}
+      />
     </div>
   )
 }
