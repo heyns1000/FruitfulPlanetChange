@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -50,6 +51,17 @@ export function SeedwaveAdmin() {
     totalOrders: 567,
     monthlyRevenue: 12345,
     totalProducts: 89
+  });
+
+  // Fetch admin panel data
+  const { data: adminPanelStats } = useQuery({
+    queryKey: ['/api/admin-panel/stats'],
+    refetchInterval: 30000
+  });
+
+  const { data: adminPanelBrands } = useQuery({
+    queryKey: ['/api/admin-panel/brands'],
+    refetchInterval: 30000
   });
   const [xeroIntegration, setXeroIntegration] = useState<XeroIntegration>({
     connected: false,
@@ -237,10 +249,14 @@ export function SeedwaveAdmin() {
       {/* Admin Navigation Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border">
-          <TabsList className="grid grid-cols-7 w-full">
+          <TabsList className="grid grid-cols-8 w-full">
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
               <Home className="w-4 h-4" />
               Dashboard
+            </TabsTrigger>
+            <TabsTrigger value="admin-portal" className="flex items-center gap-2">
+              <Building className="w-4 h-4" />
+              Admin Portal
             </TabsTrigger>
             <TabsTrigger value="users" className="flex items-center gap-2">
               <Users className="w-4 h-4" />
@@ -518,6 +534,188 @@ export function SeedwaveAdmin() {
                   </Card>
                 </div>
               )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Admin Portal - OmniGrid FAA.zone Integration */}
+        <TabsContent value="admin-portal" className="space-y-6">
+          {/* Admin Portal Header */}
+          <Card className="border-2 border-green-500/20 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950 dark:to-blue-950">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                🛠️ OmniGrid™ FAA.zone Admin Portal
+              </CardTitle>
+              <CardDescription>
+                Comprehensive brand management from interns.seedwave.faa.zone backend data
+              </CardDescription>
+            </CardHeader>
+          </Card>
+
+          {/* Admin Panel Stats */}
+          {adminPanelStats && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Card className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="p-2 bg-blue-500 rounded-lg">
+                      <Package className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Total Brands</p>
+                      <p className="text-2xl font-bold">{adminPanelStats.totalBrands}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-950 dark:to-green-900">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="p-2 bg-green-500 rounded-lg">
+                      <Building className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Total Sectors</p>
+                      <p className="text-2xl font-bold">{adminPanelStats.totalSectors}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="p-2 bg-purple-500 rounded-lg">
+                      <Activity className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Active Brands</p>
+                      <p className="text-2xl font-bold">{adminPanelStats.activeBrands}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="p-2 bg-orange-500 rounded-lg">
+                      <Zap className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Sub Nodes</p>
+                      <p className="text-2xl font-bold">{adminPanelStats.totalSubNodes}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* FAA.ZONE INDEX — Expanded Table Structure */}
+          <Card>
+            <CardHeader>
+              <CardTitle>FAA.ZONE INDEX — Expanded Table Structure</CardTitle>
+              <CardDescription>Backend integration with interns.seedwave.faa.zone comprehensive sector arrays</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border border-gray-300 dark:border-gray-700">
+                  <thead>
+                    <tr className="bg-gray-100 dark:bg-gray-800">
+                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Sector</th>
+                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Core Brands</th>
+                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Total Nodes</th>
+                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Monthly Fee</th>
+                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Tier</th>
+                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {adminPanelStats?.sectorBreakdown && Object.entries(adminPanelStats.sectorBreakdown).map(([sectorKey, sector]) => (
+                      <tr key={sectorKey} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                        <td className="border border-gray-300 dark:border-gray-700 p-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xl">{sector.sectorEmoji}</span>
+                            <span className="font-medium">{sector.sectorName}</span>
+                          </div>
+                        </td>
+                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
+                          <Badge variant="outline">{sector.brandCount}</Badge>
+                        </td>
+                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
+                          <Badge variant="outline">{sector.subNodeCount}</Badge>
+                        </td>
+                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">$79</td>
+                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
+                          <Badge variant="default" className="bg-green-600">A+</Badge>
+                        </td>
+                        <td className="border border-gray-300 dark:border-gray-700 p-3">
+                          <div className="flex gap-2">
+                            <Button size="sm" variant="outline">View</Button>
+                            <Button size="sm" variant="outline">Deploy</Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Add Brand & Subnodes */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Add Brand & Subnodes</CardTitle>
+              <CardDescription>Add new brands to the admin panel ecosystem</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="sector-select">Sector</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select sector..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {adminPanelStats?.sectorBreakdown && Object.entries(adminPanelStats.sectorBreakdown).map(([key, sector]) => (
+                        <SelectItem key={key} value={key}>
+                          {sector.sectorEmoji} {sector.sectorName}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="brand-name">Brand Name</Label>
+                  <Input id="brand-name" placeholder="e.g. OmniCore™" />
+                </div>
+                <div>
+                  <Label htmlFor="subnodes">Subnodes</Label>
+                  <Input id="subnodes" placeholder="e.g. VaultSync, OmniClaim" />
+                </div>
+              </div>
+              <div className="mt-4 flex justify-end">
+                <Button className="bg-cyan-600 hover:bg-cyan-700">
+                  ➕ Add Brand
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* System Status */}
+          <Card>
+            <CardHeader>
+              <CardTitle>⚡ Admin Status: Ready to receive input. System operational with 0.0% uptime.</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-sm text-muted-foreground">
+                Integration Status: {adminPanelStats?.integrationStatus || 'Unknown'} | 
+                Data Source: {adminPanelStats?.dataSource || 'Unknown'} | 
+                Last Update: {adminPanelStats?.lastUpdate ? new Date(adminPanelStats.lastUpdate).toLocaleString() : 'Never'}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

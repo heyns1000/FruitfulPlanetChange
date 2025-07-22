@@ -28,7 +28,6 @@ import { BrandIdentityManager } from "@/components/portal/brand-identity-manager
 import { GlobalDashboard } from "@/components/portal/global-dashboard"
 import { FruitfulSmartToys } from "@/components/portal/fruitful-smart-toys"
 import { BaobabSecurityNetwork } from "@/components/portal/baobab-security-network"
-import AdminPanelDashboard from "@/components/admin-panel/admin-panel-dashboard"
 import BuildNestDashboardPage from "@/pages/buildnest-dashboard"
 import PortalHome from "@/pages/portal-home"
 import BrandsPage from "@/pages/brands"
@@ -101,12 +100,7 @@ function PageRouter({ activePage }: { activePage: string }) {
           <SeedwaveAdmin />
         </div>
       )
-    case "admin-panel":
-      return (
-        <div className="p-8">
-          <AdminPanelDashboard />
-        </div>
-      )
+
     case "global-dashboard":
       return (
         <div className="p-8">
