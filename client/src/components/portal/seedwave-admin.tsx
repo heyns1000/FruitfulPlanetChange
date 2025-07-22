@@ -53,7 +53,7 @@ export function SeedwaveAdmin() {
     totalProducts: 89
   });
 
-  // Fetch admin panel data
+  // Fetch admin panel data from backend APIs
   const { data: adminPanelStats } = useQuery({
     queryKey: ['/api/admin-panel/stats'],
     refetchInterval: 30000
@@ -61,6 +61,11 @@ export function SeedwaveAdmin() {
 
   const { data: adminPanelBrands } = useQuery({
     queryKey: ['/api/admin-panel/brands'],
+    refetchInterval: 30000
+  });
+  
+  const { data: sectorBreakdown } = useQuery({
+    queryKey: ['/api/admin-panel/sector-breakdown'],
     refetchInterval: 30000
   });
   const [xeroIntegration, setXeroIntegration] = useState<XeroIntegration>({
@@ -382,24 +387,27 @@ export function SeedwaveAdmin() {
                     </tr>
                   </thead>
                   <tbody>
-                    {adminPanelData && Array.isArray(adminPanelData) && adminPanelData.length > 0 ? adminPanelData.map((brand: any) => (
-                      <tr key={`${brand.sector_key}_${brand.brand_name}`} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                    {sectorBreakdown && Array.isArray(sectorBreakdown) && sectorBreakdown.length > 0 ? sectorBreakdown.map((sector: any, index: number) => (
+                      <tr key={sector.sector || index} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                         <td className="border border-gray-300 dark:border-gray-700 p-3">
                           <div className="flex items-center gap-2">
-                            <span className="text-xl">{brand.sector_emoji}</span>
-                            <span className="font-medium">{brand.sector_name}</span>
+                            <span className="font-medium">{sector.sector}</span>
                           </div>
                         </td>
                         <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
-                          <Badge variant="outline">{brand.brand_name}</Badge>
+                          <Badge variant="outline">{sector.coreBrands}</Badge>
                         </td>
                         <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
-                          <Badge variant="outline">{Array.isArray(brand.sub_nodes) ? brand.sub_nodes.length : 0}</Badge>
+                          <Badge variant="outline">{sector.totalNodes}</Badge>
                         </td>
-                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">$88</td>
+                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">${sector.monthlyFee}</td>
                         <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
-                          <Badge variant="default" className={brand.is_core ? "bg-green-600" : "bg-blue-600"}>
-                            {brand.is_core ? "A+" : "B+"}
+                          <Badge variant="default" className={
+                            sector.tier === 'A++' ? "bg-purple-600" :
+                            sector.tier === 'A+' ? "bg-blue-600" :
+                            sector.tier === 'A' ? "bg-green-600" : "bg-gray-600"
+                          }>
+                            {sector.tier}
                           </Badge>
                         </td>
                         <td className="border border-gray-300 dark:border-gray-700 p-3">
@@ -412,7 +420,7 @@ export function SeedwaveAdmin() {
                     )) : (
                       <tr>
                         <td colSpan={6} className="border border-gray-300 dark:border-gray-700 p-3 text-center text-muted-foreground">
-                          Loading admin panel data...
+                          {adminPanelStats ? 'No sector data available' : 'Loading admin panel data...'}
                         </td>
                       </tr>
                     )}
