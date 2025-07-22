@@ -141,9 +141,7 @@ function PageRouter({ activePage }: { activePage: string }) {
     case "sector-dashboard-access":
       return (
         <div className="p-8">
-          <SectorNavigationCards onSectorSelect={(sectorSlug) => {
-            window.location.href = `/sector/${sectorSlug}`
-          }} />
+          <SectorsPage />
         </div>
       )
     case "brand-identity-manager":
@@ -281,22 +279,12 @@ function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; s
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
-      <Switch>
-        <Route path="/sector/:sectorId">
-          {(params) => {
-            console.log('🎯 Route matched for sector:', params.sectorId)
-            return <SectorDashboard />
-          }}
-        </Route>
-        <Route>
-          <div className="flex flex-1">
-            <Sidebar activePage={activePage} setActivePage={setActivePage} />
-            <main className="flex-1 ml-0 md:ml-80 transition-all duration-300">
-              <PageRouter activePage={activePage} />
-            </main>
-          </div>
-        </Route>
-      </Switch>
+      <div className="flex flex-1">
+        <Sidebar activePage={activePage} setActivePage={setActivePage} />
+        <main className="flex-1 ml-0 md:ml-80 transition-all duration-300">
+          <PageRouter activePage={activePage} />
+        </main>
+      </div>
       <GlobalFooter className="ml-0 md:ml-80" />
     </div>
   );
