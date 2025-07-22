@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, TrendingUp, Users, Building, Globe, Zap, Shield, DollarSign, MapPin, Calendar, Activity, Settings, BarChart3, Truck, Pickaxe } from "lucide-react"
 import { motion } from "framer-motion"
 import { useLocation } from "wouter"
+import { MineNestDashboard } from '@/components/mining/minenest-dashboard'
 
 export default function SectorIndividualPage() {
   const params = useParams()
@@ -159,8 +160,13 @@ export default function SectorIndividualPage() {
       </div>
 
       <div className="p-6 space-y-6">
-        {/* Mining-Specific Dashboard */}
-        {isMining && miningData && (
+        {/* Comprehensive MineNest™ Dashboard for Mining Sector */}
+        {isMining ? (
+          <MineNestDashboard sectorBrands={minecoreBrands} />
+        ) : null}
+
+        {/* Original Mining Dashboard - keeping as fallback */}
+        {isMining && miningData && false && (
           <div className="space-y-6">
             {/* Mining Equipment Overview */}
             <Card className="bg-gray-800 border-gray-700">
