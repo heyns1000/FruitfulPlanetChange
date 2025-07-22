@@ -1,4 +1,4 @@
-import { Link } from "wouter"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -53,11 +53,9 @@ export default function SectorListPage() {
                   <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center text-2xl">
                     {sector.emoji}
                   </div>
-                  <Link href={`/sector/${sector.id}`}>
-                    <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                  </Link>
+                  <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Eye className="h-4 w-4" />
+                  </Button>
                 </div>
                 <CardTitle className="group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                   {sector.name}
@@ -82,11 +80,15 @@ export default function SectorListPage() {
                 </div>
 
                 {/* Access Button */}
-                <Link href={`/sector/${sector.id}`}>
-                  <Button className="w-full group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 transition-all">
-                    Access Dashboard
-                  </Button>
-                </Link>
+                <Button 
+                  onClick={() => {
+                    // Direct navigation to sector dashboard with comprehensive content
+                    window.location.href = `/sector/${sector.name.toLowerCase().replace(/[^a-z0-9]/g, '')}`
+                  }}
+                  className="w-full group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 transition-all"
+                >
+                  Access Dashboard
+                </Button>
               </CardContent>
             </Card>
           ))}

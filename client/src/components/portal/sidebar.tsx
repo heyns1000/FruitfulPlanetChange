@@ -63,7 +63,7 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
     { id: "hotstack-codenest", label: "🔥 HotStack + CodeNest", icon: "💻", badge: "Independent Repos" },
     { id: "repository-hub", label: "🗃️ Repository Hub", icon: "📂", badge: "GitHub Integration" },
     { id: "sector-onboarding", label: "🚀 Sector Onboarding", icon: "🎯", badge: "Guided Flow" },
-    { id: "sector-dashboard-access", label: "📊 Sector Dashboards", icon: "📈", badge: "14 Available" },
+
     { id: "omnilevel", label: "🧠 Omnilevel AI Logic", icon: "🤖", badge: "31 Sectors" },
     { id: "omnigrid-faa-zone", label: "🌐 OmniGrid™ FAA.zone™", icon: "🔋", badge: "PulseTrade™" },
     { id: "buildnest-dashboard", label: "🏗️ BuildNest Dashboard", icon: "🖥️", badge: "Live Metrics" },
