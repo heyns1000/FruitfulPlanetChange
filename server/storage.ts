@@ -6,6 +6,7 @@ import {
   legalDocuments, 
   repositories, 
   payments,
+  adminPanelBrands,
   banimalTransactions,
   charitableDistributions,
   sonicGridConnections,
@@ -28,6 +29,8 @@ import {
   type InsertRepository,
   type Payment,
   type InsertPayment,
+  type AdminPanelBrand,
+  type InsertAdminPanelBrand,
   type BanimalTransaction,
   type InsertBanimalTransaction,
   type CharitableDistribution,
@@ -98,6 +101,12 @@ export interface IStorage {
   getPayments(): Promise<Payment[]>;
   createPayment(payment: InsertPayment): Promise<Payment>;
 
+  // Admin Panel Brands
+  getAdminPanelBrands(): Promise<AdminPanelBrand[]>;
+  getAdminPanelBrandsBySector(sectorKey: string): Promise<AdminPanelBrand[]>;
+  createAdminPanelBrand(brandData: InsertAdminPanelBrand): Promise<AdminPanelBrand>;
+  seedAdminPanelBrands(): Promise<{ success: boolean, message: string }>;
+
   // Banimal Integration
   createBanimalTransaction(transaction: InsertBanimalTransaction): Promise<BanimalTransaction>;
   getBanimalTransactions(): Promise<BanimalTransaction[]>;
@@ -139,6 +148,72 @@ export class DatabaseStorage implements IStorage {
       dataProcessed: "2.4 PB",
       uptime: "99.97%",
       lastUpdate: new Date().toISOString()
+    }
+  }
+
+  // Admin Panel Brands operations
+  async getAdminPanelBrands(): Promise<AdminPanelBrand[]> {
+    return await db.select().from(adminPanelBrands);
+  }
+
+  async getAdminPanelBrandsBySector(sectorKey: string): Promise<AdminPanelBrand[]> {
+    return await db.select().from(adminPanelBrands).where(eq(adminPanelBrands.sectorKey, sectorKey));
+  }
+
+  async createAdminPanelBrand(brandData: InsertAdminPanelBrand): Promise<AdminPanelBrand> {
+    const [brand] = await db
+      .insert(adminPanelBrands)
+      .values(brandData)
+      .returning();
+    return brand;
+  }
+
+  async seedAdminPanelBrands(): Promise<{ success: boolean, message: string }> {
+    try {
+      // Check if already seeded
+      const existingBrands = await db.select().from(adminPanelBrands).limit(1);
+      if (existingBrands.length > 0) {
+        return { success: true, message: "Admin panel brands already seeded" };
+      }
+
+      const { ADMIN_PANEL_SECTOR_DATA, SECTOR_MAPPING } = await import('./seed-admin-panel-data.js');
+      let totalInserted = 0;
+
+      // Insert all admin panel brands from comprehensive arrays
+      for (const [sectorKey, sectorData] of Object.entries(ADMIN_PANEL_SECTOR_DATA)) {
+        const sectorInfo = SECTOR_MAPPING[sectorKey];
+        if (!sectorInfo) continue;
+
+        for (let i = 0; i < sectorData.brands.length; i++) {
+          const brand = sectorData.brands[i];
+          const subNodes = sectorData.subNodes && sectorData.subNodes[i] ? sectorData.subNodes[i] : [];
+          
+          await this.createAdminPanelBrand({
+            sectorKey,
+            sectorName: sectorInfo.name,
+            sectorEmoji: sectorInfo.emoji,
+            brandName: brand,
+            subNodes: Array.isArray(subNodes) ? subNodes : [subNodes].filter(Boolean),
+            isCore: true,
+            status: "active",
+            metadata: {
+              sectorId: sectorInfo.id,
+              arrayIndex: i,
+              importedFrom: "interns.seedwave.faa.zone",
+              originalSource: "admin_panel_full_arrays.html"
+            }
+          });
+          totalInserted++;
+        }
+      }
+
+      return { 
+        success: true, 
+        message: `Successfully seeded ${totalInserted} admin panel brands from ${Object.keys(ADMIN_PANEL_SECTOR_DATA).length} sectors` 
+      };
+    } catch (error) {
+      console.error("Error seeding admin panel brands:", error);
+      return { success: false, message: `Failed to seed: ${error.message}` };
     }
   }
   async getUser(id: string): Promise<User | undefined> {

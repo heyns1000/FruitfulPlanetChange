@@ -44,6 +44,7 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
     { id: "ecosystem-explorer", label: "🌐 Ecosystem Explorer", icon: "🗺️", badge: "45 Sectors" },
     { id: "global-pulse", label: "Global Pulse", icon: "🌍", badge: "Analytics" },
     { id: "seedwave-admin", label: "🦁 Seedwave™ Admin", icon: "⚙️", badge: "1,967 Brands" },
+    { id: "admin-panel", label: "🛠️ OmniGrid™ Admin Panel", icon: "🔧", badge: "Backend Data" },
   ]
 
   const vaultmeshSections = [

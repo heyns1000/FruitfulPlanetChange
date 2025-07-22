@@ -90,6 +90,20 @@ export const payments = pgTable("payments", {
   createdAt: text("created_at").default("now()"),
 });
 
+// Admin Panel Brands - comprehensive sector brand data from interns.seedwave.faa.zone
+export const adminPanelBrands = pgTable("admin_panel_brands", {
+  id: serial("id").primaryKey(),
+  sectorKey: text("sector_key").notNull(), // banking, agriculture, creative, etc.
+  sectorName: text("sector_name").notNull(),
+  sectorEmoji: text("sector_emoji").notNull(),
+  brandName: text("brand_name").notNull(),
+  subNodes: jsonb("sub_nodes").$type<string[]>().default([]),
+  isCore: boolean("is_core").default(true),
+  status: text("status").notNull().default("active"),
+  metadata: jsonb("metadata"),
+  createdAt: text("created_at").default("now()"),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   createdAt: true,
   updatedAt: true,
@@ -120,6 +134,11 @@ export const insertRepositorySchema = createInsertSchema(repositories).omit({
 });
 
 export const insertPaymentSchema = createInsertSchema(payments).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertAdminPanelBrandSchema = createInsertSchema(adminPanelBrands).omit({
   id: true,
   createdAt: true,
 });
@@ -619,3 +638,21 @@ export const SYSTEM_STATUS = {
     growthRate: 23.6
   }
 } as const;
+
+// Type definitions
+export type UpsertUser = typeof users.$inferInsert;
+export type User = typeof users.$inferSelect;
+export type Sector = typeof sectors.$inferSelect;
+export type InsertSector = typeof sectors.$inferInsert;
+export type Brand = typeof brands.$inferSelect;
+export type InsertBrand = typeof brands.$inferInsert;
+export type SystemStatus = typeof systemStatus.$inferSelect;
+export type InsertSystemStatus = typeof systemStatus.$inferInsert;
+export type LegalDocument = typeof legalDocuments.$inferSelect;
+export type InsertLegalDocument = typeof legalDocuments.$inferInsert;
+export type Repository = typeof repositories.$inferSelect;
+export type InsertRepository = typeof repositories.$inferInsert;
+export type Payment = typeof payments.$inferSelect;
+export type InsertPayment = typeof payments.$inferInsert;
+export type AdminPanelBrand = typeof adminPanelBrands.$inferSelect;
+export type InsertAdminPanelBrand = typeof adminPanelBrands.$inferInsert;

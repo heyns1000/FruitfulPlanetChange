@@ -16,6 +16,7 @@ import { getAPIConfig } from "../shared/api-config";
 import { setupAuth, isAuthenticated } from "./replitAuth"
 import { registerSectorRoutes } from "./routes/sectors";
 import { ExtensionScanner } from "./extension-scanner";
+import { registerAdminPanelRoutes } from './routes-admin-panel';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
@@ -26,6 +27,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Register MineNest mining routes
   registerMineNestRoutes(app);
+  
+  // Register Admin Panel routes
+  registerAdminPanelRoutes(app, storage);
 
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
