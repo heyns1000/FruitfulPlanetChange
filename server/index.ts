@@ -4,6 +4,7 @@ import { setupVite, serveStatic, log } from "./vite";
 import { seedDatabase } from "./seed-data";
 import { seedLegalDocuments } from "./seed-legal";
 import { seedAllMiningBrands } from "./mining-brands-seeder";
+import { updateSectorPricing } from "./update-sector-pricing";
 import { storage } from "./storage";
 
 const app = express();
@@ -50,6 +51,8 @@ app.use((req, res, next) => {
       await seedLegalDocuments();
       console.log("⛏️ Seeding comprehensive mining brands from HTML data...");
       await seedAllMiningBrands();
+      console.log("💰 Updating sector pricing structure...");
+      await updateSectorPricing();
       console.log("🐻 Seeding Banimal ecosystem for charitable giving...");
       await storage.seedBanimalData();
       console.log("🎬 Seeding Motion, Media & Sonic engines...");

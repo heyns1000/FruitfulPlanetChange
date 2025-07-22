@@ -246,6 +246,7 @@ function Router() {
         <>
           <Route path="/" component={PortalHome} />
           <Route path="/portal-home" component={PortalHome} />
+          <Route path="/sectors" component={SectorsPage} />
           <Route path="/sector-list" component={SectorList} />
           <Route path="/sector/:id">
             {(params) => <SectorIndividualPage />}

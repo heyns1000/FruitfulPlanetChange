@@ -81,6 +81,18 @@ export function SectorNavigationCards({ onSectorSelect }: SectorNavigationCardsP
                         </div>
                       </div>
                     </div>
+                    <div className="flex flex-col items-end gap-1">
+                      {sector.price && (
+                        <div className="text-amber-400 font-bold text-xl">
+                          ${sector.price}
+                        </div>
+                      )}
+                      {(sector.metadata as any)?.tier && (
+                        <Badge variant="secondary" className="text-xs bg-purple-600 text-white border-purple-500">
+                          {(sector.metadata as any).tier}
+                        </Badge>
+                      )}
+                    </div>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">

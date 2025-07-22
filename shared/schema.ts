@@ -32,6 +32,8 @@ export const sectors = pgTable("sectors", {
   description: text("description"),
   brandCount: integer("brand_count").default(0),
   subnodeCount: integer("subnode_count").default(0),
+  price: text("price").default("29.99"), // USD pricing for sector access
+  currency: text("currency").default("USD"),
   metadata: jsonb("metadata"),
 });
 
