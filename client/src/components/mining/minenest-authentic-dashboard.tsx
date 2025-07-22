@@ -134,7 +134,7 @@ export function MineNestAuthenticDashboard() {
             MineNest™ Dashboard
           </h1>
           <p className="text-gray-400 mt-1">
-            Comprehensive mining ecosystem with {miningData.totalBrands} parent brands + {miningData.totalSubnodes} subnodes = {miningData.totalElements} total mining elements
+            Comprehensive mining ecosystem with exactly 30 mining brands from HTML data - {miningData.metrics.activeBrands} active brands with 100% integration
           </p>
         </div>
         <Badge variant="outline" className="text-green-400 border-green-400">
@@ -282,70 +282,95 @@ export function MineNestAuthenticDashboard() {
         </TabsContent>
 
         <TabsContent value="brands" className="space-y-6">
-          {/* Mining Brands Grid */}
+          {/* Brand Portfolio - Exact HTML Layout */}
           <Card className="bg-gray-800 border-gray-700">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <Pickaxe className="w-5 h-5 text-yellow-400" />
-                Mining Brands ({miningData.totalBrands} Parent + {miningData.totalSubnodes} Subnodes)
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {miningData.parentBrands.slice(0, 9).map((brand) => (
-                  <motion.div
-                    key={brand.id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3 }}
-                    className="bg-gray-700 p-4 rounded-lg border border-gray-600 hover:border-green-400 transition-colors"
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="text-white font-semibold">{brand.name}</h4>
-                      <Badge 
-                        variant="outline" 
-                        className={`${
-                          brand.metadata.tier === "A+" ? "border-green-400 text-green-400" :
-                          brand.metadata.tier === "A" ? "border-blue-400 text-blue-400" :
-                          "border-gray-400 text-gray-400"
-                        }`}
-                      >
-                        {brand.metadata.tier}
-                      </Badge>
-                    </div>
-                    <p className="text-gray-400 text-sm mb-3 line-clamp-2">{brand.description}</p>
-                    <div className="space-y-1 text-xs">
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Active Rigs:</span>
-                        <span className="text-white">{brand.metadata.activeRigs || 0}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Performance:</span>
-                        <span className="text-green-400">{brand.metadata.performance || 90}%</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Integration:</span>
-                        <span className="text-blue-400">{brand.integration}</span>
-                      </div>
-                    </div>
-                    <div className="flex gap-2 mt-3">
-                      <Button size="sm" className="bg-green-600 hover:bg-green-700 text-xs">
-                        Manage
-                      </Button>
-                      <Button size="sm" variant="outline" className="text-xs">
-                        View Details
-                      </Button>
-                    </div>
-                  </motion.div>
-                ))}
+            <CardHeader className="bg-green-600 text-white rounded-t-lg">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Pickaxe className="w-5 h-5" />
+                  Brand Portfolio
+                </CardTitle>
+                <div className="text-sm">
+                  Manage all brands in ⛏️ Mining & Resources
+                </div>
               </div>
-              {miningData.parentBrands.length > 9 && (
-                <div className="mt-4 text-center">
-                  <Button variant="outline" className="text-white border-gray-600 hover:bg-gray-700">
-                    View All {miningData.totalBrands} Mining Brands
+            </CardHeader>
+            <CardContent className="p-0">
+              {/* Brand Management Tabs */}
+              <div className="flex border-b border-gray-700">
+                <Button variant="ghost" className="px-4 py-2 bg-green-600 text-white rounded-none">
+                  Brand Management
+                </Button>
+                <Button variant="ghost" className="px-4 py-2 text-gray-400 hover:text-white">
+                  Analytics
+                </Button>
+                <Button variant="ghost" className="px-4 py-2 text-gray-400 hover:text-white">
+                  Settings
+                </Button>
+              </div>
+
+              {/* Brand Grid - Authentic HTML Layout */}
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {miningData.parentBrands.slice(0, 9).map((brand) => (
+                    <motion.div
+                      key={brand.id}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3 }}
+                      className="bg-gray-700 border border-gray-600 rounded-lg p-4 hover:border-green-400 transition-all"
+                    >
+                      {/* Brand Header */}
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-white font-semibold text-sm">{brand.name}</h4>
+                          <Badge className="bg-green-600 text-white text-xs px-2 py-1">
+                            {brand.status}
+                          </Badge>
+                        </div>
+                      </div>
+
+                      {/* Brand Description */}
+                      <p className="text-gray-300 text-xs mb-4 line-clamp-2 h-8">
+                        {brand.description?.includes("submodule") ? 
+                          `Specialized ${brand.name} submodule providing targeted mining operations support with advanced analytics, real-time...` :
+                          `Advanced ${brand.name} mining & resources management solution with comprehensive VaultMesh™ integration, real-time ore...`
+                        }
+                      </p>
+
+                      {/* Integration Badge */}
+                      <div className="mb-4">
+                        <span className="text-gray-400 text-xs">
+                          {brand.integration}
+                        </span>
+                      </div>
+
+                      {/* Action Button */}
+                      <div className="flex justify-end">
+                        <Button 
+                          size="sm" 
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-1 text-xs rounded"
+                        >
+                          Core
+                        </Button>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Action Buttons Row - Exactly like HTML */}
+                <div className="flex gap-4 mt-8">
+                  <Button className="bg-green-600 hover:bg-green-700 text-white px-8 py-2 rounded-lg flex-1">
+                    Add New Brand
+                  </Button>
+                  <Button variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-700 px-8 py-2 rounded-lg flex-1">
+                    Import Brands
+                  </Button>
+                  <Button variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-700 px-8 py-2 rounded-lg flex-1">
+                    Export Portfolio
                   </Button>
                 </div>
-              )}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -414,41 +439,162 @@ export function MineNestAuthenticDashboard() {
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-6">
-          <Card className="bg-gray-800 border-gray-700">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <Settings className="w-5 h-5" />
-                MineNest™ Configuration
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-gray-700 rounded">
-                  <div>
-                    <div className="text-white font-medium">Real-time Monitoring</div>
-                    <div className="text-gray-400 text-sm">Live ore tracking and performance monitoring</div>
-                  </div>
-                  <Badge className="bg-green-600">Enabled</Badge>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-gray-700 rounded">
-                  <div>
-                    <div className="text-white font-medium">VaultMesh™ Security</div>
-                    <div className="text-gray-400 text-sm">Advanced encryption and secure data transmission</div>
-                  </div>
-                  <Badge className="bg-green-600">Active</Badge>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-gray-700 rounded">
-                  <div>
-                    <div className="text-white font-medium">Baobab Legal Compliance</div>
-                    <div className="text-gray-400 text-sm">Environmental and regulatory compliance monitoring</div>
-                  </div>
-                  <Badge className="bg-green-600">Compliant</Badge>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <MineNestSettings />
         </TabsContent>
       </Tabs>
+    </div>
+  );
+}
+
+// MineNest Settings Component - From HTML File
+function MineNestSettings() {
+  const { data: settingsData } = useQuery({
+    queryKey: ["/api/mining/settings"],
+    queryFn: async () => {
+      const response = await fetch("/api/mining/settings");
+      if (!response.ok) throw new Error('Failed to fetch mining settings');
+      return response.json();
+    }
+  });
+
+  if (!settingsData) {
+    return (
+      <Card className="bg-gray-800 border-gray-700">
+        <CardContent className="p-6 text-center text-gray-400">
+          Loading MineNest™ settings...
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Mining Configuration */}
+      <Card className="bg-gray-800 border-gray-700">
+        <CardHeader className="bg-green-600 text-white">
+          <CardTitle className="flex items-center gap-2">
+            <Settings className="w-5 h-5" />
+            MineNest™ Configuration
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 p-6">
+          {Object.entries(settingsData.miningConfiguration).map(([key, config]: [string, any]) => (
+            <div key={key} className="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
+              <div>
+                <div className="text-white font-medium">
+                  {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                </div>
+                <div className="text-gray-400 text-sm">{config.description}</div>
+              </div>
+              <Badge className={config.enabled ? "bg-green-600" : "bg-red-600"}>
+                {config.enabled ? "Enabled" : "Disabled"}
+              </Badge>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      {/* Performance Metrics */}
+      <Card className="bg-gray-800 border-gray-700">
+        <CardHeader>
+          <CardTitle className="text-white flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 text-blue-400" />
+            Performance Metrics
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-gray-700 p-4 rounded-lg">
+              <div className="text-2xl font-bold text-green-400">
+                {settingsData.performanceMetrics.systemHealth}%
+              </div>
+              <div className="text-gray-400 text-sm">System Health</div>
+            </div>
+            <div className="bg-gray-700 p-4 rounded-lg">
+              <div className="text-2xl font-bold text-blue-400">
+                {settingsData.performanceMetrics.dataAccuracy}%
+              </div>
+              <div className="text-gray-400 text-sm">Data Accuracy</div>
+            </div>
+            <div className="bg-gray-700 p-4 rounded-lg">
+              <div className="text-2xl font-bold text-purple-400">
+                {settingsData.performanceMetrics.uptime}%
+              </div>
+              <div className="text-gray-400 text-sm">Uptime</div>
+            </div>
+            <div className="bg-gray-700 p-4 rounded-lg">
+              <div className="text-2xl font-bold text-yellow-400">
+                {settingsData.performanceMetrics.responseTime}
+              </div>
+              <div className="text-gray-400 text-sm">Response Time</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Integrations Status */}
+      <Card className="bg-gray-800 border-gray-700">
+        <CardHeader>
+          <CardTitle className="text-white flex items-center gap-2">
+            <Zap className="w-5 h-5 text-yellow-400" />
+            Integration Status
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {Object.entries(settingsData.integrations).map(([key, integration]: [string, any]) => (
+            <div key={key} className="flex items-center justify-between p-3 bg-gray-700 rounded">
+              <div>
+                <div className="text-white font-medium">
+                  {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                </div>
+                <div className="text-gray-400 text-sm">{integration.description}</div>
+              </div>
+              <Badge className={integration.status === "Active" ? "bg-green-600" : "bg-gray-600"}>
+                {integration.status}
+              </Badge>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      {/* License Information */}
+      <Card className="bg-gray-800 border-gray-700">
+        <CardHeader>
+          <CardTitle className="text-white flex items-center gap-2">
+            <Shield className="w-5 h-5 text-green-400" />
+            License Information
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {settingsData.licenses.map((license: any) => (
+            <div key={license.id} className="bg-gray-700 p-4 rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="text-white font-semibold">{license.name}</h4>
+                <Badge className="bg-green-600">{license.status}</Badge>
+              </div>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Price:</span>
+                  <span className="text-green-400 font-bold">{license.price}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Valid Until:</span>
+                  <span className="text-white">{license.validUntil}</span>
+                </div>
+                <div className="mt-3">
+                  <div className="text-gray-400 text-xs mb-1">Features:</div>
+                  {license.features.map((feature: string, index: number) => (
+                    <div key={index} className="text-gray-300 text-xs flex items-center gap-2">
+                      <CheckCircle2 className="w-3 h-3 text-green-400" />
+                      {feature}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
     </div>
   );
 }

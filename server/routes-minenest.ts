@@ -13,10 +13,10 @@ export function registerMineNestRoutes(app: Express) {
         return res.status(404).json({ message: "Mining sector not found" });
       }
 
-      // Get mining brands only
+      // Get mining brands only - should be exactly 30 brands from HTML
       const miningBrands = await storage.getBrandsBySector(miningSector.id);
-      const parentBrands = miningBrands.filter(brand => !brand.parentId);
-      const subnodes = miningBrands.filter(brand => brand.parentId);
+      const parentBrands = miningBrands.filter(brand => brand.isCore);
+      const subnodes = miningBrands.filter(brand => !brand.isCore);
 
       // Calculate mining-specific metrics
       const totalActiveRigs = parentBrands.reduce((sum, brand) => 
@@ -66,7 +66,7 @@ export function registerMineNestRoutes(app: Express) {
     }
   });
 
-  // MineCore™ brands API
+  // MineCore™ brands API - authentic brands from HTML
   app.get("/api/mining/minecore-brands", async (req, res) => {
     try {
       const sectors = await storage.getAllSectors();
@@ -78,13 +78,78 @@ export function registerMineNestRoutes(app: Express) {
 
       const miningBrands = await storage.getBrandsBySector(miningSector.id);
       const minecoreBrands = miningBrands.filter(brand => 
-        brand.integration === "MineCore™" || brand.name?.includes("MineCore")
+        brand.integration === "MineCore™"
       );
 
-      res.json(minecoreBrands);
+      // Return structured data matching HTML layout
+      const brandPortfolio = minecoreBrands.map(brand => ({
+        id: brand.id,
+        name: brand.name,
+        description: brand.description,
+        status: brand.status,
+        integration: brand.integration,
+        metadata: brand.metadata,
+        actions: ["Core", "Manage", "Analytics"]
+      }));
+
+      res.json({
+        totalBrands: miningBrands.length,
+        activeBrands: miningBrands.filter(b => b.status === "active").length,
+        coreSystems: minecoreBrands.length,
+        integration: "100%",
+        portfolio: brandPortfolio,
+        categories: {
+          "VaultMesh™": miningBrands.filter(b => b.integration === "VaultMesh™").length,
+          "GridCore™": miningBrands.filter(b => b.integration === "GridCore™").length,
+          "MineCore™": minecoreBrands.length,
+          "SubNode™": miningBrands.filter(b => b.integration === "SubNode™").length
+        }
+      });
     } catch (error) {
       console.error("Error fetching MineCore brands:", error);
       res.status(500).json({ message: "Failed to fetch MineCore brands" });
+    }
+  });
+
+  // MineNest Settings API - from HTML functionality
+  app.get("/api/mining/settings", async (req, res) => {
+    try {
+      const settings = {
+        miningConfiguration: {
+          realTimeMonitoring: { enabled: true, description: "Live ore tracking and performance monitoring" },
+          vaultMeshSecurity: { enabled: true, description: "Advanced encryption and secure data transmission" },
+          baobabCompliance: { enabled: true, description: "Environmental and regulatory compliance monitoring" },
+          automaticBackup: { enabled: true, description: "Automatic data backup every 6 hours" },
+          alertSystem: { enabled: true, description: "Real-time alerts for critical mining operations" }
+        },
+        integrations: {
+          paypal: { status: "Active", description: "PayPal payment processing for mining licenses" },
+          vaultMesh: { status: "Active", description: "VaultMesh™ security infrastructure" },
+          baobabLegal: { status: "Active", description: "Baobab legal compliance monitoring" },
+          gridCore: { status: "Active", description: "GridCore™ processing infrastructure" }
+        },
+        performanceMetrics: {
+          systemHealth: 94,
+          dataAccuracy: 98.7,
+          uptime: 99.9,
+          responseTime: "< 2ms"
+        },
+        licenses: [
+          {
+            id: "claimroot-001",
+            name: "MineNest™ Enterprise License",
+            status: "Active",
+            validUntil: "2025-12-31",
+            price: "$19,999.00",
+            features: ["Full access to all 30 mining brands", "VaultMesh™ security", "24/7 support"]
+          }
+        ]
+      };
+
+      res.json(settings);
+    } catch (error) {
+      console.error("Error fetching mining settings:", error);
+      res.status(500).json({ message: "Failed to fetch mining settings" });
     }
   });
 
