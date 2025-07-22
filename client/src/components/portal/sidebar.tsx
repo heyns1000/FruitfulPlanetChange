@@ -168,7 +168,7 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
               <SparkleEffect trigger={activePage === item.id}>
                 <RippleButton
                   onClick={() => {
-                    onPageChange(item.id)
+                    handlePageChange(item.id)
                     setIsMobileOpen(false)
                   }}
                   className={`
@@ -217,7 +217,7 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
                 <SparkleEffect trigger={activePage === item.id}>
                   <RippleButton
                     onClick={() => {
-                      onPageChange(item.id)
+                      handlePageChange(item.id)
                       setIsMobileOpen(false)
                     }}
                     className={`
@@ -261,7 +261,7 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
               <button
                 key={item.id}
                 onClick={() => {
-                  onPageChange(item.id)
+                  handlePageChange(item.id)
                   setIsMobileOpen(false)
                 }}
                 className={`
@@ -298,7 +298,7 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
                 <SparkleEffect trigger={activePage === item.id}>
                   <RippleButton
                     onClick={() => {
-                      onPageChange(item.id)
+                      handlePageChange(item.id)
                       setIsMobileOpen(false)
                     }}
                     className={`
@@ -350,7 +350,7 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
               <button
                 key={item.id}
                 onClick={() => {
-                  onPageChange(item.id)
+                  handlePageChange(item.id)
                   setIsMobileOpen(false)
                 }}
                 className={`
