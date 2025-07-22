@@ -51,6 +51,7 @@ import SectorIndividualPage from "@/pages/sector-individual"
 import SectorList from "@/pages/sector-list"
 import SettingsPage from "@/pages/settings"
 import AnalyticsPage from "@/pages/analytics"
+import SectorMapping from "@/pages/sector-mapping"
 import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react"
 import { GlobalFooter } from "@/components/ui/global-footer"
@@ -160,6 +161,12 @@ function PageRouter({ activePage }: { activePage: string }) {
       return (
         <div className="p-8">
           <BrandIdentityManager />
+        </div>
+      )
+    case "sector-mapping":
+      return (
+        <div className="p-8">
+          <SectorMapping />
         </div>
       )
     case "fruitful-crate-dance":
