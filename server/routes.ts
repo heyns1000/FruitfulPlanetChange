@@ -130,6 +130,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Brands by sector API
+  app.get("/api/brands/sector/:sectorId", async (req, res) => {
+    try {
+      const sectorId = parseInt(req.params.sectorId);
+      const brands = await storage.getBrandsBySector(sectorId);
+      res.json(brands);
+    } catch (error) {
+      console.error("Error fetching brands by sector:", error);
+      res.status(500).json({ message: "Failed to fetch brands by sector" });
+    }
+  });
+
   app.get("/api/brands/:param", async (req, res) => {
     try {
       const param = req.params.param;

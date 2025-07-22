@@ -27,7 +27,7 @@ export default function SectorIndividualPage() {
   const { data: brands = [], isLoading: brandsLoading } = useQuery({
     queryKey: ["/api/brands", "sector", sectorId],
     queryFn: async () => {
-      const response = await fetch(`/api/brands?sectorId=${sectorId}`)
+      const response = await fetch(`/api/brands/sector/${sectorId}`)
       if (!response.ok) throw new Error('Failed to fetch brands')
       return response.json()
     }
