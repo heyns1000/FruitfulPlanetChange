@@ -40,7 +40,7 @@ export function registerAdminPanelRoutes(app: Express, storage: IStorage) {
       const allBrands = await storage.getAdminPanelBrands();
       
       // Calculate comprehensive statistics
-      const sectorStats: Record<string, any> = allBrands.reduce((acc, brand) => {
+      const sectorStats: Record<string, any> = allBrands.reduce((acc: Record<string, any>, brand: any) => {
         if (!acc[brand.sectorKey]) {
           acc[brand.sectorKey] = {
             sectorName: brand.sectorName,
@@ -56,7 +56,7 @@ export function registerAdminPanelRoutes(app: Express, storage: IStorage) {
         if (brand.status === 'active') acc[brand.sectorKey].activeBrands++;
         
         return acc;
-      }, {});
+      }, {} as Record<string, any>);
 
       const stats = {
         totalBrands: allBrands.length,
