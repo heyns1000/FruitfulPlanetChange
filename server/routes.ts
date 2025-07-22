@@ -482,44 +482,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           operationalHealth: 94,
           systemStatus: "Operational"
         },
-        projects: [
-          {
-            id: 1,
-            name: "Deep Earth Exploration Alpha Site",
-            status: "live",
-            location: "Pilbara, Western Australia",
-            yieldRate: "847 tonnes/month",
-            equipment: "Autonomous drilling rig deployment",
-            lastUpdate: "2 hours ago"
-          },
-          {
-            id: 2,
-            name: "Iron Ore Processing Beta",
-            status: "pending",
-            location: "Kalahari, South Africa",
-            yieldRate: "1,203 tonnes/month",
-            equipment: "Processing facility optimization",
-            lastUpdate: "5 hours ago"
-          },
-          {
-            id: 3,
-            name: "Copper Extraction Gamma",
-            status: "live",
-            location: "Atacama, Chile",
-            yieldRate: "642 tonnes/month",
-            equipment: "VaultTrace™ monitoring system",
-            lastUpdate: "30 minutes ago"
-          },
-          {
-            id: 4,
-            name: "Lithium Recovery Delta",
-            status: "draft",
-            location: "Nevada, USA",
-            yieldRate: "155 tonnes/month",
-            equipment: "Predictive analytics deployment",
-            lastUpdate: "1 day ago"
-          }
-        ],
+        minecore: {
+          totalBrands: 48,
+          activeBrands: 40,
+          coreSystems: 14,
+          integration: 83
+        },
         equipment: {
           drillRigs: {
             total: 8,
@@ -586,76 +554,112 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Mining Projects API
-  app.get("/api/mining/projects", async (req, res) => {
+  // MineCore™ Brand Portfolio API - Authentic Mining & Resources Brands
+  app.get("/api/mining/minecore-brands", async (req, res) => {
     try {
-      const projects = [
+      const minecoreBrands = [
         {
-          id: 1,
-          name: "Deep Earth Exploration Alpha Site",
-          status: "live",
-          location: "Pilbara, Western Australia",
-          description: "Autonomous drilling rig deployment for deep earth mineral exploration",
-          yieldRate: "847 tonnes/month",
-          equipment: ["Autonomous drilling rig", "VaultTrace™ sensors", "Real-time telemetry"],
-          team: "12 specialists",
-          budget: "$2.4M",
-          completion: 78,
-          lastUpdate: "2 hours ago",
-          riskLevel: "Low",
-          nextMilestone: "Phase 3 drilling completion"
+          id: "minecore-1",
+          name: "MineCore™ 1",
+          status: "development",
+          description: "Advanced ⛏️ mining & resources management solution with comprehensive VaultMesh™ integration and Baobab legal.",
+          integration: "VaultMesh™",
+          type: "Core"
         },
         {
-          id: 2,
-          name: "Iron Ore Processing Beta",
-          status: "pending",
-          location: "Kalahari, South Africa",
-          description: "Processing facility optimization with AI-driven efficiency improvements",
-          yieldRate: "1,203 tonnes/month",
-          equipment: ["Processing facility", "AI optimization system", "Quality control sensors"],
-          team: "18 specialists",
-          budget: "$3.8M", 
-          completion: 45,
-          lastUpdate: "5 hours ago",
-          riskLevel: "Medium",
-          nextMilestone: "Equipment installation"
+          id: "minecore-2", 
+          name: "MineCore™ 2",
+          status: "active",
+          description: "Advanced ⛏️ mining & resources management solution with comprehensive VaultMesh™ integration and Baobab legal.",
+          integration: "VaultMesh™",
+          type: "Core"
         },
         {
-          id: 3,
-          name: "Copper Extraction Gamma",
-          status: "live",
-          location: "Atacama, Chile",
-          description: "VaultTrace™ monitoring system for copper extraction optimization",
-          yieldRate: "642 tonnes/month",
-          equipment: ["Extraction systems", "VaultTrace™ monitoring", "Environmental sensors"],
-          team: "15 specialists",
-          budget: "$1.9M",
-          completion: 92,
-          lastUpdate: "30 minutes ago",
-          riskLevel: "Low",
-          nextMilestone: "Performance validation"
+          id: "minecore-3",
+          name: "MineCore™ 3", 
+          status: "active",
+          description: "Advanced ⛏️ mining & resources management solution with comprehensive VaultMesh™ integration and Baobab legal.",
+          integration: "VaultMesh™",
+          type: "Core"
         },
         {
-          id: 4,
-          name: "Lithium Recovery Delta",
-          status: "draft", 
-          location: "Nevada, USA",
-          description: "Predictive analytics deployment for lithium recovery operations",
-          yieldRate: "155 tonnes/month",
-          equipment: ["Recovery systems", "Predictive analytics", "Data collection network"],
-          team: "8 specialists",
-          budget: "$1.2M",
-          completion: 23,
-          lastUpdate: "1 day ago",
-          riskLevel: "High",
-          nextMilestone: "Site preparation"
+          id: "minecore-4",
+          name: "MineCore™ 4",
+          status: "active", 
+          description: "Advanced ⛏️ mining & resources management solution with comprehensive VaultMesh™ integration and Baobab legal.",
+          integration: "VaultMesh™",
+          type: "Core"
+        },
+        {
+          id: "minecore-5",
+          name: "MineCore™ 5",
+          status: "development",
+          description: "Advanced ⛏️ mining & resources management solution with comprehensive VaultMesh™ integration and Baobab legal.",
+          integration: "VaultMesh™", 
+          type: "Core"
+        },
+        {
+          id: "minecore-6",
+          name: "MineCore™ 6",
+          status: "active",
+          description: "Advanced ⛏️ mining & resources management solution with comprehensive VaultMesh™ integration and Baobab legal.",
+          integration: "VaultMesh™",
+          type: "Core"
+        },
+        {
+          id: "minecore-7",
+          name: "MineCore™ 7", 
+          status: "active",
+          description: "Advanced ⛏️ mining & resources management solution with comprehensive VaultMesh™ integration and Baobab legal.",
+          integration: "VaultMesh™",
+          type: "Core"
+        },
+        {
+          id: "minecore-8",
+          name: "MineCore™ 8",
+          status: "active",
+          description: "Advanced ⛏️ mining & resources management solution with comprehensive VaultMesh™ integration and Baobab legal.",
+          integration: "VaultMesh™",
+          type: "Core"
+        },
+        {
+          id: "minecore-9",
+          name: "MineCore™ 9",
+          status: "development", 
+          description: "Advanced ⛏️ mining & resources management solution with comprehensive VaultMesh™ integration and Baobab legal.",
+          integration: "VaultMesh™",
+          type: "Core"
+        },
+        {
+          id: "minecore-10",
+          name: "MineCore™ 10",
+          status: "active",
+          description: "Advanced ⛏️ mining & resources management solution with comprehensive VaultMesh™ integration and Baobab legal.",
+          integration: "VaultMesh™",
+          type: "Core"
+        },
+        {
+          id: "minecore-11", 
+          name: "MineCore™ 11",
+          status: "active",
+          description: "Advanced ⛏️ mining & resources management solution with comprehensive VaultMesh™ integration and Baobab legal.",
+          integration: "VaultMesh™",
+          type: "Core"
+        },
+        {
+          id: "minecore-12",
+          name: "MineCore™ 12",
+          status: "active",
+          description: "Advanced ⛏️ mining & resources management solution with comprehensive VaultMesh™ integration and Baobab legal.",
+          integration: "VaultMesh™",
+          type: "Core"
         }
       ];
 
-      res.json(projects);
+      res.json(minecoreBrands);
     } catch (error) {
-      console.error("Error fetching mining projects:", error);
-      res.status(500).json({ message: "Failed to fetch mining projects" });
+      console.error("Error fetching MineCore™ brands:", error);
+      res.status(500).json({ message: "Failed to fetch MineCore™ brands" });
     }
   });
 

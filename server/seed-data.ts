@@ -84,9 +84,50 @@ export async function seedDatabase() {
       createdSectors.set(`fruitful_${sectorKey}`, sector);
     }
 
+    // Insert MineCore™ brands for Mining & Resources sector
+    const miningSector = createdSectors.get('mining');
+    if (miningSector) {
+      const minecoreBrands = [
+        { name: "MineCore™ 1", status: "development" },
+        { name: "MineCore™ 2", status: "active" },
+        { name: "MineCore™ 3", status: "active" },
+        { name: "MineCore™ 4", status: "active" },
+        { name: "MineCore™ 5", status: "development" },
+        { name: "MineCore™ 6", status: "active" },
+        { name: "MineCore™ 7", status: "active" },
+        { name: "MineCore™ 8", status: "active" },
+        { name: "MineCore™ 9", status: "development" },
+        { name: "MineCore™ 10", status: "active" },
+        { name: "MineCore™ 11", status: "active" },
+        { name: "MineCore™ 12", status: "active" }
+      ];
+
+      for (const brand of minecoreBrands) {
+        await db.insert(brands).values({
+          name: brand.name,
+          description: `Advanced ⛏️ mining & resources management solution with comprehensive VaultMesh™ integration and Baobab legal.`,
+          sectorId: miningSector.id,
+          integration: "VaultMesh™",
+          status: brand.status,
+          isCore: true,
+          parentId: null,
+          metadata: { 
+            featured: true,
+            sector: 'mining',
+            type: 'Core',
+            vaultmeshIntegration: true,
+            baobabLegal: true
+          }
+        });
+      }
+    }
+
     // Insert brands from comprehensive data
     let brandCount = 0;
     for (const [sectorKey, sectorData] of Object.entries(COMPREHENSIVE_BRAND_DATA)) {
+      // Skip mining sector as we already added MineCore™ brands
+      if (sectorKey === 'mining') continue;
+      
       const sector = createdSectors.get(sectorKey);
       if (sector) {
         for (let i = 0; i < sectorData.brands.length; i++) {
@@ -147,6 +188,7 @@ export async function seedDatabase() {
     console.log(`✅ Database seeded successfully!`);
     console.log(`📊 Created ${createdSectors.size} sectors`);
     console.log(`🏷️ Created ${brandCount} brands`);
+    console.log(`⛏️ Created 12 MineCore™ brands for Mining & Resources`);
     console.log(`⚙️ Created 5 system status entries`);
 
   } catch (error) {

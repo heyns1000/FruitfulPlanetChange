@@ -43,12 +43,12 @@ export default function SectorIndividualPage() {
     enabled: sector?.name?.includes("Mining") || sector?.emoji === "⛏️"
   })
 
-  // Fetch mining projects data
-  const { data: miningProjects = [] } = useQuery({
-    queryKey: ["/api/mining/projects"],
+  // Fetch MineCore™ brands data
+  const { data: minecoreBrands = [] } = useQuery({
+    queryKey: ["/api/mining/minecore-brands"],
     queryFn: async () => {
-      const response = await fetch("/api/mining/projects")
-      if (!response.ok) throw new Error('Failed to fetch mining projects')
+      const response = await fetch("/api/mining/minecore-brands")
+      if (!response.ok) throw new Error('Failed to fetch MineCore™ brands')
       return response.json()
     },
     enabled: sector?.name?.includes("Mining") || sector?.emoji === "⛏️"
@@ -191,38 +191,60 @@ export default function SectorIndividualPage() {
               </CardContent>
             </Card>
 
-            {/* Active Mining Projects */}
+            {/* MineCore™ Brand Portfolio */}
             <Card className="bg-gray-800 border-gray-700">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
                   <Pickaxe className="h-6 w-6 text-yellow-500" />
-                  Active Mining Projects
+                  MineCore™ Brand Portfolio
                 </CardTitle>
+                <div className="flex items-center gap-4 mt-2">
+                  <Badge className="bg-green-600 text-white">40 Active Brands</Badge>
+                  <Badge className="bg-purple-600 text-white">83% Integration</Badge>
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {miningProjects.slice(0, 4).map((project: any) => (
-                    <div key={project.id} className="bg-gray-700 rounded-lg p-4">
-                      <div className="flex justify-between items-start mb-2">
-                        <h4 className="text-white font-semibold">{project.name}</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {minecoreBrands.map((brand: any) => (
+                    <div key={brand.id} className="bg-gray-700 rounded-lg p-4 border border-gray-600">
+                      <div className="flex justify-between items-start mb-3">
+                        <h4 className="text-white font-semibold">{brand.name}</h4>
                         <Badge className={`${
-                          project.status === 'live' ? 'bg-green-500' :
-                          project.status === 'pending' ? 'bg-yellow-500' :
+                          brand.status === 'active' ? 'bg-green-500' :
+                          brand.status === 'development' ? 'bg-yellow-500' :
                           'bg-gray-500'
-                        } text-white`}>
-                          {project.status}
+                        } text-white text-xs`}>
+                          {brand.status}
                         </Badge>
                       </div>
                       <div className="space-y-2 text-sm">
-                        <div className="flex items-center gap-2 text-gray-300">
-                          <MapPin className="h-4 w-4" />
-                          {project.location}
+                        <div className="text-gray-300">{brand.description}</div>
+                        <div className="flex items-center gap-2 text-gray-400">
+                          <Shield className="h-4 w-4" />
+                          {brand.integration}
                         </div>
-                        <div className="text-gray-400">Yield: {project.yieldRate}</div>
-                        <div className="text-gray-400">Updated: {project.lastUpdate}</div>
+                        <div className="flex justify-between items-center mt-3">
+                          <span className="text-xs text-gray-500">{brand.type}</span>
+                          <Button size="sm" className="bg-orange-600 hover:bg-orange-700 text-white text-xs px-3 py-1">
+                            Core
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ))}
+                </div>
+                
+                {/* Action Buttons */}
+                <div className="flex gap-4 mt-6">
+                  <Button className="bg-green-600 hover:bg-green-700 text-white flex-1">
+                    Add New Brand
+                  </Button>
+                  <Button variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-700 flex-1">
+                    Import Brands
+                  </Button>
+                  <Button variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-700 flex-1">
+                    Export Portfolio
+                  </Button>
                 </div>
               </CardContent>
             </Card>
