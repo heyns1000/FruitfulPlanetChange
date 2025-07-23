@@ -53,6 +53,93 @@ export default function SamFoxCreativeStudio() {
     }
   ];
 
+  const completeHtmlDesigns = [
+    {
+      id: 'looppay-portal',
+      title: 'LoopPay™ Sovereign Payment & SSO Portal',
+      description: 'Complete payment processing system with multi-language support and currency conversion',
+      htmlContent: `Complete HTML design with PayPal SDK integration, multi-language support (English, Afrikaans, isiZulu, isiXhosa), currency converter, AI assistant, theme switching, and comprehensive payment licensing system.`,
+      features: [
+        'PayPal SDK Integration',
+        'Multi-Language Support (4 languages)',
+        'Real-time Currency Converter',
+        'AI Assistant with Gemini API',
+        'Dark/Light Theme Switching',
+        'LoopPay™ Core License ($6,500)',
+        'LoopPay™ Pro Grid ($230/month)',
+        'Decentralized Payout Mesh',
+        'Immutable Scroll Contracts',
+        'Regional Compliance System'
+      ],
+      category: 'Payment Portal',
+      complexity: 'Enterprise',
+      technologies: ['PayPal API', 'Exchange Rate API', 'Gemini AI', 'TailwindCSS', 'Responsive Design'],
+      pricing: {
+        coreLicense: '$6,500 USD',
+        proGrid: '$230 USD/month'
+      }
+    },
+    {
+      id: 'faa-brand-control',
+      title: 'FAA™ Brand Control Center',
+      description: 'Complete brand management dashboard with sidebar navigation and comprehensive brand deployment system',
+      htmlContent: `Advanced dashboard with sidebar navigation, brand deployment tools, license management, GitHub integration, and comprehensive brand building capabilities.`,
+      features: [
+        'Sidebar Navigation Dashboard',
+        'Rapid Deploy Brands System',
+        'Deploy Vault with GitHub Sync',
+        'Brand Builder & Customizer',
+        'License Management Portal',
+        'Interstellar Operations',
+        'Quantum Brands Management',
+        'Meta-Economy Integration',
+        'Real-time System Status',
+        'Active Scrolls Monitoring (7,038 deployments)',
+        'Client Engagement Analytics',
+        'Royalty & Yield Tracking (R50M+ payouts)'
+      ],
+      category: 'Brand Management',
+      complexity: 'Enterprise',
+      technologies: ['Dashboard UI', 'GitHub Integration', 'File Upload', 'Real-time Monitoring'],
+      brands: [
+        'CodeNest™ ($3,200 license, 6% royalty)',
+        'PayLine™ ($4,100 license, 9% royalty)', 
+        'HotStack™ ($3,600 license, 7% royalty)',
+        'QuickClaim™ ($2,800 license, 6% royalty)',
+        'FirstMover™ ($5,900 license, 12% royalty)'
+      ]
+    },
+    {
+      id: 'fruitful-sponsorship',
+      title: 'Fruitful Crate Dance Showcase - Sponsorship Platform',
+      description: 'Advanced sponsorship management system with interactive charts, currency conversion and multi-tier sponsorship packages',
+      htmlContent: `Comprehensive sponsorship platform with dynamic tier cards, Chart.js integration, Spotify embed, currency converter, and multi-language support.`,
+      features: [
+        'Dynamic Sponsorship Tiers',
+        'Chart.js Impact Visualization',
+        'Spotify Music Integration',
+        'Global Currency Converter',
+        'Multi-Language Support',
+        'Dark/Light Theme Switching',
+        'PayPal Integration',
+        'Responsive Tier Cards',
+        'Investment vs Meals Chart',
+        'Real-time Exchange Rates',
+        'Custom Badge System',
+        'Professional Footer Links'
+      ],
+      category: 'Sponsorship Platform',
+      complexity: 'Enterprise',
+      technologies: ['Chart.js', 'Spotify API', 'Currency API', 'PayPal Integration', 'Multi-language'],
+      sponsorshipTiers: [
+        'Community Champion',
+        'Rising Star Sponsor', 
+        'Cultural Ambassador',
+        'Platinum Partner'
+      ]
+    }
+  ];
+
   const dashboardTemplates = [
     {
       id: 'south-africa-dashboard',
@@ -190,10 +277,14 @@ export default function SamFoxCreativeStudio() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-8">
         <Tabs defaultValue="artwork" className="space-y-8">
-          <TabsList className="grid w-full grid-cols-5 lg:w-[800px] mx-auto">
+          <TabsList className="grid w-full grid-cols-6 lg:w-[1000px] mx-auto">
             <TabsTrigger value="artwork" className="flex items-center gap-2">
               <Image className="w-4 h-4" />
               Artwork Gallery
+            </TabsTrigger>
+            <TabsTrigger value="html-designs" className="flex items-center gap-2">
+              <Code className="w-4 h-4" />
+              Complete HTML
             </TabsTrigger>
             <TabsTrigger value="south-africa" className="flex items-center gap-2">
               🇿🇦
@@ -286,6 +377,201 @@ export default function SamFoxCreativeStudio() {
                 </motion.div>
               ))}
             </div>
+          </TabsContent>
+
+          {/* Complete HTML Designs */}
+          <TabsContent value="html-designs" className="space-y-6">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-4 flex items-center justify-center gap-3">
+                <Code className="w-8 h-8" />
+                Complete HTML Design Systems
+              </h2>
+              <p className="text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                Three comprehensive HTML design systems featuring advanced functionality, complete styling, and enterprise-grade features
+              </p>
+            </div>
+
+            <div className="space-y-8">
+              {completeHtmlDesigns.map((design, index) => (
+                <motion.div
+                  key={design.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                >
+                  <Card className="overflow-hidden hover:shadow-2xl transition-all duration-300">
+                    <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/30 dark:to-purple-900/30">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <CardTitle className="text-2xl flex items-center gap-3 mb-2">
+                            {design.id === 'looppay-portal' && '💳'}
+                            {design.id === 'faa-brand-control' && '🏢'}
+                            {design.id === 'fruitful-sponsorship' && '🎵'}
+                            {design.title}
+                          </CardTitle>
+                          <CardDescription className="text-lg">
+                            {design.description}
+                          </CardDescription>
+                        </div>
+                        <Badge variant="outline" className="bg-gradient-to-r from-emerald-500 to-blue-500 text-white border-none">
+                          {design.complexity}
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    
+                    <CardContent className="p-6">
+                      <div className="mb-6">
+                        <h4 className="font-semibold mb-3 text-lg">System Overview</h4>
+                        <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                          {design.htmlContent}
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <div>
+                          <h4 className="font-semibold mb-3">Core Features</h4>
+                          <div className="space-y-2">
+                            {design.features.slice(0, 6).map((feature, i) => (
+                              <div key={i} className="flex items-center gap-2">
+                                <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+                                <span className="text-sm">{feature}</span>
+                              </div>
+                            ))}
+                            {design.features.length > 6 && (
+                              <div className="text-sm text-gray-500 dark:text-gray-400">
+                                +{design.features.length - 6} more features...
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div>
+                          <h4 className="font-semibold mb-3">Technologies Used</h4>
+                          <div className="flex flex-wrap gap-2 mb-4">
+                            {design.technologies.map((tech, i) => (
+                              <Badge key={i} variant="secondary" className="text-xs">
+                                {tech}
+                              </Badge>
+                            ))}
+                          </div>
+
+                          {/* System-specific data */}
+                          {design.pricing && (
+                            <div className="mt-4">
+                              <h5 className="font-medium mb-2">Pricing Structure</h5>
+                              <div className="text-sm space-y-1">
+                                <div>Core License: <span className="font-mono text-emerald-600">{design.pricing.coreLicense}</span></div>
+                                <div>Pro Grid: <span className="font-mono text-blue-600">{design.pricing.proGrid}</span></div>
+                              </div>
+                            </div>
+                          )}
+
+                          {design.brands && (
+                            <div className="mt-4">
+                              <h5 className="font-medium mb-2">Rapid Deploy Brands</h5>
+                              <div className="text-sm space-y-1">
+                                {design.brands.slice(0, 3).map((brand, i) => (
+                                  <div key={i} className="text-xs">{brand}</div>
+                                ))}
+                                <div className="text-xs text-gray-500">+{design.brands.length - 3} more brands</div>
+                              </div>
+                            </div>
+                          )}
+
+                          {design.sponsorshipTiers && (
+                            <div className="mt-4">
+                              <h5 className="font-medium mb-2">Sponsorship Tiers</h5>
+                              <div className="text-sm space-y-1">
+                                {design.sponsorshipTiers.map((tier, i) => (
+                                  <div key={i} className="text-xs">• {tier}</div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex gap-3">
+                        <Button className="flex-1" onClick={() => setSelectedTemplate(design.id)}>
+                          <Eye className="w-4 h-4 mr-2" />
+                          View Complete System
+                        </Button>
+                        <Button variant="outline">
+                          <Download className="w-4 h-4 mr-2" />
+                          Download HTML
+                        </Button>
+                        <Button variant="outline">
+                          <Code className="w-4 h-4 mr-2" />
+                          View Source
+                        </Button>
+                      </div>
+
+                      {/* Expanded view for selected template */}
+                      {selectedTemplate === design.id && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          transition={{ duration: 0.3 }}
+                          className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700"
+                        >
+                          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                            <h5 className="font-semibold mb-3">Complete Feature Set</h5>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                              {design.features.map((feature, i) => (
+                                <div key={i} className="flex items-center gap-2 text-sm">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                                  <span>{feature}</span>
+                                </div>
+                              ))}
+                            </div>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="mt-3"
+                              onClick={() => setSelectedTemplate(null)}
+                            >
+                              Collapse Details
+                            </Button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Integration Summary */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <Card className="bg-gradient-to-r from-emerald-50 to-blue-50 dark:from-emerald-900/20 dark:to-blue-900/20">
+                <CardContent className="p-8 text-center">
+                  <h3 className="text-2xl font-bold mb-4">Complete HTML Design System Portfolio</h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-3xl mx-auto">
+                    These three comprehensive HTML design systems demonstrate advanced functionality including 
+                    payment processing, brand management, sponsorship platforms, multi-language support, 
+                    currency conversion, AI integration, and enterprise-grade features.
+                  </p>
+                  <div className="flex items-center justify-center gap-8 text-sm">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-emerald-600">3</div>
+                      <div className="text-gray-500">Complete Systems</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600">35+</div>
+                      <div className="text-gray-500">Total Features</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-purple-600">15+</div>
+                      <div className="text-gray-500">Integrations</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           </TabsContent>
 
           {/* South Africa Dashboard */}
