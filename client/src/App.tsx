@@ -20,11 +20,14 @@ import { PaymentHub } from "@/components/portal/payment-hub"
 import { VaultMeshCheckout } from "@/components/portal/vaultmesh-checkout"
 import { FruitfulMarketplace } from "@/components/portal/fruitful-marketplace"
 import { AuthenticMarketplace } from "@/components/portal/authentic-marketplace"
+import { RealPricingMarketplace } from "@/components/portal/real-pricing-marketplace"
+import { CompleteSectorListing } from "@/components/portal/complete-sector-listing"
 import { IntegrationsDashboard } from "@/components/portal/integrations-dashboard"
 import { HotStackCodeNest } from "@/components/portal/hotstack-codenest"
 import { RepositoryHub } from "@/components/portal/repository-hub"
 import { SectorOnboardingFlow } from "@/components/portal/sector-onboarding-flow"
 import { SectorNavigationCards } from "@/components/portal/sector-navigation-cards"
+import { SectorRelationshipMapping } from "@/components/portal/sector-relationship-mapping"
 import { BrandIdentityManager } from "@/components/portal/brand-identity-manager"
 import { GlobalDashboard } from "@/components/portal/global-dashboard"
 import { FruitfulSmartToys } from "@/components/portal/fruitful-smart-toys"
@@ -46,9 +49,11 @@ import FruitfulMarketplaceMarketing from "@/pages/fruitful-marketplace-marketing
 import Landing from "@/pages/landing"
 import SectorDashboard from "@/pages/sector-dashboard"
 import SectorIndividualPage from "@/pages/sector-individual"
+import { GlobalSyncIndicator } from "@/components/global-sync-indicator"
 import SectorList from "@/pages/sector-list"
 import SettingsPage from "@/pages/settings"
 import AnalyticsPage from "@/pages/analytics"
+import SectorMapping from "@/pages/sector-mapping"
 import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react"
 import { GlobalFooter } from "@/components/ui/global-footer"
@@ -84,11 +89,7 @@ function PageRouter({ activePage }: { activePage: string }) {
         </div>
       )
     case "sectors":
-      return (
-        <div className="p-8">
-          <SectorList />
-        </div>
-      )
+      return <SectorList />
     case "global-pulse":
       return (
         <div className="p-8">
@@ -121,7 +122,13 @@ function PageRouter({ activePage }: { activePage: string }) {
     case "fruitful-marketplace":
       return (
         <div className="p-8">
-          <AuthenticMarketplace />
+          <RealPricingMarketplace />
+        </div>
+      )
+    case "complete-sectors":
+      return (
+        <div className="p-8">
+          <CompleteSectorListing />
         </div>
       )
     case "hotstack-codenest":
@@ -152,6 +159,18 @@ function PageRouter({ activePage }: { activePage: string }) {
       return (
         <div className="p-8">
           <BrandIdentityManager />
+        </div>
+      )
+    case "sector-mapping":
+      return (
+        <div className="p-8">
+          <SectorMapping />
+        </div>
+      )
+    case "sector-relationship-mapping":
+      return (
+        <div className="p-8">
+          <SectorRelationshipMapping />
         </div>
       )
     case "fruitful-crate-dance":
@@ -296,6 +315,7 @@ function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; s
         </main>
       </div>
       <GlobalFooter className="ml-0 md:ml-80" />
+      <GlobalSyncIndicator />
     </div>
   );
 }

@@ -21,7 +21,7 @@ export default function PortalHome() {
   if (searchQuery) queryParams.set("search", searchQuery)
   if (selectedSector) queryParams.set("sectorId", selectedSector.toString())
 
-  // REAL DATABASE QUERIES - Connected to PostgreSQL with 630+ brands
+  // REAL DATABASE QUERIES - Keep your PAID functionality
   const { data: brands = [], isLoading } = useQuery<Brand[]>({
     queryKey: ["/api/brands", queryParams.toString()],
     staleTime: 30000,
@@ -33,6 +33,12 @@ export default function PortalHome() {
     staleTime: 30000,
     refetchInterval: 30000, // Live data refresh
   })
+
+  // Also get authentic repository data
+  const { data: repoData } = useQuery({
+    queryKey: ["/api/authentic/repositories"],
+    retry: false,
+  });
   
   // Additional live database connections for complete portal functionality
   const { data: systemStatus = [] } = useQuery({
@@ -80,10 +86,10 @@ export default function PortalHome() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent">
-              Fruitful Global Brand Portal
+              Seedwave Portal + Authentic Repository Integration
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              Complete ecosystem with {brands.length || 630} brands across {sectors.length || 45} sectors connected to PostgreSQL database, SecureSign™ VIP, and deployment infrastructure
+              Your paid sector dashboard system ({sectors.length} sectors) + authentic GitHub repositories ({repoData?.totalRepos || 0} repos)
             </p>
           </div>
           <div className="flex items-center gap-4">

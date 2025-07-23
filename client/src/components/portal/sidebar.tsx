@@ -32,7 +32,7 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
     { id: "secure-sign", label: "SecureSign™ VIP", icon: "🔒", badge: "Legal Portal" },
     { id: "brand-identity-manager", label: "Brand Identity Manager", icon: "🏢", badge: "6,005 Individual Sites" },
     { id: "brands", label: "Brand Elements", icon: "🧩", badge: "6,005" },
-    { id: "sectors", label: "Sectors", icon: "🗂️", badge: `${sectors.length}` },
+    { id: "sectors", label: "🏢 Paid Sector Dashboard", icon: "🗂️", badge: `${sectors.length} Sectors` },
     { id: "marketplace", label: "Marketplace", icon: "🛒" },
     { id: "analytics", label: "Analytics", icon: "📊" },
     { id: "integrations", label: "Integrations", icon: "🔌", badge: "Extensions" },
@@ -63,6 +63,8 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
     { id: "hotstack-codenest", label: "🔥 HotStack + CodeNest", icon: "💻", badge: "Independent Repos" },
     { id: "repository-hub", label: "🗃️ Repository Hub", icon: "📂", badge: "GitHub Integration" },
     { id: "sector-onboarding", label: "🚀 Sector Onboarding", icon: "🎯", badge: "Guided Flow" },
+    { id: "sector-mapping", label: "🌐 Sector Relationship Map", icon: "🔗", badge: "Interactive Network" },
+    { id: "sector-relationship-mapping", label: "🔗 Interactive Sector Mapping", icon: "🌐", badge: "Network Graph" },
 
     { id: "omnilevel", label: "🧠 Omnilevel AI Logic", icon: "🤖", badge: "31 Sectors" },
     { id: "omnigrid-faa-zone", label: "🌐 OmniGrid™ FAA.zone™", icon: "🔋", badge: "PulseTrade™" },

@@ -50,7 +50,7 @@ import {
   COMPREHENSIVE_BRAND_DATA
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, or, ilike } from "drizzle-orm";
+import { eq, or, ilike, sql, count } from "drizzle-orm";
 import { FRUITFUL_CRATE_DANCE_SECTORS } from "@shared/fruitful-crate-dance-ecosystem";
 import { 
   SECURESIGN_API_KEYS, 
@@ -238,7 +238,25 @@ export class DatabaseStorage implements IStorage {
 
   // Sectors
   async getAllSectors(): Promise<Sector[]> {
-    return await db.select().from(sectors);
+    // Get sectors with real-time brand counts
+    const sectorsWithCounts = await db
+      .select({
+        id: sectors.id,
+        name: sectors.name,
+        emoji: sectors.emoji,
+        description: sectors.description,
+        brandCount: sql<number>`COALESCE(COUNT(${brands.id}), 0)`.as('brandCount'),
+        subnodeCount: sectors.subnodeCount,
+        price: sectors.price,
+        currency: sectors.currency,
+        metadata: sectors.metadata
+      })
+      .from(sectors)
+      .leftJoin(brands, eq(brands.sectorId, sectors.id))
+      .groupBy(sectors.id, sectors.name, sectors.emoji, sectors.description, sectors.subnodeCount, sectors.price, sectors.currency, sectors.metadata)
+      .orderBy(sectors.name);
+
+    return sectorsWithCounts;
   }
 
   async getSector(id: number): Promise<Sector | undefined> {
@@ -256,7 +274,23 @@ export class DatabaseStorage implements IStorage {
 
   // Brands
   async getAllBrands(): Promise<Brand[]> {
-    return await db.select().from(brands);
+    const allBrands = await db.select().from(brands).orderBy(brands.id);
+    console.log(`🔍 Database returned ${allBrands.length} total brands`);
+    
+    // Check what authentic brands we have
+    const authenticBrands = allBrands.filter(brand => {
+      const isAuthentic = 
+        brand.description?.includes('Authentic') ||
+        brand.name?.includes('™') || 
+        brand.description?.includes('admin panel data');
+      
+      return isAuthentic;
+    });
+    
+    console.log(`✅ Found ${authenticBrands.length} authentic brands with ™ or admin panel data`);
+    
+    // Return all brands for now to fix the 0 count issue - we'll filter properly later
+    return allBrands;
   }
 
   async getBrandsBySearch(query: string): Promise<Brand[]> {
@@ -273,7 +307,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getBrandsBySector(sectorId: number): Promise<Brand[]> {
-    return await db.select().from(brands).where(eq(brands.sectorId, sectorId));
+    return await db.select().from(brands).where(eq(brands.sectorId, sectorId)).orderBy(brands.id);
   }
 
   async getBrand(id: number): Promise<Brand | undefined> {

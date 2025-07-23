@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Search, ChevronRight, CheckCircle, Brain, Sparkles } from 'lucide-react';
+import type { Sector, Brand } from "@shared/schema";
 
 // Complete omnilevel sector data from AI logic
 export const sectorList = {
@@ -261,26 +263,54 @@ export function OmnilevelSelector({
   const [selectedSectorsList, setSelectedSectorsList] = useState<string[]>(selectedSectors);
   const [aiMode, setAiMode] = useState(false);
 
-  // AI-powered completion logic
+  // Fetch real sectors data from database
+  const { data: sectors = [] } = useQuery<Sector[]>({
+    queryKey: ["/api/sectors"],
+  });
+
+  // Fetch real brands data from database
+  const { data: brands = [] } = useQuery<Brand[]>({
+    queryKey: ["/api/brands"],
+  });
+
+  // Convert database sectors to component format with real brand counts
+  const sectorData = sectors.map(sector => ({
+    key: sector.id.toString(),
+    id: sector.id,
+    name: sector.name,
+    emoji: sector.emoji,
+    brandCount: sector.brandCount || 0,
+    subnodeCount: sector.subnodeCount || 0,
+    baseUrl: `${sector.name.toLowerCase().replace(/[^a-z]/g, '')}.seedwave.faa.zone`,
+    brands: brands
+      .filter(brand => brand.sectorId === sector.id)
+      .map(brand => ({
+        name: brand.name,
+        subnodes: brands
+          .filter(subbrand => subbrand.parentId === brand.id)
+          .map(subbrand => subbrand.name)
+      }))
+  }));
+
+  // AI-powered completion logic using real database data
   const getAIRecommendations = (query: string): Array<{key: string, sector: any, relevanceScore: number}> => {
     if (!query) return [];
     
     const queryLower = query.toLowerCase();
     const recommendations: Array<{key: string, sector: any, relevanceScore: number}> = [];
     
-    // Smart matching based on keywords
-    Object.entries(allSectorsData).forEach(([key, sector]) => {
+    // Smart matching based on real data
+    sectorData.forEach((sector) => {
       const sectorName = sector.name.toLowerCase();
       const keywords = [
         ...sector.brands.map((b: any) => b.name.toLowerCase()),
         ...sector.brands.flatMap((b: any) => b.subnodes.map((s: string) => s.toLowerCase())),
-        sector.repoName.toLowerCase(),
         sector.baseUrl.toLowerCase()
       ];
       
       const relevanceScore = keywords.filter((k: string) => k.includes(queryLower)).length;
       if (sectorName.includes(queryLower) || relevanceScore > 0) {
-        recommendations.push({ key, sector, relevanceScore });
+        recommendations.push({ key: sector.key, sector, relevanceScore });
       }
     });
     
@@ -290,8 +320,8 @@ export function OmnilevelSelector({
   };
 
   const filteredSectors = searchQuery 
-    ? getAIRecommendations(searchQuery).map(r => ({ key: r.key, ...r.sector }))
-    : Object.entries(allSectorsData).map(([key, data]) => ({ key, ...data }));
+    ? getAIRecommendations(searchQuery).map(r => r.sector)
+    : sectorData;
 
   const toggleSectorExpansion = (sectorKey: string) => {
     setExpandedSectors(prev => 
@@ -436,7 +466,7 @@ export function OmnilevelSelector({
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base font-semibold">
-                    {sector.name}
+                    {sector.name} ({sector.brandCount || 0})
                   </CardTitle>
                   {isSelected && (
                     <CheckCircle className="w-5 h-5 text-green-500" />
@@ -479,7 +509,7 @@ export function OmnilevelSelector({
                         className="text-xs h-6 p-1"
                       >
                         <ChevronRight className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
-                        {isExpanded ? 'Show Less' : `Show ${sector.brands.length - 1} More`}
+                        {isExpanded ? 'Show Less' : `Show ${(sector.brandCount || sector.brands.length) - 1} More`}
                       </Button>
                     )}
                   </div>
