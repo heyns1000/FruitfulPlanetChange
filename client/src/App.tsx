@@ -317,9 +317,10 @@ function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; s
     );
   }
 
-  if (!isAuthenticated) {
-    return <Router />;
-  }
+  // Always show authenticated app since we're in development mode
+  // if (!isAuthenticated) {
+  //   return <Router />;
+  // }
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
