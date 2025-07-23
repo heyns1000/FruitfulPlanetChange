@@ -39,6 +39,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Register sync routes for real-time synchronization
   app.use('/api/sync', syncRoutes);
+  
+  // Import comprehensive brand sync for API routes
+  const { syncComprehensiveBrandData } = await import('./comprehensive-brand-sync-clean');
+  
+  // Comprehensive Brand Sync API route
+  app.post('/api/sync/comprehensive-brands', async (req, res) => {
+    try {
+      console.log('🔄 Starting comprehensive brand data synchronization from API...');
+      const result = await syncComprehensiveBrandData();
+      
+      if (result.success) {
+        console.log(`✅ Sync completed: ${result.totalAdded} brands added across ${result.sectorsProcessed || 0} sectors`);
+        res.json({
+          success: true,
+          message: result.message,
+          data: {
+            totalCoreAdded: result.totalCoreAdded,
+            totalSubnodesAdded: result.totalSubnodesAdded,
+            totalAdded: result.totalAdded,
+            sectorsProcessed: result.sectorsProcessed || 0
+          }
+        });
+      } else {
+        console.error('❌ Sync failed:', result.error);
+        res.status(500).json({
+          success: false,
+          message: 'Comprehensive brand synchronization failed',
+          error: result.error
+        });
+      }
+    } catch (error) {
+      console.error('❌ API Error during comprehensive sync:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error during brand synchronization',
+        error: error.message
+      });
+    }
+  });
 
 
   // Auth routes
