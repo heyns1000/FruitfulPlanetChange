@@ -43,6 +43,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Import comprehensive brand sync for API routes
   const { syncComprehensiveBrandData } = await import('./comprehensive-brand-sync-clean');
   const { syncAllComprehensiveBrands } = await import('./complete-brand-sync');
+  const { syncAllComprehensiveGlobalData } = await import('./global-comprehensive-sync');
   
   // Comprehensive Brand Sync API route
   app.post('/api/sync/comprehensive-brands', async (req, res) => {
