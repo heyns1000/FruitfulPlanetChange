@@ -30,6 +30,12 @@ export function DatabaseIntegrationStatus() {
     refetchInterval: 30000,
   })
 
+  // Add direct legal documents query for accurate status
+  const { data: legalDocuments = [] } = useQuery({
+    queryKey: ["/api/legal-documents"],
+    refetchInterval: 15000,
+  })
+
   const handleViewDatabase = () => {
     toast({
       title: "Database Access",
@@ -71,8 +77,8 @@ export function DatabaseIntegrationStatus() {
     },
     {
       name: "Legal Documents",
-      count: dashboardStats.legalDocuments || 0,
-      status: dashboardStats.legalDocuments > 0 ? "connected" : "disconnected",
+      count: legalDocuments.length,
+      status: legalDocuments.length > 0 ? "connected" : "disconnected",
       description: "SecureSign™ VIP document management system",
       table: "legal_documents"
     },
