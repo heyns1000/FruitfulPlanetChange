@@ -135,8 +135,8 @@ function VipDashboardComponent() {
   });
 
   // Dashboard metrics calculated from real data
-  const connectedServices = systemStatus.filter(s => s.status === 'connected' || s.status === 'active').length;
-  const totalServices = systemStatus.length;
+  const connectedServices = (systemStatus as any[]).filter((s: any) => s.status === 'connected' || s.status === 'active').length;
+  const totalServices = (systemStatus as any[]).length;
   const connectionStatus = connectedServices === totalServices ? 'connected' : 'partial';
 
   return (
@@ -148,7 +148,7 @@ function VipDashboardComponent() {
           VIP Complete Dashboard Portal
         </h2>
         <p className="text-gray-600 dark:text-gray-300 max-w-4xl mx-auto">
-          Complete ecosystem with {dashboardStats.totalElements || 3794} brands across {sectors.length || 48} sectors connected to PostgreSQL database, SecureSign™ VIP, and deployment infrastructure.
+          Complete ecosystem with {(dashboardStats as any).totalElements || 3794} brands across {(sectors as any[]).length || 48} sectors connected to PostgreSQL database, SecureSign™ VIP, and deployment infrastructure.
         </p>
       </div>
 
@@ -165,7 +165,7 @@ function VipDashboardComponent() {
                 <div className="flex items-center justify-center mb-2">
                   <Database className="w-8 h-8 text-blue-500" />
                 </div>
-                <div className="text-2xl font-bold">{dashboardStats.totalElements || 0}</div>
+                <div className="text-2xl font-bold">{(dashboardStats as any).totalElements || 0}</div>
                 <div className="text-sm text-gray-600 dark:text-gray-300">Total Brands</div>
               </div>
               
@@ -173,7 +173,7 @@ function VipDashboardComponent() {
                 <div className="flex items-center justify-center mb-2">
                   <Activity className="w-8 h-8 text-green-500" />
                 </div>
-                <div className="text-2xl font-bold">{sectors.length}</div>
+                <div className="text-2xl font-bold">{(sectors as any[]).length}</div>
                 <div className="text-sm text-gray-600 dark:text-gray-300">Active Sectors</div>
               </div>
               
@@ -181,7 +181,7 @@ function VipDashboardComponent() {
                 <div className="flex items-center justify-center mb-2">
                   <Shield className="w-8 h-8 text-purple-500" />
                 </div>
-                <div className="text-2xl font-bold">{legalDocuments.length}</div>
+                <div className="text-2xl font-bold">{(legalDocuments as any[]).length}</div>
                 <div className="text-sm text-gray-600 dark:text-gray-300">Legal Documents</div>
               </div>
               
@@ -223,7 +223,7 @@ function VipDashboardComponent() {
                   <span>Brands Database</span>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span className="text-sm">{brands.length} records</span>
+                    <span className="text-sm">{(brands as any[]).length} records</span>
                   </div>
                 </div>
                 
@@ -231,7 +231,7 @@ function VipDashboardComponent() {
                   <span>Sectors Database</span>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span className="text-sm">{sectors.length} records</span>
+                    <span className="text-sm">{(sectors as any[]).length} records</span>
                   </div>
                 </div>
                 
@@ -239,7 +239,7 @@ function VipDashboardComponent() {
                   <span>Legal Documents</span>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span className="text-sm">{legalDocuments.length} records</span>
+                    <span className="text-sm">{(legalDocuments as any[]).length} records</span>
                   </div>
                 </div>
                 
@@ -247,7 +247,7 @@ function VipDashboardComponent() {
                   <span>System Status</span>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span className="text-sm">{systemStatus.length} services</span>
+                    <span className="text-sm">{(systemStatus as any[]).length} services</span>
                   </div>
                 </div>
               </div>
@@ -318,7 +318,7 @@ function VipDashboardComponent() {
               </CardTitle>
               <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
                 <Database className="w-3 h-3 mr-1" />
-                {sectors.length} Sectors
+                {(sectors as any[]).length} Sectors
               </Badge>
             </div>
           </CardHeader>
@@ -330,8 +330,8 @@ function VipDashboardComponent() {
               </div>
             ) : (
               <div className="space-y-2 max-h-96 overflow-y-auto">
-                {sectors.map((sector: any) => {
-                  const sectorBrands = brands.filter((brand: any) => brand.sectorId === sector.id);
+                {(sectors as any[]).map((sector: any) => {
+                  const sectorBrands = (brands as any[]).filter((brand: any) => brand.sectorId === sector.id);
                   const brandCount = sectorBrands.length;
                   return (
                     <div key={sector.id} className="flex items-center justify-between py-2 px-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
@@ -350,7 +350,7 @@ function VipDashboardComponent() {
                         <div className="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                           <div 
                             className="bg-blue-500 h-2 rounded-full transition-all duration-300"
-                            style={{ width: `${Math.min(100, (brandCount / Math.max(...sectors.map((s: any) => brands.filter((b: any) => b.sectorId === s.id).length))) * 100)}%` }}
+                            style={{ width: `${Math.min(100, (brandCount / Math.max(...(sectors as any[]).map((s: any) => (brands as any[]).filter((b: any) => b.sectorId === s.id).length))) * 100)}%` }}
                           />
                         </div>
                       </div>
@@ -378,7 +378,7 @@ function VipDashboardComponent() {
               </CardTitle>
               <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                 <Activity className="w-3 h-3 mr-1" />
-                Live ({brands.length} brands)
+                Live ({(brands as any[]).length} brands)
               </Badge>
             </div>
           </CardHeader>
@@ -397,11 +397,11 @@ function VipDashboardComponent() {
                   <div>Integration</div>
                 </div>
                 
-                {brands.slice(0, 8).map((brand: any, index: number) => (
+                {(brands as any[]).slice(0, 8).map((brand: any, index: number) => (
                   <div key={brand.id} className="grid grid-cols-4 gap-4 text-sm py-2 border-b border-gray-100 dark:border-gray-800">
                     <div className="font-medium">{brand.name}</div>
                     <div className="text-gray-600 dark:text-gray-400">
-                      {sectors.find((s: any) => s.id === brand.sectorId)?.name || 'Unknown'}
+                      {(sectors as any[]).find((s: any) => s.id === brand.sectorId)?.name || 'Unknown'}
                     </div>
                     <div>
                       <Badge 
@@ -415,10 +415,10 @@ function VipDashboardComponent() {
                   </div>
                 ))}
                 
-                {brands.length > 8 && (
+                {(brands as any[]).length > 8 && (
                   <div className="text-center pt-4">
                     <Button variant="outline" size="sm">
-                      View All {brands.length} Brands
+                      View All {(brands as any[]).length} Brands
                     </Button>
                   </div>
                 )}
@@ -440,18 +440,18 @@ function VipDashboardComponent() {
               <h3 className="text-2xl font-bold mb-2">Complete Seedwave Portal Sync Active</h3>
               <p className="text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
                 VIP Dashboard shows live data from the complete Seedwave Brand Management Portal. 
-                All {brands.length} brands across {sectors.length} sectors are synchronized in real-time.
+                All {(brands as any[]).length} brands across {(sectors as any[]).length} sectors are synchronized in real-time.
               </p>
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-emerald-600">{brands.length}</div>
+                <div className="text-3xl font-bold text-emerald-600">{(brands as any[]).length}</div>
                 <div className="text-sm text-gray-500">Total Brands</div>
                 <div className="text-xs text-emerald-600 mt-1">✓ Live Data</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">{sectors.length}</div>
+                <div className="text-3xl font-bold text-blue-600">{(sectors as any[]).length}</div>
                 <div className="text-sm text-gray-500">Active Sectors</div>
                 <div className="text-xs text-blue-600 mt-1">✓ Connected</div>
               </div>
@@ -461,7 +461,7 @@ function VipDashboardComponent() {
                 <div className="text-xs text-purple-600 mt-1">✓ Operational</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-orange-600">{legalDocuments.length}</div>
+                <div className="text-3xl font-bold text-orange-600">{(legalDocuments as any[]).length}</div>
                 <div className="text-sm text-gray-500">Legal Documents</div>
                 <div className="text-xs text-orange-600 mt-1">✓ Secure</div>
               </div>
@@ -473,7 +473,7 @@ function VipDashboardComponent() {
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="text-sm font-medium">Brand Database</div>
-                    <div className="text-xs text-gray-500">{brands.length} records</div>
+                    <div className="text-xs text-gray-500">{(brands as any[]).length} records</div>
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
@@ -486,7 +486,7 @@ function VipDashboardComponent() {
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="text-sm font-medium">Sectors Database</div>
-                    <div className="text-xs text-gray-500">{sectors.length} records</div>
+                    <div className="text-xs text-gray-500">{(sectors as any[]).length} records</div>
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
@@ -499,7 +499,7 @@ function VipDashboardComponent() {
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="text-sm font-medium">Legal Documents</div>
-                    <div className="text-xs text-gray-500">{legalDocuments.length} records</div>
+                    <div className="text-xs text-gray-500">{(legalDocuments as any[]).length} records</div>
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
@@ -512,7 +512,7 @@ function VipDashboardComponent() {
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="text-sm font-medium">System Services</div>
-                    <div className="text-xs text-gray-500">{systemStatus.length} services</div>
+                    <div className="text-xs text-gray-500">{(systemStatus as any[]).length} services</div>
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />

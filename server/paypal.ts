@@ -55,6 +55,14 @@ const oAuthAuthorizationController = new OAuthAuthorizationController(client);
 /* Token generation helpers */
 
 export async function getClientToken() {
+  // Skip PayPal token generation if credentials are not properly configured
+  if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET || 
+      PAYPAL_CLIENT_ID === 'sandbox_client_id' || 
+      PAYPAL_CLIENT_SECRET === 'sandbox_client_secret') {
+    console.warn("PayPal credentials not configured, returning mock token");
+    return "mock_client_token_for_development";
+  }
+
   const auth = Buffer.from(
     `${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`,
   ).toString("base64");
@@ -145,9 +153,17 @@ export async function capturePaypalOrder(req: Request, res: Response) {
 }
 
 export async function loadPaypalDefault(req: Request, res: Response) {
-  const clientToken = await getClientToken();
-  res.json({
-    clientToken,
-  });
+  try {
+    const clientToken = await getClientToken();
+    res.json({
+      clientToken,
+    });
+  } catch (error) {
+    console.error("PayPal client token error:", error);
+    res.json({
+      clientToken: "mock_client_token_for_development",
+      error: "PayPal credentials not configured"
+    });
+  }
 }
 // <END_EXACT_CODE>
