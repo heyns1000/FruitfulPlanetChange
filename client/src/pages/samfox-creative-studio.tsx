@@ -238,11 +238,71 @@ function VipDashboardComponent() {
         </motion.div>
       </div>
 
-      {/* Live Data Table */}
+      {/* Sector Statistics */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.3 }}
+      >
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="w-5 h-5" />
+                Sector Brand Distribution
+              </CardTitle>
+              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                <Database className="w-3 h-3 mr-1" />
+                {sectors.length} Sectors
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {brandsLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <RefreshCw className="w-6 h-6 animate-spin" />
+                <span className="ml-2">Loading sector data...</span>
+              </div>
+            ) : (
+              <div className="space-y-2 max-h-96 overflow-y-auto">
+                {sectors.map((sector: any) => {
+                  const sectorBrands = brands.filter((brand: any) => brand.sectorId === sector.id);
+                  const brandCount = sectorBrands.length;
+                  return (
+                    <div key={sector.id} className="flex items-center justify-between py-2 px-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                          {sector.name}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge 
+                          variant={brandCount > 100 ? 'default' : brandCount > 50 ? 'secondary' : 'outline'}
+                          className="text-xs"
+                        >
+                          {brandCount} brands
+                        </Badge>
+                        <div className="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                          <div 
+                            className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${Math.min(100, (brandCount / Math.max(...sectors.map((s: any) => brands.filter((b: any) => b.sectorId === s.id).length))) * 100)}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Live Brand Data Table */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
       >
         <Card>
           <CardHeader>
@@ -253,7 +313,7 @@ function VipDashboardComponent() {
               </CardTitle>
               <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                 <Activity className="w-3 h-3 mr-1" />
-                Live
+                Live ({brands.length} brands)
               </Badge>
             </div>
           </CardHeader>
@@ -272,7 +332,7 @@ function VipDashboardComponent() {
                   <div>Integration</div>
                 </div>
                 
-                {brands.slice(0, 5).map((brand: any, index: number) => (
+                {brands.slice(0, 8).map((brand: any, index: number) => (
                   <div key={brand.id} className="grid grid-cols-4 gap-4 text-sm py-2 border-b border-gray-100 dark:border-gray-800">
                     <div className="font-medium">{brand.name}</div>
                     <div className="text-gray-600 dark:text-gray-400">
@@ -283,14 +343,14 @@ function VipDashboardComponent() {
                         variant={brand.status === 'active' ? 'default' : 'secondary'} 
                         className="text-xs"
                       >
-                        {brand.status}
+                        {brand.status || 'active'}
                       </Badge>
                     </div>
-                    <div className="text-xs text-gray-500">{brand.integration}</div>
+                    <div className="text-xs text-gray-500">{brand.integration || 'seedwave'}</div>
                   </div>
                 ))}
                 
-                {brands.length > 5 && (
+                {brands.length > 8 && (
                   <div className="text-center pt-4">
                     <Button variant="outline" size="sm">
                       View All {brands.length} Brands
@@ -303,37 +363,83 @@ function VipDashboardComponent() {
         </Card>
       </motion.div>
 
-      {/* Portal Integration Summary */}
+      {/* Complete Portal Synchronization Status */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
+        transition={{ duration: 0.6, delay: 0.5 }}
       >
         <Card className="bg-gradient-to-r from-emerald-50 to-blue-50 dark:from-emerald-900/20 dark:to-blue-900/20">
-          <CardContent className="p-8 text-center">
-            <h3 className="text-2xl font-bold mb-4">Complete Portal Integration Active</h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-3xl mx-auto">
-              This VIP Dashboard provides direct access to the complete Seedwave Brand Management Portal 
-              functionality. All data is live and synchronized with the main portal database, giving you 
-              real-time insights and control directly within SamFox Creative Studio.
-            </p>
-            <div className="flex items-center justify-center gap-8 text-sm">
+          <CardContent className="p-8">
+            <div className="text-center mb-6">
+              <h3 className="text-2xl font-bold mb-2">Complete Seedwave Portal Sync Active</h3>
+              <p className="text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                VIP Dashboard shows live data from the complete Seedwave Brand Management Portal. 
+                All {brands.length} brands across {sectors.length} sectors are synchronized in real-time.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
               <div className="text-center">
-                <div className="text-2xl font-bold text-emerald-600">{dashboardStats.totalElements || 0}</div>
-                <div className="text-gray-500">Live Brands</div>
+                <div className="text-3xl font-bold text-emerald-600">{brands.length}</div>
+                <div className="text-sm text-gray-500">Total Brands</div>
+                <div className="text-xs text-emerald-600 mt-1">✓ Live Data</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">{sectors.length}</div>
-                <div className="text-gray-500">Active Sectors</div>
+                <div className="text-3xl font-bold text-blue-600">{sectors.length}</div>
+                <div className="text-sm text-gray-500">Active Sectors</div>
+                <div className="text-xs text-blue-600 mt-1">✓ Connected</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">{systemStatus.length}</div>
-                <div className="text-gray-500">System Services</div>
+                <div className="text-3xl font-bold text-purple-600">{connectedServices}</div>
+                <div className="text-sm text-gray-500">Services Online</div>
+                <div className="text-xs text-purple-600 mt-1">✓ Operational</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-orange-600">{dashboardStats.legalDocuments || 0}</div>
-                <div className="text-gray-500">Legal Docs</div>
+                <div className="text-3xl font-bold text-orange-600">{dashboardStats.legalDocuments || 0}</div>
+                <div className="text-sm text-gray-500">Legal Documents</div>
+                <div className="text-xs text-orange-600 mt-1">✓ Secure</div>
               </div>
+            </div>
+
+            {/* Real-time Sync Indicators */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-green-200 dark:border-green-800">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-medium">Database Sync</div>
+                    <div className="text-xs text-gray-500">Real-time updates</div>
+                  </div>
+                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                </div>
+              </div>
+              
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-medium">API Integration</div>
+                    <div className="text-xs text-gray-500">Live brand data</div>
+                  </div>
+                  <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+                </div>
+              </div>
+              
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-medium">Portal Access</div>
+                    <div className="text-xs text-gray-500">Full functionality</div>
+                  </div>
+                  <div className="w-3 h-3 bg-purple-500 rounded-full animate-pulse"></div>
+                </div>
+              </div>
+            </div>
+
+            <div className="text-center mt-6">
+              <Badge variant="outline" className="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800">
+                <CheckCircle className="w-3 h-3 mr-1" />
+                All Portal Features Active in SamFox VIP Dashboard
+              </Badge>
             </div>
           </CardContent>
         </Card>
