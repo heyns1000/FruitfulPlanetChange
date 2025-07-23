@@ -19,6 +19,8 @@ import { ExtensionScanner } from "./extension-scanner";
 import { registerAdminPanelRoutes } from './routes-admin-panel';
 import adminPanelRoutes from './routes/admin-panel';
 import syncRoutes from './routes/sync';
+import databaseSchemaRoutes from './routes/database-schema';
+import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -39,6 +41,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Register sync routes for real-time synchronization
   app.use('/api/sync', syncRoutes);
+  
+  // Register database schema routes for comprehensive data integration
+  app.use('/api/database', databaseSchemaRoutes);
+
+  // PayPal payment routes
+  app.get("/paypal/setup", async (req, res) => {
+      await loadPaypalDefault(req, res);
+  });
+
+  app.post("/paypal/order", async (req, res) => {
+    // Request body should contain: { intent, amount, currency }
+    await createPaypalOrder(req, res);
+  });
+
+  app.post("/paypal/order/:orderID/capture", async (req, res) => {
+    await capturePaypalOrder(req, res);
+  });
   
   // Import comprehensive brand sync for API routes
   const { syncComprehensiveBrandData } = await import('./comprehensive-brand-sync-clean');
