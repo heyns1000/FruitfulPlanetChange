@@ -844,6 +844,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const brands = await storage.getAllBrands();
       const sectors = await storage.getAllSectors();
       const payments = await storage.getAllPayments();
+      const legalDocuments = await storage.getLegalDocuments();
+      const repositories = await storage.getAllRepositories();
       
       // Calculate REAL business metrics from actual database data
       const totalElements = brands.length;
@@ -870,6 +872,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         coreBrands,
         subNodes,
         sectors: sectorsCount,
+        legalDocuments: legalDocuments.length,
+        repositories: repositories.length,
+        totalPayments: payments.length,
+        mediaProjects: 0, // Will be populated later
+        processingEngines: 0, // Will be populated later
         integrationTiers: {
           tier1,
           tier2,
