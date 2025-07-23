@@ -42,7 +42,7 @@ export function registerSectorRoutes(app: Express) {
   })
 
   // Get brands for a specific sector
-  app.get('/api/brands', isAuthenticated, async (req, res) => {
+  app.get('/api/brands', async (req, res) => {
     try {
       const { sectorId } = req.query
       
