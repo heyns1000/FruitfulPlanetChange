@@ -313,10 +313,13 @@ export function FruitfulMarketplace() {
                 brand.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 brand.description?.toLowerCase().includes(searchQuery.toLowerCase())
               )
-              .filter((brand, index, array) => 
-                // Remove duplicates by name
-                array.findIndex(b => b.name === brand.name) === index
-              )
+              .filter((brand, index, array) => {
+                // Remove duplicates by name (case-insensitive)
+                const isFirstOccurrence = array.findIndex(b => 
+                  b.name.toLowerCase().trim() === brand.name.toLowerCase().trim()
+                ) === index;
+                return isFirstOccurrence;
+              })
               .slice(0, 9)
               .map((brand, index) => {
                 // Get brand colors based on sector or use defaults
