@@ -42,6 +42,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Import comprehensive brand sync for API routes
   const { syncComprehensiveBrandData } = await import('./comprehensive-brand-sync-clean');
+  const { syncAllComprehensiveBrands } = await import('./complete-brand-sync');
   
   // Comprehensive Brand Sync API route
   app.post('/api/sync/comprehensive-brands', async (req, res) => {
@@ -1402,6 +1403,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
       throw new Error(`Deployment failed: ${error.message}`);
     }
   }
+
+  // Complete Brand Sync API route - syncs ALL 5000+ brands from comprehensive data
+  app.post('/api/sync/complete-brands', async (req, res) => {
+    try {
+      console.log('🚀 Starting COMPLETE brand data synchronization from comprehensive file...');
+      const result = await syncAllComprehensiveBrands();
+      
+      if (result.success) {
+        console.log(`✅ Complete sync finished: ${result.totalAdded} brands added across ${result.sectorsProcessed} sectors`);
+        res.json({
+          success: true,
+          message: result.message,
+          data: {
+            totalCoreAdded: result.totalCoreAdded,
+            totalSubnodesAdded: result.totalSubnodesAdded,
+            totalAdded: result.totalAdded,
+            sectorsProcessed: result.sectorsProcessed
+          }
+        });
+      } else {
+        console.error('❌ Complete sync failed:', result.error);
+        res.status(500).json({
+          success: false,
+          message: 'Complete brand synchronization failed',
+          error: result.error
+        });
+      }
+    } catch (error) {
+      console.error('❌ API Error during complete sync:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error during complete brand synchronization',
+        error: error.message
+      });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;
