@@ -205,7 +205,7 @@ export class DatabaseStorage implements IStorage {
   async createAdminPanelBrand(brandData: InsertAdminPanelBrand): Promise<AdminPanelBrand> {
     const [brand] = await db
       .insert(adminPanelBrands)
-      .values(brandData)
+      .values([brandData])
       .returning();
     return brand;
   }
@@ -223,19 +223,22 @@ export class DatabaseStorage implements IStorage {
 
       // Insert all admin panel brands from comprehensive arrays
       for (const [sectorKey, sectorData] of Object.entries(ADMIN_PANEL_SECTOR_DATA)) {
-        const sectorInfo = SECTOR_MAPPING[sectorKey];
+        const sectorInfo = SECTOR_MAPPING[sectorKey as keyof typeof SECTOR_MAPPING];
         if (!sectorInfo) continue;
 
-        for (let i = 0; i < sectorData.brands.length; i++) {
-          const brand = sectorData.brands[i];
-          const subNodes = sectorData.subNodes && sectorData.subNodes[i] ? sectorData.subNodes[i] : [];
+        const brands = (sectorData as any).brands || [];
+        const subNodes = (sectorData as any).subNodes || [];
+
+        for (let i = 0; i < brands.length; i++) {
+          const brand = brands[i];
+          const subNode = subNodes[i] ? [subNodes[i]] : [];
           
           await this.createAdminPanelBrand({
             sectorKey,
             sectorName: sectorInfo.name,
             sectorEmoji: sectorInfo.emoji,
             brandName: brand,
-            subNodes: Array.isArray(subNodes) ? subNodes : [subNodes].filter(Boolean),
+            subNodes: subNode,
             isCore: true,
             status: "active",
             metadata: {
@@ -255,7 +258,7 @@ export class DatabaseStorage implements IStorage {
       };
     } catch (error) {
       console.error("Error seeding admin panel brands:", error);
-      return { success: false, message: `Failed to seed: ${error.message}` };
+      return { success: false, message: `Failed to seed: ${(error as Error).message}` };
     }
   }
   async getUser(id: string): Promise<User | undefined> {
@@ -1318,7 +1321,7 @@ export class MemStorage implements IStorage {
   }
 
   async createFamilyMember(member: InsertFamilyMember): Promise<FamilyMember> {
-    const [newMember] = await db.insert(familyMembers).values(member).returning();
+    const [newMember] = await db.insert(familyMembers).values([member]).returning();
     return newMember;
   }
 
@@ -1342,12 +1345,16 @@ export class MemStorage implements IStorage {
   }
 
   async createHeritageDocument(document: InsertHeritageDocument): Promise<HeritageDocument> {
-    const [newDocument] = await db.insert(heritageDocuments).values(document).returning();
+    const [newDocument] = await db.insert(heritageDocuments).values([document]).returning();
     return newDocument;
   }
 
   async updateHeritageDocument(id: number, updates: Partial<InsertHeritageDocument>): Promise<HeritageDocument> {
-    const [updated] = await db.update(heritageDocuments).set(updates).where(eq(heritageDocuments.id, id)).returning();
+    const updateData: any = { ...updates };
+    if (updateData.tags && Array.isArray(updateData.tags)) {
+      updateData.tags = updateData.tags;
+    }
+    const [updated] = await db.update(heritageDocuments).set(updateData).where(eq(heritageDocuments.id, id)).returning();
     return updated;
   }
 
@@ -1378,12 +1385,16 @@ export class MemStorage implements IStorage {
   }
 
   async createFamilyEvent(event: InsertFamilyEvent): Promise<FamilyEvent> {
-    const [newEvent] = await db.insert(familyEvents).values(event).returning();
+    const [newEvent] = await db.insert(familyEvents).values([event]).returning();
     return newEvent;
   }
 
   async updateFamilyEvent(id: number, updates: Partial<InsertFamilyEvent>): Promise<FamilyEvent> {
-    const [updated] = await db.update(familyEvents).set(updates).where(eq(familyEvents.id, id)).returning();
+    const updateData: any = { ...updates };
+    if (updateData.participants && Array.isArray(updateData.participants)) {
+      updateData.participants = updateData.participants;
+    }
+    const [updated] = await db.update(familyEvents).set(updateData).where(eq(familyEvents.id, id)).returning();
     return updated;
   }
 

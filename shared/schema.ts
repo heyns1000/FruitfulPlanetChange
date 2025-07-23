@@ -158,6 +158,8 @@ export type InsertRepository = z.infer<typeof insertRepositorySchema>;
 export type Repository = typeof repositories.$inferSelect;
 export type InsertPayment = z.infer<typeof insertPaymentSchema>;
 export type Payment = typeof payments.$inferSelect;
+export type InsertAdminPanelBrand = z.infer<typeof insertAdminPanelBrandSchema>;
+export type AdminPanelBrand = typeof adminPanelBrands.$inferSelect;
 
 // Banimal Integration Tables
 export const banimalTransactions = pgTable("banimal_transactions", {
