@@ -10,17 +10,21 @@ export function DatabaseIntegrationStatus() {
   const { toast } = useToast()
 
   // Connect ONLY to authentic repositories - NO FAKE DATA
-  const { data: brands = [], isLoading: brandsLoading } = useQuery<any[]>({
+  const { data: repoData, isLoading: brandsLoading } = useQuery({
     queryKey: ["/api/authentic/repositories"],
     refetchInterval: 10000, // Update every 10 seconds
     retry: false
-  })
+  });
 
-  const { data: sectors = [], isLoading: sectorsLoading } = useQuery<any[]>({
+  const brands = repoData?.repositories || [];
+
+  const { data: sectorData, isLoading: sectorsLoading } = useQuery({
     queryKey: ["/api/authentic/sectors"],
     refetchInterval: 10000,
     retry: false
-  })
+  });
+
+  const sectors = sectorData?.sectors || [];
 
   const { data: systemStatus = [], isLoading: statusLoading } = useQuery<any[]>({
     queryKey: ["/api/system-status"],
@@ -51,24 +55,24 @@ export function DatabaseIntegrationStatus() {
 
   const integrationStatus = [
     {
-      name: "Brands Database",
-      count: (brands as any[]).length,
-      status: (brands as any[]).length > 0 ? "connected" : "disconnected",
-      description: `PostgreSQL table with ${(brands as any[]).length} active brand records`,
-      table: "brands"
+      name: "Authentic Repositories",
+      count: Array.isArray(brands) ? brands.length : 0,
+      status: Array.isArray(brands) && brands.length > 0 ? "connected" : "disconnected",
+      description: `GitHub repositories from heyns1000 account with ${Array.isArray(brands) ? brands.length : 0} active repositories`,
+      table: "authentic_repositories"
     },
     {
-      name: "Sectors Database", 
-      count: (sectors as any[]).length || 48, // Real sector count from database
-      status: "connected", // Database is active with sectors
-      description: `PostgreSQL table with ${(sectors as any[]).length || 48} sector categories`,
-      table: "sectors"
+      name: "Authentic Sectors",
+      count: Array.isArray(sectors) ? sectors.length : 0,
+      status: Array.isArray(sectors) && sectors.length > 0 ? "connected" : "disconnected",
+      description: `Real sectors from GitHub repositories with ${Array.isArray(sectors) ? sectors.length : 0} active sectors`,
+      table: "authentic_sectors"
     },
     {
       name: "System Status",
-      count: (systemStatus as any[]).length,
-      status: (systemStatus as any[]).length > 0 ? "connected" : "disconnected", 
-      description: `Live monitoring of ${(systemStatus as any[]).length} system services`,
+      count: Array.isArray(systemStatus) ? systemStatus.length : 0,
+      status: Array.isArray(systemStatus) && systemStatus.length > 0 ? "connected" : "disconnected", 
+      description: `Live monitoring of ${Array.isArray(systemStatus) ? systemStatus.length : 0} system services`,
       table: "system_status"
     },
     {
@@ -101,7 +105,7 @@ export function DatabaseIntegrationStatus() {
     },
     {
       name: "Processing Engines",
-      count: dashboardStats.processingEngines || 0,
+      count: (dashboardStats as any)?.processingEngines || 0,
       status: "connected",
       description: "AI processing and automation engines",
       table: "processing_engines"

@@ -85,25 +85,31 @@ export function FruitfulMarketplace() {
   const [selectedCurrency, setSelectedCurrency] = useState<string>('ZAR');
 
   // Connect ONLY to authentic repositories - NO FAKE DATA
-  const { data: sectors = [] } = useQuery({
+  const { data: sectorData } = useQuery({
     queryKey: ["/api/authentic/sectors"],
     retry: false,
   });
 
-  const { data: brands = [] } = useQuery({
+  // Extract authentic sectors
+  const sectors = sectorData?.sectors || [];
+
+  const { data: repoData } = useQuery({
     queryKey: ["/api/authentic/repositories"],
     retry: false,
   });
+
+  // Extract authentic repositories as brands
+  const brands = repoData?.repositories || [];
 
   const { data: stats } = useQuery({
     queryKey: ["/api/dashboard/stats"],
     retry: false,
   });
 
-  // Calculate totals from real database data
-  const totalSectors = sectors.length || Object.keys(sectorList).length;
-  const totalBrands = brands.length || stats?.totalBrands || 5295;
-  const totalNodes = stats?.totalNodes || 7038;
+  // Calculate totals from AUTHENTIC repository data ONLY
+  const totalSectors = sectors.length;
+  const totalBrands = brands.length; 
+  const totalNodes = repoData?.totalRepos || brands.length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800">
@@ -124,7 +130,7 @@ export function FruitfulMarketplace() {
             >
               <Crown className="h-12 w-12 text-yellow-300" />
               <h1 className="text-5xl font-bold tracking-tight">
-                🌐 Global 💰 Packages by Fruitful™
+                🌐 Authentic GitHub Repositories by heyns1000
               </h1>
               <Crown className="h-12 w-12 text-yellow-300" />
             </motion.div>
@@ -135,7 +141,7 @@ export function FruitfulMarketplace() {
               transition={{ delay: 0.4 }}
               className="text-xl text-blue-100 max-w-3xl mx-auto"
             >
-              VaultMesh™ Powered Brand Ecosystem • Comprehensive Licensing Solutions • Global Commerce Platform
+              Authentic Repositories Only • Real GitHub Data • No AI Fiction
             </motion.p>
             
             <motion.div 
@@ -146,11 +152,11 @@ export function FruitfulMarketplace() {
             >
               <div className="flex items-center gap-2">
                 <Package className="h-5 w-5 text-yellow-300" />
-                <span>{totalBrands.toLocaleString()} Total Brands</span>
+                <span>{totalBrands} Real Repositories</span>
               </div>
               <div className="flex items-center gap-2">
                 <Zap className="h-5 w-5 text-yellow-300" />
-                <span>{totalNodes.toLocaleString()} Active Nodes</span>
+                <span>{totalNodes} GitHub Projects</span>
               </div>
               <div className="flex items-center gap-2">
                 <Globe className="h-5 w-5 text-yellow-300" />

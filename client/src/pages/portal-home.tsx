@@ -80,10 +80,10 @@ export default function PortalHome() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent">
-              Fruitful Global Brand Portal
+              Authentic GitHub Repository Portal
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              Complete ecosystem with {brands.length || 630} brands across {sectors.length || 45} sectors connected to PostgreSQL database, SecureSign™ VIP, and deployment infrastructure
+              Real repositories from heyns1000 GitHub account - NO AI fiction, only authentic data from your actual projects
             </p>
           </div>
           <div className="flex items-center gap-4">
