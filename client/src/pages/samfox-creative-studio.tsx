@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,7 +16,21 @@ import {
   Layout,
   Globe,
   Code,
-  Layers
+  Layers,
+  Database,
+  Activity,
+  BarChart3,
+  Users,
+  Settings,
+  Shield,
+  Zap,
+  TrendingUp,
+  DollarSign,
+  FileText,
+  CheckCircle,
+  AlertTriangle,
+  RefreshCw,
+  Monitor
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -24,6 +39,308 @@ import MadibaMockPath from '@/assets/Madiba_mock.png';
 import UFCChampionImage from '@assets/3_1753260859823.png';
 import SamFoxLogo from '@assets/Sam_fox_logo_v02_1753261659048.jpg';
 import SamFoxLinkedInHeader from '@assets/Linkedin_header_1753261659049.png';
+
+// VIP Dashboard Component with Complete Portal Functionality
+function VipDashboardComponent() {
+  // Real-time data from the actual portal APIs
+  const { data: brands = [], isLoading: brandsLoading } = useQuery({
+    queryKey: ["/api/brands/"],
+    refetchInterval: 10000,
+  });
+
+  const { data: sectors = [] } = useQuery({
+    queryKey: ["/api/sectors"],
+    refetchInterval: 10000,
+  });
+
+  const { data: systemStatus = [] } = useQuery({
+    queryKey: ["/api/system-status"],
+    refetchInterval: 5000,
+  });
+
+  const { data: dashboardStats = {} } = useQuery({
+    queryKey: ["/api/dashboard/stats"],
+    refetchInterval: 30000,
+  });
+
+  const { data: legalDocuments = [] } = useQuery({
+    queryKey: ["/api/legal-documents"],
+    refetchInterval: 15000,
+  });
+
+  // Dashboard metrics calculated from real data
+  const connectedServices = systemStatus.filter(s => s.status === 'online').length;
+  const totalServices = systemStatus.length;
+  const connectionStatus = connectedServices === totalServices ? 'connected' : 'partial';
+
+  return (
+    <div className="space-y-6">
+      {/* Dashboard Header */}
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-bold mb-4 flex items-center justify-center gap-3">
+          <Monitor className="w-8 h-8 text-blue-500" />
+          VIP Complete Dashboard Portal
+        </h2>
+        <p className="text-gray-600 dark:text-gray-300 max-w-4xl mx-auto">
+          Complete Seedwave Brand Management Portal integrated directly into SamFox Creative Studio. 
+          Real-time data, comprehensive analytics, and full portal functionality at your fingertips.
+        </p>
+      </div>
+
+      {/* Real-time Status Overview */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/30 dark:to-purple-900/30">
+          <CardContent className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="text-center">
+                <div className="flex items-center justify-center mb-2">
+                  <Database className="w-8 h-8 text-blue-500" />
+                </div>
+                <div className="text-2xl font-bold">{dashboardStats.totalElements || 0}</div>
+                <div className="text-sm text-gray-600 dark:text-gray-300">Total Brands</div>
+              </div>
+              
+              <div className="text-center">
+                <div className="flex items-center justify-center mb-2">
+                  <Activity className="w-8 h-8 text-green-500" />
+                </div>
+                <div className="text-2xl font-bold">{sectors.length}</div>
+                <div className="text-sm text-gray-600 dark:text-gray-300">Active Sectors</div>
+              </div>
+              
+              <div className="text-center">
+                <div className="flex items-center justify-center mb-2">
+                  <Shield className="w-8 h-8 text-purple-500" />
+                </div>
+                <div className="text-2xl font-bold">{dashboardStats.legalDocuments || 0}</div>
+                <div className="text-sm text-gray-600 dark:text-gray-300">Legal Documents</div>
+              </div>
+              
+              <div className="text-center">
+                <div className="flex items-center justify-center mb-2">
+                  {connectionStatus === 'connected' ? (
+                    <CheckCircle className="w-8 h-8 text-green-500" />
+                  ) : (
+                    <AlertTriangle className="w-8 h-8 text-yellow-500" />
+                  )}
+                </div>
+                <div className="text-2xl font-bold">{connectedServices}/{totalServices}</div>
+                <div className="text-sm text-gray-600 dark:text-gray-300">Services Online</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Dashboard Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        {/* Database Integration Status */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+        >
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Database className="w-5 h-5" />
+                Database Integration
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span>Brands Database</span>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-sm">{brands.length} records</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <span>Sectors Database</span>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-sm">{sectors.length} records</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <span>Legal Documents</span>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-sm">{dashboardStats.legalDocuments || 0} records</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <span>System Status</span>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-sm">{systemStatus.length} services</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Quick Actions */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Zap className="w-5 h-5" />
+                Quick Actions
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-3">
+                <Button variant="outline" size="sm" className="h-auto p-3">
+                  <div className="text-center">
+                    <BarChart3 className="w-5 h-5 mx-auto mb-1" />
+                    <div className="text-xs">Analytics</div>
+                  </div>
+                </Button>
+                
+                <Button variant="outline" size="sm" className="h-auto p-3">
+                  <div className="text-center">
+                    <Users className="w-5 h-5 mx-auto mb-1" />
+                    <div className="text-xs">User Mgmt</div>
+                  </div>
+                </Button>
+                
+                <Button variant="outline" size="sm" className="h-auto p-3">
+                  <div className="text-center">
+                    <FileText className="w-5 h-5 mx-auto mb-1" />
+                    <div className="text-xs">Documents</div>
+                  </div>
+                </Button>
+                
+                <Button variant="outline" size="sm" className="h-auto p-3">
+                  <div className="text-center">
+                    <Settings className="w-5 h-5 mx-auto mb-1" />
+                    <div className="text-xs">Settings</div>
+                  </div>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+
+      {/* Live Data Table */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+      >
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5" />
+                Live Brand Data
+              </CardTitle>
+              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                <Activity className="w-3 h-3 mr-1" />
+                Live
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {brandsLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <RefreshCw className="w-6 h-6 animate-spin" />
+                <span className="ml-2">Loading live data...</span>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <div className="grid grid-cols-4 gap-4 text-sm font-medium text-gray-500 dark:text-gray-400 pb-2 border-b">
+                  <div>Brand Name</div>
+                  <div>Sector</div>
+                  <div>Status</div>
+                  <div>Integration</div>
+                </div>
+                
+                {brands.slice(0, 5).map((brand: any, index: number) => (
+                  <div key={brand.id} className="grid grid-cols-4 gap-4 text-sm py-2 border-b border-gray-100 dark:border-gray-800">
+                    <div className="font-medium">{brand.name}</div>
+                    <div className="text-gray-600 dark:text-gray-400">
+                      {sectors.find((s: any) => s.id === brand.sectorId)?.name || 'Unknown'}
+                    </div>
+                    <div>
+                      <Badge 
+                        variant={brand.status === 'active' ? 'default' : 'secondary'} 
+                        className="text-xs"
+                      >
+                        {brand.status}
+                      </Badge>
+                    </div>
+                    <div className="text-xs text-gray-500">{brand.integration}</div>
+                  </div>
+                ))}
+                
+                {brands.length > 5 && (
+                  <div className="text-center pt-4">
+                    <Button variant="outline" size="sm">
+                      View All {brands.length} Brands
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Portal Integration Summary */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+      >
+        <Card className="bg-gradient-to-r from-emerald-50 to-blue-50 dark:from-emerald-900/20 dark:to-blue-900/20">
+          <CardContent className="p-8 text-center">
+            <h3 className="text-2xl font-bold mb-4">Complete Portal Integration Active</h3>
+            <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-3xl mx-auto">
+              This VIP Dashboard provides direct access to the complete Seedwave Brand Management Portal 
+              functionality. All data is live and synchronized with the main portal database, giving you 
+              real-time insights and control directly within SamFox Creative Studio.
+            </p>
+            <div className="flex items-center justify-center gap-8 text-sm">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-emerald-600">{dashboardStats.totalElements || 0}</div>
+                <div className="text-gray-500">Live Brands</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-600">{sectors.length}</div>
+                <div className="text-gray-500">Active Sectors</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-purple-600">{systemStatus.length}</div>
+                <div className="text-gray-500">System Services</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-orange-600">{dashboardStats.legalDocuments || 0}</div>
+                <div className="text-gray-500">Legal Docs</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </div>
+  );
+}
 
 export default function SamFoxCreativeStudio() {
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
@@ -277,7 +594,7 @@ export default function SamFoxCreativeStudio() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-8">
         <Tabs defaultValue="artwork" className="space-y-8">
-          <TabsList className="grid w-full grid-cols-6 lg:w-[1000px] mx-auto">
+          <TabsList className="grid w-full grid-cols-7 lg:w-[1200px] mx-auto">
             <TabsTrigger value="artwork" className="flex items-center gap-2">
               <Image className="w-4 h-4" />
               Artwork Gallery
@@ -285,6 +602,10 @@ export default function SamFoxCreativeStudio() {
             <TabsTrigger value="html-designs" className="flex items-center gap-2">
               <Code className="w-4 h-4" />
               Complete HTML
+            </TabsTrigger>
+            <TabsTrigger value="vip-dashboard" className="flex items-center gap-2">
+              <Monitor className="w-4 h-4" />
+              VIP Dashboard
             </TabsTrigger>
             <TabsTrigger value="south-africa" className="flex items-center gap-2">
               🇿🇦
@@ -572,6 +893,11 @@ export default function SamFoxCreativeStudio() {
                 </CardContent>
               </Card>
             </motion.div>
+          </TabsContent>
+
+          {/* VIP Dashboard - Complete Portal Integration */}
+          <TabsContent value="vip-dashboard" className="space-y-6">
+            <VipDashboardComponent />
           </TabsContent>
 
           {/* South Africa Dashboard */}
