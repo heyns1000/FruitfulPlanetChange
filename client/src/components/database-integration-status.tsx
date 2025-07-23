@@ -68,11 +68,11 @@ export function DatabaseIntegrationStatus() {
       table: "authentic_repositories"
     },
     {
-      name: "Paid Sector Dashboard",
-      count: Array.isArray(sectors) ? sectors.length : 0,
-      status: Array.isArray(sectors) && sectors.length > 0 ? "connected" : "disconnected",
-      description: `Your paid sector dashboard system with ${Array.isArray(sectors) ? sectors.length : 0} active sectors`,
-      table: "sectors"
+      name: "Authentic Sectors",
+      count: Array.isArray(sectorData?.sectors) ? sectorData.sectors.length : 0,
+      status: Array.isArray(sectorData?.sectors) && sectorData.sectors.length > 0 ? "connected" : "disconnected",
+      description: `Real sectors from GitHub repositories with ${Array.isArray(sectorData?.sectors) ? sectorData.sectors.length : 0} active sectors`,
+      table: "authentic_sectors"
     },
     {
       name: "System Status",
@@ -83,36 +83,36 @@ export function DatabaseIntegrationStatus() {
     },
     {
       name: "Legal Documents", 
-      count: (dashboardStats as any)?.legalDocuments || 89, // Default from seeded data
-      status: "connected", // SecureSign™ VIP system is active
+      count: (dashboardStats as any)?.legalDocuments || 0,
+      status: (dashboardStats as any)?.legalDocuments > 0 ? "connected" : "disconnected",
       description: "SecureSign™ VIP document management system",
       table: "legal_documents"
     },
     {
       name: "Payments System",
       count: (dashboardStats as any)?.totalPayments || 0,
-      status: "connected",
+      status: (dashboardStats as any)?.totalPayments > 0 ? "connected" : "disconnected",
       description: "Transaction processing and payment records",
       table: "payments"
     },
     {
       name: "Media Projects",
       count: (dashboardStats as any)?.mediaProjects || 0,
-      status: "connected",
+      status: (dashboardStats as any)?.mediaProjects > 0 ? "connected" : "disconnected",
       description: "Motion, Media & Sonic project database",
       table: "media_projects"
     },
     {
       name: "Repositories",
       count: (dashboardStats as any)?.repositories || 0,
-      status: "connected",
+      status: (dashboardStats as any)?.repositories > 0 ? "connected" : "disconnected",
       description: "Code repository and deployment tracking",
       table: "repositories"
     },
     {
       name: "Processing Engines",
       count: (dashboardStats as any)?.processingEngines || 0,
-      status: "connected",
+      status: (dashboardStats as any)?.processingEngines > 0 ? "connected" : "disconnected",
       description: "AI processing and automation engines",
       table: "processing_engines"
     }
@@ -172,7 +172,7 @@ export function DatabaseIntegrationStatus() {
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-green-600">{brands.length || 630}</div>
+              <div className="text-2xl font-bold text-green-600">{(dashboardStats as any)?.totalBrands || 0}</div>
               <div className="text-sm text-green-600">Total Brand Records</div>
             </div>
           </div>
