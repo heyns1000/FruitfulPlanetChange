@@ -69,9 +69,9 @@ export function DatabaseIntegrationStatus() {
     },
     {
       name: "Authentic Sectors",
-      count: Array.isArray(sectorData?.sectors) ? sectorData.sectors.length : 0,
-      status: Array.isArray(sectorData?.sectors) && sectorData.sectors.length > 0 ? "connected" : "disconnected",
-      description: `Real sectors from GitHub repositories with ${Array.isArray(sectorData?.sectors) ? sectorData.sectors.length : 0} active sectors`,
+      count: (dashboardStats as any)?.totalSectors || 0,
+      status: (dashboardStats as any)?.totalSectors > 0 ? "connected" : "disconnected",
+      description: `Real sectors from GitHub repositories with ${(dashboardStats as any)?.totalSectors || 0} active sectors`,
       table: "authentic_sectors"
     },
     {
