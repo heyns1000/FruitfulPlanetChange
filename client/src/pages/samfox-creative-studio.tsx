@@ -82,7 +82,7 @@ import HeritagePortal from '@/components/HeritagePortal';
 
 // Database Schema successfully removed from SamFox - now exists only in proper database settings
 
-// Sam Fox Design Gallery Data - All 20 Commercial Prints
+// Sam Fox Design Gallery Data - 20 Unique Commercial Prints
 const designGallery = [
   { id: 1, title: "Rabbit Sketch", image: RabbitSketch, price: 12.99, category: "Minimalist", description: "Clean line art rabbit design" },
   { id: 2, title: "Wolf Monster", image: WolfDesign, price: 15.99, category: "Character Art", description: "Bold wolf character with vibrant colors" },
@@ -101,7 +101,7 @@ const designGallery = [
   { id: 15, title: "First Eye", image: FirstEyeDesign, price: 13.99, category: "Spiritual", description: "Third eye spiritual design" },
   { id: 16, title: "Chief Portrait", image: ChiefDesign, price: 19.99, category: "Portrait", description: "Detailed chief character portrait" },
   { id: 17, title: "Drip Style", image: DripDesign, price: 17.49, category: "Street Art", description: "Urban drip style artwork" },
-  { id: 18, title: "Professional Screenshot", image: RabbitSketch, price: 16.99, category: "Professional", description: "High-quality professional design screenshot" },
+  { id: 18, title: "UFC Championship", image: UFCChampionImage, price: 21.99, category: "Sports Art", description: "Sweet Victory UFC championship celebration design" },
   { id: 19, title: "Sam Fox Logo", image: SamFoxLogo, price: 24.99, category: "Branding", description: "Official Sam Fox Creative Studio logo" },
   { id: 20, title: "LinkedIn Header", image: LinkedinHeader, price: 18.99, category: "Professional", description: "Professional LinkedIn header design" }
 ];
