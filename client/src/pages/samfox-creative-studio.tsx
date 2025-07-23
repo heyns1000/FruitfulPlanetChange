@@ -807,9 +807,9 @@ export default function SamFoxCreativeStudio() {
               <Globe className="w-4 h-4" />
               Portfolio
             </TabsTrigger>
-            <TabsTrigger value="gallery" className="flex items-center gap-2">
-              <ShoppingCart className="w-4 h-4" />
-              Design Gallery
+            <TabsTrigger value="heritage" className="flex items-center gap-2">
+              👤
+              AncestorTag™
             </TabsTrigger>
 
           </TabsList>
@@ -1671,6 +1671,252 @@ export default function SamFoxCreativeStudio() {
                 </div>
               </div>
             </div>
+          </TabsContent>
+
+          {/* AncestorTag™ Heritage Portal */}
+          <TabsContent value="heritage" className="space-y-6">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-4 flex items-center justify-center gap-3">
+                <span className="text-4xl">👤</span>
+                AncestorTag™ Heritage Portal
+              </h2>
+              <p className="text-gray-600 dark:text-gray-300 max-w-4xl mx-auto">
+                Complete genealogy and heritage management dashboard with family tree visualization, 
+                ancestry tracking, cultural preservation tools, and comprehensive family history documentation.
+              </p>
+            </div>
+
+            {/* Heritage Dashboard Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+              
+              {/* Family Tree Overview */}
+              <Card className="lg:col-span-2">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <span className="text-2xl">🌳</span>
+                    Family Tree Visualization
+                  </CardTitle>
+                  <CardDescription>
+                    Interactive family tree with ancestral connections and heritage mapping
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg p-6 min-h-[300px] flex items-center justify-center">
+                    <div className="text-center space-y-4">
+                      <div className="text-6xl mb-4">🌳</div>
+                      <h3 className="text-xl font-semibold">Interactive Family Tree</h3>
+                      <p className="text-gray-600 dark:text-gray-300 max-w-md">
+                        Explore your family heritage with our interactive tree visualization. 
+                        Connect ancestors, add stories, and preserve your family legacy.
+                      </p>
+                      <div className="flex gap-3 justify-center">
+                        <Button className="bg-purple-600 hover:bg-purple-700">
+                          <Users className="w-4 h-4 mr-2" />
+                          Build Tree
+                        </Button>
+                        <Button variant="outline">
+                          <Eye className="w-4 h-4 mr-2" />
+                          View Heritage
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Heritage Statistics */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <span className="text-xl">📊</span>
+                    Heritage Metrics
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                    <div className="text-2xl font-bold text-purple-600">127</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Family Members</div>
+                  </div>
+                  <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                    <div className="text-2xl font-bold text-blue-600">8</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Generations</div>
+                  </div>
+                  <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                    <div className="text-2xl font-bold text-green-600">43</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Heritage Documents</div>
+                  </div>
+                  <div className="text-center p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                    <div className="text-2xl font-bold text-yellow-600">15</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Cultural Artifacts</div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Heritage Tools Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                <CardContent className="p-6 text-center">
+                  <div className="text-4xl mb-4">📚</div>
+                  <h3 className="font-semibold mb-2">Family Stories</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    Preserve oral histories and family narratives
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                <CardContent className="p-6 text-center">
+                  <div className="text-4xl mb-4">🗺️</div>
+                  <h3 className="font-semibold mb-2">Migration Maps</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    Track ancestral movements and origins
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                <CardContent className="p-6 text-center">
+                  <div className="text-4xl mb-4">🏺</div>
+                  <h3 className="font-semibold mb-2">Cultural Artifacts</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    Digital preservation of family heirlooms
+                  </p>
+                </CardContent>
+              </Card>
+              
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                <CardContent className="p-6 text-center">
+                  <div className="text-4xl mb-4">🧬</div>
+                  <h3 className="font-semibold mb-2">DNA Integration</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    Connect genetic data with family records
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Family Records & Management */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              
+              {/* Recent Activity */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Activity className="w-5 h-5" />
+                    Recent Heritage Activity
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <div>
+                        <div className="font-medium">Added Sarah Johnson to family tree</div>
+                        <div className="text-xs text-gray-500">2 hours ago</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      <div>
+                        <div className="font-medium">Uploaded family photo from 1952</div>
+                        <div className="text-xs text-gray-500">5 hours ago</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                      <div>
+                        <div className="font-medium">Connected DNA match: Robert Smith</div>
+                        <div className="text-xs text-gray-500">1 day ago</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                      <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                      <div>
+                        <div className="font-medium">Added oral history recording</div>
+                        <div className="text-xs text-gray-500">3 days ago</div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Quick Actions */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Zap className="w-5 h-5" />
+                    Heritage Quick Actions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2">
+                      <Users className="w-6 h-6" />
+                      <span className="text-sm">Add Family Member</span>
+                    </Button>
+                    <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2">
+                      <FileText className="w-6 h-6" />
+                      <span className="text-sm">Upload Document</span>
+                    </Button>
+                    <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2">
+                      <Image className="w-6 h-6" />
+                      <span className="text-sm">Add Photo</span>
+                    </Button>
+                    <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2">
+                      <Globe className="w-6 h-6" />
+                      <span className="text-sm">Share Tree</span>
+                    </Button>
+                    <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2">
+                      <Settings className="w-6 h-6" />
+                      <span className="text-sm">Privacy Settings</span>
+                    </Button>
+                    <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2">
+                      <Download className="w-6 h-6" />
+                      <span className="text-sm">Export Data</span>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Heritage Portal Features */}
+            <Card className="mt-8">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Star className="w-5 h-5" />
+                  AncestorTag™ Premium Features
+                </CardTitle>
+                <CardDescription>
+                  Advanced heritage preservation and genealogy research tools
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="text-center p-4 border rounded-lg">
+                    <div className="text-3xl mb-3">🔗</div>
+                    <h4 className="font-semibold mb-2">Digital Provenance</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                      Irrefutable digital provenance for all family artifacts and documents
+                    </p>
+                  </div>
+                  <div className="text-center p-4 border rounded-lg">
+                    <div className="text-3xl mb-3">🌍</div>
+                    <h4 className="font-semibold mb-2">Global Heritage Network</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                      Connect with other families and discover shared ancestry
+                    </p>
+                  </div>
+                  <div className="text-center p-4 border rounded-lg">
+                    <div className="text-3xl mb-3">🛡️</div>
+                    <h4 className="font-semibold mb-2">Secure Legacy Storage</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                      Blockchain-secured preservation for future generations
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
         </Tabs>
