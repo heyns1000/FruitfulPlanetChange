@@ -19,9 +19,11 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-// Import Madiba artwork and UFC Champion image
+// Import Madiba artwork, UFC Champion image, and Sam Fox authentic branding
 import MadibaMockPath from '@/assets/Madiba_mock.png';
 import UFCChampionImage from '@assets/3_1753260859823.png';
+import SamFoxLogo from '@assets/Sam_fox_logo_v02_1753261659048.jpg';
+import SamFoxLinkedInHeader from '@assets/Linkedin_header_1753261659049.png';
 
 export default function SamFoxCreativeStudio() {
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
@@ -136,8 +138,12 @@ export default function SamFoxCreativeStudio() {
               transition={{ duration: 0.6 }}
               className="flex items-center justify-center gap-3 mb-6"
             >
-              <div className="p-3 bg-gradient-to-br from-rose-500 to-purple-600 rounded-2xl shadow-lg">
-                <Palette className="w-8 h-8 text-white" />
+              <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg">
+                <img 
+                  src={SamFoxLogo} 
+                  alt="Sam Fox Logo"
+                  className="w-full h-full object-cover"
+                />
               </div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-rose-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                 SamFox Creative Studio
@@ -155,7 +161,7 @@ export default function SamFoxCreativeStudio() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto"
             >
-              Beautiful artwork, sports celebration illustrations, elegant dashboard designs, and professional templates crafted with love and artistic vision
+              Authentic Sam Fox creative work featuring beautiful artwork, sports celebration illustrations, elegant dashboard designs, and professional templates crafted with love and artistic vision
             </motion.p>
 
             <motion.div
@@ -600,6 +606,47 @@ export default function SamFoxCreativeStudio() {
               <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
                 A showcase of artistic vision, sports celebration artwork, technical expertise, and creative excellence
               </p>
+
+              {/* Sam Fox Profile Header */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="mt-8"
+              >
+                <Card className="overflow-hidden max-w-4xl mx-auto">
+                  <div className="h-32 relative">
+                    <img 
+                      src={SamFoxLinkedInHeader} 
+                      alt="Sam Fox LinkedIn Header"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/20" />
+                  </div>
+                  <CardContent className="p-6 -mt-8 relative">
+                    <div className="flex items-start gap-6">
+                      <div className="w-24 h-24 rounded-2xl overflow-hidden border-4 border-white shadow-lg">
+                        <img 
+                          src={SamFoxLogo} 
+                          alt="Sam Fox Logo"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1 pt-4">
+                        <h3 className="text-2xl font-bold mb-2">Sam Fox</h3>
+                        <p className="text-gray-600 dark:text-gray-300 mb-4">
+                          Creative Director & Digital Artist specializing in brand identity, illustration, and digital design
+                        </p>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Badge variant="secondary" className="bg-teal-100 text-teal-700">Creative Director</Badge>
+                          <Badge variant="secondary" className="bg-yellow-100 text-yellow-700">Digital Artist</Badge>
+                          <Badge variant="secondary" className="bg-purple-100 text-purple-700">Brand Designer</Badge>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             </div>
 
             {/* UFC Champion Feature Section */}
