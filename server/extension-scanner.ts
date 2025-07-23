@@ -292,6 +292,19 @@ export class ExtensionScanner {
     // Return all known extensions from user's Extension Store
     return [
       {
+        id: 'docx-viewer',
+        name: 'Docx Viewer',
+        description: 'A simple docx viewer.',
+        version: '1.0.2',
+        author: '7heMech',
+        category: 'productivity',
+        keywords: ['docx', 'viewer', 'documents', 'office'],
+        tags: ['docx', 'viewer', 'documents', 'office'],
+        status: 'active',
+        downloads: 582,
+        installDate: new Date().toISOString(),
+      },
+      {
         id: 'csv-editor',
         name: 'CSV Editor',
         description: 'An extension for editing CSV files.',
@@ -301,7 +314,7 @@ export class ExtensionScanner {
         keywords: ['csv', 'files', 'viewer', 'editor', 'tables'],
         tags: ['csv', 'files', 'viewer', 'editor', 'tables'],
         status: 'active',
-        downloads: 1856,
+        downloads: 1861,
         installDate: new Date().toISOString(),
       },
       {
@@ -314,7 +327,7 @@ export class ExtensionScanner {
         keywords: ['root', 'insurance', 'workbench', 'platform'],
         tags: ['root', 'insurance', 'workbench', 'platform'],
         status: 'active',
-        downloads: 345,
+        downloads: 346,
         installDate: new Date().toISOString(),
       },
       {
@@ -327,7 +340,7 @@ export class ExtensionScanner {
         keywords: ['ui', 'sketch', 'design', 'drawing'],
         tags: ['ui', 'sketch', 'design', 'drawing'],
         status: 'active',
-        downloads: 3114,
+        downloads: 3120,
         installDate: new Date().toISOString(),
       },
       {
@@ -340,7 +353,7 @@ export class ExtensionScanner {
         keywords: ['icon', 'generator', 'design', 'extension'],
         tags: ['icon', 'generator', 'design', 'extension'],
         status: 'active',
-        downloads: 6801,
+        downloads: 6811,
         installDate: new Date().toISOString(),
       },
       {
@@ -366,7 +379,20 @@ export class ExtensionScanner {
         keywords: ['chatgpt', 'ai', 'assistant', 'code'],
         tags: ['chatgpt', 'ai', 'assistant', 'code'],
         status: 'active',
-        downloads: 14976,
+        downloads: 14991,
+        installDate: new Date().toISOString(),
+      },
+      {
+        id: 'api-request-tester',
+        name: 'API Request Tester',
+        description: 'A simple UI for making requests to REST and GraphQL APIs',
+        version: '2.1.0',
+        author: 'Replit',
+        category: 'development',
+        keywords: ['api', 'testing', 'rest', 'graphql'],
+        tags: ['api', 'testing', 'rest', 'graphql'],
+        status: 'active',
+        downloads: 6405,
         installDate: new Date().toISOString(),
       },
       {
@@ -379,7 +405,7 @@ export class ExtensionScanner {
         keywords: ['secrets', 'generator', 'random', 'security'],
         tags: ['secrets', 'generator', 'random', 'security'],
         status: 'active',
-        downloads: 947,
+        downloads: 950,
         installDate: new Date().toISOString(),
       },
       {

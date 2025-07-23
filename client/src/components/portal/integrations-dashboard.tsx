@@ -211,6 +211,7 @@ export function IntegrationsDashboard() {
   const getExtensionIcon = (extension: Extension) => {
     // Specific icons for known Replit extensions
     const specificIcons: Record<string, string> = {
+      'docx-viewer': '📄',
       'csv-editor': '📊',
       'root-workbench': '🏢',
       'ui-sketcher': '✏️',
@@ -390,12 +391,16 @@ export function IntegrationsDashboard() {
                     </div>
 
                     <div className="flex gap-2">
-                      <Button size="sm" className="flex-1">
-                        <Settings className="h-4 w-4 mr-2" />
-                        Configure
+                      <Button 
+                        size="sm" 
+                        className="flex-1"
+                        variant={extension.status === 'active' ? 'default' : 'outline'}
+                      >
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                        {extension.status === 'active' ? 'Active' : 'Inactive'}
                       </Button>
                       <Button size="sm" variant="outline">
-                        <ExternalLink className="h-4 w-4" />
+                        <Settings className="h-4 w-4" />
                       </Button>
                     </div>
                   </CardContent>
