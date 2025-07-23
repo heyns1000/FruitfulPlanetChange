@@ -19,8 +19,9 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-// Import Madiba artwork
+// Import Madiba artwork and UFC Champion image
 import MadibaMockPath from '@/assets/Madiba_mock.png';
+import UFCChampionImage from '@assets/3_1753260859823.png';
 
 export default function SamFoxCreativeStudio() {
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
@@ -36,6 +37,17 @@ export default function SamFoxCreativeStudio() {
       dimensions: '841 x 1189 px',
       style: 'Contemporary Portrait',
       colors: ['#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3']
+    },
+    {
+      id: 'ufc-champion',
+      title: 'UFC World Champion - Sweet Victory',
+      description: 'Dynamic illustration celebrating championship success with bold typography and athletic power',
+      image: UFCChampionImage,
+      category: 'Sports Art',
+      medium: 'Digital Illustration',
+      dimensions: '1200 x 900 px',
+      style: 'Sports Victory Art',
+      colors: ['#2D5A5A', '#FFD700', '#FFFFFF', '#FF6B35']
     }
   ];
 
@@ -134,7 +146,7 @@ export default function SamFoxCreativeStudio() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto"
             >
-              Beautiful artwork, elegant dashboard designs, and professional templates crafted with love and artistic vision
+              Beautiful artwork, sports celebration illustrations, elegant dashboard designs, and professional templates crafted with love and artistic vision
             </motion.p>
 
             <motion.div
@@ -187,7 +199,7 @@ export default function SamFoxCreativeStudio() {
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-4">Artwork Gallery</h2>
               <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                Featuring the beautiful Madiba portrait and other artistic creations
+                Featuring the beautiful Madiba portrait, UFC World Champion celebration artwork, and other artistic creations
               </p>
             </div>
             
@@ -376,9 +388,62 @@ export default function SamFoxCreativeStudio() {
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-4">Creative Portfolio</h2>
               <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                A showcase of artistic vision, technical expertise, and creative excellence
+                A showcase of artistic vision, sports celebration artwork, technical expertise, and creative excellence
               </p>
             </div>
+
+            {/* UFC Champion Feature Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="mb-12"
+            >
+              <Card className="overflow-hidden bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-cyan-500/10 border-emerald-500/20">
+                <CardContent className="p-0">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+                    <div className="relative">
+                      <img 
+                        src={UFCChampionImage}
+                        alt="UFC World Champion - Sweet Victory"
+                        className="w-full h-full object-cover min-h-[400px]"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-r from-emerald-900/40 to-transparent" />
+                    </div>
+                    <div className="p-8 lg:p-12 flex flex-col justify-center">
+                      <Badge className="w-fit mb-4 bg-emerald-600 hover:bg-emerald-700">
+                        Featured Sports Art
+                      </Badge>
+                      <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                        UFC World Champion - Sweet Victory
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-300 mb-6 text-lg leading-relaxed">
+                        A powerful celebration of athletic achievement featuring bold typography and dynamic design. 
+                        This artwork captures the essence of championship victory with striking visual elements including 
+                        "HULLE WEET NOU" and "WAT ONS WEET" proclamations, showcasing the triumph of a UFC World Champion.
+                      </p>
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-4">
+                          <Badge variant="outline">Sports Victory Art</Badge>
+                          <Badge variant="outline">Digital Illustration</Badge>
+                          <Badge variant="outline">Championship Theme</Badge>
+                        </div>
+                        <div className="flex gap-3">
+                          <Button className="bg-emerald-600 hover:bg-emerald-700">
+                            <Eye className="w-4 h-4 mr-2" />
+                            View Full Artwork
+                          </Button>
+                          <Button variant="outline">
+                            <Download className="w-4 h-4 mr-2" />
+                            Download Print
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
               <motion.div
@@ -391,12 +456,12 @@ export default function SamFoxCreativeStudio() {
                   <h3 className="text-2xl font-bold mb-4">About SamFox Studio</h3>
                   <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
                     SamFox Creative Studio represents the intersection of artistic vision and technical excellence. 
-                    Specializing in digital art, user interface design, and comprehensive dashboard solutions, 
+                    Specializing in digital art, sports celebration artwork, user interface design, and comprehensive dashboard solutions, 
                     the studio brings together creativity and functionality in every project.
                   </p>
                   <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                    From the beautiful Madiba portrait showcasing artistic talent to sophisticated dashboard 
-                    templates demonstrating technical prowess, each creation reflects a commitment to quality 
+                    From the beautiful Madiba portrait showcasing artistic talent to the dynamic UFC Champion victory artwork 
+                    and sophisticated dashboard templates demonstrating technical prowess, each creation reflects a commitment to quality 
                     and attention to detail.
                   </p>
                 </Card>
@@ -414,7 +479,7 @@ export default function SamFoxCreativeStudio() {
                     </div>
                     <div className="flex items-center gap-2">
                       <Globe className="w-4 h-4 text-purple-500" />
-                      <span className="text-sm">Dashboard Design</span>
+                      <span className="text-sm">Sports Art</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-purple-500" />
