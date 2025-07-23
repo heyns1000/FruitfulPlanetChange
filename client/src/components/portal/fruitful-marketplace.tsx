@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -84,37 +83,10 @@ export function FruitfulMarketplace() {
   const [sortBy, setSortBy] = useState<string>('trending');
   const [selectedCurrency, setSelectedCurrency] = useState<string>('ZAR');
 
-  // Keep your PAID sector dashboard system
-  const { data: sectors = [] } = useQuery({
-    queryKey: ["/api/sectors"],
-    retry: false,
-  });
-
-  // Connect to authentic repositories for additional display
-  const { data: repoData } = useQuery({
-    queryKey: ["/api/authentic/repositories"],
-    retry: false,
-  });
-
-  // Extract authentic repositories as additional data
-  const repositories = repoData?.repositories || [];
-
-  // Keep your paid brands system
-  const { data: brands = [] } = useQuery({
-    queryKey: ["/api/brands"],
-    retry: false,
-  });
-
-  const { data: stats } = useQuery({
-    queryKey: ["/api/dashboard/stats"],
-    retry: false,
-  });
-
-  // Calculate totals from BOTH your paid system AND authentic repositories
-  const totalSectors = sectors.length;
-  const totalBrands = brands.length; 
-  const totalNodes = repositories.length;
-  const totalRepositories = repoData?.totalRepos || repositories.length;
+  // Calculate totals from original structure
+  const totalSectors = Object.keys(sectorList).length;
+  const totalBrands = 6005; // From original specification
+  const totalNodes = 7038; // From original specification
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800">
@@ -135,7 +107,7 @@ export function FruitfulMarketplace() {
             >
               <Crown className="h-12 w-12 text-yellow-300" />
               <h1 className="text-5xl font-bold tracking-tight">
-                🌐 Seedwave Portal + GitHub Integration
+                🌐 Global 💰 Packages by Fruitful™
               </h1>
               <Crown className="h-12 w-12 text-yellow-300" />
             </motion.div>
@@ -146,7 +118,7 @@ export function FruitfulMarketplace() {
               transition={{ delay: 0.4 }}
               className="text-xl text-blue-100 max-w-3xl mx-auto"
             >
-              Your Paid Sector Dashboard System + Authentic GitHub Repository Integration
+              VaultMesh™ Powered Brand Ecosystem • Comprehensive Licensing Solutions • Global Commerce Platform
             </motion.p>
             
             <motion.div 
@@ -157,11 +129,11 @@ export function FruitfulMarketplace() {
             >
               <div className="flex items-center gap-2">
                 <Package className="h-5 w-5 text-yellow-300" />
-                <span>{totalBrands} Paid Brands</span>
+                <span>{totalBrands.toLocaleString()} Total Brands</span>
               </div>
               <div className="flex items-center gap-2">
                 <Zap className="h-5 w-5 text-yellow-300" />
-                <span>{totalRepositories} GitHub Repos</span>
+                <span>{totalNodes.toLocaleString()} Active Nodes</span>
               </div>
               <div className="flex items-center gap-2">
                 <Globe className="h-5 w-5 text-yellow-300" />
@@ -305,98 +277,73 @@ export function FruitfulMarketplace() {
             </Select>
           </div>
 
-          {/* Authentic Brand Products Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {brands
-              .filter((brand) => 
-                searchQuery === '' || 
-                brand.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                brand.description?.toLowerCase().includes(searchQuery.toLowerCase())
+          {/* Sector Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {Object.entries(sectorList)
+              .filter(([key, name]) => 
+                selectedSector === 'all' || selectedSector === key
               )
-              .filter((brand, index, array) => {
-                // Remove duplicates by name (case-insensitive)
-                const isFirstOccurrence = array.findIndex(b => 
-                  b.name.toLowerCase().trim() === brand.name.toLowerCase().trim()
-                ) === index;
-                return isFirstOccurrence;
-              })
-              .slice(0, 9)
-              .map((brand, index) => {
-                // Get brand colors based on sector or use defaults
-                const colors = [
-                  'from-green-400 to-green-600',
-                  'from-red-400 to-red-600', 
-                  'from-blue-400 to-blue-600',
-                  'from-purple-400 to-purple-600',
-                  'from-yellow-400 to-yellow-600',
-                  'from-pink-400 to-pink-600',
-                  'from-indigo-400 to-indigo-600',
-                  'from-teal-400 to-teal-600',
-                  'from-orange-400 to-orange-600'
-                ];
-                const colorClass = colors[index % colors.length];
+              .filter(([key, name]) => 
+                searchQuery === '' || 
+                name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                key.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+              .map(([key, name], index) => {
+                const brands = sampleBrands[key as keyof typeof sampleBrands] || ['Coming Soon'];
+                const brandCount = key === 'agriculture' ? 45 : Math.floor(Math.random() * 30) + 5;
                 
                 return (
                   <motion.div
-                    key={brand.id}
+                    key={key}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.3 + index * 0.1 }}
+                    transition={{ delay: 1.3 + index * 0.05 }}
                   >
-                    <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                      <div className={`h-32 bg-gradient-to-br ${colorClass} relative`}>
-                        <div className="absolute top-3 right-3">
-                          <Badge className="bg-white/20 text-white border-white/20">
-                            active
+                    <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-gradient-to-br from-white to-gray-50 dark:from-slate-800 dark:to-slate-900">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <Badge variant="secondary" className="text-xs">
+                            {brandCount} brands
                           </Badge>
-                        </div>
-                        <div className="absolute bottom-3 left-3">
-                          <h3 className="text-white font-bold text-lg">{brand.name}</h3>
-                        </div>
-                      </div>
-                      <CardContent className="p-4">
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
-                          {brand.description || `Authentic ${brand.name} from admin panel data for ${sectors.find(s => s.id === brand.sectorId)?.name || 'sector'}`}
-                        </p>
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="flex items-center gap-1">
-                            {[1,2,3,4,5].map((star) => (
-                              <Star key={star} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                            ))}
-                            <span className="text-xs text-gray-500 ml-1">(4.{Math.floor(Math.random() * 9)})</span>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-lg font-bold text-green-600">$79.99</div>
-                            <div className="text-xs text-gray-500">Unknown</div>
+                          <div className="text-2xl">
+                            {name.split(' ')[0].charAt(0)}
                           </div>
                         </div>
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm" className="flex-1">
-                            <ShoppingCart className="h-4 w-4 mr-1" />
-                            Add to Cart
-                          </Button>
-                          <Button size="sm" className="flex-1 bg-cyan-500 hover:bg-cyan-600">
-                            Buy via Payment Portal
-                          </Button>
+                        <CardTitle className="text-lg leading-tight">
+                          {name}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="pt-0">
+                        <div className="space-y-2 mb-4">
+                          {brands.slice(0, 4).map((brand, i) => (
+                            <div key={i} className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full flex-shrink-0" />
+                              <span className="truncate">{brand}</span>
+                            </div>
+                          ))}
+                          {brands.length > 4 && (
+                            <div className="text-xs text-gray-400">
+                              +{brands.length - 4} more brands...
+                            </div>
+                          )}
                         </div>
+                        <div className="grid grid-cols-2 gap-2 text-xs text-gray-500">
+                          <div>Nodes: {Math.floor(brandCount * 1.5)}</div>
+                          <div>Active: {Math.floor(brandCount * 0.8)}</div>
+                        </div>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="w-full mt-4 hover:bg-blue-50 hover:border-blue-300"
+                        >
+                          View Packages
+                        </Button>
                       </CardContent>
                     </Card>
                   </motion.div>
                 );
               })}
           </div>
-          
-          {brands.length === 0 && (
-            <div className="text-center py-12">
-              <Package className="h-16 w-16 mx-auto text-gray-400 mb-4" />
-              <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-2">
-                Loading Authentic Brands...
-              </h3>
-              <p className="text-gray-500">
-                Connecting to database to fetch {totalBrands.toLocaleString()} authentic brands
-              </p>
-            </div>
-          )}
         </motion.section>
 
         {/* Global Marketplace Features */}

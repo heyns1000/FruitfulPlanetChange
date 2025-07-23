@@ -79,14 +79,14 @@ export function FruitfulMarketplaceIntegration() {
     }
   })
 
-  // Process marketplace products from database brands with REAL PRICING
+  // Process marketplace products from database brands
   const marketplaceProducts = brands.map((brand: any) => ({
     id: brand.id,
     name: brand.name,
     description: brand.description || "Advanced business solution",
     category: brand.sectorId,
     sector: sectors.find((s: any) => s.id === brand.sectorId)?.name || "Unknown",
-    price: getRealDatabasePrice(brand),
+    price: generateProductPrice(brand.name),
     rating: 4.5 + Math.random() * 0.5,
     inStock: true,
     features: generateProductFeatures(brand.name, brand.description || ""),
@@ -96,28 +96,22 @@ export function FruitfulMarketplaceIntegration() {
     deployment: "Production Ready"
   }))
 
-  function getRealDatabasePrice(brand: any): number {
-    // Get REAL pricing from database metadata
-    if (brand.metadata?.pricing?.monthly) {
-      return brand.metadata.pricing.monthly;
+  function generateProductPrice(brandName: string): number {
+    // REAL SEEDWAVE PORTAL PRICING from your data
+    // ProtectZone™ = $299.99, FlowNature™ = $29.99, GridPreserve™ = $29.99
+    
+    if (brandName.includes('ProtectZone')) return 299.99;
+    if (brandName.includes('FlowNature')) return 29.99;
+    if (brandName.includes('GridPreserve')) return 29.99;
+    
+    // Wildlife & Habitat category pricing from your screenshot
+    if (brandName.includes('Wildlife') || brandName.includes('Habitat') || brandName.includes('Eco') || brandName.includes('Bio')) {
+      if (brandName.includes('Guard') || brandName.includes('Protect')) return 299.99;
+      return 29.99;
     }
     
-    // Get display price if available
-    if (brand.metadata?.displayPrice) {
-      const price = parseFloat(brand.metadata.displayPrice.replace(/[$,]/g, ''));
-      if (!isNaN(price)) return price;
-    }
-    
-    // Fallback to tier-based pricing from database update
-    const tierPricing = {
-      'enterprise': 299.99,
-      'professional': 159.99,
-      'growth': 89.99,
-      'standard': 79.99,
-      'eco': 59.99
-    };
-    
-    return tierPricing[brand.metadata?.pricing?.tier] || 79.99;
+    // Use real pricing tiers from your portal: $29.99, $299.99
+    return brandName.includes('Pro') || brandName.includes('Enterprise') || brandName.includes('Guard') ? 299.99 : 29.99;
   }
 
   function generateProductFeatures(name: string, description: string): string[] {

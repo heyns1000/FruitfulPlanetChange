@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { useQuery } from "@tanstack/react-query";
+import { useState } from 'react';
 import { OmnilevelSelector, allSectorsData } from '@/components/portal/omnilevel-selector';
 import { RecommendationPanel } from '@/components/portal/recommendation-panel';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,48 +11,6 @@ export function OmnilevelPage() {
   const [selectedSectors, setSelectedSectors] = useState<Array<{key: string, data: any}>>([]);
   const [completionStatus, setCompletionStatus] = useState<'idle' | 'processing' | 'complete'>('idle');
 
-  // Load real sectors from database
-  const { data: databaseSectors = [] } = useQuery<any[]>({
-    queryKey: ["/api/sectors"],
-    retry: false
-  });
-
-  // Get total available from database + hardcoded AI logic sectors
-  const totalAvailable = Math.max((databaseSectors as any[]).length || 48, 31); // Real database sector count
-
-  // Load saved selections on component mount
-  useEffect(() => {
-    const savedSelections = localStorage.getItem('omnilevel-selected-sectors');
-    if (savedSelections) {
-      try {
-        const parsed = JSON.parse(savedSelections);
-        if (parsed && parsed.length > 0) {
-          setSelectedSectors(parsed);
-        } else {
-          // Pre-populate with some default sectors if none saved
-          const defaultSelections = [
-            { key: 'ai-logic', data: allSectorsData['ai-logic'] },
-            { key: 'banking', data: allSectorsData['banking'] },
-            { key: 'agriculture', data: allSectorsData['agriculture'] }
-          ];
-          setSelectedSectors(defaultSelections);
-          localStorage.setItem('omnilevel-selected-sectors', JSON.stringify(defaultSelections));
-        }
-      } catch (e) {
-        console.log('Error loading saved selections:', e);
-      }
-    } else {
-      // Pre-populate with some default sectors for first-time users
-      const defaultSelections = [
-        { key: 'ai-logic', data: allSectorsData['ai-logic'] },
-        { key: 'banking', data: allSectorsData['banking'] },
-        { key: 'agriculture', data: allSectorsData['agriculture'] }
-      ];
-      setSelectedSectors(defaultSelections);
-      localStorage.setItem('omnilevel-selected-sectors', JSON.stringify(defaultSelections));
-    }
-  }, []);
-
   const handleSectorSelect = (sectorKey: string, sectorData: any) => {
     setSelectedSectors(prev => {
       const existing = prev.find(s => s.key === sectorKey);
@@ -62,13 +19,6 @@ export function OmnilevelPage() {
       }
       return [...prev, { key: sectorKey, data: sectorData }];
     });
-    
-    // Save selection to localStorage for persistence
-    const updatedSelection = selectedSectors.filter(s => s.key !== sectorKey);
-    if (!selectedSectors.find(s => s.key === sectorKey)) {
-      updatedSelection.push({ key: sectorKey, data: sectorData });
-    }
-    localStorage.setItem('omnilevel-selected-sectors', JSON.stringify(updatedSelection));
   };
 
   const handleRecommendedSectorAdd = (sectorKey: string) => {
@@ -128,7 +78,7 @@ export function OmnilevelPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">Total Available</p>
-                  <p className="text-2xl font-bold text-green-600">{totalAvailable}</p>
+                  <p className="text-2xl font-bold text-green-600">31</p>
                 </div>
                 <Sparkles className="w-8 h-8 text-green-600" />
               </div>
@@ -141,7 +91,7 @@ export function OmnilevelPage() {
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">Completion</p>
                   <p className="text-2xl font-bold text-purple-600">
-                    {Math.round((selectedSectors.length / totalAvailable) * 100)}%
+                    {Math.round((selectedSectors.length / 31) * 100)}%
                   </p>
                 </div>
                 <Brain className="w-8 h-8 text-purple-600" />

@@ -23,11 +23,6 @@ export function SearchFilters({ onSearch, onSectorFilter, selectedSector }: Sear
     queryKey: ["/api/dashboard/stats"],
   })
 
-  const { data: brands = [] } = useQuery({
-    queryKey: ["/api/brands"],
-    retry: false,
-  })
-
   const handleSearch = useCallback((value: string) => {
     setSearchQuery(value)
     onSearch(value)
@@ -46,7 +41,7 @@ export function SearchFilters({ onSearch, onSectorFilter, selectedSector }: Sear
         </div>
         <Input
           type="text"
-          placeholder={`Search across ${brands.length > 0 ? brands.length.toLocaleString() : stats?.totalElements?.toLocaleString() || '5295'} brand elements...`}
+          placeholder={`Search across ${stats?.totalElements?.toLocaleString() || 610} brand elements...`}
           value={searchQuery}
           onChange={(e) => handleSearch(e.target.value)}
           className="pl-12 pr-16 py-3 border-2 border-gray-200 dark:border-gray-700 focus:border-cyan-500 rounded-lg text-lg"

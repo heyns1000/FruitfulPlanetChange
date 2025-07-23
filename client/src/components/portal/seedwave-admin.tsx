@@ -25,13 +25,10 @@ import {
   Activity,
   Eye,
   Rocket,
-  Building,
-  PanelRight
+  Building
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { CurrencyConverter } from '@/components/ui/currency-converter';
-import { EnhancedSidepanel } from '@/components/enhanced-sidepanel';
 
 interface AdminStats {
   totalUsers: number;
@@ -56,7 +53,7 @@ export function SeedwaveAdmin() {
     totalProducts: 89
   });
 
-  // Fetch admin panel data from backend APIs
+  // Fetch admin panel data
   const { data: adminPanelStats } = useQuery({
     queryKey: ['/api/admin-panel/stats'],
     refetchInterval: 30000
@@ -66,48 +63,12 @@ export function SeedwaveAdmin() {
     queryKey: ['/api/admin-panel/brands'],
     refetchInterval: 30000
   });
-  
-  // Enhanced data synchronization with comprehensive backend mirroring
-  const { data: sectorBreakdown = [], refetch: refetchSectorBreakdown, isLoading: isLoadingSectorBreakdown } = useQuery({
-    queryKey: ['/api/admin-panel/sector-breakdown'],
-    staleTime: 0, // Real-time data sync
-    gcTime: 0, // Force fresh data on every request
-    refetchInterval: 5000, // Enhanced refresh every 5 seconds for real-time sync
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
-    refetchOnReconnect: true,
-  });
-
-  // Enhanced real-time stats synchronization
-  const { data: enhancedStats, refetch: refetchStats } = useQuery({
-    queryKey: ['/api/admin-panel/enhanced-stats'],
-    staleTime: 0,
-    gcTime: 0,
-    refetchInterval: 5000,
-  });
-
-  // Complete sector data with deep integration
-  const { data: allSectorsData, refetch: refetchAllSectors } = useQuery({
-    queryKey: ['/api/sectors'],
-    staleTime: 0,
-    gcTime: 0,
-    refetchInterval: 10000,
-  });
-
-  // Comprehensive brand data with full metadata
-  const { data: completeBrandsData, refetch: refetchBrands } = useQuery({
-    queryKey: ['/api/brands'],
-    staleTime: 0,
-    gcTime: 0,
-    refetchInterval: 15000,
-  });
   const [xeroIntegration, setXeroIntegration] = useState<XeroIntegration>({
     connected: false,
     connectionStatus: 'Disconnected'
   });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
-  const [sidepanelVisible, setSidepanelVisible] = useState(false);
   
   const chartRef = useRef<HTMLCanvasElement>(null);
   const { toast } = useToast();
@@ -404,18 +365,8 @@ export function SeedwaveAdmin() {
 
           {/* FAA.ZONE INDEX — Expanded Table Structure with Backend Data */}
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>FAA.ZONE INDEX — Expanded Table Structure ({sectorBreakdown?.length || 0} sectors)</CardTitle>
-              <div className="flex gap-2">
-                <Button onClick={() => setSidepanelVisible(!sidepanelVisible)} variant="outline" size="sm">
-                  <PanelRight className="w-4 h-4 mr-2" />
-                  Database Sync Panel
-                </Button>
-                <Button onClick={() => refetchSectorBreakdown()} variant="outline" size="sm">
-                  <RefreshCw className="w-4 h-4 mr-2" />
-                  Refresh Data
-                </Button>
-              </div>
+            <CardHeader>
+              <CardTitle>FAA.ZONE INDEX — Expanded Table Structure</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
@@ -431,29 +382,24 @@ export function SeedwaveAdmin() {
                     </tr>
                   </thead>
                   <tbody>
-                    {sectorBreakdown && Array.isArray(sectorBreakdown) && sectorBreakdown.length > 0 ? sectorBreakdown.map((sector: any, index: number) => (
-                      <tr key={sector.sector || index} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                    {adminPanelData && Array.isArray(adminPanelData) && adminPanelData.length > 0 ? adminPanelData.map((brand: any) => (
+                      <tr key={`${brand.sector_key}_${brand.brand_name}`} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                         <td className="border border-gray-300 dark:border-gray-700 p-3">
                           <div className="flex items-center gap-2">
-                            <span className="font-medium">{sector.sector}</span>
+                            <span className="text-xl">{brand.sector_emoji}</span>
+                            <span className="font-medium">{brand.sector_name}</span>
                           </div>
                         </td>
                         <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
-                          <Badge variant="outline">{sector.coreBrands}</Badge>
+                          <Badge variant="outline">{brand.brand_name}</Badge>
                         </td>
                         <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
-                          <Badge variant="outline">{sector.totalNodes}</Badge>
+                          <Badge variant="outline">{Array.isArray(brand.sub_nodes) ? brand.sub_nodes.length : 0}</Badge>
                         </td>
+                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">$88</td>
                         <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
-                          <CurrencyConverter usdAmount={sector.monthlyFee} />
-                        </td>
-                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
-                          <Badge variant="default" className={
-                            sector.tier === 'A++' ? "bg-purple-600" :
-                            sector.tier === 'A+' ? "bg-blue-600" :
-                            sector.tier === 'A' ? "bg-green-600" : "bg-gray-600"
-                          }>
-                            {sector.tier}
+                          <Badge variant="default" className={brand.is_core ? "bg-green-600" : "bg-blue-600"}>
+                            {brand.is_core ? "A+" : "B+"}
                           </Badge>
                         </td>
                         <td className="border border-gray-300 dark:border-gray-700 p-3">
@@ -466,11 +412,7 @@ export function SeedwaveAdmin() {
                     )) : (
                       <tr>
                         <td colSpan={6} className="border border-gray-300 dark:border-gray-700 p-3 text-center text-muted-foreground">
-                          {isLoadingSectorBreakdown ? (
-                            <>Loading all 48 sectors from database...</>
-                          ) : (
-                            <>No sector data available. API Response: {JSON.stringify(sectorBreakdown)}</>
-                          )}
+                          Loading admin panel data...
                         </td>
                       </tr>
                     )}
@@ -776,12 +718,6 @@ export function SeedwaveAdmin() {
           </Card>
         </TabsContent>
       </Tabs>
-      
-      {/* Enhanced Sidepanel for Database Synchronization */}
-      <EnhancedSidepanel 
-        isVisible={sidepanelVisible} 
-        onToggle={() => setSidepanelVisible(!sidepanelVisible)} 
-      />
     </div>
   );
 }
