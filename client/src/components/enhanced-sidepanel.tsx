@@ -235,7 +235,7 @@ export function EnhancedSidepanel({ isVisible, onToggle }: EnhancedSidepanelProp
                         <span className="text-xs text-gray-400">#{index + 1}</span>
                         <span className="text-sm">{sector.emoji}</span>
                         <span className="text-xs text-gray-300 truncate" title={sector.sectorName}>
-                          {sector.sectorName.slice(2, 20)}...
+                          {sector.sectorName ? sector.sectorName.slice(2, 20) : 'Unknown'}...
                         </span>
                       </div>
                       <div className="flex items-center gap-2">

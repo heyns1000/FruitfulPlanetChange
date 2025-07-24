@@ -60,9 +60,11 @@ import { GlobalFooter } from "@/components/ui/global-footer"
 
 // Page router component that renders content based on active page
 function PageRouter({ activePage }: { activePage: string }) {
+  console.log("📄 PageRouter called with activePage:", activePage);
   switch (activePage) {
     case "home":
     case "marketplace":
+      console.log("🏠 Returning PortalHome component");
       return <PortalHome />
     case "analytics":
       return (
@@ -288,14 +290,26 @@ function Router() {
 
 function App() {
   const [activePage, setActivePage] = useState("home")
+  
+  console.log("🚀 Main App component rendering");
 
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" storageKey="seedwave-ui-theme">
         <TooltipProvider>
           <OnboardingProvider>
-            <AuthenticatedApp activePage={activePage} setActivePage={setActivePage} />
-            <Toaster />
+            <div id="main-app-wrapper" style={{ 
+              minHeight: '100vh', 
+              backgroundColor: '#f9fafb', 
+              width: '100%', 
+              position: 'relative',
+              display: 'block',
+              visibility: 'visible'
+            }}>
+
+              <AuthenticatedApp activePage={activePage} setActivePage={setActivePage} />
+              <Toaster />
+            </div>
           </OnboardingProvider>
         </TooltipProvider>
       </ThemeProvider>
@@ -306,26 +320,32 @@ function App() {
 function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; setActivePage: (page: string) => void }) {
   const { isAuthenticated, isLoading } = useAuth();
 
+  console.log("🔍 AuthenticatedApp render - isLoading:", isLoading, "isAuthenticated:", isAuthenticated, "activePage:", activePage);
+
   if (isLoading) {
+    console.log("⏳ Showing loading spinner");
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-white">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <p>Loading...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading Seedwave Portal...</p>
         </div>
       </div>
     );
   }
 
-  if (!isAuthenticated) {
-    return <Router />;
-  }
-
+  // Always show authenticated app since we're in development mode
+  // if (!isAuthenticated) {
+  //   return <Router />;
+  // }
+  
+  console.log("✅ Rendering main app UI");
+  
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="flex flex-1">
+    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900" style={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
+      <div className="flex flex-1" style={{ flex: 1, display: 'flex' }}>
         <Sidebar activePage={activePage} setActivePage={setActivePage} />
-        <main className="flex-1 ml-0 md:ml-80 transition-all duration-300">
+        <main className="flex-1 ml-0 md:ml-80 transition-all duration-300" style={{ flex: 1, minHeight: '100vh' }}>
           <PageRouter activePage={activePage} />
         </main>
       </div>

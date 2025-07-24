@@ -158,6 +158,8 @@ export type InsertRepository = z.infer<typeof insertRepositorySchema>;
 export type Repository = typeof repositories.$inferSelect;
 export type InsertPayment = z.infer<typeof insertPaymentSchema>;
 export type Payment = typeof payments.$inferSelect;
+export type InsertAdminPanelBrand = z.infer<typeof insertAdminPanelBrandSchema>;
+export type AdminPanelBrand = typeof adminPanelBrands.$inferSelect;
 
 // Banimal Integration Tables
 export const banimalTransactions = pgTable("banimal_transactions", {
@@ -639,23 +641,7 @@ export const SYSTEM_STATUS = {
   }
 } as const;
 
-// Type definitions
-export type UpsertUser = typeof users.$inferInsert;
-export type User = typeof users.$inferSelect;
-export type Sector = typeof sectors.$inferSelect;
-export type InsertSector = typeof sectors.$inferInsert;
-export type Brand = typeof brands.$inferSelect;
-export type InsertBrand = typeof brands.$inferInsert;
-export type SystemStatus = typeof systemStatus.$inferSelect;
-export type InsertSystemStatus = typeof systemStatus.$inferInsert;
-export type LegalDocument = typeof legalDocuments.$inferSelect;
-export type InsertLegalDocument = typeof legalDocuments.$inferInsert;
-export type Repository = typeof repositories.$inferSelect;
-export type InsertRepository = typeof repositories.$inferInsert;
-export type Payment = typeof payments.$inferSelect;
-export type InsertPayment = typeof payments.$inferInsert;
-export type AdminPanelBrand = typeof adminPanelBrands.$inferSelect;
-export type InsertAdminPanelBrand = typeof adminPanelBrands.$inferInsert;
+
 
 // AncestorTag™ Heritage Portal Tables
 export const familyMembers = pgTable("family_members", {

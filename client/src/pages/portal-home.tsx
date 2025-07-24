@@ -12,6 +12,7 @@ import { MorphingButton, SparkleEffect, PulseIndicator } from "@/components/ui/m
 import type { Brand, Sector } from "@shared/schema"
 
 export default function PortalHome() {
+  console.log("🏠 PortalHome component rendering");
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedSector, setSelectedSector] = useState<number | null>(null)
   const [displayLimit, setDisplayLimit] = useState(8)
@@ -71,7 +72,7 @@ export default function PortalHome() {
   const remainingCount = brands.length - displayLimit
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900" style={{ minHeight: '100vh', backgroundColor: '#f9fafb', display: 'block' }}>
       {/* Global Button Activation System - Makes ALL buttons functional */}
       <GlobalButtonActivator />
       
@@ -83,7 +84,7 @@ export default function PortalHome() {
               Fruitful Global Brand Portal
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              Complete ecosystem with {dashboardStats.totalElements || brands.length} brands across {sectors.length || 48} sectors connected to PostgreSQL database, SecureSign™ VIP, and deployment infrastructure
+              Complete ecosystem with {(dashboardStats as any)?.totalElements || brands.length} brands across {sectors.length || 48} sectors connected to PostgreSQL database, SecureSign™ VIP, and deployment infrastructure
             </p>
           </div>
           <div className="flex items-center gap-4">

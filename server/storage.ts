@@ -113,7 +113,9 @@ export interface IStorage {
   // Payments
   getAllPayments(): Promise<Payment[]>;
   getPayments(): Promise<Payment[]>;
+  getPayment(id: number): Promise<Payment | undefined>;
   createPayment(payment: InsertPayment): Promise<Payment>;
+  updatePayment(id: number, updates: Partial<InsertPayment>): Promise<Payment>;
 
   // Admin Panel Brands
   getAdminPanelBrands(): Promise<AdminPanelBrand[]>;
@@ -176,11 +178,123 @@ export interface IStorage {
   // Heritage Portal - Heritage Metrics
   getHeritageMetrics(userId: string): Promise<HeritageMetrics | undefined>;
   updateHeritageMetrics(userId: string, metrics: InsertHeritageMetrics): Promise<HeritageMetrics>;
+
+  // Banimal Ecosystem
+  seedBanimalData(): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
   
   // Add missing interface methods for complete Seedwave portal integration
+  
+  // Heritage Portal - Family Members
+  async getAllFamilyMembers(userId: string): Promise<FamilyMember[]> {
+    return await db.select().from(familyMembers).where(eq(familyMembers.userId, userId));
+  }
+
+  async getFamilyMember(id: number): Promise<FamilyMember | undefined> {
+    const [member] = await db.select().from(familyMembers).where(eq(familyMembers.id, id));
+    return member;
+  }
+
+  async createFamilyMember(member: InsertFamilyMember): Promise<FamilyMember> {
+    const [result] = await db.insert(familyMembers).values(member).returning();
+    return result;
+  }
+
+  async updateFamilyMember(id: number, updates: Partial<InsertFamilyMember>): Promise<FamilyMember> {
+    const [result] = await db
+      .update(familyMembers)
+      .set(updates)
+      .where(eq(familyMembers.id, id))
+      .returning();
+    return result;
+  }
+
+  async deleteFamilyMember(id: number): Promise<void> {
+    await db.delete(familyMembers).where(eq(familyMembers.id, id));
+  }
+
+  // Heritage Portal - Heritage Documents
+  async getAllHeritageDocuments(userId: string): Promise<HeritageDocument[]> {
+    return await db.select().from(heritageDocuments).where(eq(heritageDocuments.userId, userId));
+  }
+
+  async getHeritageDocument(id: number): Promise<HeritageDocument | undefined> {
+    const [document] = await db.select().from(heritageDocuments).where(eq(heritageDocuments.id, id));
+    return document;
+  }
+
+  async createHeritageDocument(document: InsertHeritageDocument): Promise<HeritageDocument> {
+    const [result] = await db.insert(heritageDocuments).values(document).returning();
+    return result;
+  }
+
+  async updateHeritageDocument(id: number, updates: Partial<InsertHeritageDocument>): Promise<HeritageDocument> {
+    const [result] = await db
+      .update(heritageDocuments)
+      .set(updates)
+      .where(eq(heritageDocuments.id, id))
+      .returning();
+    return result;
+  }
+
+  async deleteHeritageDocument(id: number): Promise<void> {
+    await db.delete(heritageDocuments).where(eq(heritageDocuments.id, id));
+  }
+
+  async searchHeritageDocuments(userId: string, query: string): Promise<HeritageDocument[]> {
+    return await db
+      .select()
+      .from(heritageDocuments)
+      .where(eq(heritageDocuments.userId, userId));
+  }
+
+  // Heritage Portal - Family Events
+  async getAllFamilyEvents(userId: string): Promise<FamilyEvent[]> {
+    return await db.select().from(familyEvents).where(eq(familyEvents.userId, userId));
+  }
+
+  async getFamilyEvent(id: number): Promise<FamilyEvent | undefined> {
+    const [event] = await db.select().from(familyEvents).where(eq(familyEvents.id, id));
+    return event;
+  }
+
+  async createFamilyEvent(event: InsertFamilyEvent): Promise<FamilyEvent> {
+    const [result] = await db.insert(familyEvents).values(event).returning();
+    return result;
+  }
+
+  async updateFamilyEvent(id: number, updates: Partial<InsertFamilyEvent>): Promise<FamilyEvent> {
+    const [result] = await db
+      .update(familyEvents)
+      .set(updates)
+      .where(eq(familyEvents.id, id))
+      .returning();
+    return result;
+  }
+
+  async deleteFamilyEvent(id: number): Promise<void> {
+    await db.delete(familyEvents).where(eq(familyEvents.id, id));
+  }
+
+  // Heritage Portal - Heritage Metrics
+  async getHeritageMetrics(userId: string): Promise<HeritageMetrics | undefined> {
+    const [metrics] = await db.select().from(heritageMetrics).where(eq(heritageMetrics.userId, userId));
+    return metrics;
+  }
+
+  async updateHeritageMetrics(userId: string, metrics: InsertHeritageMetrics): Promise<HeritageMetrics> {
+    const [result] = await db
+      .insert(heritageMetrics)
+      .values({ ...metrics, userId })
+      .onConflictDoUpdate({
+        target: heritageMetrics.userId,
+        set: metrics
+      })
+      .returning();
+    return result;
+  }
   async getCosmicMetrics(): Promise<any> {
     return {
       totalNodes: 15847,
@@ -203,7 +317,7 @@ export class DatabaseStorage implements IStorage {
   async createAdminPanelBrand(brandData: InsertAdminPanelBrand): Promise<AdminPanelBrand> {
     const [brand] = await db
       .insert(adminPanelBrands)
-      .values(brandData)
+      .values([brandData])
       .returning();
     return brand;
   }
@@ -221,19 +335,22 @@ export class DatabaseStorage implements IStorage {
 
       // Insert all admin panel brands from comprehensive arrays
       for (const [sectorKey, sectorData] of Object.entries(ADMIN_PANEL_SECTOR_DATA)) {
-        const sectorInfo = SECTOR_MAPPING[sectorKey];
+        const sectorInfo = SECTOR_MAPPING[sectorKey as keyof typeof SECTOR_MAPPING];
         if (!sectorInfo) continue;
 
-        for (let i = 0; i < sectorData.brands.length; i++) {
-          const brand = sectorData.brands[i];
-          const subNodes = sectorData.subNodes && sectorData.subNodes[i] ? sectorData.subNodes[i] : [];
+        const brands = (sectorData as any).brands || [];
+        const subNodes = (sectorData as any).subNodes || [];
+
+        for (let i = 0; i < brands.length; i++) {
+          const brand = brands[i];
+          const subNode = subNodes[i] ? [subNodes[i]] : [];
           
           await this.createAdminPanelBrand({
             sectorKey,
             sectorName: sectorInfo.name,
-            sectorEmoji: sectorInfo.emoji,
+            sectorEmoji: sectorInfo.name.charAt(0), // Extract emoji properly
             brandName: brand,
-            subNodes: Array.isArray(subNodes) ? subNodes : [subNodes].filter(Boolean),
+            subNodes: subNode,
             isCore: true,
             status: "active",
             metadata: {
@@ -253,7 +370,7 @@ export class DatabaseStorage implements IStorage {
       };
     } catch (error) {
       console.error("Error seeding admin panel brands:", error);
-      return { success: false, message: `Failed to seed: ${error.message}` };
+      return { success: false, message: `Failed to seed: ${(error as Error).message}` };
     }
   }
   async getUser(id: string): Promise<User | undefined> {
@@ -423,6 +540,20 @@ export class DatabaseStorage implements IStorage {
     const [payment] = await db
       .insert(payments)
       .values(insertPayment)
+      .returning();
+    return payment;
+  }
+
+  async getPayment(id: number): Promise<Payment | undefined> {
+    const [payment] = await db.select().from(payments).where(eq(payments.id, id));
+    return payment;
+  }
+
+  async updatePayment(id: number, updates: Partial<InsertPayment>): Promise<Payment> {
+    const [payment] = await db
+      .update(payments)
+      .set(updates)
+      .where(eq(payments.id, id))
       .returning();
     return payment;
   }
@@ -842,6 +973,8 @@ export class MemStorage implements IStorage {
         description: mapping.description || null,
         brandCount: sectorData.brands.length,
         subnodeCount: sectorData.nodes.length,
+        price: "29.99",
+        currency: "USD",
         metadata: null
       };
       this.sectors.set(newSector.id, newSector);
@@ -857,6 +990,8 @@ export class MemStorage implements IStorage {
         description: sectorData.description,
         brandCount: sectorData.brands.length,
         subnodeCount: Math.floor(sectorData.brands.length * 0.3), // 30% subnodes per sector
+        price: "49.99",
+        currency: "USD",
         metadata: null
       };
       this.sectors.set(newSector.id, newSector);
@@ -924,7 +1059,7 @@ export class MemStorage implements IStorage {
       firstName: userData.firstName || null,
       lastName: userData.lastName || null,
       profileImageUrl: userData.profileImageUrl || null,
-      createdAt: userData.createdAt || new Date(),
+      createdAt: new Date(),
       updatedAt: new Date(),
     };
     this.users.set(userData.id, user);
@@ -947,6 +1082,8 @@ export class MemStorage implements IStorage {
       description: insertSector.description || null,
       brandCount: insertSector.brandCount || null,
       subnodeCount: insertSector.subnodeCount || null,
+      price: insertSector.price || "29.99",
+      currency: insertSector.currency || "USD",
       metadata: insertSector.metadata || null
     };
     this.sectors.set(id, sector);
@@ -1302,7 +1439,7 @@ export class MemStorage implements IStorage {
   }
 
   async createFamilyMember(member: InsertFamilyMember): Promise<FamilyMember> {
-    const [newMember] = await db.insert(familyMembers).values(member).returning();
+    const [newMember] = await db.insert(familyMembers).values([member]).returning();
     return newMember;
   }
 
@@ -1326,12 +1463,16 @@ export class MemStorage implements IStorage {
   }
 
   async createHeritageDocument(document: InsertHeritageDocument): Promise<HeritageDocument> {
-    const [newDocument] = await db.insert(heritageDocuments).values(document).returning();
+    const [newDocument] = await db.insert(heritageDocuments).values([document]).returning();
     return newDocument;
   }
 
   async updateHeritageDocument(id: number, updates: Partial<InsertHeritageDocument>): Promise<HeritageDocument> {
-    const [updated] = await db.update(heritageDocuments).set(updates).where(eq(heritageDocuments.id, id)).returning();
+    const updateData: any = { ...updates };
+    if (updateData.tags && Array.isArray(updateData.tags)) {
+      updateData.tags = updateData.tags;
+    }
+    const [updated] = await db.update(heritageDocuments).set(updateData).where(eq(heritageDocuments.id, id)).returning();
     return updated;
   }
 
@@ -1362,12 +1503,16 @@ export class MemStorage implements IStorage {
   }
 
   async createFamilyEvent(event: InsertFamilyEvent): Promise<FamilyEvent> {
-    const [newEvent] = await db.insert(familyEvents).values(event).returning();
+    const [newEvent] = await db.insert(familyEvents).values([event]).returning();
     return newEvent;
   }
 
   async updateFamilyEvent(id: number, updates: Partial<InsertFamilyEvent>): Promise<FamilyEvent> {
-    const [updated] = await db.update(familyEvents).set(updates).where(eq(familyEvents.id, id)).returning();
+    const updateData: any = { ...updates };
+    if (updateData.participants && Array.isArray(updateData.participants)) {
+      updateData.participants = updateData.participants;
+    }
+    const [updated] = await db.update(familyEvents).set(updateData).where(eq(familyEvents.id, id)).returning();
     return updated;
   }
 
