@@ -87,11 +87,26 @@ app.use((req, res, next) => {
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || '5000', 10);
+  
+  // Add error handling for port conflicts
+  server.on('error', (err: any) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`❌ Port ${port} is already in use. Server startup failed.`);
+      console.log('💡 To fix this:');
+      console.log('   1. Stop any other Node.js processes running on this port');
+      console.log('   2. Wait a few seconds and try again');
+      console.log('   3. Or restart the Replit environment');
+      process.exit(1);
+    } else {
+      console.error('❌ Server error:', err);
+      process.exit(1);
+    }
+  });
+
   server.listen({
     port,
     host: "0.0.0.0",
-    reusePort: true,
   }, () => {
-    log(`serving on port ${port}`);
+    log(`🚀 Server successfully started on port ${port}`);
   });
 })();
