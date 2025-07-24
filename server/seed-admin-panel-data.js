@@ -1,38 +1,30 @@
-// Admin Panel Sector Data for comprehensive brand seeding
+// Admin Panel Brand Data for comprehensive ecosystem seeding
 export const ADMIN_PANEL_SECTOR_DATA = {
-  "agriculture": {
-    "brands": ["CropLink", "SoilPulse", "RootYield", "AquaFarm", "AgriMesh", "GrowNode"],
-    "subNodes": ["CropLink ID™", "SoilPulse Trace™", "RootYield Base™", "AquaFarm Sync™", "AgriMesh Route™", "GrowNode Basic™"]
+  agriculture: {
+    brands: ['AgriTech', 'BioFarm', 'CropLogic', 'SoilWise', 'SeedVault'],
+    subNodes: ['AgriPlus', 'BioLink', 'CropFlow']
   },
-  "banking": {
-    "brands": ["FinGrid", "TradeAmp", "LoopPay", "TaxNova", "VaultMaster", "Gridwise"],
-    "subNodes": ["Ledger Mesh", "Arbitrage Core", "Token Router", "Tax Engine", "Vault Lock", "Compliance Matrix"]
+  banking: {
+    brands: ['FinanceCore', 'VaultPay', 'SecureBank', 'CryptoFlow', 'PayGrid'],
+    subNodes: ['FinPlus', 'VaultLink', 'SecureFlow']
   },
-  "creative": {
-    "brands": ["MediaGrid", "StudioPath", "SoundReel", "EditFrame", "MotionKit", "GhostTrace"],
-    "subNodes": ["SceneLink™", "FXLayer™", "ClipVault™", "StudioSync™", "StagePulse™", "RenderMesh™"]
-  },
-  "logistics": {
-    "brands": ["CrateLogic", "PackChain", "SortFleet", "RouteMesh", "LogiStack", "DeliveryX"],
-    "subNodes": ["BoxNode™", "CrateMap™", "PackSync™", "VendorPack™", "LabelTrace™", "ShipGrid™"]
+  creative: {
+    brands: ['CreateCore', 'DesignFlow', 'ArtVault', 'MediaGrid', 'StudioLink'],
+    subNodes: ['CreatePlus', 'DesignLink', 'ArtFlow']
   }
 };
 
 export const SECTOR_MAPPING = {
-  "agriculture": {
-    "name": "🌱 Agriculture & Biotech",
-    "emoji": "🌱"
+  agriculture: {
+    name: '🌱 Agriculture & Biotech',
+    description: 'Advanced agricultural and biotechnology solutions'
   },
-  "banking": {
-    "name": "🏦 Banking & Finance", 
-    "emoji": "🏦"
+  banking: {
+    name: '🏦 Banking & Finance', 
+    description: 'Comprehensive financial services and banking infrastructure'
   },
-  "creative": {
-    "name": "🖋️ Creative Tech",
-    "emoji": "🖋️"
-  },
-  "logistics": {
-    "name": "📦 Logistics & Packaging",
-    "emoji": "📦"
+  creative: {
+    name: '🎨 Creative Tech',
+    description: 'Creative technology and digital design solutions'
   }
 };

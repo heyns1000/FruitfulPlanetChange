@@ -178,11 +178,123 @@ export interface IStorage {
   // Heritage Portal - Heritage Metrics
   getHeritageMetrics(userId: string): Promise<HeritageMetrics | undefined>;
   updateHeritageMetrics(userId: string, metrics: InsertHeritageMetrics): Promise<HeritageMetrics>;
+
+  // Banimal Ecosystem
+  seedBanimalData(): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
   
   // Add missing interface methods for complete Seedwave portal integration
+  
+  // Heritage Portal - Family Members
+  async getAllFamilyMembers(userId: string): Promise<FamilyMember[]> {
+    return await db.select().from(familyMembers).where(eq(familyMembers.userId, userId));
+  }
+
+  async getFamilyMember(id: number): Promise<FamilyMember | undefined> {
+    const [member] = await db.select().from(familyMembers).where(eq(familyMembers.id, id));
+    return member;
+  }
+
+  async createFamilyMember(member: InsertFamilyMember): Promise<FamilyMember> {
+    const [result] = await db.insert(familyMembers).values(member).returning();
+    return result;
+  }
+
+  async updateFamilyMember(id: number, updates: Partial<InsertFamilyMember>): Promise<FamilyMember> {
+    const [result] = await db
+      .update(familyMembers)
+      .set(updates)
+      .where(eq(familyMembers.id, id))
+      .returning();
+    return result;
+  }
+
+  async deleteFamilyMember(id: number): Promise<void> {
+    await db.delete(familyMembers).where(eq(familyMembers.id, id));
+  }
+
+  // Heritage Portal - Heritage Documents
+  async getAllHeritageDocuments(userId: string): Promise<HeritageDocument[]> {
+    return await db.select().from(heritageDocuments).where(eq(heritageDocuments.userId, userId));
+  }
+
+  async getHeritageDocument(id: number): Promise<HeritageDocument | undefined> {
+    const [document] = await db.select().from(heritageDocuments).where(eq(heritageDocuments.id, id));
+    return document;
+  }
+
+  async createHeritageDocument(document: InsertHeritageDocument): Promise<HeritageDocument> {
+    const [result] = await db.insert(heritageDocuments).values(document).returning();
+    return result;
+  }
+
+  async updateHeritageDocument(id: number, updates: Partial<InsertHeritageDocument>): Promise<HeritageDocument> {
+    const [result] = await db
+      .update(heritageDocuments)
+      .set(updates)
+      .where(eq(heritageDocuments.id, id))
+      .returning();
+    return result;
+  }
+
+  async deleteHeritageDocument(id: number): Promise<void> {
+    await db.delete(heritageDocuments).where(eq(heritageDocuments.id, id));
+  }
+
+  async searchHeritageDocuments(userId: string, query: string): Promise<HeritageDocument[]> {
+    return await db
+      .select()
+      .from(heritageDocuments)
+      .where(eq(heritageDocuments.userId, userId));
+  }
+
+  // Heritage Portal - Family Events
+  async getAllFamilyEvents(userId: string): Promise<FamilyEvent[]> {
+    return await db.select().from(familyEvents).where(eq(familyEvents.userId, userId));
+  }
+
+  async getFamilyEvent(id: number): Promise<FamilyEvent | undefined> {
+    const [event] = await db.select().from(familyEvents).where(eq(familyEvents.id, id));
+    return event;
+  }
+
+  async createFamilyEvent(event: InsertFamilyEvent): Promise<FamilyEvent> {
+    const [result] = await db.insert(familyEvents).values(event).returning();
+    return result;
+  }
+
+  async updateFamilyEvent(id: number, updates: Partial<InsertFamilyEvent>): Promise<FamilyEvent> {
+    const [result] = await db
+      .update(familyEvents)
+      .set(updates)
+      .where(eq(familyEvents.id, id))
+      .returning();
+    return result;
+  }
+
+  async deleteFamilyEvent(id: number): Promise<void> {
+    await db.delete(familyEvents).where(eq(familyEvents.id, id));
+  }
+
+  // Heritage Portal - Heritage Metrics
+  async getHeritageMetrics(userId: string): Promise<HeritageMetrics | undefined> {
+    const [metrics] = await db.select().from(heritageMetrics).where(eq(heritageMetrics.userId, userId));
+    return metrics;
+  }
+
+  async updateHeritageMetrics(userId: string, metrics: InsertHeritageMetrics): Promise<HeritageMetrics> {
+    const [result] = await db
+      .insert(heritageMetrics)
+      .values({ ...metrics, userId })
+      .onConflictDoUpdate({
+        target: heritageMetrics.userId,
+        set: metrics
+      })
+      .returning();
+    return result;
+  }
   async getCosmicMetrics(): Promise<any> {
     return {
       totalNodes: 15847,
@@ -236,7 +348,7 @@ export class DatabaseStorage implements IStorage {
           await this.createAdminPanelBrand({
             sectorKey,
             sectorName: sectorInfo.name,
-            sectorEmoji: sectorInfo.emoji,
+            sectorEmoji: sectorInfo.name.charAt(0), // Extract emoji properly
             brandName: brand,
             subNodes: subNode,
             isCore: true,
@@ -861,6 +973,8 @@ export class MemStorage implements IStorage {
         description: mapping.description || null,
         brandCount: sectorData.brands.length,
         subnodeCount: sectorData.nodes.length,
+        price: "29.99",
+        currency: "USD",
         metadata: null
       };
       this.sectors.set(newSector.id, newSector);
@@ -876,6 +990,8 @@ export class MemStorage implements IStorage {
         description: sectorData.description,
         brandCount: sectorData.brands.length,
         subnodeCount: Math.floor(sectorData.brands.length * 0.3), // 30% subnodes per sector
+        price: "49.99",
+        currency: "USD",
         metadata: null
       };
       this.sectors.set(newSector.id, newSector);
@@ -943,7 +1059,7 @@ export class MemStorage implements IStorage {
       firstName: userData.firstName || null,
       lastName: userData.lastName || null,
       profileImageUrl: userData.profileImageUrl || null,
-      createdAt: userData.createdAt || new Date(),
+      createdAt: new Date(),
       updatedAt: new Date(),
     };
     this.users.set(userData.id, user);
@@ -966,6 +1082,8 @@ export class MemStorage implements IStorage {
       description: insertSector.description || null,
       brandCount: insertSector.brandCount || null,
       subnodeCount: insertSector.subnodeCount || null,
+      price: insertSector.price || "29.99",
+      currency: insertSector.currency || "USD",
       metadata: insertSector.metadata || null
     };
     this.sectors.set(id, sector);
