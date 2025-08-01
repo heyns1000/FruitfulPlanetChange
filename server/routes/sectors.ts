@@ -4,7 +4,7 @@ import { isAuthenticated } from "../replitAuth"
 
 export function registerSectorRoutes(app: Express) {
   // Get all sectors
-  app.get('/api/sectors', isAuthenticated, async (req, res) => {
+  app.get('/api/sectors', async (req, res) => {
     try {
       const sectors = await storage.getAllSectors()
       res.json(sectors)
@@ -15,7 +15,7 @@ export function registerSectorRoutes(app: Express) {
   })
 
   // Get specific sector by ID or slug
-  app.get('/api/sectors/:sectorId', isAuthenticated, async (req, res) => {
+  app.get('/api/sectors/:sectorId', async (req, res) => {
     try {
       const { sectorId } = req.params
       
