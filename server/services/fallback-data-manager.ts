@@ -52,16 +52,50 @@ export const FALLBACK_SECTORS: Sector[] = [
   { id: 48, name: "🎯 Strategic Operations", emoji: "🎯", description: "Strategic operations and planning", brandCount: 52, subnodeCount: 18 }
 ];
 
-export const FALLBACK_BRANDS: Brand[] = [
-  { id: 1, name: "VaultMesh Core", description: "Central infrastructure management", sectorId: 1, integration: "VaultMesh™", status: "active", isCore: true },
-  { id: 2, name: "AgriTech Solutions", description: "Smart farming technology", sectorId: 1, integration: "VaultMesh™", status: "active", isCore: true },
-  { id: 3, name: "FinanceFlow", description: "Payment processing system", sectorId: 2, integration: "FAA.ZONE™", status: "active", isCore: true },
-  { id: 4, name: "MineTrace Analytics", description: "Mining operation analytics", sectorId: 3, integration: "HotStack", status: "active", isCore: true },
-  { id: 5, name: "SonicGrid", description: "Audio processing engine", sectorId: 4, integration: "VaultMesh™", status: "active", isCore: true },
-  { id: 6, name: "PowerNode", description: "Energy distribution network", sectorId: 5, integration: "FAA.ZONE™", status: "active", isCore: true },
-  { id: 7, name: "AgriSub-Alpha", description: "Crop monitoring sensors", sectorId: 1, integration: "VaultMesh™", status: "active", isCore: false, parentId: 2 },
-  { id: 8, name: "FinSub-Beta", description: "Credit scoring module", sectorId: 2, integration: "FAA.ZONE™", status: "active", isCore: false, parentId: 3 }
-];
+// COMPREHENSIVE BRAND DATA - GENERATED FROM YOUR 48 SECTORS
+export const FALLBACK_BRANDS: Brand[] = (() => {
+  const brands: Brand[] = [];
+  let brandId = 1;
+  
+  // Generate brands for each of the 48 sectors based on their brand counts
+  FALLBACK_SECTORS.forEach((sector, index) => {
+    const brandCount = sector.brandCount || 0;
+    const subnodeCount = sector.subnodeCount || 0;
+    const coreCount = brandCount - subnodeCount;
+    
+    // Generate core brands for this sector
+    for (let i = 0; i < coreCount; i++) {
+      brands.push({
+        id: brandId++,
+        name: `${sector.name.replace(/[^\w\s]/g, '').trim()} Core ${i + 1}`,
+        description: `Core ${sector.description} brand`,
+        sectorId: sector.id,
+        integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+        status: "active",
+        isCore: true
+      });
+    }
+    
+    // Generate subnodes for this sector
+    for (let i = 0; i < subnodeCount; i++) {
+      const parentIndex = Math.floor(i / 3); // 3 subnodes per parent
+      const parentId = brands.find(b => b.sectorId === sector.id && b.isCore)?.id || brandId - 1;
+      
+      brands.push({
+        id: brandId++,
+        name: `${sector.name.replace(/[^\w\s]/g, '').trim()} Sub ${i + 1}`,
+        description: `Subnode for ${sector.description}`,
+        sectorId: sector.id,
+        integration: ["VaultMesh™", "FAA.ZONE™", "HotStack"][i % 3],
+        status: "active",
+        isCore: false,
+        parentId: parentId
+      });
+    }
+  });
+  
+  return brands;
+})();
 
 export class FallbackDataManager {
   static getSectors(): Sector[] {
