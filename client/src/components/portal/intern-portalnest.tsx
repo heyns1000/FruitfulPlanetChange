@@ -90,7 +90,7 @@ export function InternPortalNest() {
     coreComponents: [
       {
         name: "Seedwave Portal",
-        description: "Main management dashboard for 6,005+ brands across sectors",
+        description: "Main management dashboard for brands across sectors",
         htmlFiles: ["index.html", "admin-portal.html", "admin-panel_full_arrays.html"],
         integration: "Central data hub with PostgreSQL backend",
         internRole: "Learn brand management, sector organization, database operations"

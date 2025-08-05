@@ -372,7 +372,7 @@ export function FruitfulMarketplace() {
               {
                 icon: <Zap className="h-8 w-8 text-yellow-500" />,
                 title: "Real-time Sync", 
-                description: "Live inventory tracking across all 6,005+ products and brands"
+                description: "Live inventory tracking across all products and brands"
               },
               {
                 icon: <Crown className="h-8 w-8 text-purple-500" />,

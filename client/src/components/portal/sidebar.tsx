@@ -26,12 +26,22 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
     queryKey: ["/api/sectors"],
   })
 
+  const { data: dashboardStats = {} } = useQuery({
+    queryKey: ["/api/dashboard/stats"],
+    staleTime: 30000,
+  })
+
+  const { data: brands = [] } = useQuery({
+    queryKey: ["/api/brands"],
+    staleTime: 30000,
+  })
+
   const navItems = [
     { id: "home", label: "Portal Home", icon: "🏠" },
-    { id: "fruitful-crate-dance", label: "Fruitful Crate Dance", icon: "🕺", badge: "6,005+ Brands" },
+    { id: "fruitful-crate-dance", label: "Fruitful Crate Dance", icon: "🕺", badge: `${dashboardStats?.totalElements || 0} Brands` },
     { id: "secure-sign", label: "SecureSign™ VIP", icon: "🔒", badge: "Legal Portal" },
-    { id: "brand-identity-manager", label: "Brand Identity Manager", icon: "🏢", badge: "6,005 Individual Sites" },
-    { id: "brands", label: "Brand Elements", icon: "🧩", badge: "6,005" },
+    { id: "brand-identity-manager", label: "Brand Identity Manager", icon: "🏢", badge: `${dashboardStats?.totalElements || 0} Individual Sites` },
+    { id: "brands", label: "Brand Elements", icon: "🧩", badge: `${dashboardStats?.totalElements || 0}` },
     { id: "sectors", label: "Sectors", icon: "🗂️", badge: `${sectors.length}` },
     { id: "marketplace", label: "Marketplace", icon: "🛒" },
     { id: "analytics", label: "Analytics", icon: "📊" },
@@ -41,16 +51,16 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
 
   const mainSections = [
     { id: "global-dashboard", label: "📊 Global Dashboard", icon: "📈", badge: "Live Analytics" },
-    { id: "ecosystem-explorer", label: "🌐 Ecosystem Explorer", icon: "🗺️", badge: "45 Sectors" },
+    { id: "ecosystem-explorer", label: "🌐 Ecosystem Explorer", icon: "🗺️", badge: `${sectors.length} Sectors` },
     { id: "global-pulse", label: "Global Pulse", icon: "🌍", badge: "Analytics" },
-    { id: "seedwave-admin", label: "🦁 Seedwave™ Admin", icon: "⚙️", badge: "1,967 Brands" },
+    { id: "seedwave-admin", label: "🦁 Seedwave™ Admin", icon: "⚙️", badge: `${dashboardStats?.totalElements || 0} Brands` },
   ]
 
   const vaultmeshSections = [
     { id: "vaultmesh-dashboard", label: "🌐 VaultMesh™ Dashboard", icon: "📊", badge: "Infrastructure" },
     { id: "vaultmesh-about", label: "ℹ️ About VaultMesh™", icon: "📋", badge: "Core Info" },
-    { id: "vaultmesh-products", label: "📦 VaultMesh™ Products", icon: "🛠️", badge: "8 Solutions" },
-    { id: "vaultmesh-brands", label: "🎯 Brand Packages", icon: "📊", badge: "610 Brands" },
+    { id: "vaultmesh-products", label: "📦 VaultMesh™ Products", icon: "🛠️", badge: `${dashboardStats?.coreBrands || 0} Solutions` },
+    { id: "vaultmesh-brands", label: "🎯 Brand Packages", icon: "📊", badge: `${dashboardStats?.totalElements || 0} Brands` },
     { id: "vaultmesh-checkout", label: "🔐 VaultMesh™ Checkout", icon: "💳", badge: "Enterprise" },
   ]
 
@@ -66,7 +76,7 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
     { id: "sector-mapping", label: "🌐 Sector Relationship Map", icon: "🔗", badge: "Interactive Network" },
     { id: "sector-relationship-mapping", label: "🔗 Interactive Sector Mapping", icon: "🌐", badge: "Network Graph" },
 
-    { id: "omnilevel", label: "🧠 Omnilevel AI Logic", icon: "🤖", badge: "31 Sectors" },
+    { id: "omnilevel", label: "🧠 Omnilevel AI Logic", icon: "🤖", badge: `${sectors.length} Sectors` },
     { id: "omnigrid-faa-zone", label: "🌐 OmniGrid™ FAA.zone™", icon: "🔋", badge: "PulseTrade™" },
     { id: "buildnest-dashboard", label: "🏗️ BuildNest Dashboard", icon: "🖥️", badge: "Live Metrics" },
     { id: "intern-portalnest", label: "🎓 PortalNest™ Interns", icon: "👨‍💻", badge: "AI Tracking" },
