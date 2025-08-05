@@ -45,13 +45,13 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: getQueryFn({ on401: "throw" }),
-      refetchInterval: 3000, // Real-time sync every 3 seconds
+      refetchInterval: 30000, // Optimized: 30-second sync for better performance
       refetchOnWindowFocus: true,
       refetchOnMount: true,
       refetchOnReconnect: true,
-      staleTime: 0, // Always fetch fresh data
-      gcTime: 0, // No caching for complete sync
-      retry: 1,
+      staleTime: 15000, // 15-second stale time for intelligent caching
+      gcTime: 300000, // 5-minute garbage collection for cross-reference caching
+      retry: 2, // Enhanced retry for data integrity
     },
     mutations: {
       retry: false,

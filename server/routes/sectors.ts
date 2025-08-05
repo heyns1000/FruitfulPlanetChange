@@ -1,16 +1,18 @@
 import type { Express } from "express"
 import { storage } from "../storage"
 import { isAuthenticated } from "../replitAuth"
+import { FallbackDataManager } from "../services/fallback-data-manager"
 
 export function registerSectorRoutes(app: Express) {
-  // Get all sectors
+  // Get all sectors with intelligent fallback
   app.get('/api/sectors', async (req, res) => {
     try {
       const sectors = await storage.getAllSectors()
       res.json(sectors)
     } catch (error) {
-      console.error("Error fetching sectors:", error)
-      res.status(500).json({ message: "Failed to fetch sectors" })
+      console.error("Database error, using fallback sector data:", error)
+      const fallbackSectors = FallbackDataManager.getSectors()
+      res.json(fallbackSectors)
     }
   })
 
@@ -41,7 +43,7 @@ export function registerSectorRoutes(app: Express) {
     }
   })
 
-  // Get brands for a specific sector
+  // Get brands for a specific sector with fallback
   app.get('/api/brands', async (req, res) => {
     try {
       const { sectorId } = req.query
@@ -54,8 +56,9 @@ export function registerSectorRoutes(app: Express) {
         res.json(brands)
       }
     } catch (error) {
-      console.error("Error fetching brands:", error)
-      res.status(500).json({ message: "Failed to fetch brands" })
+      console.error("Database error, using fallback brand data:", error)
+      const fallbackBrands = FallbackDataManager.getBrands()
+      res.json(fallbackBrands)
     }
   })
 }

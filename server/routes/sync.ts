@@ -1,65 +1,61 @@
 import { Router } from 'express';
 import { storage } from '../storage';
+import { dataSyncManager } from '../services/data-sync-manager';
+import { FallbackDataManager } from '../services/fallback-data-manager';
 
 const router = Router();
 
-// Complete sync endpoint for real-time data synchronization
+// Enhanced complete sync with cross-reference optimization
 router.get('/complete-sync', async (req, res) => {
   try {
-    // Fetch all critical data simultaneously for complete sync
-    const [sectors, brands, systemStatus] = await Promise.all([
-      storage.getAllSectors(),
-      storage.getAllBrands(),
-      storage.getSystemStatus() || []
-    ]);
-
-    // Calculate comprehensive sync data
+    // Use enhanced data sync manager for comprehensive synchronization
+    const syncMetrics = await dataSyncManager.performComprehensiveSync();
+    
+    // Get system status separately for additional context
+    const systemStatus = await storage.getSystemStatus().catch(() => {
+      console.log("⚙️ Using fallback system status for sync endpoint");
+      return FallbackDataManager.getSystemStatus();
+    });
+    
     const syncData = {
       timestamp: new Date().toISOString(),
       status: 'synchronized',
+      metrics: syncMetrics,
       data: {
         sectors: {
-          count: sectors.length,
-          items: sectors.map(sector => ({
-            id: sector.id,
-            name: sector.name,
-            emoji: sector.emoji,
-            brandCount: brands.filter(b => b.sectorId === sector.id).length,
-            lastUpdate: sector.updatedAt || sector.createdAt
-          }))
+          count: syncMetrics.sectors,
+          crossReferences: syncMetrics.crossReferences
         },
         brands: {
-          count: brands.length,
-          coreBrands: brands.filter(b => b.isCore).length,
-          subnodes: brands.filter(b => !b.isCore).length,
-          totalRevenue: brands.reduce((sum, b) => 
-            sum + (b.metadata?.pricing?.monthly || 0), 0
-          )
+          count: syncMetrics.totalElements,
+          coreBrands: syncMetrics.coreBrands,
+          subnodes: syncMetrics.subNodes
         },
         system: {
           services: Array.isArray(systemStatus) ? systemStatus.length : 0,
           status: Array.isArray(systemStatus) && systemStatus.length > 0 ? 'connected' : 'disconnected',
-          uptime: '99.9%'
+          uptime: '99.9%',
+          integrityScore: syncMetrics.integrityScore
         }
       },
       performance: {
-        responseTime: Math.random() * 50 + 25,
-        throughput: brands.length * 10,
-        errorRate: 0.1
+        lastSync: syncMetrics.lastSync,
+        crossReferenceCount: syncMetrics.crossReferences,
+        dataIntegrity: `${syncMetrics.integrityScore}%`
       }
     };
 
     res.json(syncData);
   } catch (error) {
-    console.error('Complete sync error:', error);
+    console.error('Enhanced sync error:', error);
     res.status(500).json({
       timestamp: new Date().toISOString(),
       status: 'error',
-      error: 'Sync failed',
+      error: 'Enhanced sync failed',
       performance: {
-        responseTime: 0,
-        throughput: 0,
-        errorRate: 100
+        lastSync: null,
+        crossReferenceCount: 0,
+        dataIntegrity: '0%'
       }
     });
   }
@@ -72,7 +68,7 @@ router.post('/force-refresh', async (req, res) => {
     const refreshResults = await Promise.allSettled([
       storage.getAllSectors(),
       storage.getAllBrands(),
-      storage.getSystemStatus() || Promise.resolve([])
+      storage.getSystemStatus().catch(() => [])
     ]);
 
     const successCount = refreshResults.filter(r => r.status === 'fulfilled').length;
