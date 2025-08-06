@@ -20,6 +20,7 @@ import { registerAdminPanelRoutes } from './routes-admin-panel';
 import adminPanelRoutes from './routes/admin-panel';
 import syncRoutes from './routes/sync';
 import databaseSchemaRoutes from './routes/database-schema';
+import accessPortalRoutes from './routes/access-portal';
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 
 
@@ -71,6 +72,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Register database schema routes for comprehensive data integration
   app.use('/api/database', databaseSchemaRoutes);
+  
+  // Register access portal routes for authentication
+  app.use('/api/access-portal', accessPortalRoutes);
 
   // PayPal payment routes
   app.get("/paypal/setup", async (req, res) => {

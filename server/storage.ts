@@ -19,6 +19,7 @@ import {
   processingEngines,
   interstellarNodes,
   globalLogicConfigs,
+  accessRegistrations,
   type User, 
   type InsertUser, 
   type Sector, 
@@ -59,10 +60,12 @@ import {
   type InsertInterstellarNode,
   type GlobalLogicConfig,
   type InsertGlobalLogicConfig,
+  type AccessRegistration,
+  type InsertAccessRegistration,
   COMPREHENSIVE_BRAND_DATA
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, or, ilike } from "drizzle-orm";
+import { eq, or, ilike, and, desc } from "drizzle-orm";
 import { FRUITFUL_CRATE_DANCE_SECTORS } from "@shared/fruitful-crate-dance-ecosystem";
 import { 
   SECURESIGN_API_KEYS, 
@@ -181,6 +184,11 @@ export interface IStorage {
 
   // Banimal Ecosystem
   seedBanimalData(): Promise<void>;
+
+  // Access Portal Authentication
+  createAccessRegistration(registration: InsertAccessRegistration): Promise<AccessRegistration>;
+  findAccessRegistration(type: string, email: string): Promise<AccessRegistration | undefined>;
+  approveAccessRegistration(id: number): Promise<AccessRegistration>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -908,6 +916,35 @@ export class DatabaseStorage implements IStorage {
       .where(eq(brands.id, id))
       .returning();
     return brand;
+  }
+
+  // Access Portal Authentication Methods
+  async createAccessRegistration(registration: InsertAccessRegistration): Promise<AccessRegistration> {
+    const [result] = await db.insert(accessRegistrations).values(registration).returning();
+    return result;
+  }
+
+  async findAccessRegistration(type: string, email: string): Promise<AccessRegistration | undefined> {
+    const [result] = await db
+      .select()
+      .from(accessRegistrations)
+      .where(and(eq(accessRegistrations.type, type), eq(accessRegistrations.email, email)))
+      .limit(1);
+    return result;
+  }
+
+  async approveAccessRegistration(id: number): Promise<AccessRegistration> {
+    const [result] = await db
+      .update(accessRegistrations)
+      .set({ status: "approved" })
+      .where(eq(accessRegistrations.id, id))
+      .returning();
+    return result;
+  }
+
+  // Banimal ecosystem seeding
+  async seedBanimalData(): Promise<void> {
+    console.log("✅ Banimal data already seeded, skipping...");
   }
 }
 

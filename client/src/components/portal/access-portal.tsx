@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { useAccessAuth } from '@/hooks/useAccessAuth';
 
 type AccessType = 'loyalty' | 'shareholder' | 'service' | 'family';
 
@@ -19,6 +20,7 @@ export function AccessPortal() {
   const [formData, setFormData] = useState<FormData>({});
   const [submitted, setSubmitted] = useState(false);
   const { toast } = useToast();
+  const { accessUser, isAccessAuthenticated } = useAccessAuth();
 
   const accessTypes = [
     {
@@ -88,7 +90,7 @@ export function AccessPortal() {
     return true;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validateForm()) {
       toast({
         title: "Validation Error",
@@ -98,14 +100,59 @@ export function AccessPortal() {
       return;
     }
     
-    console.log("📨 Access Registration Submission:", { type: selectedAccess, data: formData });
-    
-    toast({
-      title: "Registration Submitted",
-      description: "Your access request has been received. You will get an activation email from vault@faa.zone shortly.",
-    });
-    
-    setSubmitted(true);
+    try {
+      console.log("📨 Access Registration Submission:", { type: selectedAccess, data: formData });
+      
+      // Register the user first
+      const registerResponse = await fetch('/api/access-portal/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          type: selectedAccess, 
+          formData: formData 
+        })
+      });
+      
+      if (!registerResponse.ok) {
+        throw new Error('Registration failed');
+      }
+      
+      // Now attempt to log in
+      const loginResponse = await fetch('/api/access-portal/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          type: selectedAccess, 
+          email: formData.email || formData.officialEmail,
+          password: formData.password 
+        })
+      });
+      
+      if (loginResponse.ok) {
+        const loginData = await loginResponse.json();
+        
+        toast({
+          title: "Login Successful!",
+          description: `Welcome to the ${selectedAccess} portal, ${loginData.user.name}!`,
+        });
+        
+        // Refresh the page to update authentication state
+        window.location.reload();
+      } else {
+        toast({
+          title: "Registration Submitted",
+          description: "Your access request has been received. You will get an activation email from vault@faa.zone shortly.",
+        });
+        setSubmitted(true);
+      }
+    } catch (error) {
+      console.error("Registration/Login error:", error);
+      toast({
+        title: "Error",
+        description: "There was an issue processing your request. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   const renderForm = () => {

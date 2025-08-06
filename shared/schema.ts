@@ -308,6 +308,22 @@ export type InterstellarNode = typeof interstellarNodes.$inferSelect;
 export type InsertGlobalLogicConfig = z.infer<typeof insertGlobalLogicConfigSchema>;
 export type GlobalLogicConfig = typeof globalLogicConfigs.$inferSelect;
 
+// Access Portal Tables
+export const accessRegistrations = pgTable("access_registrations", {
+  id: serial("id").primaryKey(),
+  type: varchar("type").notNull(), // loyalty, shareholder, service, family
+  email: varchar("email").notNull(),
+  data: jsonb("data").notNull(), // form data
+  status: varchar("status").default("pending"), // pending, approved, rejected
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertAccessRegistrationSchema = createInsertSchema(accessRegistrations);
+
+export type InsertAccessRegistration = z.infer<typeof insertAccessRegistrationSchema>;
+export type AccessRegistration = typeof accessRegistrations.$inferSelect;
+
 
 // Comprehensive Fruitful Global Ecosystem Data - 7,038 Total Brands across 33 Sectors
 export const COMPREHENSIVE_SECTOR_LIST = {
