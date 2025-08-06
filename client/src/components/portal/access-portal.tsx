@@ -12,6 +12,11 @@ export function AccessPortal() {
           <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
             Sign in to access your personalized Fruitful Global dashboard
           </p>
+          <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            <p className="text-sm text-blue-700 dark:text-blue-300">
+              Quick test: Use email <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">test123@example.com</code>
+            </p>
+          </div>
         </div>
 
         <SimplifiedAccessPortal />

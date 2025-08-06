@@ -61,10 +61,15 @@ router.post("/login", async (req, res) => {
   try {
     const { type, email, password } = accessLoginSchema.parse(req.body);
     
+    console.log("🔍 Login attempt:", { type, email });
+    
     // Find the user registration
     const registration = await storage.findAccessRegistration(type, email);
     
+    console.log("👤 Found registration:", registration);
+    
     if (!registration || registration.status !== 'approved') {
+      console.log("❌ Login failed - no registration or not approved");
       return res.status(401).json({ error: "Invalid credentials or registration not approved" });
     }
 
