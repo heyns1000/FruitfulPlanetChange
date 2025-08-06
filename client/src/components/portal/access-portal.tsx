@@ -55,7 +55,49 @@ export function AccessPortal() {
     setFormData(prev => ({ ...prev, [key]: value }));
   };
 
+  const validateForm = (): boolean => {
+    if (!selectedAccess) return false;
+    
+    const requiredFields = {
+      'loyalty': ['fullName', 'email', 'acceptTerms'],
+      'service': ['companyName', 'registrationNumber', 'officialEmail', 'confirmService'],
+      'family': ['representativeName', 'familyName', 'email', 'password', 'confirmPassword'],
+      'shareholder': [] // No validation needed for shareholder
+    };
+    
+    const required = requiredFields[selectedAccess];
+    
+    for (const field of required) {
+      if (!formData[field] || formData[field] === '') {
+        return false;
+      }
+    }
+    
+    // Additional validation for family access passwords
+    if (selectedAccess === 'family') {
+      if (formData.password !== formData.confirmPassword) {
+        toast({
+          title: "Validation Error",
+          description: "Passwords do not match.",
+          variant: "destructive"
+        });
+        return false;
+      }
+    }
+    
+    return true;
+  };
+
   const handleSubmit = () => {
+    if (!validateForm()) {
+      toast({
+        title: "Validation Error",
+        description: "Please fill in all required fields before submitting.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     console.log("📨 Access Registration Submission:", { type: selectedAccess, data: formData });
     
     toast({
@@ -80,11 +122,13 @@ export function AccessPortal() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input 
                   placeholder="Full Name" 
+                  required
                   onChange={(e) => handleInputChange('fullName', e.target.value)}
                 />
                 <Input 
                   type="email" 
                   placeholder="Email Address" 
+                  required
                   onChange={(e) => handleInputChange('email', e.target.value)}
                 />
                 <Input 
@@ -119,10 +163,11 @@ export function AccessPortal() {
               <div className="flex items-center space-x-2">
                 <Checkbox 
                   id="loyalty-terms"
+                  required
                   onCheckedChange={(checked) => handleInputChange('acceptTerms', checked)}
                 />
-                <Label htmlFor="loyalty-terms">
-                  I understand this is a lifelong journey and relationship request.
+                <Label htmlFor="loyalty-terms" className="text-sm">
+                  I understand this is a lifelong journey and relationship request. <span className="text-red-500">*</span>
                 </Label>
               </div>
             </CardContent>
@@ -141,10 +186,12 @@ export function AccessPortal() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input 
                   placeholder="Company Name" 
+                  required
                   onChange={(e) => handleInputChange('companyName', e.target.value)}
                 />
                 <Input 
                   placeholder="Registration / FICA Number" 
+                  required
                   onChange={(e) => handleInputChange('registrationNumber', e.target.value)}
                 />
                 <Input 
@@ -154,6 +201,7 @@ export function AccessPortal() {
                 <Input 
                   type="email" 
                   placeholder="Official Email Address" 
+                  required
                   onChange={(e) => handleInputChange('officialEmail', e.target.value)}
                 />
                 <Input 
@@ -177,10 +225,11 @@ export function AccessPortal() {
               <div className="flex items-center space-x-2">
                 <Checkbox 
                   id="service-terms"
+                  required
                   onCheckedChange={(checked) => handleInputChange('confirmService', checked)}
                 />
-                <Label htmlFor="service-terms">
-                  I confirm this company offers 24/7 service and support.
+                <Label htmlFor="service-terms" className="text-sm">
+                  I confirm this company offers 24/7 service and support. <span className="text-red-500">*</span>
                 </Label>
               </div>
             </CardContent>
@@ -199,15 +248,18 @@ export function AccessPortal() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input 
                   placeholder="Family Representative Name" 
+                  required
                   onChange={(e) => handleInputChange('representativeName', e.target.value)}
                 />
                 <Input 
                   placeholder="Family Name" 
+                  required
                   onChange={(e) => handleInputChange('familyName', e.target.value)}
                 />
                 <Input 
                   type="email" 
                   placeholder="Email Address" 
+                  required
                   onChange={(e) => handleInputChange('email', e.target.value)}
                 />
                 <Input 
@@ -227,11 +279,13 @@ export function AccessPortal() {
                 <Input 
                   type="password" 
                   placeholder="Create Password" 
+                  required
                   onChange={(e) => handleInputChange('password', e.target.value)}
                 />
                 <Input 
                   type="password" 
                   placeholder="Confirm Password" 
+                  required
                   onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
                 />
                 <Input 
