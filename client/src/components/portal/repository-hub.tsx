@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, GitBranch, Download, ExternalLink, FileText, Code, Database, Settings, Eye, Plus, Filter } from "lucide-react"
+import { Search, GitBranch, Download, ExternalLink, FileText, Code, Database, Settings, Eye, Plus, Filter, Copy } from "lucide-react"
 import { motion } from "framer-motion"
 import { useQuery } from "@tanstack/react-query"
+import { useToast } from "@/hooks/use-toast"
 
 interface Repository {
   id: string
@@ -24,6 +25,7 @@ interface Repository {
   branches: number
   commits: number
   tags: string[]
+  url?: string
 }
 
 export function RepositoryHub() {
@@ -31,6 +33,7 @@ export function RepositoryHub() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [selectedLanguage, setSelectedLanguage] = useState("all")
+  const { toast } = useToast()
 
   // Fetch real repositories from database
   const { data: repositories = [], isLoading } = useQuery({
@@ -46,24 +49,49 @@ export function RepositoryHub() {
     }
   })
 
-  // Transform database repositories to component format
+  // Transform database repositories to component format with actual GitHub URLs
   const transformedRepositories: Repository[] = repositories.map((repo: any) => ({
     id: repo.id?.toString() || "0",
     name: repo.name || "",
     description: repo.description || "",
     category: repo.category || "general",
-    language: "HTML",
-    stars: 0,
-    forks: 0,
+    language: repo.language || "HTML",
+    stars: repo.stars || 0,
+    forks: repo.forks || 0,
     lastUpdate: "2 days ago",
     status: (repo.status as 'active' | 'archived' | 'development') || "active",
     size: "2.1 MB",
     owner: "heyns1000",
-    isPrivate: false,
+    isPrivate: repo.visibility === "private",
     branches: 1,
     commits: 45,
-    tags: [repo.category || "general"]
+    tags: [repo.category || "general"],
+    url: repo.url || `https://github.com/heyns1000/${repo.id}`
   }))
+
+  // Copy URL to clipboard function
+  const copyToClipboard = async (url: string, repoName: string) => {
+    try {
+      await navigator.clipboard.writeText(url)
+      toast({
+        title: "URL Copied!",
+        description: `${repoName} URL copied to clipboard`,
+        duration: 2000,
+      })
+    } catch (err) {
+      toast({
+        title: "Copy Failed",
+        description: "Failed to copy URL to clipboard",
+        variant: "destructive",
+        duration: 2000,
+      })
+    }
+  }
+
+  // Open repository in new tab
+  const openRepository = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }
 
   // Filter and search logic
   useEffect(() => {
@@ -270,16 +298,39 @@ export function RepositoryHub() {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex gap-2">
-                      <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white">
+                    <div className="flex gap-2 flex-wrap">
+                      <Button 
+                        size="sm" 
+                        className="bg-purple-600 hover:bg-purple-700 text-white"
+                        onClick={() => openRepository(repo.url || `https://github.com/heyns1000/${repo.id}`)}
+                      >
                         <Eye className="h-4 w-4 mr-1" />
                         View
                       </Button>
-                      <Button size="sm" variant="outline" className="border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="border-green-500 text-green-400 hover:bg-green-500 hover:text-white"
+                        onClick={() => copyToClipboard(repo.url || `https://github.com/heyns1000/${repo.id}`, repo.name)}
+                      >
+                        <Copy className="h-4 w-4 mr-1" />
+                        Copy URL
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white"
+                        onClick={() => copyToClipboard(`git clone ${repo.url || `https://github.com/heyns1000/${repo.id}`}.git`, repo.name)}
+                      >
                         <Download className="h-4 w-4 mr-1" />
                         Clone
                       </Button>
-                      <Button size="sm" variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-600">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="border-gray-600 text-gray-300 hover:bg-gray-600"
+                        onClick={() => openRepository(repo.url || `https://github.com/heyns1000/${repo.id}`)}
+                      >
                         <ExternalLink className="h-4 w-4 mr-1" />
                         GitHub
                       </Button>
