@@ -101,9 +101,15 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
       <aside className={`
         sidebar fixed left-0 top-0 h-full w-80 p-6 overflow-y-auto z-40
         transform transition-transform duration-300 ease-in-out
-        ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        translate-x-0
         bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800
-      `}>
+      `} style={{
+        display: 'block',
+        visibility: 'visible',
+        backgroundColor: '#ffffff',
+        borderRight: '1px solid #e5e7eb',
+        zIndex: 40
+      }}>
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>

@@ -362,10 +362,27 @@ function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; s
   console.log("✅ Rendering main app UI");
   
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900" style={{ display: 'flex', minHeight: '100vh', width: '100%', backgroundColor: '#f9fafb', position: 'relative', zIndex: 1 }}>
-      <div className="flex flex-1" style={{ flex: 1, display: 'flex' }}>
+    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900" style={{ 
+      display: 'flex', 
+      minHeight: '100vh', 
+      width: '100%', 
+      backgroundColor: '#ffffff',
+      position: 'relative', 
+      zIndex: 1,
+      visibility: 'visible'
+    }}>
+      <div className="flex flex-1" style={{ flex: 1, display: 'flex', height: '100vh' }}>
         <Sidebar activePage={activePage} setActivePage={setActivePage} />
-        <main className="flex-1 ml-0 md:ml-80 transition-all duration-300" style={{ flex: 1, minHeight: '100vh', backgroundColor: '#ffffff', position: 'relative' }}>
+        <main className="flex-1 ml-0 md:ml-80 transition-all duration-300" style={{ 
+          flex: 1, 
+          minHeight: '100vh', 
+          backgroundColor: '#ffffff', 
+          position: 'relative',
+          overflow: 'auto',
+          padding: '0',
+          margin: '0',
+          visibility: 'visible'
+        }}>
           <PageRouter activePage={activePage} />
         </main>
       </div>
