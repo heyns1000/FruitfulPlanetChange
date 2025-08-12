@@ -362,56 +362,15 @@ function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; s
   console.log("✅ Rendering main app UI");
   
   return (
-    <div style={{ 
-      display: 'block', 
-      minHeight: '100vh', 
-      width: '100vw', 
-      backgroundColor: '#ffffff',
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      zIndex: 1,
-      visibility: 'visible',
-      color: '#000000'
-    }}>
-      {/* Force visible test content */}
-      <div style={{
-        position: 'fixed',
-        top: '20px',
-        left: '20px',
-        backgroundColor: '#000000',
-        color: '#ffffff',
-        padding: '20px',
-        zIndex: 9999,
-        border: '2px solid red'
-      }}>
-        <h1>SEEDWAVE PORTAL TEST</h1>
-        <p>Database: Connected ✅</p>
-        <p>Brands: 3,794</p>
-        <button onClick={() => setActivePage("brands")} style={{
-          backgroundColor: '#0066cc',
-          color: 'white',
-          padding: '10px',
-          border: 'none',
-          cursor: 'pointer'
-        }}>
-          View Brands
-        </button>
-      </div>
-      
-      <div style={{ display: 'flex', height: '100vh' }}>
+    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="flex flex-1">
         <Sidebar activePage={activePage} setActivePage={setActivePage} />
-        <main style={{ 
-          flex: 1, 
-          marginLeft: '320px',
-          minHeight: '100vh', 
-          backgroundColor: '#f5f5f5', 
-          padding: '20px',
-          visibility: 'visible'
-        }}>
+        <main className="flex-1 ml-0 md:ml-80 transition-all duration-300">
           <PageRouter activePage={activePage} />
         </main>
       </div>
+      <GlobalFooter className="ml-0 md:ml-80" />
+      <GlobalSyncIndicator />
     </div>
   );
 }
