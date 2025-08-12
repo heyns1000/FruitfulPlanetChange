@@ -78,6 +78,15 @@ export function SeedwaveAdmin() {
     refetchOnMount: true,
     refetchOnReconnect: true,
   });
+  
+  // Debug logging for sector data
+  console.log("🔍 Admin Panel Sector Data:", { 
+    sectorBreakdown, 
+    isArray: Array.isArray(sectorBreakdown),
+    length: sectorBreakdown?.length,
+    isLoading: isLoadingSectorBreakdown,
+    first3: Array.isArray(sectorBreakdown) ? sectorBreakdown.slice(0, 3) : null
+  });
 
   // Enhanced real-time stats synchronization
   const { data: enhancedStats, refetch: refetchStats } = useQuery({
@@ -432,7 +441,7 @@ export function SeedwaveAdmin() {
                     </tr>
                   </thead>
                   <tbody>
-                    {sectorBreakdown && Array.isArray(sectorBreakdown) && sectorBreakdown.length > 0 ? sectorBreakdown.map((sector: any, index: number) => (
+                    {Array.isArray(sectorBreakdown) && sectorBreakdown.length > 0 ? sectorBreakdown.map((sector: any, index: number) => (
                       <tr key={sector.sector || index} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                         <td className="border border-gray-300 dark:border-gray-700 p-3">
                           <div className="flex items-center gap-2">
@@ -468,9 +477,9 @@ export function SeedwaveAdmin() {
                       <tr>
                         <td colSpan={6} className="border border-gray-300 dark:border-gray-700 p-3 text-center text-muted-foreground">
                           {isLoadingSectorBreakdown ? (
-                            <>Loading all 48 sectors from database...</>
+                            <>Loading authentic sector data from PostgreSQL database...</>
                           ) : (
-                            <>No sector data available. API Response: {JSON.stringify(sectorBreakdown)}</>
+                            <>✅ No data loaded yet. Found {sectorBreakdown?.length || 0} sectors. <button onClick={() => refetchSectorBreakdown()} className="text-blue-500 underline ml-2">Refresh Now</button></>
                           )}
                         </td>
                       </tr>
