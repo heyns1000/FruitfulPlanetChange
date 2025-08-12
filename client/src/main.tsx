@@ -1,3 +1,4 @@
+import React from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
@@ -13,5 +14,23 @@ if (!container) {
 console.log("✅ Root element found, creating React root");
 const root = createRoot(container);
 
-console.log("🎯 Rendering App component");
-root.render(<App />);
+// Simple test first
+const TestComponent = () => {
+  return React.createElement("div", {
+    style: {
+      position: "fixed",
+      top: "0",
+      left: "0",
+      width: "100vw",
+      height: "100vh",
+      backgroundColor: "red",
+      color: "white",
+      fontSize: "24px",
+      padding: "20px",
+      zIndex: 9999
+    }
+  }, "EMERGENCY TEST - CAN YOU SEE THIS?");
+};
+
+console.log("🎯 Rendering test component");
+root.render(React.createElement(TestComponent));
