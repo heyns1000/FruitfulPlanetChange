@@ -100,8 +100,8 @@ export function VaultMeshBrandPackages() {
 
   // Filter brands based on search and sector
   const filteredBrands = brands.filter(brand => {
-    const matchesSearch = brand.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         brand.description?.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch = (brand.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (brand.description || "").toLowerCase().includes(searchTerm.toLowerCase())
     const matchesSector = selectedSector === "all" || brand.sectorId?.toString() === selectedSector
     return matchesSearch && matchesSector
   })
