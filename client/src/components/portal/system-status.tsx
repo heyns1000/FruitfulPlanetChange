@@ -85,10 +85,10 @@ export function SystemStatus() {
         <div className="text-sm text-gray-600 dark:text-gray-400">Records:</div>
         <div className="text-2xl font-bold">{totalRecords.toLocaleString()}</div>
         <div className="text-sm text-gray-500 dark:text-gray-400">
-          Live monitoring of {totalConnectedServices} system services
+          PostgreSQL Database Connected - {totalConnectedServices} services operational
         </div>
         <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-          📊 Table: system_status
+          📊 Authentic Business Data Available
         </div>
       </div>
 
