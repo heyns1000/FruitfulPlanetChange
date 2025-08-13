@@ -17,11 +17,7 @@ export default function PortalHome() {
   const [selectedSector, setSelectedSector] = useState<number | null>(null)
   const [displayLimit, setDisplayLimit] = useState(8)
 
-  // Build query parameters
-  const queryParams = new URLSearchParams()
-  if (searchQuery) queryParams.set("search", searchQuery)
-  if (selectedSector) queryParams.set("sectorId", selectedSector.toString())
-
+  // ALL HOOKS MUST BE CALLED AT TOP LEVEL - BEFORE ANY CONDITIONAL LOGIC
   // Use React Query for system status and sectors
   const systemStatusQuery = useQuery({
     queryKey: ["/api/system-status"],
@@ -78,13 +74,6 @@ export default function PortalHome() {
     refetchOnMount: true
   });
 
-  console.log('🔍 Brands Query Debug:', {
-    brandsCount: brandsQuery.data?.length || 0,
-    isLoading: brandsQuery.isLoading,
-    error: brandsQuery.error?.message || null,
-    isSuccess: brandsQuery.isSuccess
-  });
-
   // Enhanced dashboard stats query
   const dashboardStatsQuery = useQuery({
     queryKey: ['dashboard-stats'],
@@ -101,6 +90,32 @@ export default function PortalHome() {
     retry: 2,
     refetchOnWindowFocus: false,
     refetchOnMount: true
+  });
+
+  // Handle keyboard shortcuts - useEffect must be called consistently
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.metaKey && e.key === 'k') {
+        e.preventDefault()
+        const searchInput = document.querySelector('input[placeholder*="Search"]') as HTMLInputElement
+        searchInput?.focus()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
+  // Build query parameters
+  const queryParams = new URLSearchParams()
+  if (searchQuery) queryParams.set("search", searchQuery)
+  if (selectedSector) queryParams.set("sectorId", selectedSector.toString())
+
+  console.log('🔍 Brands Query Debug:', {
+    brandsCount: brandsQuery.data?.length || 0,
+    isLoading: brandsQuery.isLoading,
+    error: brandsQuery.error?.message || null,
+    isSuccess: brandsQuery.isSuccess
   });
 
   console.log('📊 Dashboard Stats Debug:', {
@@ -169,20 +184,6 @@ export default function PortalHome() {
     map[sector.id] = sector
     return map
   }, {} as Record<number, Sector>)
-
-  // Handle keyboard shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.metaKey && e.key === 'k') {
-        e.preventDefault()
-        const searchInput = document.querySelector('input[placeholder*="Search"]') as HTMLInputElement
-        searchInput?.focus()
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [])
 
   const displayedBrands = brands.slice(0, displayLimit)
   const remainingCount = brands.length - displayLimit
