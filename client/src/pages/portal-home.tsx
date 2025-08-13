@@ -24,7 +24,7 @@ export default function PortalHome() {
 
   // REAL DATABASE QUERIES - Connected to PostgreSQL with 3794+ total elements
   const { data: brands = [], isLoading, error } = useQuery<Brand[]>({
-    queryKey: ["/api/brands/", queryParams.toString()],
+    queryKey: ["/api/brands"],
     staleTime: 5000,
     refetchInterval: 15000, // Live data refresh every 15 seconds
   })
@@ -34,7 +34,7 @@ export default function PortalHome() {
     brandsCount: brands.length, 
     isLoading, 
     error,
-    queryKey: ["/api/brands/", queryParams.toString()]
+    queryKey: ["/api/brands"]
   })
 
   const { data: sectors = [] } = useQuery<Sector[]>({
