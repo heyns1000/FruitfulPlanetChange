@@ -23,10 +23,18 @@ export default function PortalHome() {
   if (selectedSector) queryParams.set("sectorId", selectedSector.toString())
 
   // REAL DATABASE QUERIES - Connected to PostgreSQL with 3794+ total elements
-  const { data: brands = [], isLoading } = useQuery<Brand[]>({
-    queryKey: ["/api/brands", queryParams.toString()],
-    staleTime: 30000,
-    refetchInterval: 30000, // Live data refresh every 30 seconds
+  const { data: brands = [], isLoading, error } = useQuery<Brand[]>({
+    queryKey: ["/api/brands/", queryParams.toString()],
+    staleTime: 5000,
+    refetchInterval: 15000, // Live data refresh every 15 seconds
+  })
+  
+  // Debug the brands loading
+  console.log("🔍 Brands Query Debug:", { 
+    brandsCount: brands.length, 
+    isLoading, 
+    error,
+    queryKey: ["/api/brands/", queryParams.toString()]
   })
 
   const { data: sectors = [] } = useQuery<Sector[]>({
@@ -87,27 +95,7 @@ export default function PortalHome() {
       {/* Global Button Activation System - Makes ALL buttons functional */}
       <GlobalButtonActivator />
       
-      {/* Force Visibility Test */}
-      <div style={{
-        position: 'fixed',
-        top: '0',
-        left: '0',
-        width: '100vw',
-        height: '100vh',
-        backgroundColor: '#ffffff',
-        zIndex: 10000,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '24px',
-        color: '#000000'
-      }}>
-        <div style={{ textAlign: 'center', padding: '40px', border: '3px solid #000' }}>
-          <h1>SEEDWAVE PORTAL TEST</h1>
-          <p>Brands: {brands.length} | DB: {(dashboardStats as any)?.totalElements || 3794}</p>
-          <p>Authentication: {isLoading ? 'Loading...' : 'Success'}</p>
-        </div>
-      </div>
+
 
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6" style={{
