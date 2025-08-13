@@ -49,7 +49,7 @@ export default function PortalHome() {
   })
   
   // Debug logging
-  console.log("📊 Dashboard Stats:", { dashboardStats, totalElements: dashboardStats?.totalElements, brandsLength: brands.length })
+  console.log("📊 Dashboard Stats:", { dashboardStats, brandsLength: brands.length })
 
   // Create sector lookup map
   const sectorMap = sectors.reduce((map, sector) => {
@@ -97,7 +97,7 @@ export default function PortalHome() {
         zIndex: 9999,
         fontSize: '12px'
       }}>
-        Brands: {brands.length} | DB: {dashboardStats?.totalElements || 3794}
+        Brands: {brands.length} | DB: {(dashboardStats as any)?.totalElements || 3794}
       </div>
 
       {/* Header */}
