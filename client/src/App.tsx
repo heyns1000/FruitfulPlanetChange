@@ -317,52 +317,7 @@ function App() {
       <ThemeProvider defaultTheme="light" storageKey="seedwave-ui-theme">
         <TooltipProvider>
           <OnboardingProvider>
-            {/* Emergency Full-Screen Forced Visibility */}
-            <div style={{
-              position: 'fixed',
-              top: '0',
-              left: '0',
-              right: '0',
-              bottom: '0',
-              width: '100vw',
-              height: '100vh',
-              backgroundColor: '#ff0000',
-              zIndex: 999999,
-              display: 'block',
-              visibility: 'visible',
-              overflow: 'visible'
-            }}>
-              <div style={{ 
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                backgroundColor: '#ffffff',
-                padding: '40px',
-                border: '5px solid #000000',
-                borderRadius: '10px',
-                textAlign: 'center',
-                fontSize: '20px',
-                color: '#000000',
-                fontFamily: 'Arial, sans-serif',
-                minWidth: '400px'
-              }}>
-                <h1 style={{ marginBottom: '20px', fontSize: '32px' }}>🚀 SEEDWAVE PORTAL</h1>
-                <p style={{ marginBottom: '10px' }}>✅ Database: 3,794 brands confirmed</p>
-                <p style={{ marginBottom: '10px' }}>✅ PostgreSQL connected</p>
-                <p style={{ marginBottom: '10px' }}>✅ Authentication working</p>
-                <p style={{ marginBottom: '20px' }}>✅ React rendering successfully</p>
-                <div style={{ 
-                  backgroundColor: '#f0f0f0', 
-                  padding: '15px', 
-                  border: '2px solid #333',
-                  borderRadius: '5px'
-                }}>
-                  <p><strong>EMERGENCY TEST: Can you see this message?</strong></p>
-                  <p>If yes, React is working but portal components have display issues.</p>
-                </div>
-              </div>
-            </div>
+
             
             <div id="main-app-wrapper" style={{ 
               minHeight: '100vh', 
@@ -409,10 +364,21 @@ function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; s
   console.log("✅ Rendering main app UI");
   
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex flex-col min-h-screen bg-white" style={{
+      backgroundColor: '#ffffff !important',
+      minHeight: '100vh',
+      width: '100%',
+      display: 'block !important',
+      visibility: 'visible !important'
+    }}>
       <div className="flex flex-1">
         <Sidebar activePage={activePage} setActivePage={setActivePage} />
-        <main className="flex-1 ml-0 md:ml-80 transition-all duration-300">
+        <main className="flex-1 ml-0 md:ml-80 transition-all duration-300" style={{
+          backgroundColor: '#ffffff',
+          minHeight: '100vh',
+          display: 'block',
+          visibility: 'visible'
+        }}>
           <PageRouter activePage={activePage} />
         </main>
       </div>

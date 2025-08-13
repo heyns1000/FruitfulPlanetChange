@@ -75,12 +75,14 @@ export default function PortalHome() {
   const remainingCount = brands.length - displayLimit
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900" style={{ 
+    <div className="min-h-screen bg-white" style={{ 
       minHeight: '100vh', 
-      backgroundColor: '#ffffff', 
-      display: 'block',
+      width: '100%',
+      backgroundColor: '#ffffff !important', 
+      display: 'block !important',
       position: 'relative',
-      zIndex: 1 
+      zIndex: 1,
+      visibility: 'visible !important'
     }}>
       {/* Global Button Activation System - Makes ALL buttons functional */}
       <GlobalButtonActivator />
