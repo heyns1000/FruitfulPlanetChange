@@ -9,6 +9,7 @@ import { DatabaseIntegrationStatus } from "@/components/database-integration-sta
 import { FruitfulMarketplaceIntegration } from "@/components/fruitful-marketplace-integration"
 import { motion } from "framer-motion"
 import { MorphingButton, SparkleEffect, PulseIndicator } from "@/components/ui/micro-interactions"
+import { AmbientGradientMood, useMoodFromPortalData, MoodPresets } from "@/components/ui/ambient-gradient-mood"
 import type { Brand, Sector } from "@shared/schema"
 import { GlobalSyncIndicator } from '@/components/global-sync-indicator';
 import { EnhancedSidebar } from '@/components/portal/enhanced-sidebar';
@@ -39,6 +40,8 @@ export default function PortalHome() {
   const [displayLimit, setDisplayLimit] = useState(8)
   // Active section state for sidebar
   const [activeSection, setActiveSection] = useState('overview');
+  // User activity tracking for ambient mood
+  const [userActivity, setUserActivity] = useState(50)
 
   // ALL HOOKS MUST BE CALLED AT TOP LEVEL - BEFORE ANY CONDITIONAL LOGIC
   // Use React Query for system status and sectors
@@ -274,6 +277,20 @@ export default function PortalHome() {
     revenueGrowth: 0
   };
 
+  // Simplified mood for ambient gradient (using basic data to avoid hooks order issues)
+  const portalMood = {
+    energy: brands.length > 2000 ? 85 : 60,
+    success: brands.length > 3000 ? 90 : 70,
+    activity: brandsLoading ? 90 : userActivity,
+    focus: brandsError ? 30 : 80
+  }
+
+  // Track user interactions for mood
+  const trackUserActivity = () => {
+    setUserActivity(prev => Math.min(100, prev + 5))
+    setTimeout(() => setUserActivity(prev => Math.max(20, prev - 1)), 2000)
+  }
+
   // Force render even if some queries are still loading
   const hasValidData = true; // Always render the portal
 
@@ -305,20 +322,26 @@ export default function PortalHome() {
   const displayedBrands = filteredBrands.slice(0, displayLimit)
   const remainingCount = filteredBrands.length - displayLimit
 
-  return (
-    <div className="min-h-screen bg-white" style={{
-      minHeight: '100vh',
-      width: '100%',
-      backgroundColor: '#ffffff',
-      position: 'relative',
-      zIndex: 1,
-      visibility: 'visible',
-      display: 'block'
-    }}>
-      {/* Global Button Activation System - Makes ALL buttons functional */}
-      <GlobalButtonActivator />
 
-      <GlobalSyncIndicator />
+
+  return (
+    <AmbientGradientMood 
+      mood={portalMood} 
+      intensity="medium"
+      className="min-h-screen bg-white"
+    >
+      <div className="min-h-screen" style={{
+        minHeight: '100vh',
+        width: '100%',
+        position: 'relative',
+        zIndex: 1,
+        visibility: 'visible',
+        display: 'block'
+      }} onClick={trackUserActivity}>
+        {/* Global Button Activation System - Makes ALL buttons functional */}
+        <GlobalButtonActivator />
+
+        <GlobalSyncIndicator />
 
       {/* Enhanced Sidebar */}
       <EnhancedSidebar 
@@ -559,7 +582,20 @@ export default function PortalHome() {
           </div>
         </section>
         </main>
+        
+        <div className="fixed bottom-4 right-4 z-50 bg-white/80 backdrop-blur rounded-lg p-3 shadow-lg text-xs">
+          <div className="space-y-1">
+            <div className="font-semibold text-gray-700">Ambient Mood</div>
+            <div>Energy: {Math.round(portalMood.energy)}%</div>
+            <div>Success: {Math.round(portalMood.success)}%</div>
+            <div>Activity: {Math.round(portalMood.activity)}%</div>
+            <div>Focus: {Math.round(portalMood.focus)}%</div>
+            <div className="text-gray-500">Brands: {brands.length}</div>
+          </div>
+        </div>
+        
       </div>
-    </div>
+      </div>
+    </AmbientGradientMood>
   )
 }
