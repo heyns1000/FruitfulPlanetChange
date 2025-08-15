@@ -67,8 +67,8 @@ function PageRouter({ activePage }: { activePage: string }) {
   switch (activePage) {
     case "home":
     case "marketplace":
-      console.log("🏠 Returning Emergency Portal for visibility");
-      return <EmergencyPortal />
+      console.log("🏠 Returning PortalHome component");
+      return <PortalHome />
     case "analytics":
       return (
         <div className="p-8">
