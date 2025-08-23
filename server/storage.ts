@@ -62,7 +62,7 @@ import {
   COMPREHENSIVE_BRAND_DATA
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, or, ilike } from "drizzle-orm";
+import { eq, or, ilike, sql, count } from "drizzle-orm";
 import { FRUITFUL_CRATE_DANCE_SECTORS } from "@shared/fruitful-crate-dance-ecosystem";
 import { 
   SECURESIGN_API_KEYS, 
@@ -116,6 +116,32 @@ export interface IStorage {
   getPayment(id: number): Promise<Payment | undefined>;
   createPayment(payment: InsertPayment): Promise<Payment>;
   updatePayment(id: number, updates: Partial<InsertPayment>): Promise<Payment>;
+
+  // Dashboard Stats (Optimized)
+  getDashboardStats(): Promise<{
+    totalElements: number;
+    coreBrands: number;
+    subNodes: number;
+    sectors: number;
+    legalDocuments: number;
+    repositories: number;
+    totalPayments: number;
+    integrationTiers: {
+      tier1: number;
+      tier2: number;
+      tier3: number;
+    };
+    globalRevenue: string;
+    activeBrands: number;
+    marketPenetration: number;
+    revenueGrowth: number;
+  }>;
+
+  // Brands (Paginated)
+  getBrandsPaginated(offset: number, limit: number, search?: string, sectorId?: number): Promise<{
+    brands: Brand[];
+    total: number;
+  }>;
 
   // Admin Panel Brands
   getAdminPanelBrands(): Promise<AdminPanelBrand[]>;
@@ -444,6 +470,105 @@ export class DatabaseStorage implements IStorage {
       .values(insertBrand)
       .returning();
     return brand;
+  }
+
+  // OPTIMIZED DASHBOARD STATS - Uses database aggregation instead of fetching all records
+  async getDashboardStats(): Promise<{
+    totalElements: number;
+    coreBrands: number;
+    subNodes: number;
+    sectors: number;
+    legalDocuments: number;
+    repositories: number;
+    totalPayments: number;
+    integrationTiers: {
+      tier1: number;
+      tier2: number;
+      tier3: number;
+    };
+    globalRevenue: string;
+    activeBrands: number;
+    marketPenetration: number;
+    revenueGrowth: number;
+  }> {
+    // Use SQL aggregation for performance - much faster than JavaScript filtering
+    const brandsCount = await db.select({ count: count() }).from(brands);
+    const sectorsCount = await db.select({ count: count() }).from(sectors);
+    const documentsCount = await db.select({ count: count() }).from(legalDocuments);
+    const reposCount = await db.select({ count: count() }).from(repositories);
+    const paymentsCount = await db.select({ count: count() }).from(payments);
+    
+    // Aggregated counts for brands
+    const coreBrandsCount = await db.select({ count: count() }).from(brands).where(eq(brands.isCore, true));
+    const subNodesCount = await db.select({ count: count() }).from(brands).where(sql`parent_id IS NOT NULL`);
+    const activeBrandsCount = await db.select({ count: count() }).from(brands).where(eq(brands.status, 'active'));
+    
+    // Integration tier counts
+    const tier1Count = await db.select({ count: count() }).from(brands).where(eq(brands.integration, 'VaultMesh™'));
+    const tier2Count = await db.select({ count: count() }).from(brands).where(eq(brands.integration, 'HotStack'));
+    const tier3Count = await db.select({ count: count() }).from(brands).where(eq(brands.integration, 'FAA.ZONE™'));
+    
+    // Revenue calculation
+    const revenueSum = await db.select({ sum: sql`COALESCE(SUM(CAST(amount AS NUMERIC)), 0)` }).from(payments);
+    
+    const totalElements = Number(brandsCount[0]?.count || 0);
+    const activeBrands = Number(activeBrandsCount[0]?.count || 0);
+    const marketPenetration = totalElements > 0 ? (activeBrands / totalElements) * 100 : 0;
+    const totalPayments = Number(paymentsCount[0]?.count || 0);
+    
+    return {
+      totalElements,
+      coreBrands: Number(coreBrandsCount[0]?.count || 0),
+      subNodes: Number(subNodesCount[0]?.count || 0),
+      sectors: Number(sectorsCount[0]?.count || 0),
+      legalDocuments: Number(documentsCount[0]?.count || 0),
+      repositories: Number(reposCount[0]?.count || 0),
+      totalPayments,
+      integrationTiers: {
+        tier1: Number(tier1Count[0]?.count || 0),
+        tier2: Number(tier2Count[0]?.count || 0),
+        tier3: Number(tier3Count[0]?.count || 0)
+      },
+      globalRevenue: Math.floor(Number(revenueSum[0]?.sum || 0)).toString(),
+      activeBrands,
+      marketPenetration: Math.round(marketPenetration * 10) / 10,
+      revenueGrowth: totalPayments > 0 ? Math.round((totalPayments / 30) * 100) / 100 : 0
+    };
+  }
+
+  // PAGINATED BRANDS - Only fetch what's needed for display
+  async getBrandsPaginated(offset: number, limit: number, search?: string, sectorId?: number): Promise<{
+    brands: Brand[];
+    total: number;
+  }> {
+    let query = db.select().from(brands);
+    let countQuery = db.select({ count: count() }).from(brands);
+    
+    // Apply filters to both data and count queries
+    if (search) {
+      const searchCondition = or(
+        ilike(brands.name, `%${search}%`),
+        ilike(brands.description, `%${search}%`)
+      );
+      query = query.where(searchCondition);
+      countQuery = countQuery.where(searchCondition);
+    }
+    
+    if (sectorId) {
+      query = query.where(eq(brands.sectorId, sectorId));
+      countQuery = countQuery.where(eq(brands.sectorId, sectorId));
+    }
+    
+    // Get total count and paginated results
+    const [totalResult, brandsResult] = await Promise.all([
+      countQuery,
+      query.limit(limit).offset(offset)
+    ]);
+    
+    return {
+      brands: brandsResult,
+      total: Number(totalResult[0]?.count || 0)
+    };
   }
 
   // System Status
