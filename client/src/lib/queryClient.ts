@@ -29,7 +29,12 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey.join("/") as string, {
+    // Handle query parameters properly - first element is URL, second is query string
+    const url = queryKey.length > 1 
+      ? `${queryKey[0]}?${queryKey[1]}` 
+      : queryKey[0] as string;
+    
+    const res = await fetch(url, {
       credentials: "include",
     });
 
@@ -45,12 +50,12 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: getQueryFn({ on401: "throw" }),
-      refetchInterval: 3000, // Real-time sync every 3 seconds
-      refetchOnWindowFocus: true,
+      refetchInterval: 30000, // Reduce to 30 seconds for better performance
+      refetchOnWindowFocus: false,
       refetchOnMount: true,
       refetchOnReconnect: true,
-      staleTime: 0, // Always fetch fresh data
-      gcTime: 0, // No caching for complete sync
+      staleTime: 30000, // Cache for 30 seconds
+      gcTime: 300000, // Cache for 5 minutes
       retry: 1,
     },
     mutations: {

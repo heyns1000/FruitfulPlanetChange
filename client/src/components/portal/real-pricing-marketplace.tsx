@@ -26,7 +26,7 @@ export function RealPricingMarketplace() {
   const [selectedSector, setSelectedSector] = useState<string>('all');
 
   const { data: brands = [], isLoading } = useQuery<Brand[]>({ 
-    queryKey: ['/api/brands/'] 
+    queryKey: ['/api/brands'] 
   });
 
   const { data: sectors = [] } = useQuery({ 

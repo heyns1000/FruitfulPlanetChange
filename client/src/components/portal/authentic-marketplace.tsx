@@ -39,7 +39,7 @@ export function AuthenticMarketplace() {
   });
 
   const { data: brands = [] } = useQuery<Brand[]>({ 
-    queryKey: ['/api/brands/'] 
+    queryKey: ['/api/brands'] 
   });
 
   // Filter brands based on selection criteria

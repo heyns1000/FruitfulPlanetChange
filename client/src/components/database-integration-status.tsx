@@ -11,7 +11,7 @@ export function DatabaseIntegrationStatus() {
 
   // Real-time database queries showing live connection
   const { data: brands = [], isLoading: brandsLoading } = useQuery({
-    queryKey: ["/api/brands/"],
+    queryKey: ["/api/brands"],
     refetchInterval: 10000, // Update every 10 seconds
   })
 

@@ -110,7 +110,7 @@ const designGallery = [
 function VipDashboardComponent() {
   // Real-time data from the actual portal APIs
   const { data: brands = [], isLoading: brandsLoading } = useQuery({
-    queryKey: ["/api/brands/"],
+    queryKey: ["/api/brands"],
     refetchInterval: 10000,
   });
 

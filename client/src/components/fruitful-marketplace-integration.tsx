@@ -32,7 +32,7 @@ export function FruitfulMarketplaceIntegration() {
 
   // Fetch real brands from PostgreSQL database for marketplace
   const { data: brands = [], isLoading } = useQuery({
-    queryKey: ["/api/brands/"],
+    queryKey: ["/api/brands"],
     refetchInterval: 30000,
   })
 
