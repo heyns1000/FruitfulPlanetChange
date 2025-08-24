@@ -205,26 +205,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // OPTIMIZED Brands API - Uses pagination for better performance
+  // FIXED Brands API - Properly handles all query parameters
   app.get("/api/brands", async (req, res) => {
     try {
       const { search, sectorId, page = '1', limit = '20' } = req.query;
+      
+      // Input validation
+      if (isNaN(Number(page)) || isNaN(Number(limit))) {
+        return res.status(400).json({ message: "Invalid page or limit parameter" });
+      }
+      
       const pageNum = parseInt(page as string);
-      const limitNum = parseInt(limit as string);
+      const limitNum = Math.min(parseInt(limit as string), 100); // Cap at 100
       const offset = (pageNum - 1) * limitNum;
       
       // Use optimized pagination for better performance
       const result = await storage.getBrandsPaginated(
         offset, 
         limitNum, 
-        search as string, 
+        search as string || undefined, 
         sectorId ? parseInt(sectorId as string) : undefined
       );
       
-      res.json(result.brands); // Keep same response format for compatibility
+      res.json(result.brands);
     } catch (error) {
+      console.error("Brands API error:", error);
       res.status(500).json({ message: "Failed to fetch brands" });
     }
+  });
+
+  // Handle malformed routes that are causing 500 errors
+  app.get("/api/brands/*", (req, res) => {
+    res.status(400).json({ message: "Invalid brands API call. Use /api/brands with query parameters." });
   });
 
   // Brands by sector API

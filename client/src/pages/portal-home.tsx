@@ -21,7 +21,7 @@ export default function PortalHome() {
   const queryParams = new URLSearchParams()
   if (searchQuery) queryParams.set("search", searchQuery)
   if (selectedSector) queryParams.set("sectorId", selectedSector.toString())
-  queryParams.set("limit", "50") // Limit to 50 brands for better performance
+  queryParams.set("limit", "20") // Limit to 20 brands for better performance
 
   // REAL DATABASE QUERIES - Connected to PostgreSQL with 3794+ total elements
   const { data: brands = [], isLoading } = useQuery<Brand[]>({
