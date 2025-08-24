@@ -86,13 +86,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     await capturePaypalOrder(req, res);
   });
   
-  // Import comprehensive brand sync for API routes
-  const { syncComprehensiveBrandData } = await import('./comprehensive-brand-sync-clean');
-  const { syncAllComprehensiveBrands } = await import('./complete-brand-sync');
-  const { syncAllComprehensiveGlobalData } = await import('./global-comprehensive-sync');
+  // DISABLED: Heavy sync operations causing CPU bottleneck
+  // const { syncComprehensiveBrandData } = await import('./comprehensive-brand-sync-clean');
+  // const { syncAllComprehensiveBrands } = await import('./complete-brand-sync');
+  // const { syncAllComprehensiveGlobalData } = await import('./global-comprehensive-sync');
   
-  // Comprehensive Brand Sync API route
+  // DISABLED: Heavy sync operations causing CPU bottleneck
   app.post('/api/sync/comprehensive-brands', async (req, res) => {
+    res.status(503).json({
+      success: false,
+      message: 'Sync operations temporarily disabled for performance optimization'
+    });
+    return;
+    /*
     try {
       console.log('🔄 Starting comprehensive brand data synchronization from API...');
       const result = await syncComprehensiveBrandData();
@@ -122,9 +128,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({
         success: false,
         message: 'Internal server error during brand synchronization',
-        error: error.message
+        error: error instanceof Error ? error.message : 'Unknown error'
       });
     }
+    */
   });
 
 
@@ -897,7 +904,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         mediaProjects: 0, // Will be populated later
         processingEngines: 0, // Will be populated later
       });
-    } catch (error: unknown) {
+    } catch (error) {
       console.error("Error fetching dashboard stats:", error);
       res.status(500).json({ message: "Failed to fetch dashboard stats" });
     }
