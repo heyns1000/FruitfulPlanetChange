@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -7,9 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { 
-  ExternalLink,
-  Globe,
-  Building,
   BarChart3,
   Settings,
   Eye,
@@ -26,15 +24,13 @@ import {
   Cpu,
   Server
 } from 'lucide-react';
-import { COMPREHENSIVE_BRAND_DATA } from '@shared/schema';
+import type { Brand, Sector } from '@shared/schema';
 
 interface BrandIdentity {
+  id: string;
   name: string;
   sector: string;
   sectorName: string;
-  repositoryUrl: string;
-  businessUrl: string;
-  dashboardUrl: string;
   status: 'active' | 'development' | 'maintenance';
   revenue: number;
   users: number;
@@ -43,6 +39,8 @@ interface BrandIdentity {
   description: string;
   features: string[];
   techStack: string[];
+  isCore: boolean;
+  integration: string;
 }
 
 export function BrandIdentityManager() {
@@ -52,52 +50,71 @@ export function BrandIdentityManager() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [selectedBrand, setSelectedBrand] = useState<BrandIdentity | null>(null);
 
-  // Generate comprehensive brand identities from authentic schema data
+  // Fetch real-time data from API endpoints
+  const { data: brands = [] } = useQuery<Brand[]>({
+    queryKey: ['/api/brands'],
+    staleTime: 0,
+    refetchInterval: 3000, // Sync with global sync interval
+  });
+
+  const { data: sectors = [] } = useQuery<Sector[]>({
+    queryKey: ['/api/sectors'],
+    staleTime: 0,
+    refetchInterval: 3000,
+  });
+
+  const { data: dashboardStats } = useQuery<{
+    totalElements: number;
+    coreBrands: number;
+    totalRevenue?: number;
+    [key: string]: any;
+  }>({
+    queryKey: ['/api/dashboard/stats'],
+    staleTime: 0,
+    refetchInterval: 3000,
+  });
+
+  // Transform real API data into brand identities
   const brandIdentities = useMemo(() => {
-    const identities: BrandIdentity[] = [];
+    if (!brands.length || !sectors.length) return [];
     
-    Object.entries(COMPREHENSIVE_BRAND_DATA).forEach(([sectorKey, sectorData]) => {
-      sectorData.brands.forEach((brandName, brandIndex) => {
-        // Create deterministic but varied data based on brand name hash
-        const brandHash = brandName.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-        const statusOptions = ['active', 'development', 'maintenance'];
-        const brandSlug = brandName.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/--+/g, '-');
-        
-        const identity: BrandIdentity = {
-          name: brandName, // Using actual authentic brand names
-          sector: sectorKey,
-          sectorName: sectorData.name,
-          repositoryUrl: `https://github.com/fruitful-ecosystem/${brandSlug}`,
-          businessUrl: `https://${brandSlug}.fruitful.business`,
-          dashboardUrl: `https://dashboard.${brandSlug}.fruitful.business`,
-          status: statusOptions[brandHash % 3] as any,
-          revenue: Math.floor((brandHash % 5000000) + 100000 + (brandHash % 1000000)),
-          users: Math.floor((brandHash % 300000) + 5000 + (brandHash % 50000)),
-          uptime: 94 + ((brandHash % 600) / 100),
-          lastUpdated: `${(brandHash % 30) + 1} days ago`,
-          description: `Professional ${sectorData.name.replace(/[🔥🌱🏭🧠⚡🏦💊🎨🛡️🌐🏢🚗🎓📱🧪🔬⚖️🏠🌍🍎🌿📊🎯🛒📦🧮💼🔌⚙️🌊💡🎮🔒]/g, '').trim()} platform delivering innovative solutions through ${brandName} technology`,
-          features: [
-            `${brandName} Analytics Engine`,
-            `Advanced ${brandName} API`,
-            `${brandName} Cloud Infrastructure`,
-            `${brandName} Security Suite`,
-            `${brandName} Multi-Platform Support`,
-            `${brandName} Real-time Monitoring`,
-            `${brandName} Business Intelligence`,
-            `${brandName} Integration Hub`
-          ].slice(0, 3 + (brandHash % 4)),
-          techStack: [
-            'React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Redis', 'Docker', 
-            'AWS', 'GraphQL', 'Next.js', 'MongoDB', 'Kubernetes', 'Python',
-            'Go', 'Rust', 'WebSocket', 'REST API', 'GraphQL', 'Microservices'
-          ].slice(0, 4 + (brandHash % 6))
-        };
-        identities.push(identity);
-      });
+    return brands.map((brand) => {
+      const sector = sectors.find(s => s.id === brand.sectorId);
+      const brandHash = brand.name.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+      const statusOptions = ['active', 'development', 'maintenance'];
+      
+      const identity: BrandIdentity = {
+        id: brand.id.toString(),
+        name: brand.name,
+        sector: sector?.id.toString() || '',
+        sectorName: sector?.name || 'Unknown Sector',
+        status: statusOptions[brandHash % 3] as any,
+        revenue: Math.floor((brandHash % 5000000) + 100000 + (brandHash % 1000000)),
+        users: Math.floor((brandHash % 300000) + 5000 + (brandHash % 50000)),
+        uptime: 94 + ((brandHash % 600) / 100),
+        lastUpdated: `${(brandHash % 30) + 1} days ago`,
+        description: brand.description || `Professional ${sector?.name?.replace(/[🔥🌱🏭🧠⚡🏦💊🎨🛡️🌐🏢🚗🎓📱🧪🔬⚖️🏠🌍🍎🌿📊🎯🛒📦🧮💼🔌⚙️🌊💡🎮🔒]/g, '').trim()} platform delivering innovative solutions through ${brand.name} technology`,
+        features: [
+          `${brand.name} Analytics Engine`,
+          `Advanced ${brand.name} API`,
+          `${brand.name} Cloud Infrastructure`,
+          `${brand.name} Security Suite`,
+          `${brand.name} Multi-Platform Support`,
+          `${brand.name} Real-time Monitoring`,
+          `${brand.name} Business Intelligence`,
+          `${brand.name} Integration Hub`
+        ].slice(0, 3 + (brandHash % 4)),
+        techStack: [
+          'React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Redis', 'Docker', 
+          'AWS', 'GraphQL', 'Next.js', 'MongoDB', 'Kubernetes', 'Python',
+          'Go', 'Rust', 'WebSocket', 'REST API', 'GraphQL', 'Microservices'
+        ].slice(0, 4 + (brandHash % 6)),
+        isCore: brand.isCore || false,
+        integration: brand.integration || 'HotStack',
+      };
+      return identity;
     });
-    
-    return identities;
-  }, []);
+  }, [brands, sectors]);
 
   // Filter brands based on search, sector, and status
   const filteredBrands = useMemo(() => {
@@ -131,8 +148,9 @@ export function BrandIdentityManager() {
     }
   };
 
-  const totalBrands = brandIdentities.length;
-  const activeBrands = brandIdentities.filter(b => b.status === 'active').length;
+  // Use real-time statistics from dashboard API
+  const totalBrands = dashboardStats?.totalElements || brandIdentities.length;
+  const activeBrands = dashboardStats?.coreBrands || brandIdentities.filter(b => b.status === 'active').length;
   const totalRevenue = brandIdentities.reduce((sum, b) => sum + b.revenue, 0);
   const totalUsers = brandIdentities.reduce((sum, b) => sum + b.users, 0);
 
@@ -239,8 +257,8 @@ export function BrandIdentityManager() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Sectors</SelectItem>
-                    {Object.entries(COMPREHENSIVE_BRAND_DATA).map(([key, sector]) => (
-                      <SelectItem key={key} value={key}>
+                    {sectors.map((sector) => (
+                      <SelectItem key={sector.id} value={sector.id.toString()}>
                         {sector.name}
                       </SelectItem>
                     ))}
@@ -306,24 +324,18 @@ export function BrandIdentityManager() {
                   </div>
                   <Separator />
                   <div className="flex flex-col space-y-2">
-                    <Button size="sm" variant="outline" className="w-full">
-                      <ExternalLink className="h-3 w-3 mr-2" />
-                      <a href={brand.businessUrl} target="_blank" rel="noopener noreferrer">
-                        Business Site
-                      </a>
+                    <Button size="sm" variant="outline" className="w-full" data-testid={`button-view-${brand.id}`}>
+                      <Eye className="h-3 w-3 mr-2" />
+                      View Details
                     </Button>
                     <div className="flex space-x-2">
-                      <Button size="sm" variant="outline" className="flex-1">
+                      <Button size="sm" variant="outline" className="flex-1" data-testid={`button-analytics-${brand.id}`}>
                         <BarChart3 className="h-3 w-3 mr-1" />
-                        <a href={brand.dashboardUrl} target="_blank" rel="noopener noreferrer">
-                          Dashboard
-                        </a>
+                        Analytics
                       </Button>
-                      <Button size="sm" variant="outline" className="flex-1">
-                        <Globe className="h-3 w-3 mr-1" />
-                        <a href={brand.repositoryUrl} target="_blank" rel="noopener noreferrer">
-                          Repo
-                        </a>
+                      <Button size="sm" variant="outline" className="flex-1" data-testid={`button-manage-${brand.id}`}>
+                        <Settings className="h-3 w-3 mr-1" />
+                        Manage
                       </Button>
                     </div>
                   </div>
@@ -353,20 +365,14 @@ export function BrandIdentityManager() {
                         {brand.uptime.toFixed(1)}% uptime
                       </Badge>
                       <div className="flex space-x-1">
-                        <Button size="sm" variant="ghost">
-                          <a href={brand.businessUrl} target="_blank" rel="noopener noreferrer">
-                            <Globe className="h-4 w-4" />
-                          </a>
+                        <Button size="sm" variant="ghost" data-testid={`button-view-list-${brand.id}`}>
+                          <Eye className="h-4 w-4" />
                         </Button>
-                        <Button size="sm" variant="ghost">
-                          <a href={brand.dashboardUrl} target="_blank" rel="noopener noreferrer">
-                            <BarChart3 className="h-4 w-4" />
-                          </a>
+                        <Button size="sm" variant="ghost" data-testid={`button-analytics-list-${brand.id}`}>
+                          <BarChart3 className="h-4 w-4" />
                         </Button>
-                        <Button size="sm" variant="ghost">
-                          <a href={brand.repositoryUrl} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="h-4 w-4" />
-                          </a>
+                        <Button size="sm" variant="ghost" data-testid={`button-manage-list-${brand.id}`}>
+                          <Settings className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
