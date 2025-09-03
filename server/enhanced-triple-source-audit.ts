@@ -1,6 +1,4 @@
 
-#!/usr/bin/env tsx
-
 import { db } from "./db";
 import { 
   sectors, brands, adminPanelBrands, legalDocuments, repositories, 
