@@ -662,6 +662,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Standalone HTML Checkout Page Endpoint
+  app.get("/checkout.html", async (req, res) => {
+    res.sendFile('public/claimroot-checkout.html', { root: process.cwd() });
+  });
+
   app.get("/api/sectors/:id", isAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);

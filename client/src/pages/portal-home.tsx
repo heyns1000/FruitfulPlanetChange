@@ -123,12 +123,18 @@ export default function PortalHome() {
             <p className="text-slate-300 mb-4">
               Secure scroll-compliant licensing for Technology sector with full FAA-X13 treaty compliance.
             </p>
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-4">
               <Button 
                 onClick={() => window.open('/#/claimroot-checkout', '_blank')}
                 className="bg-amber-500 hover:bg-amber-600 text-black"
               >
-                Open License Checkout
+                React Checkout Portal
+              </Button>
+              <Button 
+                onClick={() => window.open('/checkout.html', '_blank')}
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
+                Standalone HTML Checkout
               </Button>
               <a 
                 href="https://www.paypal.com/ncp/payment/K9BPET82JDRQ4"
