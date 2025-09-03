@@ -47,6 +47,7 @@ import FAAQuantumNexus from "@/pages/faa-quantum-nexus"
 import FruitfulBusinessPlan from "@/pages/fruitful-business-plan"
 import FruitfulMarketplaceMarketing from "@/pages/fruitful-marketplace-marketing"
 import ChatGPTIntegration from "@/pages/chatgpt-integration"
+import FAAIntakeChecklist from "@/pages/faa-intake-checklist"
 import Landing from "@/pages/landing"
 import SectorDashboard from "@/pages/sector-dashboard"
 import SectorIndividualPage from "@/pages/sector-individual"
@@ -260,6 +261,8 @@ function PageRouter({ activePage }: { activePage: string }) {
       return <FruitfulMarketplaceMarketing />
     case "chatgpt-integration":
       return <ChatGPTIntegration />
+    case "faa-intake-checklist":
+      return <FAAIntakeChecklist />
     case "ecosystem-coordinator":
       return <EcosystemCoordinator />
     default:

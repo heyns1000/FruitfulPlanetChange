@@ -58,6 +58,7 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
     { id: "fruitful-business-plan", label: "💼 Fruitful Business Plan", icon: "📊", badge: "R391M Strategy" },
     { id: "samfox-creative-studio", label: "🎨 SamFox Creative Studio", icon: "✨", badge: "Digital Art" },
     { id: "chatgpt-integration", label: "🦁 ChatGPT Lions", icon: "🧠", badge: "6 Soul-Injected" },
+    { id: "faa-intake-checklist", label: "🚀 FAA Intake Checklist", icon: "✅", badge: "Treaty Compliance" },
     { id: "fruitful-marketplace-marketing", label: "🛒 Fruitful™ Marketplace", icon: "🛍️", badge: "Live Store" },
     { id: "fruitful-smart-toys", label: "🧸 Fruitful Smart Toys™", icon: "🎮", badge: "5 Products" },
     { id: "hotstack-codenest", label: "🔥 HotStack + CodeNest", icon: "💻", badge: "Independent Repos" },
