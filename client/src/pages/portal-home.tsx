@@ -9,6 +9,7 @@ import { DatabaseIntegrationStatus } from "@/components/database-integration-sta
 import { FruitfulMarketplaceIntegration } from "@/components/fruitful-marketplace-integration"
 import { motion } from "framer-motion"
 import { MorphingButton, SparkleEffect, PulseIndicator } from "@/components/ui/micro-interactions"
+import QuantifiedSidebarMenu from "@/components/QuantifiedSidebarMenu"
 import type { Brand, Sector } from "@shared/schema"
 
 export default function PortalHome() {
@@ -99,6 +100,11 @@ export default function PortalHome() {
           </div>
         </div>
       </header>
+
+      {/* Quantified Sidebar Menu - Live Sidebar Items with Metadata */}
+      <section className="p-6">
+        <QuantifiedSidebarMenu />
+      </section>
 
       {/* Database Integration Status - Shows PostgreSQL Connection */}
       <section className="p-6">
