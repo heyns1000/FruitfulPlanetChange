@@ -72,6 +72,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Register database schema routes for comprehensive data integration
   app.use('/api/database', databaseSchemaRoutes);
 
+  // Register public summary routes for triple-sync integration
+  const { registerPublicSummaryRoutes } = await import('./routes/public-summary');
+  registerPublicSummaryRoutes(app);
+
   // ========================================
   // INTERACTIVE SECTOR MAPPING SYSTEM ROUTES
   // ========================================
@@ -163,6 +167,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error exporting network data:', error);
       res.status(500).json({ error: 'Failed to export network data' });
+    }
+  });
+
+  // ========================================
+  // TRIPLE-SYNC INTEGRATION ENDPOINTS
+  // ========================================
+  
+  // Triple-sync validation endpoint
+  app.get('/api/triple-sync/validate', async (req, res) => {
+    try {
+      const { tripleSyncValidator } = await import('./triple-sync-validator');
+      const validation = await tripleSyncValidator.validateTripleSync();
+      res.json(validation);
+    } catch (error) {
+      console.error('Error validating triple-sync:', error);
+      res.status(500).json({ error: 'Triple-sync validation failed' });
+    }
+  });
+
+  // Quick sync status check
+  app.get('/api/triple-sync/status', async (req, res) => {
+    try {
+      const { tripleSyncValidator } = await import('./triple-sync-validator');
+      const status = await tripleSyncValidator.getQuickSyncStatus();
+      res.json({
+        syncAllowed: status.allowed,
+        reason: status.reason,
+        timestamp: new Date().toISOString(),
+        appName: 'HSOMNI9000'
+      });
+    } catch (error) {
+      console.error('Error checking sync status:', error);
+      res.status(500).json({ 
+        syncAllowed: false, 
+        reason: 'Status check failed',
+        error: error.message 
+      });
     }
   });
 
