@@ -76,6 +76,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const { registerPublicSummaryRoutes } = await import('./routes/public-summary');
   registerPublicSummaryRoutes(app);
 
+  // Register frontend summary routes for DOM truth validation
+  const { registerFrontendSummaryRoutes } = await import('./routes/frontend-summary');
+  registerFrontendSummaryRoutes(app);
+
   // ========================================
   // INTERACTIVE SECTOR MAPPING SYSTEM ROUTES
   // ========================================
@@ -203,6 +207,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
         syncAllowed: false, 
         reason: 'Status check failed',
         error: error.message 
+      });
+    }
+  });
+
+  // ========================================
+  // LIVE AUDIT SYSTEM ENDPOINTS
+  // ========================================
+  
+  // Activate canonical source of display truth
+  app.post('/api/audit/activate-canonical', async (req, res) => {
+    try {
+      const { liveAuditSystem } = await import('./live-audit-system');
+      const canonicalState = await liveAuditSystem.activateCanonicalSource();
+      
+      console.log('🔒 Canonical Source of Display Truth ACTIVATED');
+      res.json({
+        success: true,
+        canonicalState,
+        message: 'Canonical source activated - Backend is now truth authority'
+      });
+    } catch (error) {
+      console.error('Error activating canonical source:', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Failed to activate canonical source' 
+      });
+    }
+  });
+
+  // Force sync from backend to frontend
+  app.post('/api/audit/force-sync', async (req, res) => {
+    try {
+      const { liveAuditSystem } = await import('./live-audit-system');
+      const syncResult = await liveAuditSystem.forceSyncFromBackend();
+      
+      res.json(syncResult);
+    } catch (error) {
+      console.error('Error forcing sync:', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Force sync failed' 
+      });
+    }
+  });
+
+  // Check if rerender is needed
+  app.get('/api/audit/rerender-check', async (req, res) => {
+    try {
+      const { liveAuditSystem } = await import('./live-audit-system');
+      const rerenderCheck = await liveAuditSystem.checkRerenderNeeded();
+      
+      res.json(rerenderCheck);
+    } catch (error) {
+      console.error('Error checking rerender status:', error);
+      res.status(500).json({ 
+        rerenderNeeded: true, 
+        reason: 'Rerender check failed' 
       });
     }
   });
