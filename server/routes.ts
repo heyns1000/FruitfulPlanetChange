@@ -416,6 +416,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Add missing sectors/display endpoint to fix deployment error
+  app.get("/api/sectors/display", async (req, res) => {
+    try {
+      const sectors = await storage.getAllSectors();
+      const brands = await storage.getAllBrands();
+      
+      // Calculate real brand counts per sector from database
+      const sectorsWithRealData = sectors.map(sector => {
+        const sectorBrands = brands.filter(brand => brand.sectorId === sector.id);
+        const coreBrands = sectorBrands.filter(brand => !brand.parentId);
+        const subNodes = sectorBrands.filter(brand => brand.parentId);
+        
+        return {
+          ...sector,
+          brandCount: coreBrands.length,
+          subnodeCount: subNodes.length,
+          totalElements: sectorBrands.length,
+          displayReady: true
+        };
+      });
+      
+      res.json({
+        timestamp: new Date().toISOString(),
+        source: "display-optimized",
+        totalCount: sectorsWithRealData.length,
+        description: "Sectors optimized for display rendering",
+        sectors: sectorsWithRealData
+      });
+    } catch (error) {
+      console.error("Error fetching sectors for display:", error);
+      res.status(500).json({ message: "Failed to fetch sectors for display" });
+    }
+  });
+
   app.get("/api/sectors/:id", isAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
