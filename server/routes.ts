@@ -80,6 +80,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const { registerFrontendSummaryRoutes } = await import('./routes/frontend-summary');
   registerFrontendSummaryRoutes(app);
 
+  // Register frontend trace routes for live component auditing
+  const { registerFrontendTraceRoutes } = await import('./routes/frontend-trace');
+  registerFrontendTraceRoutes(app);
+
   // ========================================
   // INTERACTIVE SECTOR MAPPING SYSTEM ROUTES
   // ========================================
