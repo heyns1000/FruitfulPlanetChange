@@ -1,17 +1,31 @@
 import { Router } from 'express';
 import { storage } from '../storage';
+import { syncLockMiddleware, PROTECTED_OPERATIONS } from '../sync-lock-middleware';
+import { executeEnhancedTripleSourceAudit } from '../enhanced-triple-source-audit';
 
 const router = Router();
 
-// Complete sync endpoint for real-time data synchronization
-router.get('/complete-sync', async (req, res) => {
+// Enhanced audit endpoint
+router.get('/enhanced-audit', async (req, res) => {
   try {
-    // Fetch all critical data simultaneously for complete sync
-    const [sectors, brands, systemStatus] = await Promise.all([
-      storage.getAllSectors(),
-      storage.getAllBrands(),
-      storage.getSystemStatus() || []
-    ]);
+    const auditResult = await executeEnhancedTripleSourceAudit();
+    res.json(auditResult);
+  } catch (error) {
+    res.status(500).json({ error: 'Enhanced audit failed', details: error.message });
+  }
+});
+
+// Complete sync endpoint for real-time data synchronization (PROTECTED)
+router.get('/complete-sync', 
+  syncLockMiddleware.requireSyncVerification(PROTECTED_OPERATIONS.BRAND_SYNC),
+  async (req, res) => {
+    try {
+      // Fetch all critical data simultaneously for complete sync
+      const [sectors, brands, systemStatus] = await Promise.all([
+        storage.getAllSectors(),
+        storage.getAllBrands(),
+        storage.getSystemStatus() || []
+      ]);
 
     // Calculate comprehensive sync data
     const syncData = {
