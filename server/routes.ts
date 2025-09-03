@@ -566,6 +566,102 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // VaultLevel 7 - ClaimRoot License Checkout System
+  app.post("/api/claimroot/checkout", async (req, res) => {
+    try {
+      const { scroll_id = "codeflow", sector = "Technology", quantity = 1 } = req.body;
+
+      // Dynamic pricing based on sector and scroll type
+      const basePriceMatrix = {
+        "Technology": 1140.00,
+        "Infrastructure": 1590.00,
+        "Enterprise": 1990.00,
+        "Eco": 590.00
+      };
+
+      const pricePerLicense = basePriceMatrix[sector] || 790.00;
+      const totalPrice = pricePerLicense * quantity;
+
+      // Static PayPal hosted button (from ClaimRoot configuration)
+      const paypalLink = "https://www.paypal.com/ncp/payment/K9BPET82JDRQ4";
+
+      res.json({
+        status: "ok",
+        scroll: scroll_id,
+        sector: sector,
+        quantity: quantity,
+        price: totalPrice,
+        paypal_url: paypalLink,
+        checkout_id: `claimroot_${Date.now()}`,
+        treaty_compliant: true,
+        vault_level: 7
+      });
+    } catch (error) {
+      console.error("Error creating ClaimRoot checkout:", error);
+      res.status(500).json({ message: "ClaimRoot checkout failed" });
+    }
+  });
+
+  // TreatyFlame License Logging
+  app.post("/api/treaty/log", async (req, res) => {
+    try {
+      const { sector, brand, scroll, payer_email, paypal_txn_id } = req.body;
+      
+      const treatyLog = {
+        sector: sector,
+        brand: brand,
+        scroll: scroll,
+        payer: payer_email,
+        tx: paypal_txn_id,
+        timestamp: new Date().toISOString(),
+        vault_level: 7,
+        treaty_signature: "FAA-X13-COMPLIANT",
+        flame_seal: `FLAME_${Date.now()}`
+      };
+
+      // Log to console for now (integrate with database later)
+      console.log("🔥 TreatyFlame Log:", treatyLog);
+
+      res.json({
+        status: "logged",
+        flame_id: treatyLog.flame_seal,
+        treaty_compliant: true
+      });
+    } catch (error) {
+      console.error("Error logging treaty claim:", error);
+      res.status(500).json({ message: "TreatyFlame logging failed" });
+    }
+  });
+
+  // ClaimRoot PayPal Button Generator
+  app.get("/api/claimroot/button/:sector", async (req, res) => {
+    try {
+      const sector = req.params.sector;
+      
+      const buttonHtml = `
+<div id="paypal-container-K9BPET82JDRQ4-${sector}"></div>
+<script 
+  src="https://www.paypal.com/sdk/js?client-id=BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q&components=hosted-buttons&disable-funding=venmo&currency=USD">
+</script>
+<script>
+  paypal.HostedButtons({
+    hostedButtonId: "K9BPET82JDRQ4",
+  }).render("#paypal-container-K9BPET82JDRQ4-${sector}");
+</script>`;
+
+      res.json({
+        sector: sector,
+        button_html: buttonHtml,
+        paypal_link: "https://www.paypal.com/ncp/payment/K9BPET82JDRQ4",
+        vault_level: 7,
+        status: "ready"
+      });
+    } catch (error) {
+      console.error("Error generating ClaimRoot button:", error);
+      res.status(500).json({ message: "Button generation failed" });
+    }
+  });
+
   app.get("/api/sectors/:id", isAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
