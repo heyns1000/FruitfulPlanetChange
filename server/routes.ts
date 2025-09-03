@@ -92,6 +92,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const { registerSectorsVisibilityRoutes } = await import('./routes/sectors-visibility');
   registerSectorsVisibilityRoutes(app);
 
+  // Register ecosystem coordinator routes for Fruitful Planet Change integration
+  const { registerEcosystemCoordinatorRoutes } = await import('./routes/ecosystem-coordinator');
+  registerEcosystemCoordinatorRoutes(app);
+
   // ========================================
   // INTERACTIVE SECTOR MAPPING SYSTEM ROUTES
   // ========================================

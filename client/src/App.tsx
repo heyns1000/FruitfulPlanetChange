@@ -56,6 +56,7 @@ import SettingsPage from "@/pages/settings"
 import AnalyticsPage from "@/pages/analytics"
 import SectorMapping from "@/pages/sector-mapping"
 import PlanetChange from "@/pages/planet-change"
+import { EcosystemCoordinator } from "@/pages/ecosystem-coordinator"
 import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react"
 import { GlobalFooter } from "@/components/ui/global-footer"
@@ -259,6 +260,8 @@ function PageRouter({ activePage }: { activePage: string }) {
       return <FruitfulMarketplaceMarketing />
     case "chatgpt-integration":
       return <ChatGPTIntegration />
+    case "ecosystem-coordinator":
+      return <EcosystemCoordinator />
     default:
       // Check if it's a sector dashboard route
       if (activePage.startsWith("sector-")) {
