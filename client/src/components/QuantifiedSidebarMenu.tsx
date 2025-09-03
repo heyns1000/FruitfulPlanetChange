@@ -93,7 +93,7 @@ const QuantifiedSidebarMenu = () => {
       case 'home':
         return `${summary.canonicalValues.totalElementsDisplay} Elements`;
       case 'sectors':
-        return `${summary.canonicalValues.sectorsDisplay} Sectors`;
+        return `${summary.canonicalValues.sectorsDisplay} Total (45 Public)`;
       case 'seedwave-admin':
         return `${summary.canonicalValues.brandsDisplay} Brands`;
       case 'sector-mapping':
@@ -179,13 +179,20 @@ const QuantifiedSidebarMenu = () => {
         </div>
       </div>
 
+      {/* Sector Reconciliation Alert */}
+      <div className="mb-3 p-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+        <p className="text-xs text-blue-700 dark:text-blue-300 font-medium">
+          🔍 <strong>Sector Sync Reconciliation:</strong> 48 Canonical (database) vs 45 Displayable (UI filtered)
+        </p>
+      </div>
+
       {/* Summary Stats */}
       {summary && (
         <div className="mb-4 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
           <div className="text-xs font-semibold text-blue-700 mb-1">🌍 Global System Overview</div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
             <div><strong>Elements:</strong> {summary.canonicalValues.totalElementsDisplay}</div>
-            <div><strong>Sectors:</strong> {summary.canonicalValues.sectorsDisplay}</div>
+            <div><strong>Sectors:</strong> {summary.canonicalValues.sectorsDisplay} Total</div>
             <div><strong>Brands:</strong> {summary.canonicalValues.brandsDisplay}</div>
             <div><strong>Core:</strong> {summary.canonicalValues.coreElementsDisplay}</div>
           </div>

@@ -88,6 +88,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const { registerSidebarItemsRoutes } = await import('./routes/sidebar-items');
   registerSidebarItemsRoutes(app);
 
+  // Register sectors visibility routes for filtering logic reconciliation
+  const { registerSectorsVisibilityRoutes } = await import('./routes/sectors-visibility');
+  registerSectorsVisibilityRoutes(app);
+
   // ========================================
   // INTERACTIVE SECTOR MAPPING SYSTEM ROUTES
   // ========================================
