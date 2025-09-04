@@ -292,6 +292,13 @@ export interface IStorage {
   
   // Seed SamFox Data
   seedSamFoxData(): Promise<void>;
+  
+  // Sector Relationships & Network Analysis
+  getSectorRelationships(): Promise<SectorRelationship[]>;
+  createSectorRelationship(relationship: InsertSectorRelationship): Promise<SectorRelationship>;
+  getNetworkStatistics(): Promise<any>;
+  getCriticalPaths(limit?: number): Promise<any[]>;
+  exportNetworkData(format?: string): Promise<string>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -2330,76 +2337,7 @@ export class MemStorage implements IStorage {
     return { dependencies, dependents };
   }
 
-  // Cross-Sector Heatmap Data Methods
-  async getSectorRelationships(): Promise<any[]> {
-    // Generate synthetic relationship data based on actual sectors
-    const sectorsData = await this.getAllSectors();
-    const relationships = [];
-    
-    // Create relationships between sectors based on their characteristics
-    for (let i = 0; i < sectorsData.length; i++) {
-      for (let j = i + 1; j < sectorsData.length; j++) {
-        const source = sectorsData[i];
-        const target = sectorsData[j];
-        
-        // Calculate relationship strength based on sector characteristics
-        const relationshipStrength = this.calculateSectorRelationshipStrength(source, target);
-        
-        if (relationshipStrength > 10) { // Only include meaningful relationships
-          relationships.push({
-            id: relationships.length + 1,
-            sourceId: source.id,
-            targetId: target.id,
-            strength: relationshipStrength.toString(),
-            type: this.determineSectorRelationshipType(source, target),
-            bidirectional: true,
-            integrationPotential: relationshipStrength * (0.8 + Math.random() * 0.4),
-            strategicValue: relationshipStrength * (0.7 + Math.random() * 0.6),
-            operationalSynergy: relationshipStrength * (0.6 + Math.random() * 0.8)
-          });
-        }
-      }
-    }
-    
-    return relationships;
-  }
-
-  async getInfluenceMap(): Promise<Record<string, any>> {
-    const sectorsData = await this.getAllSectors();
-    const influenceMap: Record<string, any> = {};
-    
-    for (const sector of sectorsData) {
-      const influence = this.calculateSectorInfluence(sector);
-      influenceMap[sector.id] = {
-        totalInfluence: influence,
-        brandCount: sector.brandCount || 0,
-        marketReach: influence * 1.2,
-        networkEffect: influence * 0.9
-      };
-    }
-    
-    return influenceMap;
-  }
-
-  async getNetworkStatistics(): Promise<any> {
-    const sectorsData = await this.getAllSectors();
-    const relationships = await this.getSectorRelationships();
-    
-    const totalPossibleConnections = (sectorsData.length * (sectorsData.length - 1)) / 2;
-    const actualConnections = relationships.length;
-    const networkDensity = (actualConnections / totalPossibleConnections) * 100;
-    
-    const avgRelationshipStrength = relationships.reduce((sum, rel) => sum + parseFloat(rel.strength), 0) / relationships.length;
-    
-    return {
-      totalSectors: sectorsData.length,
-      totalConnections: actualConnections,
-      networkDensity: Math.round(networkDensity),
-      averageRelationshipStrength: Math.round(avgRelationshipStrength),
-      strongConnections: relationships.filter(r => parseFloat(r.strength) > 70).length,
-      weakConnections: relationships.filter(r => parseFloat(r.strength) < 30).length
-    };
-  }
+  // Cross-Sector Heatmap Data Methods (These are duplicate helper methods - removing duplicates)
 
   private calculateSectorRelationshipStrength(sector1: Sector, sector2: Sector): number {
     // Base strength calculation using sector names and characteristics
