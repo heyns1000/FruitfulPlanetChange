@@ -8,6 +8,7 @@ import { InteractiveBrandCard } from "@/components/interactive-brand-card"
 import { GlobalButtonActivator } from "@/components/global-button-activator"
 import { DatabaseIntegrationStatus } from "@/components/database-integration-status"
 import { FruitfulMarketplaceIntegration } from "@/components/fruitful-marketplace-integration"
+import { CloudflareSyncManager } from "@/components/cloudflare-sync-manager"
 import { motion } from "framer-motion"
 import { MorphingButton, SparkleEffect, PulseIndicator } from "@/components/ui/micro-interactions"
 import QuantifiedSidebarMenu from "@/components/QuantifiedSidebarMenu"
@@ -179,6 +180,11 @@ export default function PortalHome() {
       {/* Database Integration Status - Shows PostgreSQL Connection */}
       <section className="p-6">
         <DatabaseIntegrationStatus />
+      </section>
+
+      {/* Cloudflare Workers Data Sync Manager */}
+      <section className="p-6">
+        <CloudflareSyncManager />
       </section>
 
       {/* Fruitful Global Marketplace - Real Products from Database */}

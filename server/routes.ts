@@ -23,6 +23,7 @@ import syncRoutes from './routes/sync';
 import databaseSchemaRoutes from './routes/database-schema';
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
 import { buttonRepairEngine } from "./dynamic-button-repair";
+import { cloudflareDataSync } from "./cloudflare-data-sync";
 
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -669,6 +670,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Dynamic Button Repair Engine Endpoints
+  // =================================================================
+  // CLOUDFLARE WORKERS DATA SYNCHRONIZATION ROUTES
+  // =================================================================
+  
+  // Get current ecosystem data for Cloudflare Workers
+  app.get('/api/cloudflare/ecosystem-data', async (req, res) => {
+    try {
+      const ecosystemData = await cloudflareDataSync.getEcosystemData();
+      res.json(ecosystemData);
+    } catch (error) {
+      console.error('Error getting ecosystem data:', error);
+      res.status(500).json({ message: 'Failed to get ecosystem data' });
+    }
+  });
+
+  // Force sync real HSOMNI9000 data to Cloudflare Workers
+  app.post('/api/cloudflare/force-sync', async (req, res) => {
+    try {
+      console.log('🚨 FORCE SYNC TRIGGERED: Aligning Cloudflare Workers with HSOMNI9000 data...');
+      const result = await cloudflareDataSync.forceDataAlignment();
+      res.json(result);
+    } catch (error) {
+      console.error('Error forcing Cloudflare sync:', error);
+      res.status(500).json({ message: 'Failed to force sync with Cloudflare Workers' });
+    }
+  });
+
+  // Standard sync to Cloudflare Workers
+  app.post('/api/cloudflare/sync', async (req, res) => {
+    try {
+      const result = await cloudflareDataSync.syncToCloudflareWorkers();
+      res.json(result);
+    } catch (error) {
+      console.error('Error syncing to Cloudflare Workers:', error);
+      res.status(500).json({ message: 'Failed to sync to Cloudflare Workers' });
+    }
+  });
+
+  // =================================================================
+  // DYNAMIC BUTTON REPAIR ENGINE ROUTES
+  // =================================================================
+
   app.get("/api/button-repair/scan", async (req, res) => {
     try {
       const page_url = req.query.page_url as string || "/";
