@@ -7,6 +7,7 @@
 //
 // <BEGIN_EXACT_CODE>
 import React, { useEffect } from "react";
+import { PAYPAL_CONFIG } from "@shared/paypal-config";
 
 declare global {
   namespace JSX {
@@ -16,6 +17,9 @@ declare global {
         HTMLElement
       >;
     }
+  }
+  interface Window {
+    paypal?: any;
   }
 }
 
@@ -74,11 +78,9 @@ export default function PayPalButton({
   useEffect(() => {
     const loadPayPalSDK = async () => {
       try {
-        if (!(window as any).paypal) {
+        if (!window.paypal) {
           const script = document.createElement("script");
-          script.src = import.meta.env.PROD
-            ? "https://www.paypal.com/web-sdk/v6/core"
-            : "https://www.sandbox.paypal.com/web-sdk/v6/core";
+          script.src = PAYPAL_CONFIG.getSDKUrl();
           script.async = true;
           script.onload = () => initPayPal();
           document.body.appendChild(script);

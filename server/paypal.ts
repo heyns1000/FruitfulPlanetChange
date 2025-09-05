@@ -17,17 +17,16 @@ import { Request, Response } from "express";
 
 /* PayPal Controllers Setup */
 
-const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET } = process.env;
+// Use the embedded PayPal credentials from your database/environment
+const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID || "BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q";
+const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET;
 
 if (!PAYPAL_CLIENT_ID) {
   console.warn("PayPal Client ID not configured");
-  // Use sandbox defaults for development
-  process.env.PAYPAL_CLIENT_ID = "sandbox_client_id";
+  process.env.PAYPAL_CLIENT_ID = "BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q";
 }
 if (!PAYPAL_CLIENT_SECRET) {
-  console.warn("PayPal Client Secret not configured");
-  // Use sandbox defaults for development
-  process.env.PAYPAL_CLIENT_SECRET = "sandbox_client_secret";
+  console.warn("PayPal Client Secret not configured - using environment variable");
 }
 const client = new Client({
   clientCredentialsAuthCredentials: {

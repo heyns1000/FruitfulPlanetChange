@@ -4,18 +4,60 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle2, Shield, Zap, CreditCard } from "lucide-react"
 
-interface ClaimRootCheckoutProps {
-  sector?: string
-  price?: number
-  onCheckoutComplete?: () => void
+// PayPal Hosted Button Configuration
+const PAYPAL_CLIENT_ID = "BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q";
+const CLAIMROOT_HOSTED_BUTTON_ID = "K9BPET82JDRQ4";
+
+declare global {
+  interface Window {
+    paypal?: any;
+  }
 }
 
-export default function ClaimRootCheckout({ 
-  sector = "Technology", 
+export default function ClaimRootCheckout({
+  sector = "Technology",
   price = 1140,
-  onCheckoutComplete 
+  onCheckoutComplete
 }: ClaimRootCheckoutProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const [paypalLoaded, setPaypalLoaded] = useState(false);
+
+  useEffect(() => {
+    // Load PayPal SDK
+    if (!window.paypal) {
+      const script = document.createElement('script');
+      script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&components=hosted-buttons&disable-funding=venmo&currency=USD`;
+      script.async = true;
+      script.onload = () => {
+        setPaypalLoaded(true);
+        renderPayPalButton();
+      };
+      document.head.appendChild(script);
+    } else {
+      setPaypalLoaded(true);
+      renderPayPalButton();
+    }
+  }, []);
+
+  const renderPayPalButton = () => {
+    if (window.paypal && window.paypal.HostedButtons) {
+      // Clear existing PayPal containers
+      const containers = document.querySelectorAll('[id^="paypal-container-"]');
+      containers.forEach(container => {
+        container.innerHTML = '';
+      });
+
+      // Render ClaimRoot PayPal button
+      setTimeout(() => {
+        const container = document.getElementById(`paypal-container-${CLAIMROOT_HOSTED_BUTTON_ID}`);
+        if (container && window.paypal.HostedButtons) {
+          window.paypal.HostedButtons({
+            hostedButtonId: CLAIMROOT_HOSTED_BUTTON_ID,
+          }).render(`#paypal-container-${CLAIMROOT_HOSTED_BUTTON_ID}`);
+        }
+      }, 100);
+    }
+  };
 
   return (
     <Card className="max-w-lg mx-auto bg-gradient-to-br from-slate-900 to-slate-800 border-amber-500/20">
@@ -64,53 +106,70 @@ export default function ClaimRootCheckout({
         </div>
 
         {/* PayPal Integration */}
-        <div className="space-y-4">
-          {/* Option 1: Direct PayPal Checkout Link */}
-          <div className="text-center">
-            <a 
-              href="https://www.paypal.com/ncp/payment/K9BPET82JDRQ4"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-black font-bold py-4 px-8 rounded-lg transition-all transform hover:scale-105 shadow-lg"
-            >
-              🧬 Purchase ClaimRoot License - ${price.toLocaleString()} USD
-            </a>
-            <div className="mt-4 text-center">
-              <img 
-                src="https://www.paypalobjects.com/images/Debit_Credit_APM.svg" 
-                alt="Payment methods accepted" 
-                className="inline-block max-w-40"
-              />
+        <div className="mt-8 space-y-4">
+          {/* PayPal Hosted Button Integration */}
+          <div className="space-y-4">
+            <div className="text-center">
+              <h3 className="text-lg font-semibold mb-2">ClaimRoot License - CodeFlow ({sector})</h3>
+              <p className="text-2xl font-bold text-green-600">${price.toLocaleString()} USD</p>
+              <p className="text-sm text-gray-600 mt-2">
+                Grants full access to scroll-bound licensing certificate for CodeFlow under the {sector} sector.
+                Includes 🔒 VaultMesh activation, FAA.X13 Treaty compliance, and SHA-256 metadata seal.
+              </p>
+            </div>
+
+            {/* PayPal Button Container */}
+            <div id={`paypal-container-${CLAIMROOT_HOSTED_BUTTON_ID}`} className="flex justify-center">
+              {!paypalLoaded && (
+                <div className="animate-pulse bg-yellow-400 text-black px-8 py-3 rounded font-bold">
+                  Loading PayPal...
+                </div>
+              )}
+            </div>
+
+            {/* Fallback form for direct PayPal payment */}
+            <div className="text-center">
+              <form
+                action={`https://www.paypal.com/ncp/payment/${CLAIMROOT_HOSTED_BUTTON_ID}`}
+                method="post"
+                target="_blank"
+                className="inline-grid justify-items-center align-content-start gap-2"
+              >
+                <input
+                  className="bg-yellow-400 text-black border-none rounded px-8 py-3 font-bold cursor-pointer hover:bg-yellow-500 transition-colors min-w-48"
+                  type="submit"
+                  value="Buy Now"
+                />
+                <img
+                  src="https://www.paypalobjects.com/images/Debit_Credit_APM.svg"
+                  alt="cards"
+                  className="max-w-32"
+                />
+                <section className="text-xs text-gray-500">
+                  Powered by{' '}
+                  <img
+                    src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg"
+                    alt="paypal"
+                    className="h-3 inline align-middle ml-1"
+                  />
+                </section>
+              </form>
             </div>
           </div>
 
-          {/* Option 2: Fallback Form Button */}
-          <div className="text-center">
-            <form 
-              action="https://www.paypal.com/ncp/payment/K9BPET82JDRQ4" 
-              method="post" 
-              target="_blank"
-              className="inline-grid justify-items-center align-content-start gap-2"
-            >
-              <input 
-                type="submit" 
-                value="Buy Now - ClaimRoot License" 
-                className="text-center border-none rounded min-w-48 px-8 h-11 font-bold bg-amber-400 text-black hover:bg-amber-500 transition-colors cursor-pointer"
-              />
-              <img 
-                src="https://www.paypalobjects.com/images/Debit_Credit_APM.svg" 
-                alt="Payment methods accepted" 
-                className="max-w-32"
-              />
-              <section className="text-xs text-slate-400">
-                Powered by{" "}
-                <img 
-                  src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg" 
-                  alt="PayPal" 
-                  className="h-3.5 inline align-middle"
-                />
-              </section>
-            </form>
+          <div className="flex items-center justify-center space-x-4 text-sm text-gray-500 pt-4">
+            <div className="flex items-center">
+              <Shield className="w-4 h-4 mr-1" />
+              Encrypted
+            </div>
+            <div className="flex items-center">
+              <CheckCircle2 className="w-4 h-4 mr-1" />
+              Verified
+            </div>
+            <div className="flex items-center">
+              <CreditCard className="w-4 h-4 mr-1" />
+              Secure
+            </div>
           </div>
         </div>
 
