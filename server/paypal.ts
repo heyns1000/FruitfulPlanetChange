@@ -80,6 +80,11 @@ export async function getClientToken() {
 
 export async function createPaypalOrder(req: Request, res: Response) {
   try {
+    // Validate HTTP method
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: "Method not allowed. Use POST." });
+    }
+
     const { amount, currency, intent } = req.body;
 
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
@@ -96,15 +101,15 @@ export async function createPaypalOrder(req: Request, res: Response) {
         .json({ error: "Invalid currency. Currency is required." });
     }
 
-    if (!intent) {
+    if (!intent || !['CAPTURE', 'AUTHORIZE'].includes(intent.toUpperCase())) {
       return res
         .status(400)
-        .json({ error: "Invalid intent. Intent is required." });
+        .json({ error: "Invalid intent. Must be CAPTURE or AUTHORIZE." });
     }
 
     const collect = {
       body: {
-        intent: intent,
+        intent: intent.toUpperCase(),
         purchaseUnits: [
           {
             amount: {
@@ -132,7 +137,17 @@ export async function createPaypalOrder(req: Request, res: Response) {
 
 export async function capturePaypalOrder(req: Request, res: Response) {
   try {
+    // Validate HTTP method
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: "Method not allowed. Use POST." });
+    }
+
     const { orderID } = req.params;
+    
+    if (!orderID) {
+      return res.status(400).json({ error: "Order ID is required." });
+    }
+
     const collect = {
       id: orderID,
       prefer: "return=minimal",
@@ -146,13 +161,18 @@ export async function capturePaypalOrder(req: Request, res: Response) {
 
     res.status(httpStatusCode).json(jsonResponse);
   } catch (error) {
-    console.error("Failed to create order:", error);
+    console.error("Failed to capture order:", error);
     res.status(500).json({ error: "Failed to capture order." });
   }
 }
 
 export async function loadPaypalDefault(req: Request, res: Response) {
   try {
+    // Validate HTTP method
+    if (req.method !== 'GET') {
+      return res.status(405).json({ error: "Method not allowed. Use GET." });
+    }
+
     const clientToken = await getClientToken();
     res.json({
       clientToken,

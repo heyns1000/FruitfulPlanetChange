@@ -20,7 +20,8 @@ import { registerAdminPanelRoutes } from './routes-admin-panel';
 import adminPanelRoutes from './routes/admin-panel';
 import syncRoutes from './routes/sync';
 import databaseSchemaRoutes from './routes/database-schema';
-import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from "./paypal";
+import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from './paypal';
+import { getPaypalContainers } from './routes/paypal-containers';
 
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -39,7 +40,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         profileImageUrl: null,
       });
     }
-    
+
     // In production, use proper authentication
     const authenticateMiddleware = isAuthenticated;
     authenticateMiddleware(req, res, () => {
@@ -56,26 +57,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Register sector routes
   registerSectorRoutes(app);
-  
+
   // Register MineNest mining routes
   registerMineNestRoutes(app);
-  
+
   // Register Admin Panel routes
   registerAdminPanelRoutes(app, storage);
-  
+
   // Register new admin panel API routes
   app.use('/api/admin-panel', adminPanelRoutes);
-  
+
   // Register sync routes for real-time synchronization
   app.use('/api/sync', syncRoutes);
-  
+
   // Register database schema routes for comprehensive data integration
   app.use('/api/database', databaseSchemaRoutes);
 
   // ========================================
   // INTERACTIVE SECTOR MAPPING SYSTEM ROUTES
   // ========================================
-  
+
   // Get all sector relationships
   app.get('/api/sector-mapping/relationships', async (req, res) => {
     try {
@@ -104,7 +105,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { relationships } = req.body;
       const results = [];
-      
+
       for (const relationshipData of relationships) {
         try {
           const relationship = await storage.createSectorRelationship(relationshipData);
@@ -113,7 +114,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.warn('Failed to create relationship:', relationshipData, error);
         }
       }
-      
+
       res.status(201).json({ 
         created: results.length, 
         total: relationships.length,
@@ -153,10 +154,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const format = req.query.format as string || 'json';
       const networkData = await storage.exportNetworkData(format);
-      
+
       const extension = format === 'csv' ? 'csv' : 'json';
       const mimeType = format === 'csv' ? 'text/csv' : 'application/json';
-      
+
       res.setHeader('Content-Type', mimeType);
       res.setHeader('Content-Disposition', `attachment; filename="sector-network.${extension}"`);
       res.send(networkData);
@@ -179,12 +180,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/paypal/order/:orderID/capture", async (req, res) => {
     await capturePaypalOrder(req, res);
   });
-  
+  app.get('/api/paypal/containers', getPaypalContainers);
+
   // DISABLED: Heavy sync operations causing CPU bottleneck
   // const { syncComprehensiveBrandData } = await import('./comprehensive-brand-sync-clean');
   // const { syncAllComprehensiveBrands } = await import('./complete-brand-sync');
   // const { syncAllComprehensiveGlobalData } = await import('./global-comprehensive-sync');
-  
+
   // DISABLED: Heavy sync operations causing CPU bottleneck
   app.post('/api/sync/comprehensive-brands', async (req, res) => {
     res.status(503).json({
@@ -196,7 +198,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log('🔄 Starting comprehensive brand data synchronization from API...');
       const result = await syncComprehensiveBrandData();
-      
+
       if (result.success) {
         console.log(`✅ Sync completed: ${result.totalAdded} brands added across ${result.sectorsProcessed || 0} sectors`);
         res.json({
@@ -235,13 +237,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const sectors = await storage.getAllSectors();
       const brands = await storage.getAllBrands();
-      
+
       // Calculate real brand counts per sector from database
       const sectorsWithRealData = sectors.map(sector => {
         const sectorBrands = brands.filter(brand => brand.sectorId === sector.id);
         const coreBrands = sectorBrands.filter(brand => !brand.parentId);
         const subNodes = sectorBrands.filter(brand => brand.parentId);
-        
+
         return {
           ...sector,
           brandCount: coreBrands.length,
@@ -249,7 +251,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           totalElements: sectorBrands.length
         };
       });
-      
+
       res.json(sectorsWithRealData);
     } catch (error) {
       console.error("Error fetching sectors:", error);
@@ -262,22 +264,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       const sector = await storage.getSector(id);
       const brands = await storage.getBrandsBySector(id);
-      
+
       if (!sector) {
         return res.status(404).json({ message: "Sector not found in database" });
       }
-      
+
       // Calculate real metrics from database
       const coreBrands = brands.filter(brand => !brand.parentId);
       const subNodes = brands.filter(brand => brand.parentId);
-      
+
       const sectorWithRealData = {
         ...sector,
         brandCount: coreBrands.length,
         subnodeCount: subNodes.length,
         totalElements: brands.length
       };
-      
+
       res.json(sectorWithRealData);
     } catch (error) {
       console.error(`Error fetching sector ${req.params.id}:`, error);
@@ -289,7 +291,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/repositories", async (req, res) => {
     try {
       const { search, category } = req.query;
-      
+
       let repositories;
       if (search) {
         repositories = await storage.getRepositoriesBySearch(search as string);
@@ -298,7 +300,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         repositories = await storage.getAllRepositories();
       }
-      
+
       res.json(repositories);
     } catch (error) {
       console.error("Error fetching repositories:", error);
@@ -310,16 +312,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/brands", async (req, res) => {
     try {
       const { search, sectorId, page = '1', limit = '20' } = req.query;
-      
+
       // Input validation
       if (isNaN(Number(page)) || isNaN(Number(limit))) {
         return res.status(400).json({ message: "Invalid page or limit parameter" });
       }
-      
+
       const pageNum = parseInt(page as string);
       const limitNum = Math.min(parseInt(limit as string), 100); // Cap at 100
       const offset = (pageNum - 1) * limitNum;
-      
+
       // Use optimized pagination for better performance
       const result = await storage.getBrandsPaginated(
         offset, 
@@ -327,7 +329,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         search as string || undefined, 
         sectorId ? parseInt(sectorId as string) : undefined
       );
-      
+
       res.json(result.brands);
     } catch (error) {
       console.error("Brands API error:", error);
@@ -355,14 +357,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/brands/:param", async (req, res) => {
     try {
       const param = req.params.param;
-      
+
       // Check if param is a sector filter like "sectorId=1"
       if (param.startsWith("sectorId=")) {
         const sectorId = parseInt(param.split("=")[1]);
         const brands = await storage.getBrandsBySector(sectorId);
         return res.json(brands);
       }
-      
+
       // Otherwise treat as regular brand ID
       const id = parseInt(param);
       const brand = await storage.getBrand(id);
@@ -451,7 +453,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!result.success) {
         return res.status(400).json({ message: "Invalid input", errors: result.error.issues });
       }
-      
+
       const doc = await storage.createLegalDocument(result.data);
       res.status(201).json(doc);
     } catch (error: any) {
@@ -464,7 +466,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/legal-documents/:id/download", async (req, res) => {
     try {
       const { id } = req.params;
-      
+
       // Map document IDs to actual file paths from legal.faa.zone repository
       const documentPaths: Record<string, string> = {
         // Map by document ID for direct access
@@ -510,7 +512,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/legal-docs/:id", async (req, res) => {
     try {
       const { id } = req.params;
-      
+
       // Map document IDs to actual file paths from legal.faa.zone repository
       const documentPaths: Record<string, string> = {
         // Map by document ID for direct access
@@ -573,7 +575,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/baobab/environmental-metrics", async (req, res) => {
     try {
       const continent = req.query.continent as string || "All";
-      
+
       // Real environmental metrics based on continent
       const globalMetrics = {
         forestCover: 31.2,
@@ -599,7 +601,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       let adjustedMetrics = { ...globalMetrics };
-      
+
       if (continent !== "All" && continentMultipliers[continent]) {
         const multipliers = continentMultipliers[continent];
         Object.keys(multipliers).forEach(key => {
@@ -877,7 +879,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!result.success) {
         return res.status(400).json({ message: "Invalid input", errors: result.error.issues });
       }
-      
+
       const repo = await storage.createRepository(result.data);
       res.status(201).json(repo);
     } catch (error: any) {
@@ -906,7 +908,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!result.success) {
         return res.status(400).json({ message: "Invalid input", errors: result.error.issues });
       }
-      
+
       const payment = await storage.createPayment(result.data);
       res.status(201).json(payment);
     } catch (error: any) {
@@ -929,7 +931,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/banimal/transactions", async (req, res) => {
     try {
       const transaction = await storage.createBanimalTransaction(req.body);
-      
+
       // Create automatic charitable distributions
       const distributionRules = {
         charity: 35,
@@ -938,7 +940,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         sonicGrid: 10,
         vault: 10
       };
-      
+
       const amount = parseFloat(req.body.amount);
       for (const [type, percentage] of Object.entries(distributionRules)) {
         const distributionAmount = (amount * percentage) / 100;
@@ -951,7 +953,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           status: "completed"
         });
       }
-      
+
       res.json(transaction);
     } catch (error) {
       console.error("Error creating Banimal transaction:", error);
@@ -1001,17 +1003,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         storage.getAllSectors(),
         storage.getAllBrands()
       ]);
-      
+
       // Calculate detailed counts
       const sectorCounts: { [sectorId: number]: { coreBrands: number, subNodes: number, total: number } } = {};
-      
+
       sectors.forEach(sector => {
         sectorCounts[sector.id] = { coreBrands: 0, subNodes: 0, total: 0 };
       });
-      
+
       let totalCoreBrands = 0;
       let totalSubNodes = 0;
-      
+
       brands.forEach(brand => {
         if (brand.sectorId && sectorCounts[brand.sectorId]) {
           if (brand.isCore && !brand.parentId) {
@@ -1024,7 +1026,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           sectorCounts[brand.sectorId].total++;
         }
       });
-      
+
       // Calculate sector totals
       const sectorSummary = sectors.map(sector => ({
         id: sector.id,
@@ -1036,7 +1038,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         metadataBrandCount: sector.brandCount || 0,
         metadataSubnodeCount: sector.subnodeCount || 0
       }));
-      
+
       res.json({
         overview: {
           totalSectors: sectors.length,
@@ -1076,7 +1078,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Simulate checkout processing
       const { product, customer } = req.body;
-      
+
       // In a real application, this would integrate with PayPal SDK
       const payment = await storage.createPayment({
         userId: 1,
@@ -1103,10 +1105,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { sectorName, brands, nodes, tier, region, monthlyFee } = req.body;
       const userId = req.user.claims.sub;
-      
+
       // Generate unique deployment ID
       const deploymentId = `DEP-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-      
+
       // Real deployment logic - store in database
       const deploymentData = {
         deploymentId,
@@ -1125,7 +1127,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create deployment record in system
       console.log(`Deploying sector: ${sectorName} for user: ${userId}`);
       console.log(`Deployment ID: ${deploymentId}`);
-      
+
       res.json({
         sectorName,
         deploymentId,
@@ -1133,7 +1135,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         activated: true,
         message: `${sectorName} sector deployed with ${brands} brands and ${nodes.toLocaleString()} nodes`
       });
-      
+
     } catch (error) {
       console.error("Deployment failed:", error);
       res.status(500).json({ 
@@ -1149,22 +1151,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const systemStatuses = await storage.getAllSystemStatus();
       const brands = await storage.getAllBrands();
       const sectors = await storage.getAllSectors();
-      
+
       // Calculate real performance metrics from database data
       const activeServices = systemStatuses.filter(s => s.status === 'active').length;
       const totalServices = systemStatuses.length;
       const performance = totalServices > 0 ? Math.round((activeServices / totalServices) * 100) : 0;
-      
+
       // Calculate security metrics from brand integration status
       const secureIntegrations = brands.filter(b => b.integration?.includes('VaultMesh')).length;
       const security = brands.length > 0 ? Math.round((secureIntegrations / brands.length) * 100) : 0;
-      
+
       // Calculate efficiency from sector distribution
       const efficiency = sectors.length > 0 ? Math.min(100, sectors.length * 7) : 0;
-      
+
       // Calculate uptime from system status
       const uptime = performance > 90 ? 99 + (performance - 90) / 10 : performance;
-      
+
       res.json({
         performance,
         security,
@@ -1229,7 +1231,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { id } = req.params;
       const userId = req.user?.claims?.sub;
-      
+
       res.send(`
         <!DOCTYPE html>
         <html>
@@ -1256,7 +1258,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             <p><strong>Document ID:</strong> ${id}</p>
             <p><strong>User ID:</strong> ${userId}</p>
             <p><strong>Status:</strong> <span class="status">✅ Ready for Signing</span></p>
-            
+
             <h3>Available Actions:</h3>
             <div class="integration-item">
               <strong>Digital Signature Verification</strong><br>
@@ -1274,13 +1276,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
               <strong>VaultMesh™ Compliance</strong><br>
               Integrated with legal documentation system
             </div>
-            
+
             <div class="actions">
               <button class="btn" onclick="alert('Signature workflow initiated! Document ${id} ready for signing.')">Start Signing Process</button>
               <button class="btn" onclick="alert('Document verification complete! All signatures valid.')">Verify Document</button>
               <button class="btn" onclick="window.close()">Close Window</button>
             </div>
-            
+
             <p><em>This integration connects with the VaultMesh™ legal documentation system to provide enterprise-grade document signing capabilities powered by SecureSign™ technology.</em></p>
           </div>
         </body>
@@ -1439,7 +1441,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/purchases", async (req, res) => {
     try {
       const { productId, productName, price, category, timestamp } = req.body;
-      
+
       // Create real PayPal payment using existing integration
       const paymentData = {
         intent: "sale",
@@ -1478,7 +1480,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       console.log(`💰 REAL PAYMENT: ${productName} for $${price} - Payment ID: ${payment.id}`);
-      
+
       // Return PayPal payment URL for real money processing
       res.json({
         id: payment.id,
@@ -1508,7 +1510,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Redirect to PayPal for actual payment
       const paypalUrl = `https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${process.env.PAYPAL_BUSINESS_EMAIL}&item_name=${encodeURIComponent(payment.description)}&amount=${payment.amount}&currency_code=${payment.currency}&return=${req.protocol}://${req.get('host')}/payment/success&cancel_return=${req.protocol}://${req.get('host')}/payment/cancel`;
-      
+
       res.redirect(paypalUrl);
     } catch (error) {
       console.error("PayPal redirect error:", error);
@@ -1520,7 +1522,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/payment/success", async (req, res) => {
     try {
       const { paymentId } = req.query;
-      
+
       if (paymentId) {
         // Update payment status to completed
         const paymentIdInt = parseInt(paymentId as string);
@@ -1528,13 +1530,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (payment) {
           await storage.updatePayment(paymentIdInt, { ...payment, status: "completed" });
         }
-        
+
         // REAL DEPLOYMENT: Deploy product to production server
         console.log(`🚀 DEPLOYING TO PRODUCTION: Payment ${paymentId} completed`);
-        
+
         // Deploy to actual server infrastructure
         const deploymentResult = await deployToProduction(paymentId as string);
-        
+
         res.json({
           message: "Payment successful and product deployed!",
           paymentId,
@@ -1554,11 +1556,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   async function deployToProduction(paymentId: string) {
     const deploymentId = `DEPLOY-${Date.now()}`;
     const subdomain = deploymentId.toLowerCase().replace(/[^a-z0-9]/g, '');
-    
+
     try {
       // Deploy to Replit's production infrastructure
       const deploymentUrl = `https://${subdomain}.replit.app`;
-      
+
       // Create actual deployment configuration
       const deploymentConfig = {
         name: subdomain,
@@ -1567,15 +1569,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         customDomain: `${subdomain}.fruitfulcratedance.com`,
         timestamp: new Date().toISOString()
       };
-      
+
       console.log(`🚀 REAL DEPLOYMENT STARTED: ${deploymentUrl}`);
       console.log(`📋 Config:`, JSON.stringify(deploymentConfig, null, 2));
-      
+
       // Simulate actual deployment process
       await new Promise(resolve => setTimeout(resolve, 3000));
-      
+
       console.log(`✅ DEPLOYMENT COMPLETE: Live at ${deploymentUrl}`);
-      
+
       return {
         id: deploymentId,
         url: deploymentUrl,
@@ -1595,7 +1597,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log('🚀 Starting COMPLETE brand data synchronization from comprehensive file...');
       const result = await syncAllComprehensiveBrands();
-      
+
       if (result.success) {
         console.log(`✅ Complete sync finished: ${result.totalAdded} brands added across ${result.sectorsProcessed} sectors`);
         res.json({
@@ -1633,7 +1635,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
-      
+
       const familyMembers = await storage.getAllFamilyMembers(userId);
       res.json(familyMembers);
     } catch (error) {
@@ -1648,7 +1650,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
-      
+
       const memberData = { ...req.body, userId };
       const newMember = await storage.createFamilyMember(memberData);
       res.json(newMember);
@@ -1688,16 +1690,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
-      
+
       const query = req.query.search as string;
       let documents;
-      
+
       if (query) {
         documents = await storage.searchHeritageDocuments(userId, query);
       } else {
         documents = await storage.getAllHeritageDocuments(userId);
       }
-      
+
       res.json(documents);
     } catch (error) {
       console.error("Error fetching heritage documents:", error);
@@ -1711,7 +1713,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
-      
+
       const documentData = { ...req.body, userId };
       const newDocument = await storage.createHeritageDocument(documentData);
       res.json(newDocument);
@@ -1751,7 +1753,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
-      
+
       const events = await storage.getAllFamilyEvents(userId);
       res.json(events);
     } catch (error) {
@@ -1766,7 +1768,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
-      
+
       const eventData = { ...req.body, userId };
       const newEvent = await storage.createFamilyEvent(eventData);
       res.json(newEvent);
@@ -1806,7 +1808,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
-      
+
       const metrics = await storage.getHeritageMetrics(userId);
       res.json(metrics || {
         totalTags: 0,
@@ -1828,7 +1830,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
-      
+
       const updatedMetrics = await storage.updateHeritageMetrics(userId, req.body);
       res.json(updatedMetrics);
     } catch (error) {
@@ -1840,7 +1842,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // =================================================================
   // SAMFOX STUDIO STANDALONE API ROUTES
   // =================================================================
-  
+
   // Portfolio projects API
   app.get("/api/samfox/portfolio", async (req, res) => {
     try {
@@ -1880,7 +1882,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/samfox/artworks", async (req, res) => {
     try {
       const { category, featured, available } = req.query;
-      
+
       let artworks;
       if (category) {
         artworks = await storage.getArtworksByCategory(category as string);
@@ -1891,7 +1893,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         artworks = await storage.getAllArtworks();
       }
-      
+
       res.json(artworks);
     } catch (error) {
       console.error("Error fetching artworks:", error);
@@ -1905,7 +1907,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!q) {
         return res.status(400).json({ error: "Search query required" });
       }
-      
+
       const artworks = await storage.searchArtworks(q as string);
       res.json(artworks);
     } catch (error) {
