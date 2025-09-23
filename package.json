@@ -109,7 +109,7 @@
   },
   "overrides": {
     "esbuild": "^0.25.9"
-  }
+  },
   "optionalDependencies": {
     "bufferutil": "^4.0.8"
   }
