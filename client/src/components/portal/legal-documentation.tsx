@@ -1,18 +1,19 @@
 import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { DocumentViewer } from "./document-viewer"
-import { 
-  FileText, 
-  Download, 
-  Eye, 
-  Search, 
-  Filter, 
-  Clock, 
-  User, 
+import { useToast } from "@/hooks/use-toast"
+import {
+  FileText,
+  Download,
+  Eye,
+  Search,
+  Filter,
+  Clock,
+  User,
   Shield,
   BookOpen,
   Gavel,
@@ -42,6 +43,8 @@ export function LegalDocumentation() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
   const [viewingDocument, setViewingDocument] = useState<LegalDocument | null>(null)
+  const queryClient = useQueryClient()
+  const { toast } = useToast()
 
   // Fetch real-time legal documents from the database
   const { data: legalDocs = [], isLoading } = useQuery<LegalDocument[]>({
@@ -272,10 +275,16 @@ export function LegalDocumentation() {
               <FileText className="w-3 h-3 mr-1" />
               {statistics.totalDocuments} Documents
             </Badge>
-            <Button 
-              size="sm" 
+            <Button
+              size="sm"
               variant="outline"
-              onClick={() => window.location.reload()}
+              onClick={() => {
+                queryClient.invalidateQueries({ queryKey: ["/api/legal-documents"] })
+                toast({
+                  title: "Syncing Documents",
+                  description: "Refreshing all legal documentation from the database...",
+                })
+              }}
               className="flex items-center gap-2"
               disabled={isLoading}
             >

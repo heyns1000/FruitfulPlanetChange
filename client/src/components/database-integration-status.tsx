@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -8,6 +8,7 @@ import { WildlifeProductModal } from "@/components/wildlife-product-modal"
 
 export function DatabaseIntegrationStatus() {
   const { toast } = useToast()
+  const queryClient = useQueryClient()
 
   // Real-time database queries showing live connection
   const { data: brands = [], isLoading: brandsLoading } = useQuery({
@@ -47,11 +48,14 @@ export function DatabaseIntegrationStatus() {
   }
 
   const handleRefreshData = () => {
+    queryClient.invalidateQueries({ queryKey: ["/api/brands"] })
+    queryClient.invalidateQueries({ queryKey: ["/api/sectors"] })
+    queryClient.invalidateQueries({ queryKey: ["/api/system-status"] })
+    queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] })
     toast({
       title: "Data Refresh",
       description: "Refreshing all database connections and live data feeds...",
     })
-    window.location.reload()
   }
 
   const integrationStatus = [

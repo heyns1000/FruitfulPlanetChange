@@ -1,15 +1,16 @@
 import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { 
-  Key, 
-  Eye, 
-  EyeOff, 
-  Copy, 
-  Shield, 
+import { useToast } from "@/hooks/use-toast"
+import {
+  Key,
+  Eye,
+  EyeOff,
+  Copy,
+  Shield,
   AlertTriangle,
   CheckCircle,
   Settings,
@@ -38,6 +39,8 @@ export function APIKeyManager() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
   const [visibleKeys, setVisibleKeys] = useState<Set<string>>(new Set())
+  const queryClient = useQueryClient()
+  const { toast } = useToast()
 
   // Fetch live integration health status
   const { data: integrationHealth = [] } = useQuery<any[]>({
@@ -248,10 +251,18 @@ export function APIKeyManager() {
               <AlertTriangle className="w-3 h-3 mr-1" />
               {apiKeys.filter(k => k.status === "expired").length} Expired
             </Badge>
-            <Button 
-              size="sm" 
+            <Button
+              size="sm"
               variant="outline"
-              onClick={() => window.location.reload()}
+              onClick={() => {
+                queryClient.invalidateQueries({ queryKey: ["/api/integrations/health"] })
+                queryClient.invalidateQueries({ queryKey: ["/api/integrations/oauth-urls"] })
+                queryClient.invalidateQueries({ queryKey: ["/api/config/public"] })
+                toast({
+                  title: "Refreshing Status",
+                  description: "Updating all API key statuses and integration health...",
+                })
+              }}
               className="flex items-center gap-2"
             >
               <RefreshCw className="w-3 h-3" />

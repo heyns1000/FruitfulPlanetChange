@@ -1,9 +1,10 @@
-import { Switch, Route } from "wouter"
+import { Switch, Route, useLocation } from "wouter"
 import { queryClient } from "./lib/queryClient"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { Toaster } from "@/components/ui/toaster"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { ThemeProvider } from "@/components/ui/theme-provider"
+import { useEffect } from "react"
 import InternPortalNestPage from "@/pages/intern-portalnest"
 import BanimalIntegrationPage from "@/pages/banimal-integration"
 import MotionMediaSonic from "@/pages/motion-media-sonic"
@@ -66,6 +67,122 @@ import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react"
 import { GlobalFooter } from "@/components/ui/global-footer"
 import { ScrollBreathGlyphs, useScrollBreathGlyphs } from "@/components/animations/ScrollBreathGlyphs"
+
+// Map URL paths to activePage IDs for state-based routing integration
+const pathToPageId: Record<string, string> = {
+  '/': 'home',
+  '/portal-home': 'home',
+  '/marketplace': 'marketplace',
+  '/analytics': 'analytics',
+  '/settings': 'settings',
+  '/integrations': 'integrations',
+  '/brands': 'brands',
+  '/sectors': 'sectors',
+  '/sector-list': 'sectors',
+  '/global-pulse': 'global-pulse',
+  '/seedwave-admin': 'seedwave-admin',
+  '/global-dashboard': 'global-dashboard',
+  '/ecosystem-explorer': 'ecosystem-explorer',
+  '/legal-hub': 'legal-hub',
+  '/api-keys': 'api-keys',
+  '/fruitful-marketplace': 'fruitful-marketplace',
+  '/complete-sectors': 'complete-sectors',
+  '/hotstack-codenest': 'hotstack-codenest',
+  '/repository-hub': 'repository-hub',
+  '/sector-onboarding': 'sector-onboarding',
+  '/sector-dashboard-access': 'sector-dashboard-access',
+  '/brand-identity-manager': 'brand-identity-manager',
+  '/sector-mapping': 'sector-mapping',
+  '/sector-relationship-mapping': 'sector-relationship-mapping',
+  '/planet-change': 'planet-change',
+  '/fruitful-crate-dance': 'fruitful-crate-dance',
+  '/secure-sign': 'secure-sign',
+  '/payment-hub': 'payment-hub',
+  '/vaultmesh-dashboard': 'vaultmesh-dashboard',
+  '/vaultmesh-about': 'vaultmesh-about',
+  '/vaultmesh-products': 'vaultmesh-products',
+  '/vaultmesh-brands': 'vaultmesh-brands',
+  '/vaultmesh-checkout': 'vaultmesh-checkout',
+  '/paypal-ecosystem': 'paypal-ecosystem',
+  '/interns': 'interns',
+  '/compliance': 'compliance',
+  '/omnilevel': 'omnilevel',
+  '/omnigrid-faa-zone': 'omnigrid-faa-zone',
+  '/buildnest-dashboard': 'buildnest-dashboard',
+  '/intern-portalnest': 'intern-portalnest',
+  '/banimal-integration': 'banimal-integration',
+  '/motion-media-sonic': 'motion-media-sonic',
+  '/omnilevel-interstellar': 'omnilevel-interstellar',
+  '/baobab-security-network': 'baobab-security-network',
+  '/fruitful-smart-toys': 'fruitful-smart-toys',
+  '/samfox-creative-studio': 'samfox-creative-studio',
+  '/faa-quantum-nexus': 'faa-quantum-nexus',
+  '/fruitful-business-plan': 'fruitful-business-plan',
+  '/fruitful-marketplace-marketing': 'fruitful-marketplace-marketing',
+  '/chatgpt-integration': 'chatgpt-integration',
+  '/faa-intake-checklist': 'faa-intake-checklist',
+  '/omniuniversal-button-validator': 'omniuniversal-button-validator',
+  '/claimroot-checkout': 'claimroot-checkout',
+  '/button-repair-dashboard': 'button-repair-dashboard',
+  '/ecosystem-coordinator': 'ecosystem-coordinator',
+}
+
+// Map activePage IDs to URL paths
+const pageIdToPath: Record<string, string> = {
+  'home': '/',
+  'marketplace': '/marketplace',
+  'analytics': '/analytics',
+  'settings': '/settings',
+  'integrations': '/integrations',
+  'brands': '/brands',
+  'sectors': '/sectors',
+  'global-pulse': '/global-pulse',
+  'seedwave-admin': '/seedwave-admin',
+  'global-dashboard': '/global-dashboard',
+  'ecosystem-explorer': '/ecosystem-explorer',
+  'legal-hub': '/legal-hub',
+  'api-keys': '/api-keys',
+  'fruitful-marketplace': '/fruitful-marketplace',
+  'complete-sectors': '/complete-sectors',
+  'hotstack-codenest': '/hotstack-codenest',
+  'repository-hub': '/repository-hub',
+  'sector-onboarding': '/sector-onboarding',
+  'sector-dashboard-access': '/sector-dashboard-access',
+  'brand-identity-manager': '/brand-identity-manager',
+  'sector-mapping': '/sector-mapping',
+  'sector-relationship-mapping': '/sector-relationship-mapping',
+  'planet-change': '/planet-change',
+  'fruitful-crate-dance': '/fruitful-crate-dance',
+  'secure-sign': '/secure-sign',
+  'payment-hub': '/payment-hub',
+  'vaultmesh-dashboard': '/vaultmesh-dashboard',
+  'vaultmesh-about': '/vaultmesh-about',
+  'vaultmesh-products': '/vaultmesh-products',
+  'vaultmesh-brands': '/vaultmesh-brands',
+  'vaultmesh-checkout': '/vaultmesh-checkout',
+  'paypal-ecosystem': '/paypal-ecosystem',
+  'interns': '/interns',
+  'compliance': '/compliance',
+  'omnilevel': '/omnilevel',
+  'omnigrid-faa-zone': '/omnigrid-faa-zone',
+  'buildnest-dashboard': '/buildnest-dashboard',
+  'intern-portalnest': '/intern-portalnest',
+  'banimal-integration': '/banimal-integration',
+  'motion-media-sonic': '/motion-media-sonic',
+  'omnilevel-interstellar': '/omnilevel-interstellar',
+  'baobab-security-network': '/baobab-security-network',
+  'fruitful-smart-toys': '/fruitful-smart-toys',
+  'samfox-creative-studio': '/samfox-creative-studio',
+  'faa-quantum-nexus': '/faa-quantum-nexus',
+  'fruitful-business-plan': '/fruitful-business-plan',
+  'fruitful-marketplace-marketing': '/fruitful-marketplace-marketing',
+  'chatgpt-integration': '/chatgpt-integration',
+  'faa-intake-checklist': '/faa-intake-checklist',
+  'omniuniversal-button-validator': '/omniuniversal-button-validator',
+  'claimroot-checkout': '/claimroot-checkout',
+  'button-repair-dashboard': '/button-repair-dashboard',
+  'ecosystem-coordinator': '/ecosystem-coordinator',
+}
 
 // Page router component that renders content based on active page
 function PageRouter({ activePage }: { activePage: string }) {
@@ -348,8 +465,47 @@ function App() {
 function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; setActivePage: (page: string) => void }) {
   const { isAuthenticated, isLoading } = useAuth();
   const { scrollPosition, isActive, intensity } = useScrollBreathGlyphs({ intensity: 'medium' });
+  const [location, setLocation] = useLocation();
 
-  console.log("🔍 AuthenticatedApp render - isLoading:", isLoading, "isAuthenticated:", isAuthenticated, "activePage:", activePage);
+  // Sync URL changes to activePage state
+  useEffect(() => {
+    // Extract base path (handle sector routes)
+    let basePath = location;
+
+    // Handle sector detail routes like /sector/:id or /sectors/:id
+    if (location.startsWith('/sector/') || location.startsWith('/sectors/')) {
+      const sectorId = location.split('/')[2];
+      setActivePage(`sector-${sectorId}`);
+      return;
+    }
+
+    const pageId = pathToPageId[basePath] || 'home';
+    if (pageId !== activePage) {
+      setActivePage(pageId);
+    }
+  }, [location, activePage, setActivePage]);
+
+  // Sync activePage state changes to URL
+  useEffect(() => {
+    // Don't navigate if already on the correct page
+    const targetPath = pageIdToPath[activePage] || '/';
+
+    // Handle sector detail pages
+    if (activePage.startsWith('sector-')) {
+      const sectorId = activePage.replace('sector-', '');
+      const sectorPath = `/sector/${sectorId}`;
+      if (location !== sectorPath) {
+        setLocation(sectorPath);
+      }
+      return;
+    }
+
+    if (location !== targetPath) {
+      setLocation(targetPath);
+    }
+  }, [activePage, location, setLocation]);
+
+  console.log("🔍 AuthenticatedApp render - isLoading:", isLoading, "isAuthenticated:", isAuthenticated, "activePage:", activePage, "location:", location);
 
   if (isLoading) {
     console.log("⏳ Showing loading spinner");
@@ -363,13 +519,8 @@ function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; s
     );
   }
 
-  // Always show authenticated app since we're in development mode
-  // if (!isAuthenticated) {
-  //   return <Router />;
-  // }
-  
   console.log("✅ Rendering main app UI");
-  
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900" style={{ display: 'flex', minHeight: '100vh', width: '100%', backgroundColor: '#f9fafb', position: 'relative', zIndex: 1 }}>
       <div className="flex flex-1" style={{ flex: 1, display: 'flex' }}>
@@ -380,9 +531,9 @@ function AuthenticatedApp({ activePage, setActivePage }: { activePage: string; s
       </div>
       <GlobalFooter className="ml-0 md:ml-80" />
       <GlobalSyncIndicator />
-      
+
       {/* ScrollBinder Breath Glyphs Global Integration */}
-      <ScrollBreathGlyphs 
+      <ScrollBreathGlyphs
         isActive={isActive || activePage !== "home"}
         intensity={intensity}
         scrollPosition={scrollPosition}
