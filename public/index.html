@@ -349,6 +349,15 @@
                 max-width: 220px;
             }
         }
+        
+        /* Status LED pulse animation for the header */
+        @keyframes pulse-active {
+            0%, 100% { box-shadow: 0 0 0 0 var(--status-active); }
+            50% { box-shadow: 0 0 10px 4px rgba(48, 209, 88, 0.5); }
+        }
+        .status-led {
+            animation: pulse-active 2s infinite;
+        }
     </style>
 </head>
 <body>
@@ -386,10 +395,17 @@
     <!-- ============================================
          MAIN APPLICATION ROOT (ENHANCED PORTAL DASHBOARD)
          ============================================ -->
-    <div id="app" class="p-4 md:p-10">
-        <header class="mb-8 border-b border-gray-700 pb-4">
-            <h1 class="text-4xl font-extrabold text-f-green">OMNI Portal Dashboard</h1>
-            <p class="text-lg text-gray-400 mt-1">Accessing Seedwave™ Infrastructure & Treaty Zone Data</p>
+    <div id="app" class="p-4 md:p-10 max-w-7xl mx-auto">
+        <header class="mb-8 border-b border-gray-700 pb-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-4xl font-extrabold text-f-green">OMNI Portal Dashboard</h1>
+                <p class="text-lg text-gray-400 mt-1">Accessing Seedwave™ Infrastructure & Treaty Zone Data</p>
+            </div>
+            <!-- Live Status LED Indicator (New Element) -->
+            <div class="flex items-center space-x-2 bg-bg-s p-3 rounded-xl border border-gray-700 shadow-xl" data-tooltip="Live connection to OmniGrid relay service is stable.">
+                <span class="text-sm font-semibold text-gray-300 hidden sm:inline">OMNIGrid Live</span>
+                <div class="w-4 h-4 rounded-full bg-status-active status-led"></div>
+            </div>
         </header>
 
         <!-- ClaimRoot & Status Section -->
@@ -425,10 +441,10 @@
             </div>
         </div>
 
-        <!-- Algorithm Giants & VaultMesh Overview -->
-        <div class="bg-bg-s p-6 rounded-xl shadow-2xl border border-gray-700/50">
+        <!-- Infrastructure Overview (Row 1) -->
+        <div class="bg-bg-s p-6 rounded-xl shadow-2xl border border-gray-700/50 mb-8">
             <h2 class="text-2xl font-bold mb-4 text-text-p">Infrastructure Overview</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="p-4 bg-bg-t rounded-lg flex flex-col items-center">
                     <i class="fas fa-brain text-3xl text-f-blue mb-2"></i>
                     <p class="text-3xl font-bold">149</p>
@@ -454,6 +470,25 @@
             <button class="w-full mt-6 py-3 bg-f-blue hover:bg-f-blue/80 text-white font-bold rounded-lg transition duration-200 shadow-md">
                 Deploy ClaimRoot Generator Module
             </button>
+        </div>
+
+        <!-- Algorithm Giants Live Log (New Panel) -->
+        <div class="bg-bg-s p-6 rounded-xl shadow-2xl border border-gray-700/50">
+            <h2 class="text-2xl font-bold mb-4 text-text-p flex items-center">
+                <i class="fas fa-microchip text-f-gold mr-3"></i>
+                Algorithm Giants Live Log (9 Active)
+            </h2>
+            <div class="h-64 overflow-y-scroll bg-bg-t p-4 rounded-lg border border-gray-700 text-sm text-f-green font-mono whitespace-pre-wrap">
+                <span class="text-gray-500">[2025-12-05 18:37:01]</span> <span class="text-f-blue font-bold">GIANT_149_BRAIN</span>: Initializing tensor flow engine... <span class="text-status-active">OK</span>
+                <span class="text-gray-500">[2025-12-05 18:37:02]</span> <span class="text-f-green font-bold">GIANT_003_YIELD</span>: TreatySync log fetched and applied. Status: <span class="text-status-active">COMMITTED</span>
+                <span class="text-gray-500">[2025-12-05 18:37:05]</span> <span class="text-f-gold font-bold">GIANT_077_VAULT</span>: Performing integrity check on VaultMesh 4.2M records...
+                <span class="text-gray-500">[2025-12-05 18:37:06]</span> <span class="text-f-blue font-bold">GIANT_149_BRAIN</span>: Processing FAA-X13 user request: ClaimRoot verification.
+                <span class="text-gray-500">[2025-12-05 18:37:10]</span> <span class="text-f-green font-bold">GIANT_003_YIELD</span>: Calculating Seedwave™ optimum nutrient dispersal for Q1-2026.
+                <span class="text-gray-500">[2025-12-05 18:37:15]</span> <span class="text-f-gold font-bold">GIANT_077_VAULT</span>: Integrity check complete. Records validated: <span class="text-status-active">100%</span>
+                <span class="text-gray-500">[2025-12-05 18:37:18]</span> <span class="text-f-blue font-bold">GIANT_149_BRAIN</span>: Result sent to OmniGrid relay.
+                <span class="text-gray-500">[2025-12-05 18:37:20]</span> <span class="text-f-green font-bold">GIANT_003_YIELD</span>: Optimization complete. New yield prediction: <span class="text-status-active">+18.5%</span>
+                <span class="text-gray-500">[2025-12-05 18:37:25]</span> <span class="text-f-gold font-bold">GIANT_077_VAULT</span>: VaultMesh ledger update pending TreatySync confirmation.
+            </div>
         </div>
     </div>
     
