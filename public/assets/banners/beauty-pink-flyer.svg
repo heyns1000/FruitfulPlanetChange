@@ -1,0 +1,66 @@
+<svg width="60" height="80" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Pink Flyer Design - Beauty Principle -->
+  <defs>
+    <linearGradient id="beautyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF69B4;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#B76E79;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFB6C1;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="beautyGlow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <radialGradient id="beautyRadial" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#FFB6C1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C71585;stop-opacity:1" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Main Flyer Body -->
+  <path d="M30 5 L55 25 L50 70 L30 75 L10 70 L5 25 Z" 
+        fill="url(#beautyGradient)" 
+        stroke="#C71585" 
+        stroke-width="2"
+        filter="url(#beautyGlow)"/>
+  
+  <!-- Beauty Symbol - Flower -->
+  <circle cx="30" cy="35" r="12" fill="url(#beautyRadial)" opacity="0.8"/>
+  <circle cx="30" cy="35" r="8" fill="#FFFFFF" opacity="0.9"/>
+  
+  <!-- Petals -->
+  <ellipse cx="30" cy="25" rx="4" ry="8" fill="#FF69B4" opacity="0.9"/>
+  <ellipse cx="30" cy="45" rx="4" ry="8" fill="#FF69B4" opacity="0.9"/>
+  <ellipse cx="20" cy="35" rx="8" ry="4" fill="#FF69B4" opacity="0.9"/>
+  <ellipse cx="40" cy="35" rx="8" ry="4" fill="#FF69B4" opacity="0.9"/>
+  
+  <!-- Diagonal Petals -->
+  <ellipse cx="23" cy="28" rx="5" ry="7" fill="#FFB6C1" opacity="0.9" transform="rotate(-45 23 28)"/>
+  <ellipse cx="37" cy="28" rx="5" ry="7" fill="#FFB6C1" opacity="0.9" transform="rotate(45 37 28)"/>
+  <ellipse cx="23" cy="42" rx="5" ry="7" fill="#FFB6C1" opacity="0.9" transform="rotate(45 23 42)"/>
+  <ellipse cx="37" cy="42" rx="5" ry="7" fill="#FFB6C1" opacity="0.9" transform="rotate(-45 37 42)"/>
+  
+  <!-- Center Accent -->
+  <circle cx="30" cy="35" r="3" fill="#C71585"/>
+  
+  <!-- Beauty Icon - 🌸 -->
+  <text x="30" y="60" font-size="16" text-anchor="middle" fill="#FFFFFF" font-family="Arial, sans-serif" font-weight="bold">🌸</text>
+  
+  <!-- Sparkle Effects -->
+  <circle cx="15" cy="15" r="1.5" fill="#FFFFFF" opacity="0.8"/>
+  <circle cx="45" cy="20" r="2" fill="#FFFFFF" opacity="0.8"/>
+  <circle cx="18" cy="55" r="1.5" fill="#FFFFFF" opacity="0.8"/>
+  <circle cx="42" cy="58" r="1.5" fill="#FFFFFF" opacity="0.8"/>
+  
+  <!-- Animation hint dots -->
+  <circle cx="30" cy="10" r="1" fill="#FFB6C1" opacity="0.6">
+    <animate attributeName="opacity" values="0.6;1;0.6" dur="0.9s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="30" cy="70" r="1" fill="#FFB6C1" opacity="0.6">
+    <animate attributeName="opacity" values="1;0.6;1" dur="0.9s" repeatCount="indefinite"/>
+  </circle>
+</svg>
