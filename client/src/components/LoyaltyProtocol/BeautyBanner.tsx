@@ -51,9 +51,12 @@ export function BeautyBanner({
   useEffect(() => {
     const interval = setInterval(() => {
       setFlyers(prevFlyers => {
+        // Only create new array if at least one flyer needs respawning
+        let hasChanges = false;
         const newFlyers = prevFlyers.map(flyer => {
           // Check if flyer has fallen off screen
           if (flyer.y > 110) {
+            hasChanges = true;
             return {
               ...flyer,
               id: flyer.id + displayLimit,
@@ -65,7 +68,9 @@ export function BeautyBanner({
           }
           return flyer;
         });
-        return newFlyers;
+        
+        // Only update state if changes were made
+        return hasChanges ? newFlyers : prevFlyers;
       });
     }, 200); // Respawn rate
 
@@ -228,12 +233,14 @@ export function BeautyBanner({
 
       {/* Toggle Pulse Control (Debug) */}
       {process.env.NODE_ENV === 'development' && (
-        <button
-          onClick={() => setIsPulsing(!isPulsing)}
-          className="absolute bottom-4 right-4 z-20 px-3 py-1 text-xs bg-pink-500 text-white rounded hover:bg-pink-600 transition-colors"
-        >
-          {isPulsing ? 'Pause Pulse' : 'Resume Pulse'}
-        </button>
+        <div className="mt-4 flex justify-end">
+          <button
+            onClick={() => setIsPulsing(!isPulsing)}
+            className="px-3 py-1 text-xs bg-pink-500 text-white rounded hover:bg-pink-600 transition-colors"
+          >
+            {isPulsing ? 'Pause Pulse' : 'Resume Pulse'}
+          </button>
+        </div>
       )}
     </div>
   );

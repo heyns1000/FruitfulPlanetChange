@@ -204,7 +204,13 @@ export function AirshowMetrics({ className = '', showDetails = true }: AirshowMe
                       variants={pulseVariants}
                       animate="pulse"
                     >
-                      <div className={`w-2 h-2 rounded-full ${principle.color.replace('text-', 'bg-')}`} />
+                      <div 
+                        className={
+                          principle.name === 'TRUTH' ? 'w-2 h-2 rounded-full bg-yellow-600 dark:bg-yellow-400' :
+                          principle.name === 'BEAUTY' ? 'w-2 h-2 rounded-full bg-pink-600 dark:bg-pink-400' :
+                          'w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-400'
+                        }
+                      />
                       <span className="text-xs text-gray-600 dark:text-gray-400">
                         PulseGlow™ Active
                       </span>
