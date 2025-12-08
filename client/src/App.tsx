@@ -63,6 +63,7 @@ import AnalyticsPage from "@/pages/analytics"
 import SectorMapping from "@/pages/sector-mapping"
 import PlanetChange from "@/pages/planet-change"
 import { EcosystemCoordinator } from "@/pages/ecosystem-coordinator"
+import AirshowLoyaltyProtocolPage from "@/pages/airshow-loyalty-protocol"
 import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react"
 import { GlobalFooter } from "@/components/ui/global-footer"
@@ -125,6 +126,7 @@ const pathToPageId: Record<string, string> = {
   '/claimroot-checkout': 'claimroot-checkout',
   '/button-repair-dashboard': 'button-repair-dashboard',
   '/ecosystem-coordinator': 'ecosystem-coordinator',
+  '/airshow-loyalty-protocol': 'airshow-loyalty-protocol',
 }
 
 // Map activePage IDs to URL paths
@@ -182,6 +184,7 @@ const pageIdToPath: Record<string, string> = {
   'claimroot-checkout': '/claimroot-checkout',
   'button-repair-dashboard': '/button-repair-dashboard',
   'ecosystem-coordinator': '/ecosystem-coordinator',
+  'airshow-loyalty-protocol': '/airshow-loyalty-protocol',
 }
 
 // Page router component that renders content based on active page
@@ -398,6 +401,12 @@ function PageRouter({ activePage }: { activePage: string }) {
       return <ButtonRepairDashboard />
     case "ecosystem-coordinator":
       return <EcosystemCoordinator />
+    case "airshow-loyalty-protocol":
+      return (
+        <div className="p-0">
+          <AirshowLoyaltyProtocolPage />
+        </div>
+      )
     default:
       // Check if it's a sector dashboard route
       if (activePage.startsWith("sector-")) {
