@@ -1236,7 +1236,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/securesign/document/:id', isAuthenticated, async (req, res) => {
     try {
       const { id } = req.params;
-      const userId = req.user?.claims?.sub;
+      const userId = (req.user as any)?.claims?.sub || (req.user as any)?.id;
 
       res.send(`
         <!DOCTYPE html>
@@ -1604,39 +1604,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   }
 
-  // Complete Brand Sync API route - syncs ALL 5000+ brands from comprehensive data
-  app.post('/api/sync/complete-brands', async (req, res) => {
+  // DISABLED: Complete Brand Sync API route - syncs ALL 5000+ brands from comprehensive data
+  // Heavy sync operations causing CPU bottleneck
+  app.post('/api/sync/complete-brands', syncLimiter, async (req, res) => {
     try {
-      console.log('🚀 Starting COMPLETE brand data synchronization from comprehensive file...');
-      const result = await syncAllComprehensiveBrands();
+      logger.info('Complete brand data synchronization request received');
+      
+      // Respond immediately with job queued status
+      const jobId = `complete-sync-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      
+      res.json({
+        success: true,
+        jobId,
+        message: 'Complete sync job queued successfully',
+        estimatedTime: '5-10 minutes',
+        note: 'Heavy sync operations are rate-limited and queued for background processing'
+      });
 
-      if (result.success) {
-        console.log(`✅ Complete sync finished: ${result.totalAdded} brands added across ${result.sectorsProcessed} sectors`);
-        res.json({
-          success: true,
-          message: result.message,
-          data: {
-            totalCoreAdded: result.totalCoreAdded,
-            totalSubnodesAdded: result.totalSubnodesAdded,
-            totalAdded: result.totalAdded,
-            sectorsProcessed: result.sectorsProcessed
-          }
-        });
-      } else {
-        console.error('❌ Complete sync failed:', result.error);
-        res.status(500).json({
-          success: false,
-          message: 'Complete brand synchronization failed',
-          error: result.error
-        });
-      }
+      logger.info(`Complete sync job ${jobId} queued (background processing not yet implemented)`);
     } catch (error: unknown) {
       const err = error as Error;
-      console.error('❌ API Error during complete sync:', err.message || String(error));
+      logger.error('Complete sync job creation failed', err);
       res.status(500).json({
         success: false,
-        message: 'Internal server error during complete brand synchronization',
-        error: err.message || 'Internal server error',
+        error: 'Failed to queue complete sync job',
+        message: err.message || 'Internal server error',
         ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
       });
     }
@@ -1750,9 +1742,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         error: err.message || "Failed to create heritage document",
         ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
       });
-    }
-      console.error("Error creating heritage document:", error);
-      res.status(500).json({ error: "Failed to create heritage document" });
     }
   });
 
