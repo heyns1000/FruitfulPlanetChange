@@ -106,11 +106,11 @@ Use the provided `tree-widget.html` file located in the root directory of the re
   src="https://www.plant-for-the-planet.org/treecounter/YOUR_PROFILE_NAME"
   title="Plant for the Planet Tree Counter"
   scrolling="no"
-  frameborder="0"
   allow="encrypted-media"
   loading="lazy"
 ></iframe>
 ```
+Note: The CSS already includes `border: none` styling, so no frameborder attribute is needed.
 
 ### 2.3 Customization Options
 
@@ -153,9 +153,9 @@ const TREE_WIDGET_CONFIG = {
   width: '100%',
   height: '300px',
   borderRadius: '8px',
-  frameBorder: '0',
   scrolling: 'no',
   loading: 'lazy'
+  // Note: border styling is applied via CSS (border: 'none'), not frameBorder
 };
 ```
 
@@ -300,10 +300,10 @@ For Vue.js applications:
           title="Plant for the Planet Tree Counter"
           width="100%"
           :height="height"
-          frameborder="0"
           scrolling="no"
           loading="lazy"
           allow="encrypted-media"
+          :style="{ border: 'none', borderRadius: borderRadius }"
         />
       </div>
     </div>

@@ -42,7 +42,7 @@ This README provides a quick overview of the tree counter widget integration fil
   src="https://www.plant-for-the-planet.org/treecounter/YOUR_PROFILE_NAME"
   width="100%" 
   height="300"
-  frameborder="0"
+  style="border: none;"
 ></iframe>
 ```
 
@@ -110,9 +110,9 @@ const TREE_WIDGET_CONFIG = {
   width: '100%',                     // Width
   height: '300px',                   // Height
   borderRadius: '8px',               // Border radius
-  frameBorder: '0',                  // Frame border
   scrolling: 'no',                   // Scrolling
   loading: 'lazy'                    // Loading strategy
+  // Note: Border styling applied via CSS (border: 'none')
 };
 ```
 

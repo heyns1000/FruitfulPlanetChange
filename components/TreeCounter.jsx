@@ -139,7 +139,6 @@ export function TreeCounter({
               title="Plant for the Planet Tree Counter"
               width="100%"
               height={height}
-              frameBorder="0"
               scrolling="no"
               loading="lazy"
               allow="encrypted-media"
