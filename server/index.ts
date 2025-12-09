@@ -1,4 +1,5 @@
 import express, { type Request, Response, NextFunction } from "express";
+import { z } from "zod";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { seedDatabase } from "./seed-data";
@@ -8,6 +9,56 @@ import { updateSectorPricing } from "./update-sector-pricing";
 import { seedComprehensiveBrands } from "./comprehensive-brand-seeder";
 import { seedMineNestComprehensive } from "./minenest-comprehensive-seeder";
 import { storage } from "./storage";
+import { createLogger } from "./middleware/logging";
+
+const logger = createLogger('server');
+
+// Environment variable validation schema
+const envSchema = z.object({
+  DATABASE_URL: z.string().url('DATABASE_URL must be a valid URL'),
+  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  PORT: z.coerce.number().min(1).max(65535).default(5000),
+  SESSION_SECRET: z.string().min(32, 'SESSION_SECRET must be at least 32 characters').optional(),
+  REPL_ID: z.string().optional(),
+  REPLIT_DOMAINS: z.string().optional(),
+  ISSUER_URL: z.string().url().optional(),
+}).refine((data) => {
+  // In production, SESSION_SECRET is required
+  if (data.NODE_ENV === 'production' && !data.SESSION_SECRET) {
+    return false;
+  }
+  return true;
+}, {
+  message: 'SESSION_SECRET is required in production environment',
+  path: ['SESSION_SECRET'],
+});
+
+// Validate environment variables at startup
+try {
+  const validatedEnv = envSchema.parse(process.env);
+  logger.info('✅ Environment validation passed', {
+    nodeEnv: validatedEnv.NODE_ENV,
+    port: validatedEnv.PORT,
+    hasSessionSecret: !!validatedEnv.SESSION_SECRET,
+  });
+} catch (error) {
+  if (error instanceof z.ZodError) {
+    logger.error('❌ Environment validation failed', {
+      errors: error.errors.map(e => ({
+        path: e.path.join('.'),
+        message: e.message,
+      })),
+    });
+    console.error('\n🔴 CRITICAL: Environment validation failed!');
+    console.error('Missing or invalid environment variables:\n');
+    error.errors.forEach(e => {
+      console.error(`  - ${e.path.join('.')}: ${e.message}`);
+    });
+    console.error('\nPlease check your .env file and ensure all required variables are set.');
+    process.exit(1);
+  }
+  throw error;
+}
 
 const app = express();
 app.use(express.json());
