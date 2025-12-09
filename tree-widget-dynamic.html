@@ -220,8 +220,8 @@
         iframe.style.borderRadius = TREE_WIDGET_CONFIG.borderRadius;
         iframe.style.border = 'none';
         
-        // Set security attributes
-        iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+        // Set security attributes (minimal permissions for tree counter)
+        iframe.setAttribute('allow', 'encrypted-media');
         
         // Clear loading message and insert iframe
         container.innerHTML = '';

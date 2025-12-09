@@ -1,5 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
 
+// Constants
+const DEFAULT_PLACEHOLDER_URL = 'YOUR_WIDGET_URL';
+
+// Style constants for better maintainability
+const ERROR_CONTAINER_STYLE = {
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '100%',
+  padding: '20px',
+  textAlign: 'center',
+  backgroundColor: '#fef2f2',
+  color: '#dc2626'
+};
+
 /**
  * TreeCounter Component
  * 
@@ -25,7 +41,7 @@ import { useEffect, useRef, useState } from 'react';
  * ```
  */
 export function TreeCounter({
-  widgetUrl = 'YOUR_WIDGET_URL',
+  widgetUrl = DEFAULT_PLACEHOLDER_URL,
   width = 400,
   height = 300,
   borderRadius = '8px',
@@ -41,7 +57,7 @@ export function TreeCounter({
    */
   useEffect(() => {
     // Check if widget URL is properly configured
-    if (widgetUrl === 'YOUR_WIDGET_URL' || !widgetUrl) {
+    if (widgetUrl === DEFAULT_PLACEHOLDER_URL || !widgetUrl) {
       setIsConfigured(false);
       setError('Widget URL not configured. Please provide a valid widget URL.');
       return;
@@ -121,7 +137,7 @@ export function TreeCounter({
               frameBorder="0"
               scrolling="no"
               loading="lazy"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allow="encrypted-media"
               style={{
                 border: 'none',
                 borderRadius,
@@ -131,19 +147,7 @@ export function TreeCounter({
             />
           ) : (
             /* Error or Configuration Required Message */
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '100%',
-                padding: '20px',
-                textAlign: 'center',
-                backgroundColor: '#fef2f2',
-                color: '#dc2626'
-              }}
-            >
+            <div style={ERROR_CONTAINER_STYLE}>
               <p style={{ fontSize: '14px', fontWeight: '500', marginBottom: '8px' }}>
                 ⚠️ Configuration Required
               </p>
