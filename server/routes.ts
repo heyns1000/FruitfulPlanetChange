@@ -24,8 +24,18 @@ import databaseSchemaRoutes from './routes/database-schema';
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from './paypal';
 import { getPaypalContainers } from './routes/paypal-containers';
 import { createLogger } from './middleware/logging';
+import type { Request } from 'express';
 
 const logger = createLogger('routes');
+
+/**
+ * Helper function to extract user ID from request
+ * Handles both Replit Auth (claims.sub) and direct user object (id)
+ */
+function getUserId(req: Request): string | undefined {
+  const user = req.user as any;
+  return user?.claims?.sub || user?.id;
+}
 
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -207,7 +217,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Respond immediately with job queued status
       // In a real implementation, this would use a job queue like Bull or BullMQ
-      const jobId = `sync-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const jobId = `sync-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
       
       res.json({
         success: true,
@@ -1236,7 +1246,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/securesign/document/:id', isAuthenticated, async (req, res) => {
     try {
       const { id } = req.params;
-      const userId = (req.user as any)?.claims?.sub || (req.user as any)?.id;
+      const userId = getUserId(req);
 
       res.send(`
         <!DOCTYPE html>
@@ -1611,7 +1621,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       logger.info('Complete brand data synchronization request received');
       
       // Respond immediately with job queued status
-      const jobId = `complete-sync-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const jobId = `complete-sync-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
       
       res.json({
         success: true,
@@ -1637,7 +1647,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Heritage Portal API Routes - Family Members
   app.get("/api/heritage/family-members", isAuthenticated, async (req, res) => {
     try {
-      const userId = (req.user as any)?.claims?.sub || (req.user as any)?.id;
+      const userId = getUserId(req);
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
@@ -1656,7 +1666,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/heritage/family-members", isAuthenticated, async (req, res) => {
     try {
-      const userId = (req.user as any)?.claims?.sub || (req.user as any)?.id;
+      const userId = getUserId(req);
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
@@ -1700,7 +1710,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Heritage Portal API Routes - Heritage Documents
   app.get("/api/heritage/documents", isAuthenticated, async (req, res) => {
     try {
-      const userId = (req.user as any)?.claims?.sub || (req.user as any)?.id;
+      const userId = getUserId(req);
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
@@ -1727,7 +1737,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/heritage/documents", isAuthenticated, async (req, res) => {
     try {
-      const userId = (req.user as any)?.claims?.sub || (req.user as any)?.id;
+      const userId = getUserId(req);
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
@@ -1771,7 +1781,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Heritage Portal API Routes - Family Events
   app.get("/api/heritage/events", isAuthenticated, async (req, res) => {
     try {
-      const userId = (req.user as any)?.claims?.sub || (req.user as any)?.id;
+      const userId = getUserId(req);
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
@@ -1790,7 +1800,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/heritage/events", isAuthenticated, async (req, res) => {
     try {
-      const userId = (req.user as any)?.claims?.sub || (req.user as any)?.id;
+      const userId = getUserId(req);
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
@@ -1834,7 +1844,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Heritage Portal API Routes - Heritage Metrics
   app.get("/api/heritage/metrics", isAuthenticated, async (req, res) => {
     try {
-      const userId = (req.user as any)?.claims?.sub || (req.user as any)?.id;
+      const userId = getUserId(req);
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
@@ -1860,7 +1870,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/heritage/metrics", isAuthenticated, async (req, res) => {
     try {
-      const userId = (req.user as any)?.claims?.sub || (req.user as any)?.id;
+      const userId = getUserId(req);
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }

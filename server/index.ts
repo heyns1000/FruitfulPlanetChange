@@ -18,10 +18,19 @@ const envSchema = z.object({
   DATABASE_URL: z.string().url('DATABASE_URL must be a valid URL'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   PORT: z.coerce.number().min(1).max(65535).default(5000),
-  SESSION_SECRET: z.string().min(32).optional(),
+  SESSION_SECRET: z.string().min(32, 'SESSION_SECRET must be at least 32 characters').optional(),
   REPL_ID: z.string().optional(),
   REPLIT_DOMAINS: z.string().optional(),
   ISSUER_URL: z.string().url().optional(),
+}).refine((data) => {
+  // In production, SESSION_SECRET is required
+  if (data.NODE_ENV === 'production' && !data.SESSION_SECRET) {
+    return false;
+  }
+  return true;
+}, {
+  message: 'SESSION_SECRET is required in production environment',
+  path: ['SESSION_SECRET'],
 });
 
 // Validate environment variables at startup
