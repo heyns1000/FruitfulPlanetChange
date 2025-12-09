@@ -107,7 +107,7 @@ Use the provided `tree-widget.html` file located in the root directory of the re
   title="Plant for the Planet Tree Counter"
   scrolling="no"
   frameborder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allow="encrypted-media"
   loading="lazy"
 ></iframe>
 ```
@@ -303,7 +303,7 @@ For Vue.js applications:
           frameborder="0"
           scrolling="no"
           loading="lazy"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allow="encrypted-media"
         />
       </div>
     </div>
@@ -531,7 +531,19 @@ The tree counter can be integrated across all ecosystem sites:
    - Always use `https://` URLs
    - Ensures encrypted data transmission
 
-2. **Iframe Sandbox** (Optional)
+2. **Minimal Iframe Permissions**
+   - All implementations use `allow="encrypted-media"` only
+   - This is the minimal permission set required for the tree counter widget
+   - Unnecessary permissions removed: autoplay, clipboard-write, accelerometer, gyroscope, picture-in-picture
+   - Reduces security attack surface while maintaining full functionality
+   ```html
+   <iframe 
+     allow="encrypted-media"
+     ...
+   />
+   ```
+
+3. **Iframe Sandbox** (Optional)
    ```html
    <iframe 
      sandbox="allow-scripts allow-same-origin"
@@ -539,7 +551,7 @@ The tree counter can be integrated across all ecosystem sites:
    />
    ```
 
-3. **Referrer Policy**
+4. **Referrer Policy**
    ```html
    <iframe 
      referrerpolicy="no-referrer-when-downgrade"
