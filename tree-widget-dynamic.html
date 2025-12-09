@@ -167,13 +167,12 @@
       // Container element ID
       containerId: 'tree-counter',
       
-      // Iframe attributes
+      // Iframe dimensions and styling
       width: '100%',
       height: '300px',
       borderRadius: '8px',
       
       // Additional iframe settings
-      frameBorder: '0',
       scrolling: 'no',
       loading: 'lazy'
     };
@@ -210,11 +209,10 @@
         // Set iframe attributes
         iframe.src = TREE_WIDGET_CONFIG.widgetUrl;
         iframe.title = 'Plant for the Planet Tree Counter';
-        iframe.frameBorder = TREE_WIDGET_CONFIG.frameBorder;
         iframe.scrolling = TREE_WIDGET_CONFIG.scrolling;
         iframe.loading = TREE_WIDGET_CONFIG.loading;
         
-        // Apply styling
+        // Apply styling (includes border: none which replaces deprecated frameBorder)
         iframe.style.width = TREE_WIDGET_CONFIG.width;
         iframe.style.height = TREE_WIDGET_CONFIG.height;
         iframe.style.borderRadius = TREE_WIDGET_CONFIG.borderRadius;

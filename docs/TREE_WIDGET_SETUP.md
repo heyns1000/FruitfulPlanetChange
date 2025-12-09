@@ -665,10 +665,12 @@ The tree counter can be integrated across all ecosystem sites:
 ### Notes on Real-Time Updates
 
 The widget automatically refreshes tree count data:
-- **Update Frequency**: Every 3-5 minutes
+- **Update Frequency**: Every 3-5 minutes (widget polls for new data)
 - **Data Source**: Plant-for-the-Planet global database
 - **Accuracy**: Updates may have slight delays during high traffic
-- **Cache Duration**: Widget content cached for 2 minutes
+- **Browser Cache**: Your browser may cache the widget for up to 2 minutes
+  - This means new data becomes visible 2-5 minutes after tree planting
+  - Use hard refresh (Ctrl+F5 / Cmd+Shift+R) to see immediate updates
 
 ### Integration with Planetary Health Tracking
 

@@ -73,12 +73,17 @@ export function TreeCounter({
       setError('Invalid widget URL format. Please check your configuration.');
       console.error('TreeCounter: Invalid URL', err);
     }
+  }, [widgetUrl]);
 
-    // Set iframe src if reference exists
-    if (iframeRef.current && isConfigured) {
+  /**
+   * Separate effect to set iframe src when configured state changes
+   */
+  useEffect(() => {
+    // Set iframe src if reference exists and widget is configured
+    if (iframeRef.current && isConfigured && widgetUrl) {
       iframeRef.current.src = widgetUrl;
     }
-  }, [widgetUrl, isConfigured]);
+  }, [isConfigured, widgetUrl]);
 
   return (
     <div className={`tree-counter-wrapper ${className}`}>
