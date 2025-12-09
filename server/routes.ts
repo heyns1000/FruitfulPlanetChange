@@ -1051,11 +1051,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         dataSource: brands.length > 0 ? "database" : "fallback_comprehensive_data",
         timestamp: new Date().toISOString()
       });
-    } catch (error) {
-      console.error("Error generating comprehensive counts:", error);
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error("Error generating comprehensive counts:", err.message || String(error));
       res.status(500).json({ 
         message: "Failed to generate comprehensive counts",
-        error: error.message 
+        error: err.message || 'Internal server error',
+        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
       });
     }
   });
@@ -1136,11 +1138,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: `${sectorName} sector deployed with ${brands} brands and ${nodes.toLocaleString()} nodes`
       });
 
-    } catch (error) {
-      console.error("Deployment failed:", error);
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error("Deployment failed:", err.message || String(error));
       res.status(500).json({ 
         message: "Deployment failed", 
-        error: error.message 
+        error: err.message || 'Internal server error',
+        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
       });
     }
   });
@@ -1494,9 +1498,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         paymentUrl: `/payment/paypal/${payment.id}`,
         deploymentStatus: "awaiting_payment"
       });
-    } catch (error) {
-      console.error("Real payment error:", error);
-      res.status(500).json({ message: "Payment processing failed", error: error.message });
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error("Real payment error:", err.message || String(error));
+      res.status(500).json({ 
+        message: "Payment processing failed", 
+        error: err.message || 'Internal server error',
+        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+      });
     }
   });
 
@@ -1586,9 +1595,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         server: "replit-production",
         deployedAt: new Date().toISOString()
       };
-    } catch (error) {
-      console.error(`❌ DEPLOYMENT FAILED:`, error);
-      throw new Error(`Deployment failed: ${error.message}`);
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error(`❌ DEPLOYMENT FAILED:`, err.message || String(error));
+      throw new Error(`Deployment failed: ${err.message || 'Unknown error'}`);
     }
   }
 
@@ -1618,12 +1628,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           error: result.error
         });
       }
-    } catch (error) {
-      console.error('❌ API Error during complete sync:', error);
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error('❌ API Error during complete sync:', err.message || String(error));
       res.status(500).json({
         success: false,
         message: 'Internal server error during complete brand synchronization',
-        error: error.message
+        error: err.message || 'Internal server error',
+        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
       });
     }
   });
@@ -1631,22 +1643,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Heritage Portal API Routes - Family Members
   app.get("/api/heritage/family-members", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.user?.id;
+      const userId = (req.user as any)?.claims?.sub || (req.user as any)?.id;
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
 
       const familyMembers = await storage.getAllFamilyMembers(userId);
       res.json(familyMembers);
-    } catch (error) {
-      console.error("Error fetching family members:", error);
-      res.status(500).json({ error: "Failed to fetch family members" });
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error("Error fetching family members:", err.message || String(error));
+      res.status(500).json({ 
+        error: err.message || "Failed to fetch family members",
+        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+      });
     }
   });
 
   app.post("/api/heritage/family-members", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.user?.id;
+      const userId = (req.user as any)?.claims?.sub || (req.user as any)?.id;
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
@@ -1654,9 +1670,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const memberData = { ...req.body, userId };
       const newMember = await storage.createFamilyMember(memberData);
       res.json(newMember);
-    } catch (error) {
-      console.error("Error creating family member:", error);
-      res.status(500).json({ error: "Failed to create family member" });
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error("Error creating family member:", err.message || String(error));
+      res.status(500).json({ 
+        error: err.message || "Failed to create family member",
+        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+      });
     }
   });
 
@@ -1686,7 +1706,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Heritage Portal API Routes - Heritage Documents
   app.get("/api/heritage/documents", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.user?.id;
+      const userId = (req.user as any)?.claims?.sub || (req.user as any)?.id;
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
@@ -1701,15 +1721,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       res.json(documents);
-    } catch (error) {
-      console.error("Error fetching heritage documents:", error);
-      res.status(500).json({ error: "Failed to fetch heritage documents" });
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error("Error fetching heritage documents:", err.message || String(error));
+      res.status(500).json({ 
+        error: err.message || "Failed to fetch heritage documents",
+        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+      });
     }
   });
 
   app.post("/api/heritage/documents", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.user?.id;
+      const userId = (req.user as any)?.claims?.sub || (req.user as any)?.id;
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
@@ -1717,7 +1741,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const documentData = { ...req.body, userId };
       const newDocument = await storage.createHeritageDocument(documentData);
       res.json(newDocument);
-    } catch (error) {
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error("Error creating heritage document:", err.message || String(error));
+      res.status(500).json({ 
+        error: err.message || "Failed to create heritage document",
+        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+      });
+    }
       console.error("Error creating heritage document:", error);
       res.status(500).json({ error: "Failed to create heritage document" });
     }
@@ -1749,22 +1780,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Heritage Portal API Routes - Family Events
   app.get("/api/heritage/events", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.user?.id;
+      const userId = (req.user as any)?.claims?.sub || (req.user as any)?.id;
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
 
       const events = await storage.getAllFamilyEvents(userId);
       res.json(events);
-    } catch (error) {
-      console.error("Error fetching family events:", error);
-      res.status(500).json({ error: "Failed to fetch family events" });
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error("Error fetching family events:", err.message || String(error));
+      res.status(500).json({ 
+        error: err.message || "Failed to fetch family events",
+        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+      });
     }
   });
 
   app.post("/api/heritage/events", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.user?.id;
+      const userId = (req.user as any)?.claims?.sub || (req.user as any)?.id;
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
@@ -1772,9 +1807,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const eventData = { ...req.body, userId };
       const newEvent = await storage.createFamilyEvent(eventData);
       res.json(newEvent);
-    } catch (error) {
-      console.error("Error creating family event:", error);
-      res.status(500).json({ error: "Failed to create family event" });
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error("Error creating family event:", err.message || String(error));
+      res.status(500).json({ 
+        error: err.message || "Failed to create family event",
+        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+      });
     }
   });
 
@@ -1804,7 +1843,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Heritage Portal API Routes - Heritage Metrics
   app.get("/api/heritage/metrics", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.user?.id;
+      const userId = (req.user as any)?.claims?.sub || (req.user as any)?.id;
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
@@ -1818,15 +1857,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ritualsTagged: 0,
         artifactsPreserved: 0
       });
-    } catch (error) {
-      console.error("Error fetching heritage metrics:", error);
-      res.status(500).json({ error: "Failed to fetch heritage metrics" });
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error("Error fetching heritage metrics:", err.message || String(error));
+      res.status(500).json({ 
+        error: err.message || "Failed to fetch heritage metrics",
+        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+      });
     }
   });
 
   app.put("/api/heritage/metrics", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.user?.id;
+      const userId = (req.user as any)?.claims?.sub || (req.user as any)?.id;
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }

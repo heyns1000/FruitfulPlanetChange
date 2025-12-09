@@ -1,4 +1,5 @@
 import { pgTable, text, serial, integer, boolean, jsonb, varchar, timestamp, index, decimal, numeric, date } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { FRUITFUL_CRATE_DANCE_ECOSYSTEM, FRUITFUL_CRATE_DANCE_SECTORS } from "./fruitful-crate-dance-ecosystem";
@@ -64,7 +65,7 @@ export const legalDocuments = pgTable("legal_documents", {
   url: text("url").notNull(),
   icon: text("icon").default("📄"),
   category: text("category").notNull().default("legal"),
-  tags: jsonb("tags").$type<string[]>().default([]),
+  tags: jsonb("tags").$type<string[]>().default(sql`'[]'::jsonb`),
   createdAt: text("created_at").default("now()"),
 });
 
@@ -97,7 +98,7 @@ export const adminPanelBrands = pgTable("admin_panel_brands", {
   sectorName: text("sector_name").notNull(),
   sectorEmoji: text("sector_emoji").notNull(),
   brandName: text("brand_name").notNull(),
-  subNodes: jsonb("sub_nodes").$type<string[]>().default([]),
+  subNodes: jsonb("sub_nodes").$type<string[]>().default(sql`'[]'::jsonb`),
   isCore: boolean("is_core").default(true),
   status: text("status").notNull().default("active"),
   metadata: jsonb("metadata"),
@@ -282,7 +283,7 @@ export const artworks = pgTable("artworks", {
   imageUrl: text("image_url").notNull(),
   price: decimal("price", { precision: 10, scale: 2 }).notNull(),
   category: text("category").notNull(), // "Character Art", "Typography", "Abstract", etc.
-  tags: jsonb("tags").$type<string[]>().default([]),
+  tags: jsonb("tags").$type<string[]>().default(sql`'[]'::jsonb`),
   medium: text("medium"), // "Digital illustration", "Digital art", etc.
   isAvailable: boolean("is_available").default(true),
   salesCount: integer("sales_count").default(0),
@@ -299,7 +300,7 @@ export const portfolioProjects = pgTable("portfolio_projects", {
   description: text("description"),
   imageUrl: text("image_url").notNull(),
   category: text("category").notNull(), // "Digital Art", "Brand Design", "Character Design"
-  tags: jsonb("tags").$type<string[]>().default([]),
+  tags: jsonb("tags").$type<string[]>().default(sql`'[]'::jsonb`),
   medium: text("medium"),
   style: text("style"),
   theme: text("theme"),
@@ -844,7 +845,7 @@ export const heritageDocuments = pgTable("heritage_documents", {
   title: text("title").notNull(),
   description: text("description"),
   contentType: text("content_type").notNull(), // "Document", "Oral History", "Ritual Description", "Artifact", "Visual Record"
-  tags: jsonb("tags").$type<string[]>().default([]),
+  tags: jsonb("tags").$type<string[]>().default(sql`'[]'::jsonb`),
   fileUrl: text("file_url"), // URL to stored file
   ancestorName: text("ancestor_name"), // for filtering
   dateRecorded: date("date_recorded"),
@@ -861,7 +862,7 @@ export const familyEvents = pgTable("family_events", {
   eventDate: date("event_date").notNull(),
   eventTime: text("event_time"),
   description: text("description"),
-  participants: jsonb("participants").$type<string[]>().default([]), // family member IDs
+  participants: jsonb("participants").$type<string[]>().default(sql`'[]'::jsonb`), // family member IDs
   isRecurring: boolean("is_recurring").default(false),
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow(),
