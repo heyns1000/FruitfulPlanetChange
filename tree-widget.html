@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tree Counter Widget - Fruitful Global Planet</title>
+  <style>
+    /* Global styles */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      margin: 0;
+    }
+
+    /* Main container for the widget */
+    .tree-widget-container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    /* Heading styles */
+    h1 {
+      color: #2d3748;
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    /* Description text */
+    .description {
+      color: #4a5568;
+      margin-bottom: 20px;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* Widget wrapper with specific dimensions */
+    .widget-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      height: 300px;
+      margin: 0 auto;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Iframe styling */
+    .tree-counter-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 8px;
+    }
+
+    /* Info section */
+    .info-section {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f7fafc;
+      border-radius: 8px;
+      border-left: 4px solid #48bb78;
+    }
+
+    .info-section h3 {
+      color: #2d3748;
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .info-section p {
+      color: #4a5568;
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* Link styling */
+    a {
+      color: #4299e1;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive design */
+    @media (max-width: 600px) {
+      .tree-widget-container {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .description {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="tree-widget-container">
+    <!-- Header section -->
+    <h1>🌳 Tree Counter Widget</h1>
+    <p class="description">
+      Join the global movement to plant 1 trillion trees! This widget displays real-time progress 
+      from the Trillion Tree Campaign by Plant-for-the-Planet.
+    </p>
+
+    <!-- Widget iframe container -->
+    <div class="widget-wrapper">
+      <!-- 
+        IMPORTANT: Replace 'YOUR_WIDGET_URL' with your actual widget URL
+        Get your widget URL from: https://widgets.plant-for-the-planet.org
+        
+        Example URL format:
+        https://www.plant-for-the-planet.org/treecounter/YOUR_PROFILE_NAME
+      -->
+      <iframe 
+        class="tree-counter-iframe"
+        src="YOUR_WIDGET_URL"
+        title="Plant for the Planet Tree Counter"
+        scrolling="no"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        loading="lazy"
+      ></iframe>
+    </div>
+
+    <!-- Information section -->
+    <div class="info-section">
+      <h3>About the Widget</h3>
+      <p>
+        This counter automatically updates to show the latest tree planting progress. 
+        To get your own widget, visit 
+        <a href="https://widgets.plant-for-the-planet.org" target="_blank" rel="noopener noreferrer">
+          widgets.plant-for-the-planet.org
+        </a> and create your personalized tree counter.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
