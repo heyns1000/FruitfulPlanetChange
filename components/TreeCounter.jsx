@@ -7,8 +7,16 @@ import { useEffect, useRef, useState } from 'react';
  * Displays real-time tree planting progress from the Trillion Tree Campaign.
  * 
  * @component
+ * @param {Object} props - Component props
+ * @param {string} [props.widgetUrl='YOUR_WIDGET_URL'] - The URL of your Plant-for-the-Planet widget
+ * @param {number} [props.width=400] - Width of the widget container in pixels
+ * @param {number} [props.height=300] - Height of the widget iframe in pixels
+ * @param {string} [props.borderRadius='8px'] - Border radius for rounded corners
+ * @param {string} [props.className=''] - Optional custom CSS class name
+ * @param {boolean} [props.showInfo=true] - Show/hide the information section below the widget
+ * 
  * @example
- * ```tsx
+ * ```jsx
  * <TreeCounter 
  *   widgetUrl="https://www.plant-for-the-planet.org/treecounter/YOUR_PROFILE_NAME"
  *   width={400}
@@ -16,45 +24,6 @@ import { useEffect, useRef, useState } from 'react';
  * />
  * ```
  */
-
-interface TreeCounterProps {
-  /**
-   * The URL of your Plant-for-the-Planet widget
-   * Get this from: https://widgets.plant-for-the-planet.org
-   * @default 'YOUR_WIDGET_URL'
-   */
-  widgetUrl?: string;
-  
-  /**
-   * Width of the widget container in pixels
-   * @default 400
-   */
-  width?: number;
-  
-  /**
-   * Height of the widget iframe in pixels
-   * @default 300
-   */
-  height?: number;
-  
-  /**
-   * Border radius for rounded corners
-   * @default '8px'
-   */
-  borderRadius?: string;
-  
-  /**
-   * Optional custom CSS class name
-   */
-  className?: string;
-  
-  /**
-   * Show/hide the information section below the widget
-   * @default true
-   */
-  showInfo?: boolean;
-}
-
 export function TreeCounter({
   widgetUrl = 'YOUR_WIDGET_URL',
   width = 400,
@@ -62,10 +31,10 @@ export function TreeCounter({
   borderRadius = '8px',
   className = '',
   showInfo = true
-}: TreeCounterProps) {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+}) {
+  const iframeRef = useRef(null);
   const [isConfigured, setIsConfigured] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   /**
    * Effect to set up the iframe when the component mounts or widgetUrl changes

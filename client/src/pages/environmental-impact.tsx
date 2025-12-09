@@ -1,4 +1,4 @@
-import TreeCounter from '@/../../components/TreeCounter';
+import TreeCounter from '../../../components/TreeCounter';
 
 /**
  * Environmental Impact Page
