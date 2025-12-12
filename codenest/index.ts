@@ -59,9 +59,9 @@ export async function initializeGorillaProtocol(username: string = 'heyns1000') 
  * Get current system status
  * @returns Complete system status
  */
-export function getSystemStatus() {
-  const { rhinoStrikeMonitor } = require('./monitors/rhino-strike-monitor');
-  const { masterIntegrationHub } = require('./hub/master-integration');
+export async function getSystemStatus() {
+  const { rhinoStrikeMonitor } = await import('./monitors/rhino-strike-monitor');
+  const { masterIntegrationHub } = await import('./hub/master-integration');
   
   return {
     monitor: rhinoStrikeMonitor.getStats(),
