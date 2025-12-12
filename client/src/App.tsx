@@ -64,6 +64,7 @@ import SectorMapping from "@/pages/sector-mapping"
 import PlanetChange from "@/pages/planet-change"
 import { EcosystemCoordinator } from "@/pages/ecosystem-coordinator"
 import AirshowLoyaltyProtocolPage from "@/pages/airshow-loyalty-protocol"
+import BadBoysNoodlePage from "@/pages/bad-boys-noodle"
 import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react"
 import { GlobalFooter } from "@/components/ui/global-footer"
@@ -127,6 +128,7 @@ const pathToPageId: Record<string, string> = {
   '/button-repair-dashboard': 'button-repair-dashboard',
   '/ecosystem-coordinator': 'ecosystem-coordinator',
   '/airshow-loyalty-protocol': 'airshow-loyalty-protocol',
+  '/bad-boys-noodle': 'bad-boys-noodle',
 }
 
 // Map activePage IDs to URL paths
@@ -185,6 +187,7 @@ const pageIdToPath: Record<string, string> = {
   'button-repair-dashboard': '/button-repair-dashboard',
   'ecosystem-coordinator': '/ecosystem-coordinator',
   'airshow-loyalty-protocol': '/airshow-loyalty-protocol',
+  'bad-boys-noodle': '/bad-boys-noodle',
 }
 
 // Page router component that renders content based on active page
@@ -405,6 +408,12 @@ function PageRouter({ activePage }: { activePage: string }) {
       return (
         <div className="p-0">
           <AirshowLoyaltyProtocolPage />
+        </div>
+      )
+    case "bad-boys-noodle":
+      return (
+        <div className="p-0">
+          <BadBoysNoodlePage />
         </div>
       )
     default:
