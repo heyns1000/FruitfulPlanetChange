@@ -58,6 +58,7 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
     { id: "faa-quantum-nexus", label: "🚀 FAA Quantum Nexus™", icon: "⚡", badge: "AI Economic" },
     { id: "fruitful-business-plan", label: "💼 Fruitful Business Plan", icon: "📊", badge: "R391M Strategy" },
     { id: "samfox-creative-studio", label: "🎨 SamFox Creative Studio", icon: "✨", badge: "Digital Art" },
+    { id: "bad-boys-noodle", label: "🎵 Bad Boys Noodle Protocol", icon: "🍜", badge: "MASTERED" },
     { id: "chatgpt-integration", label: "🦁 ChatGPT Lions", icon: "🧠", badge: "6 Soul-Injected" },
     { id: "faa-intake-checklist", label: "🚀 FAA Intake Checklist", icon: "✅", badge: "Treaty Compliance" },
     { id: "omniuniversal-button-validator", label: "🧬 Button Validator", icon: "🔘", badge: "UI/CAD/Scroll" },
