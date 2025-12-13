@@ -275,7 +275,7 @@ export default {
       },
       boxShadow: {
         'glimpse': '${theme.glow}',
-        'glimpse-lg': '${theme.glow.replace('20px', '30px')}',
+        'glimpse-lg': '0 0 30px ${theme.primary}',
       },
       animation: {
         'glimpse-pulse': 'glimpse-pulse 3s ease-in-out infinite',

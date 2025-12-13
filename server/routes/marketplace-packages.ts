@@ -106,8 +106,8 @@ export default function registerMarketplacePackagesRoutes(app: Express) {
       // Create download tracking record
       const downloadRecord = await storage.createPackageDownload({
         packageId: pkg.id,
-        userId: req.user?.id || null, // Use authenticated user if available
-        ipAddress: req.ip || req.headers['x-forwarded-for'] as string || 'unknown',
+        userId: (req.user as any)?.id || null, // Use authenticated user if available
+        ipAddress: req.ip || (req.headers['x-forwarded-for'] as string) || 'unknown',
         userAgent: req.headers['user-agent'] || 'unknown',
         completed: false,
       });
