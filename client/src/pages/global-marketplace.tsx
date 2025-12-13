@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { useLocation } from "wouter"
-import { Search, Filter, Sparkles, Loader2 } from "lucide-react"
+import { Search, Filter, Sparkles, Loader2, Download } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
@@ -23,6 +23,7 @@ export default function GlobalMarketplace() {
   const [tierFilter, setTierFilter] = useState<string>("all")
   const [divisionFilter, setDivisionFilter] = useState<string>("all")
   const [isDeploying, setIsDeploying] = useState<number | null>(null)
+  const [isDownloading, setIsDownloading] = useState<number | null>(null)
   const [, setLocation] = useLocation()
   const { toast } = useToast()
 
@@ -103,6 +104,54 @@ export default function GlobalMarketplace() {
       })
     } finally {
       setIsDeploying(null)
+    }
+  }
+
+  // Handle package download
+  const handleDownload = async (brand: Brand) => {
+    setIsDownloading(brand.id)
+    
+    try {
+      toast({
+        title: "📦 Download Started",
+        description: `Preparing ${brand.name} package for download...`,
+      })
+
+      // Fetch the package ZIP file
+      const response = await fetch(`/api/marketplace/packages/${brand.id}/download`)
+      
+      if (!response.ok) {
+        throw new Error('Failed to download package')
+      }
+
+      // Get the blob
+      const blob = await response.blob()
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${brand.name.toLowerCase().replace(/[^a-z0-9-]/g, '-')}-v1.0.0.zip`
+      document.body.appendChild(a)
+      a.click()
+      
+      // Cleanup
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+
+      toast({
+        title: "✅ Download Complete",
+        description: `${brand.name} package downloaded successfully!`,
+      })
+
+    } catch (error) {
+      toast({
+        title: "❌ Download Failed",
+        description: error instanceof Error ? error.message : 'Failed to download package',
+        variant: "destructive",
+      })
+    } finally {
+      setIsDownloading(null)
     }
   }
 
@@ -276,23 +325,37 @@ export default function GlobalMarketplace() {
                   )}
                 </div>
 
-                <Button
-                  className="w-full"
-                  onClick={() => handleDeploy(brand)}
-                  disabled={isDeploying === brand.id || brand.status !== 'active'}
-                >
-                  {isDeploying === brand.id ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Deploying...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="mr-2 h-4 w-4" />
-                      Deploy Integration
-                    </>
-                  )}
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    className="flex-1"
+                    onClick={() => handleDeploy(brand)}
+                    disabled={isDeploying === brand.id || brand.status !== 'active'}
+                  >
+                    {isDeploying === brand.id ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Deploying...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        Deploy
+                      </>
+                    )}
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    onClick={() => handleDownload(brand)}
+                    disabled={isDownloading === brand.id || brand.status !== 'active'}
+                  >
+                    {isDownloading === brand.id ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Download className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           ))}
