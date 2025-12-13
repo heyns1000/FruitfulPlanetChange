@@ -2,6 +2,16 @@ import type { Express } from 'express';
 import { storage } from '../storage';
 import fs from 'fs';
 import path from 'path';
+import rateLimit from 'express-rate-limit';
+
+// Rate limiter specifically for file downloads to prevent abuse
+const downloadLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 downloads per 15 minutes
+  message: 'Too many download requests, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 export default function registerMarketplacePackagesRoutes(app: Express) {
   
@@ -84,8 +94,9 @@ export default function registerMarketplacePackagesRoutes(app: Express) {
   /**
    * GET /api/marketplace/packages/:id/download
    * Download a package ZIP file
+   * Rate limited to prevent abuse
    */
-  app.get('/api/marketplace/packages/:id/download', async (req, res) => {
+  app.get('/api/marketplace/packages/:id/download', downloadLimiter, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       
