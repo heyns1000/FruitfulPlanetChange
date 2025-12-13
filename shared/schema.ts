@@ -104,6 +104,53 @@ export const adminPanelBrands = pgTable("admin_panel_brands", {
   createdAt: text("created_at").default("now()"),
 });
 
+// Marketplace Packages - Global App Store Package System
+export const marketplacePackages = pgTable("marketplace_packages", {
+  id: serial("id").primaryKey(),
+  brandId: integer("brand_id").notNull().references(() => brands.id),
+  packageName: text("package_name").notNull(),
+  version: text("version").notNull().default("1.0.0"),
+  description: text("description"),
+  downloadUrl: text("download_url"),
+  fileSize: integer("file_size"), // in bytes
+  filePath: text("file_path"),
+  appleStoreCompatible: boolean("apple_store_compatible").default(true),
+  googleStoreCompatible: boolean("google_store_compatible").default(true),
+  microsoftStoreCompatible: boolean("microsoft_store_compatible").default(true),
+  webCompatible: boolean("web_compatible").default(true),
+  themeTier: text("theme_tier").notNull(), // sovereign, dynastic, operational, market
+  themeConfig: jsonb("theme_config").default({}),
+  glimpseEnabled: boolean("glimpse_enabled").default(true),
+  dependencies: jsonb("dependencies").default({}),
+  keywords: text("keywords").array().default([]),
+  license: text("license").default("MIT"),
+  downloadCount: integer("download_count").default(0),
+  active: boolean("active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const packageVersions = pgTable("package_versions", {
+  id: serial("id").primaryKey(),
+  packageId: integer("package_id").notNull().references(() => marketplacePackages.id),
+  version: text("version").notNull(),
+  changelog: text("changelog"),
+  filePath: text("file_path"),
+  fileSize: integer("file_size"),
+  publishedAt: timestamp("published_at").defaultNow(),
+  deprecated: boolean("deprecated").default(false),
+});
+
+export const packageDownloads = pgTable("package_downloads", {
+  id: serial("id").primaryKey(),
+  packageId: integer("package_id").notNull().references(() => marketplacePackages.id),
+  userId: varchar("user_id"),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  downloadTimestamp: timestamp("download_timestamp").defaultNow(),
+  completed: boolean("completed").default(false),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   createdAt: true,
   updatedAt: true,
@@ -141,6 +188,22 @@ export const insertPaymentSchema = createInsertSchema(payments).omit({
 export const insertAdminPanelBrandSchema = createInsertSchema(adminPanelBrands).omit({
   id: true,
   createdAt: true,
+});
+
+export const insertMarketplacePackageSchema = createInsertSchema(marketplacePackages).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertPackageVersionSchema = createInsertSchema(packageVersions).omit({
+  id: true,
+  publishedAt: true,
+});
+
+export const insertPackageDownloadSchema = createInsertSchema(packageDownloads).omit({
+  id: true,
+  downloadTimestamp: true,
 });
 
 export type UpsertUser = typeof users.$inferInsert;
@@ -200,6 +263,12 @@ export type InsertPayment = z.infer<typeof insertPaymentSchema>;
 export type Payment = typeof payments.$inferSelect;
 export type InsertAdminPanelBrand = z.infer<typeof insertAdminPanelBrandSchema>;
 export type AdminPanelBrand = typeof adminPanelBrands.$inferSelect;
+export type InsertMarketplacePackage = z.infer<typeof insertMarketplacePackageSchema>;
+export type MarketplacePackage = typeof marketplacePackages.$inferSelect;
+export type InsertPackageVersion = z.infer<typeof insertPackageVersionSchema>;
+export type PackageVersion = typeof packageVersions.$inferSelect;
+export type InsertPackageDownload = z.infer<typeof insertPackageDownloadSchema>;
+export type PackageDownload = typeof packageDownloads.$inferSelect;
 
 // Banimal Integration Tables
 export const banimalTransactions = pgTable("banimal_transactions", {
