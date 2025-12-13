@@ -5,6 +5,9 @@ import { integrationDeployments, brands } from '@shared/schema';
 import { eq, desc } from 'drizzle-orm';
 import { IntegrationRequestSchema } from '@shared/integration-schema';
 
+// Configuration constants
+const EXTERNAL_INTEGRATION_TIMEOUT_MS = 2000;
+
 // Response schemas
 interface IntegrationResponse {
   success: boolean;
@@ -50,7 +53,9 @@ async function validateLicense(brandId: number): Promise<ValidationResult> {
     return {
       valid: true,
       brandName: brand.name,
-      tier: brand.metadata?.tier as string || 'standard',
+      tier: (typeof brand.metadata === 'object' && brand.metadata !== null && 'tier' in brand.metadata) 
+        ? String(brand.metadata.tier) 
+        : 'standard',
       licenseStatus: 'active',
     };
   } catch (error) {
@@ -102,8 +107,8 @@ async function triggerExternalIntegrations(deploymentId: string, brandId: number
   console.log(`[${deploymentId}] Triggering external integrations for brand ${brandId}`);
   
   try {
-    // Simulate async processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Simulate async processing (Phase 2-5 will replace with actual API calls)
+    await new Promise(resolve => setTimeout(resolve, EXTERNAL_INTEGRATION_TIMEOUT_MS));
     
     // Update deployment status to success
     await db.update(integrationDeployments)
@@ -167,14 +172,13 @@ export function registerIntegrationWebhook(app: Router) {
       
       let brandIdNum: number;
       try {
-        // Try to parse as integer first
-        brandIdNum = parseInt(data.brandId);
+        // Parse brand ID as integer (radix 10 to avoid octal interpretation)
+        brandIdNum = parseInt(data.brandId, 10);
         if (isNaN(brandIdNum)) {
-          // If it's a UUID, we need to find the brand by other means
-          // For Phase 1, we'll return an error and document this for Phase 2
+          // If it's not a valid number, reject the request
           return res.status(400).json({
             success: false,
-            error: 'Brand ID must be a numeric ID. UUID support coming in Phase 2.',
+            error: 'Brand ID must be a numeric ID.',
           });
         }
       } catch (e) {
@@ -222,8 +226,11 @@ export function registerIntegrationWebhook(app: Router) {
       res.json(response);
       
       // Step 5: Trigger async deployment (non-blocking)
-      setImmediate(async () => {
-        await triggerExternalIntegrations(deploymentId, brandIdNum);
+      // Using process.nextTick for better error handling
+      process.nextTick(() => {
+        triggerExternalIntegrations(deploymentId, brandIdNum).catch(error => {
+          console.error(`[${deploymentId}] Unhandled error in background processing:`, error);
+        });
       });
       
     } catch (error) {

@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const IntegrationRequestSchema = z.object({
   userId: z.string().min(1, 'User ID is required'),
-  brandId: z.string().uuid('Invalid brand ID format'),
+  brandId: z.string().min(1, 'Brand ID is required'), // Accepts numeric string or UUID
   integrationType: z.enum(['brand_license', 'sector_integration', 'api_access']),
   targetDomain: z.string().optional(),
   metadata: z.record(z.any()).optional(),
