@@ -297,6 +297,48 @@ export function registerIntegrationWebhook(app: Router) {
     }
   });
   
+  // User deployments endpoint
+  app.get('/api/integration/user-deployments', async (req: Request, res: Response) => {
+    try {
+      // TODO: Replace with actual authenticated user ID from session/JWT when auth is implemented
+      // For Phase 2 demo purposes only - all users see the same deployments
+      const userId = 'demo-user-123';
+      
+      const result = await db
+        .select({
+          deployment: integrationDeployments,
+          brand: brands,
+        })
+        .from(integrationDeployments)
+        .leftJoin(brands, eq(integrationDeployments.brandId, brands.id))
+        .where(eq(integrationDeployments.userId, userId))
+        .orderBy(desc(integrationDeployments.createdAt))
+        .limit(50);
+      
+      const deploymentsWithSteps = result.map((row) => ({
+        id: row.deployment.id,
+        user_id: row.deployment.userId,
+        brand_id: row.deployment.brandId,
+        brand_name: row.brand?.name || 'Unknown Brand',
+        integration_type: row.deployment.integrationType,
+        status: row.deployment.status,
+        error_message: row.deployment.errorMessage || undefined,
+        deployment_url: row.deployment.deploymentUrl || undefined,
+        created_at: row.deployment.createdAt,
+        completed_at: row.deployment.completedAt || undefined,
+        steps: getDeploymentSteps(row.deployment.status),
+      }));
+      
+      res.json({
+        success: true,
+        deployments: deploymentsWithSteps,
+      });
+    } catch (error) {
+      console.error('User deployments fetch error:', error);
+      res.status(500).json({ success: false, error: 'Failed to fetch deployments' });
+    }
+  });
+  
   // Health check endpoint for integration service
   app.get('/api/integration/health', (req: Request, res: Response) => {
     res.json({

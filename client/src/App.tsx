@@ -69,6 +69,8 @@ import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react"
 import { GlobalFooter } from "@/components/ui/global-footer"
 import { ScrollBreathGlyphs, useScrollBreathGlyphs } from "@/components/animations/ScrollBreathGlyphs"
+import GlobalMarketplace from "@/pages/global-marketplace"
+import DeploymentDashboard from "@/pages/deployment-dashboard"
 
 // Map URL paths to activePage IDs for state-based routing integration
 const pathToPageId: Record<string, string> = {
@@ -129,6 +131,8 @@ const pathToPageId: Record<string, string> = {
   '/ecosystem-coordinator': 'ecosystem-coordinator',
   '/airshow-loyalty-protocol': 'airshow-loyalty-protocol',
   '/bad-boys-noodle': 'bad-boys-noodle',
+  '/global-marketplace': 'global-marketplace',
+  '/deployment-dashboard': 'deployment-dashboard',
 }
 
 // Map activePage IDs to URL paths
@@ -188,6 +192,8 @@ const pageIdToPath: Record<string, string> = {
   'ecosystem-coordinator': '/ecosystem-coordinator',
   'airshow-loyalty-protocol': '/airshow-loyalty-protocol',
   'bad-boys-noodle': '/bad-boys-noodle',
+  'global-marketplace': '/global-marketplace',
+  'deployment-dashboard': '/deployment-dashboard',
 }
 
 // Page router component that renders content based on active page
@@ -416,6 +422,10 @@ function PageRouter({ activePage }: { activePage: string }) {
           <BadBoysNoodlePage />
         </div>
       )
+    case "global-marketplace":
+      return <GlobalMarketplace />
+    case "deployment-dashboard":
+      return <DeploymentDashboard />
     default:
       // Check if it's a sector dashboard route
       if (activePage.startsWith("sector-")) {

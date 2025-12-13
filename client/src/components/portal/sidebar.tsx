@@ -43,6 +43,8 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
     { id: "ecosystem-explorer", label: "🌐 Ecosystem Explorer", icon: "🗺️", badge: "45 Sectors" },
     { id: "global-pulse", label: "Global Pulse", icon: "🌍", badge: "Analytics" },
     { id: "seedwave-admin", label: "🦁 Seedwave™ Admin", icon: "⚙️", badge: "1,967 Brands" },
+    { id: "global-marketplace", label: "🌐 Global Marketplace", icon: "🛒", badge: "13,713+ Brands" },
+    { id: "deployment-dashboard", label: "📊 Deployment Dashboard", icon: "📈", badge: "Real-time" },
   ]
 
   const vaultmeshSections = [
