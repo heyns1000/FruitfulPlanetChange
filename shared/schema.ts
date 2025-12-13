@@ -821,7 +821,37 @@ export const SYSTEM_STATUS = {
   }
 } as const;
 
+// =================================================================
+// INTEGRATION WEBHOOK SYSTEM - PHASE 1
+// =================================================================
+// Deployment tracking for FruitfulPlanetChange → LicenseVault → CodeNest → Production pipeline
 
+export const integrationDeployments = pgTable("integration_deployments", {
+  id: varchar("id", { length: 255 }).primaryKey(),
+  userId: varchar("user_id", { length: 255 }).notNull(),
+  brandId: integer("brand_id").notNull().references(() => brands.id),
+  integrationType: varchar("integration_type", { length: 50 }).notNull(), // brand_license, sector_integration, api_access
+  status: varchar("status", { length: 50 }).notNull().default("pending"), // pending, building, deploying, success, failed
+  errorMessage: text("error_message"),
+  deploymentUrl: text("deployment_url"),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  completedAt: timestamp("completed_at"),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => ({
+  userIdIdx: index("idx_integration_deployments_user_id").on(table.userId),
+  brandIdIdx: index("idx_integration_deployments_brand_id").on(table.brandId),
+  statusIdx: index("idx_integration_deployments_status").on(table.status),
+  createdAtIdx: index("idx_integration_deployments_created_at").on(table.createdAt),
+}));
+
+export const insertIntegrationDeploymentSchema = createInsertSchema(integrationDeployments).omit({
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type IntegrationDeployment = typeof integrationDeployments.$inferSelect;
+export type InsertIntegrationDeployment = z.infer<typeof insertIntegrationDeploymentSchema>;
 
 // AncestorTag™ Heritage Portal Tables
 export const familyMembers = pgTable("family_members", {
