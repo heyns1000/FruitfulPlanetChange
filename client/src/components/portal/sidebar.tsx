@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { Menu, X, Globe, Activity } from "lucide-react"
+import { Menu, X } from "lucide-react"
 import { useTheme } from "@/hooks/use-theme"
 import { SystemStatus } from "./system-status"
 import type { Sector } from "@shared/schema"

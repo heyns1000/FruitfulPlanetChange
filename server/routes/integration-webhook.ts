@@ -300,7 +300,9 @@ export function registerIntegrationWebhook(app: Router) {
   // User deployments endpoint
   app.get('/api/integration/user-deployments', async (req: Request, res: Response) => {
     try {
-      const userId = 'demo-user-123'; // Replace with actual auth later
+      // TODO: Replace with actual authenticated user ID from session/JWT when auth is implemented
+      // For Phase 2 demo purposes only - all users see the same deployments
+      const userId = 'demo-user-123';
       
       const result = await db
         .select({

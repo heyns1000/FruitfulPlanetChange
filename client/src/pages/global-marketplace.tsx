@@ -10,6 +10,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast"
 import type { Brand } from "@shared/schema"
 
+// Helper function to extract metadata field from brand
+function getBrandMetadataField(brand: Brand, field: string, defaultValue: string): string {
+  if (brand.metadata && typeof brand.metadata === 'object' && field in brand.metadata) {
+    return String(brand.metadata[field as keyof typeof brand.metadata])
+  }
+  return defaultValue
+}
+
 export default function GlobalMarketplace() {
   const [searchQuery, setSearchQuery] = useState("")
   const [tierFilter, setTierFilter] = useState<string>("all")
@@ -33,10 +41,7 @@ export default function GlobalMarketplace() {
 
       // Tier filter - extract from metadata
       if (tierFilter !== "all") {
-        const brandTier = brand.metadata && typeof brand.metadata === 'object' && 'tier' in brand.metadata
-          ? String(brand.metadata.tier).toLowerCase()
-          : 'market'
-        
+        const brandTier = getBrandMetadataField(brand, 'tier', 'market').toLowerCase()
         if (brandTier !== tierFilter.toLowerCase()) {
           return false
         }
@@ -44,10 +49,7 @@ export default function GlobalMarketplace() {
 
       // Division filter - extract from metadata
       if (divisionFilter !== "all") {
-        const brandDivision = brand.metadata && typeof brand.metadata === 'object' && 'division' in brand.metadata
-          ? String(brand.metadata.division).toUpperCase()
-          : 'A'
-        
+        const brandDivision = getBrandMetadataField(brand, 'division', 'A').toUpperCase()
         if (brandDivision !== divisionFilter.toUpperCase()) {
           return false
         }
@@ -68,6 +70,7 @@ export default function GlobalMarketplace() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          // TODO: Replace with actual authenticated user ID when auth is implemented
           userId: 'demo-user-123',
           brandId: brand.id.toString(),
           integrationType: 'brand_license',
@@ -105,9 +108,7 @@ export default function GlobalMarketplace() {
 
   // Get tier badge variant
   const getTierBadge = (brand: Brand) => {
-    const tier = brand.metadata && typeof brand.metadata === 'object' && 'tier' in brand.metadata
-      ? String(brand.metadata.tier)
-      : 'Market'
+    const tier = getBrandMetadataField(brand, 'tier', 'Market')
     
     const colors = {
       'Sovereign': 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
