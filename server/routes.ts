@@ -24,6 +24,7 @@ import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from './payp
 import { getPaypalContainers } from './routes/paypal-containers';
 import { registerIntegrationWebhook } from './routes/integration-webhook';
 import { registerBanimalPulseRoutes } from './routes/banimal-pulse';
+import registerMarketplacePackagesRoutes from './routes/marketplace-packages';
 
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -80,6 +81,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Register Banimal Ecosystem Pulse routes
   registerBanimalPulseRoutes(app);
+  // Register marketplace packages routes (Phase 3)
+  registerMarketplacePackagesRoutes(app);
 
   // ========================================
   // INTERACTIVE SECTOR MAPPING SYSTEM ROUTES
