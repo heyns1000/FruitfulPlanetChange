@@ -9,7 +9,7 @@ import type { Brand, Sector } from "@shared/schema";
 interface CodeNestRepo {
   repoId: string;
   repoName: string;
-  githubRepoId?: number;
+  githubRepoId?: string;
   subdomain?: string;
   status: string;
   lastSyncAt?: string;

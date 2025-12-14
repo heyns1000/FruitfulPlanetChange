@@ -962,7 +962,7 @@ export const codeNestRepositories = pgTable("codenest_repositories", {
   id: serial("id").primaryKey(),
   repoId: varchar("repo_id").unique().notNull(),
   repoName: varchar("repo_name").notNull(),
-  githubRepoId: bigint("github_repo_id", { mode: "number" }),
+  githubRepoId: varchar("github_repo_id"),
   subdomain: varchar("subdomain"),
   status: varchar("status").default("active"), // active, archived, private
   lastSyncAt: timestamp("last_sync_at"),

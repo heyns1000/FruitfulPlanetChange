@@ -33,7 +33,7 @@ export async function seedEcosystemPulseData() {
         await db.insert(codeNestRepositories).values({
           repoId: repo.name,
           repoName: repo.name,
-          githubRepoId: repo.repo_id,
+          githubRepoId: String(repo.repo_id),
           subdomain: repo.subdomain,
           status: repo.status,
           lastSyncAt: new Date(),
