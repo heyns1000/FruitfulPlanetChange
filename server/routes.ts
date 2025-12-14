@@ -23,6 +23,7 @@ import databaseSchemaRoutes from './routes/database-schema';
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from './paypal';
 import { getPaypalContainers } from './routes/paypal-containers';
 import { registerIntegrationWebhook } from './routes/integration-webhook';
+import { registerBanimalPulseRoutes } from './routes/banimal-pulse';
 import registerMarketplacePackagesRoutes from './routes/marketplace-packages';
 
 
@@ -78,6 +79,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Register integration webhook system (Phase 1)
   registerIntegrationWebhook(app);
 
+  // Register Banimal Ecosystem Pulse routes
+  registerBanimalPulseRoutes(app);
   // Register marketplace packages routes (Phase 3)
   registerMarketplacePackagesRoutes(app);
 

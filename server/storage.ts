@@ -28,6 +28,11 @@ import {
   // Sector Mapping System Tables
   sectorRelationships,
   sectorMappingCache,
+  // Ecosystem Pulse Tables
+  ecosystemPulses,
+  pulseHistory,
+  codeNestRepositories,
+  vaultTraceNetwork,
   // Marketplace Packages Tables
   marketplacePackages,
   packageVersions,
@@ -88,6 +93,15 @@ import {
   type InsertSectorRelationship,
   type SectorMappingCache,
   type InsertSectorMappingCache,
+  // Ecosystem Pulse Types
+  type EcosystemPulse,
+  type InsertEcosystemPulse,
+  type PulseHistory,
+  type InsertPulseHistory,
+  type CodeNestRepository,
+  type InsertCodeNestRepository,
+  type VaultTraceNetwork,
+  type InsertVaultTraceNetwork,
   // Marketplace Packages Types
   type MarketplacePackage,
   type InsertMarketplacePackage,

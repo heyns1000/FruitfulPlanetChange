@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, ExternalLink, Activity, Layers, Database } from "lucide-react";
+import { Search, ExternalLink, Activity, Layers, Database, Zap, Globe } from "lucide-react";
 import type { Brand, Sector } from "@shared/schema";
 
 interface SectorZone {
@@ -21,8 +21,22 @@ interface SectorZone {
   status: "active" | "maintenance" | "development";
 }
 
+interface EcosystemPulse {
+  pulse_id: string;
+  timestamp: string;
+  vault_ids: string[];
+  active_sectors: any[];
+  brand_health: any[];
+  codenest_digest: any[];
+  signal_strength: number;
+  seedwave_metadata?: any;
+  network_graph_data?: any;
+  status: string;
+}
+
 export default function EcosystemExplorer() {
   const [searchTerm, setSearchTerm] = useState("")
+  const [latestPulse, setLatestPulse] = useState<EcosystemPulse | null>(null);
   
   // Fetch brands and sectors data
   const { data: brands = [] } = useQuery<Brand[]>({
@@ -33,6 +47,29 @@ export default function EcosystemExplorer() {
     queryKey: ["/api/sectors"],
   });
   const [selectedZone, setSelectedZone] = useState<string | null>(null);
+
+  // Fetch latest pulse every 9 seconds
+  useEffect(() => {
+    const fetchPulse = async () => {
+      try {
+        const response = await fetch('/api/banimal/pulse/latest');
+        if (response.ok) {
+          const data = await response.json();
+          setLatestPulse(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch pulse:', error);
+      }
+    };
+
+    // Initial fetch
+    fetchPulse();
+
+    // Poll every 9 seconds
+    const interval = setInterval(fetchPulse, 9000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Comprehensive sector zones following codenest ecosystem map logic
   const sectorZones: SectorZone[] = [
@@ -246,6 +283,49 @@ export default function EcosystemExplorer() {
           </div>
         </div>
       </div>
+
+      {/* Live Pulse Indicator */}
+      {latestPulse && (
+        <Card className="border-2 border-green-500 bg-gradient-to-r from-green-50 to-cyan-50 dark:from-green-950 dark:to-cyan-950">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="relative">
+                  <Zap className="h-6 w-6 text-green-600 animate-pulse" />
+                  <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                  </span>
+                </div>
+                <CardTitle className="text-lg">🌊 Live Ecosystem Pulse</CardTitle>
+              </div>
+              <Badge className="bg-green-600 text-white">
+                Signal: {latestPulse.signal_strength}%
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
+              <div>
+                <p className="text-gray-600 dark:text-gray-400">Last Pulse</p>
+                <p className="font-semibold">{new Date(latestPulse.timestamp).toLocaleTimeString()}</p>
+              </div>
+              <div>
+                <p className="text-gray-600 dark:text-gray-400">Vault IDs</p>
+                <p className="font-semibold">{latestPulse.vault_ids.length}</p>
+              </div>
+              <div>
+                <p className="text-gray-600 dark:text-gray-400">Active Sectors</p>
+                <p className="font-semibold">{latestPulse.active_sectors.length}</p>
+              </div>
+              <div>
+                <p className="text-gray-600 dark:text-gray-400">CodeNest Repos</p>
+                <p className="font-semibold">{latestPulse.codenest_digest.length}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Global Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
