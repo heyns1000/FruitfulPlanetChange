@@ -28,6 +28,10 @@ import {
   // Sector Mapping System Tables
   sectorRelationships,
   sectorMappingCache,
+  // Marketplace Packages Tables
+  marketplacePackages,
+  packageVersions,
+  packageDownloads,
   type User, 
   type InsertUser, 
   type Sector, 
@@ -84,6 +88,13 @@ import {
   type InsertSectorRelationship,
   type SectorMappingCache,
   type InsertSectorMappingCache,
+  // Marketplace Packages Types
+  type MarketplacePackage,
+  type InsertMarketplacePackage,
+  type PackageVersion,
+  type InsertPackageVersion,
+  type PackageDownload,
+  type InsertPackageDownload,
   COMPREHENSIVE_BRAND_DATA
 } from "@shared/schema";
 import { db } from "./db";
@@ -292,6 +303,23 @@ export interface IStorage {
   
   // Seed SamFox Data
   seedSamFoxData(): Promise<void>;
+
+  // Marketplace Packages
+  getAllMarketplacePackages(): Promise<MarketplacePackage[]>;
+  getMarketplacePackage(id: number): Promise<MarketplacePackage | undefined>;
+  getMarketplacePackagesByBrand(brandId: number): Promise<MarketplacePackage[]>;
+  getMarketplacePackagesByTier(tier: string): Promise<MarketplacePackage[]>;
+  createMarketplacePackage(pkg: InsertMarketplacePackage): Promise<MarketplacePackage>;
+  updateMarketplacePackage(id: number, updates: Partial<InsertMarketplacePackage>): Promise<MarketplacePackage>;
+  incrementPackageDownloadCount(id: number): Promise<void>;
+  
+  // Package Versions
+  getPackageVersions(packageId: number): Promise<PackageVersion[]>;
+  createPackageVersion(version: InsertPackageVersion): Promise<PackageVersion>;
+  
+  // Package Downloads
+  createPackageDownload(download: InsertPackageDownload): Promise<PackageDownload>;
+  updatePackageDownloadCompleted(id: number, completed: boolean): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1599,6 +1627,69 @@ export class DatabaseStorage implements IStorage {
       .where(eq(brands.id, id))
       .returning();
     return brand;
+  }
+
+  // ================================================================
+  // MARKETPLACE PACKAGES METHODS
+  // ================================================================
+
+  async getAllMarketplacePackages(): Promise<MarketplacePackage[]> {
+    return await db.select().from(marketplacePackages).where(eq(marketplacePackages.active, true));
+  }
+
+  async getMarketplacePackage(id: number): Promise<MarketplacePackage | undefined> {
+    const [pkg] = await db.select().from(marketplacePackages).where(eq(marketplacePackages.id, id));
+    return pkg;
+  }
+
+  async getMarketplacePackagesByBrand(brandId: number): Promise<MarketplacePackage[]> {
+    return await db.select().from(marketplacePackages).where(eq(marketplacePackages.brandId, brandId));
+  }
+
+  async getMarketplacePackagesByTier(tier: string): Promise<MarketplacePackage[]> {
+    return await db.select().from(marketplacePackages).where(eq(marketplacePackages.themeTier, tier));
+  }
+
+  async createMarketplacePackage(pkg: InsertMarketplacePackage): Promise<MarketplacePackage> {
+    const [newPackage] = await db.insert(marketplacePackages).values(pkg).returning();
+    return newPackage;
+  }
+
+  async updateMarketplacePackage(id: number, updates: Partial<InsertMarketplacePackage>): Promise<MarketplacePackage> {
+    const [updatedPackage] = await db
+      .update(marketplacePackages)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(marketplacePackages.id, id))
+      .returning();
+    return updatedPackage;
+  }
+
+  async incrementPackageDownloadCount(id: number): Promise<void> {
+    await db
+      .update(marketplacePackages)
+      .set({ downloadCount: sql`${marketplacePackages.downloadCount} + 1` })
+      .where(eq(marketplacePackages.id, id));
+  }
+
+  async getPackageVersions(packageId: number): Promise<PackageVersion[]> {
+    return await db.select().from(packageVersions).where(eq(packageVersions.packageId, packageId));
+  }
+
+  async createPackageVersion(version: InsertPackageVersion): Promise<PackageVersion> {
+    const [newVersion] = await db.insert(packageVersions).values(version).returning();
+    return newVersion;
+  }
+
+  async createPackageDownload(download: InsertPackageDownload): Promise<PackageDownload> {
+    const [newDownload] = await db.insert(packageDownloads).values(download).returning();
+    return newDownload;
+  }
+
+  async updatePackageDownloadCompleted(id: number, completed: boolean): Promise<void> {
+    await db
+      .update(packageDownloads)
+      .set({ completed })
+      .where(eq(packageDownloads.id, id));
   }
 }
 
