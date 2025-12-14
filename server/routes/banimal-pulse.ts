@@ -26,8 +26,8 @@ export function registerBanimalPulseRoutes(app: Express) {
         });
       }
 
-      // Generate unique pulse ID
-      const pulseId = `PULSE-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+      // Generate unique pulse ID using crypto
+      const pulseId = `PULSE-${Date.now()}-${crypto.randomUUID().substring(0, 8)}`;
 
       // Store pulse in database
       const [pulse] = await db.insert(ecosystemPulses).values({

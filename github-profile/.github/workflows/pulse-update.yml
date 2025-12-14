@@ -3,7 +3,8 @@ name: 🌊 Ecosystem Pulse Update
 on:
   schedule:
     # Run every minute (GitHub Actions minimum interval)
-    # The 9-second precision happens via the API polling
+    # Note: Actual 9-second pulse precision happens at the API level,
+    # this workflow updates the profile README with latest data every minute
     - cron: '*/1 * * * *'
   workflow_dispatch:
   push:

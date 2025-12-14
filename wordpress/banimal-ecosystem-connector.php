@@ -75,9 +75,12 @@ class BanimalEcosystemConnector {
     }
     
     public function add_9_second_cron_interval($schedules) {
+        // Note: WordPress cron is pseudo-cron and only runs on page loads
+        // For production, use system cron: */1 * * * * with proper job scheduler
+        // This setting creates 9-second theoretical interval, actual may vary
         $schedules['every_9_seconds'] = array(
             'interval' => 9,
-            'display'  => __('Every 9 Seconds', 'banimal-ecosystem-connector')
+            'display'  => __('Every 9 Seconds (Theoretical)', 'banimal-ecosystem-connector')
         );
         return $schedules;
     }
@@ -283,11 +286,14 @@ class NineSecondPulseCalibrator {
     }
     
     private function collect_pulse_data() {
-        global $banimal_connector;
+        // Access the connector instance safely
+        $seedwave_controller = new SeedwaveMetadataController();
+        $codenest_aggregator = new CodeNestMetadataAggregator();
+        $vault_network = new VaultTraceNetworkGraph();
         
-        $seedwave = $banimal_connector->seedwave_metadata_controller->pull_seedwave_metadata();
-        $codenest = $banimal_connector->codenest_aggregator->extract_metadata();
-        $vault_network = $banimal_connector->vault_trace_network->generate_network_graph();
+        $seedwave = $seedwave_controller->pull_seedwave_metadata();
+        $codenest = $codenest_aggregator->extract_metadata();
+        $vault_network_data = $vault_network->generate_network_graph();
         
         return array(
             'timestamp' => current_time('mysql'),
@@ -301,7 +307,7 @@ class NineSecondPulseCalibrator {
             'codenest_digest' => $codenest,
             'signal_strength' => 100,
             'seedwave_metadata' => $seedwave,
-            'network_graph_data' => $vault_network,
+            'network_graph_data' => $vault_network_data,
             'source' => 'banimal-connector-v6'
         );
     }
