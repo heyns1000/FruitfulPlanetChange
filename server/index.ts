@@ -7,6 +7,7 @@ import { seedAllMiningBrands } from "./mining-brands-seeder";
 import { updateSectorPricing } from "./update-sector-pricing";
 import { seedComprehensiveBrands } from "./comprehensive-brand-seeder";
 import { seedMineNestComprehensive } from "./minenest-comprehensive-seeder";
+import { seedEcosystemPulseData } from "./seed-ecosystem-pulse";
 import { storage } from "./storage";
 
 const app = express();
@@ -60,6 +61,8 @@ app.use((req, res, next) => {
       await storage.seedMediaData();
       console.log("🚀 Seeding Omnilevel Interstellar operations...");
       await storage.seedInterstellarData();
+      console.log("🌊 Seeding Ecosystem Pulse integration...");
+      await seedEcosystemPulseData();
     } catch (error) {
       console.error("Failed to seed database:", error);
     }
