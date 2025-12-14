@@ -28,6 +28,11 @@ import {
   // Sector Mapping System Tables
   sectorRelationships,
   sectorMappingCache,
+  // Ecosystem Pulse Tables
+  ecosystemPulses,
+  pulseHistory,
+  codeNestRepositories,
+  vaultTraceNetwork,
   type User, 
   type InsertUser, 
   type Sector, 
@@ -84,6 +89,15 @@ import {
   type InsertSectorRelationship,
   type SectorMappingCache,
   type InsertSectorMappingCache,
+  // Ecosystem Pulse Types
+  type EcosystemPulse,
+  type InsertEcosystemPulse,
+  type PulseHistory,
+  type InsertPulseHistory,
+  type CodeNestRepository,
+  type InsertCodeNestRepository,
+  type VaultTraceNetwork,
+  type InsertVaultTraceNetwork,
   COMPREHENSIVE_BRAND_DATA
 } from "@shared/schema";
 import { db } from "./db";

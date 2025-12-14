@@ -924,3 +924,84 @@ export type FamilyEvent = typeof familyEvents.$inferSelect;
 export type InsertFamilyEvent = z.infer<typeof insertFamilyEventSchema>;
 export type HeritageMetrics = typeof heritageMetrics.$inferSelect;
 export type InsertHeritageMetrics = z.infer<typeof insertHeritageMetricsSchema>;
+
+// =================================================================
+// ECOSYSTEM PULSE INTEGRATION SYSTEM
+// =================================================================
+// 9-second pulse system connecting Banimal, CodeNest, and Seedwave
+
+export const ecosystemPulses = pgTable("ecosystem_pulses", {
+  id: serial("id").primaryKey(),
+  pulseId: varchar("pulse_id").unique().notNull(),
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+  vaultIds: jsonb("vault_ids").$type<string[]>().default([]),
+  activeSectors: jsonb("active_sectors").$type<any[]>().default([]),
+  brandHealth: jsonb("brand_health").$type<any[]>().default([]),
+  codenestDigest: jsonb("codenest_digest").$type<any[]>().default([]),
+  signalStrength: integer("signal_strength").default(100), // 0-100
+  seedwaveMetadata: jsonb("seedwave_metadata"),
+  networkGraphData: jsonb("network_graph_data"),
+  pulseSource: varchar("pulse_source").default("banimal-connector"), // banimal-connector, manual, scheduled
+  status: varchar("status").default("active"), // active, archived, failed
+  forwardedToGithub: boolean("forwarded_to_github").default(false),
+  githubUpdateStatus: varchar("github_update_status"), // pending, success, failed
+  metadata: jsonb("metadata"),
+});
+
+export const pulseHistory = pgTable("pulse_history", {
+  id: serial("id").primaryKey(),
+  pulseId: varchar("pulse_id").notNull().references(() => ecosystemPulses.pulseId),
+  eventType: varchar("event_type").notNull(), // received, processed, forwarded, archived
+  eventTimestamp: timestamp("event_timestamp").defaultNow(),
+  eventData: jsonb("event_data"),
+  errorMessage: text("error_message"),
+  processingTimeMs: integer("processing_time_ms"),
+});
+
+export const codeNestRepositories = pgTable("codenest_repositories", {
+  id: serial("id").primaryKey(),
+  repoId: varchar("repo_id").unique().notNull(),
+  repoName: varchar("repo_name").notNull(),
+  githubRepoId: bigint("github_repo_id", { mode: "number" }),
+  subdomain: varchar("subdomain"),
+  status: varchar("status").default("active"), // active, archived, private
+  lastSyncAt: timestamp("last_sync_at"),
+  metadata: jsonb("metadata").$type<any>().default({}),
+  commitCount: integer("commit_count").default(0),
+  contributorCount: integer("contributor_count").default(0),
+  starCount: integer("star_count").default(0),
+  forksCount: integer("forks_count").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const vaultTraceNetwork = pgTable("vault_trace_network", {
+  id: serial("id").primaryKey(),
+  nodeId: varchar("node_id").unique().notNull(),
+  nodeType: varchar("node_type").notNull(), // NESTVENDOR, VAULTMESH, CORE
+  nodeName: varchar("node_name").notNull(),
+  connections: jsonb("connections").$type<string[]>().default([]), // array of connected node IDs
+  traceLayer: varchar("trace_layer").notNull(), // KAU_TRACE, CLAIM_TRACE, VAULT_TRACE
+  claqtneqtEnabled: boolean("claqtneqt_enabled").default(true),
+  position: jsonb("position").$type<{ x: number; y: number }>(),
+  metadata: jsonb("metadata"),
+  isActive: boolean("is_active").default(true),
+  lastActivity: timestamp("last_activity").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Ecosystem pulse insert schemas
+export const insertEcosystemPulseSchema = createInsertSchema(ecosystemPulses).omit({ id: true });
+export const insertPulseHistorySchema = createInsertSchema(pulseHistory).omit({ id: true });
+export const insertCodeNestRepositorySchema = createInsertSchema(codeNestRepositories).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertVaultTraceNetworkSchema = createInsertSchema(vaultTraceNetwork).omit({ id: true, createdAt: true });
+
+// Ecosystem pulse types
+export type EcosystemPulse = typeof ecosystemPulses.$inferSelect;
+export type InsertEcosystemPulse = z.infer<typeof insertEcosystemPulseSchema>;
+export type PulseHistory = typeof pulseHistory.$inferSelect;
+export type InsertPulseHistory = z.infer<typeof insertPulseHistorySchema>;
+export type CodeNestRepository = typeof codeNestRepositories.$inferSelect;
+export type InsertCodeNestRepository = z.infer<typeof insertCodeNestRepositorySchema>;
+export type VaultTraceNetwork = typeof vaultTraceNetwork.$inferSelect;
+export type InsertVaultTraceNetwork = z.infer<typeof insertVaultTraceNetworkSchema>;
