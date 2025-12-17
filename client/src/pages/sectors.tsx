@@ -1,70 +1,81 @@
-import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { Search, Grid, List, Eye, EyeOff, BarChart3, Layers, TrendingUp, Users } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { SectorNavigationCard } from "@/components/portal/sector-navigation-card"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
-import type { Sector, Brand } from "@shared/schema"
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import {
+  Search,
+  Grid,
+  List,
+  Eye,
+  EyeOff,
+  BarChart3,
+  Layers,
+  TrendingUp,
+  Users,
+} from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { SectorNavigationCard } from '@/components/portal/sector-navigation-card';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import type { Sector, Brand } from '@shared/schema';
 
 export default function SectorsPage() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
-  const [showStats, setShowStats] = useState(true)
-  const [expandedSector, setExpandedSector] = useState<number | null>(null)
+  const [searchQuery, setSearchQuery] = useState('');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [showStats, setShowStats] = useState(true);
+  const [expandedSector, setExpandedSector] = useState<number | null>(null);
 
   const { data: sectors = [], isLoading: sectorsLoading } = useQuery<Sector[]>({
-    queryKey: ["/api/sectors"],
-  })
+    queryKey: ['/api/sectors'],
+  });
 
   const { data: brands = [] } = useQuery<Brand[]>({
-    queryKey: ["/api/brands"],
-  })
+    queryKey: ['/api/brands'],
+  });
 
   // Filter sectors based on search
-  const filteredSectors = sectors.filter(sector =>
-    sector.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    sector.description?.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  const filteredSectors = sectors.filter(
+    (sector) =>
+      sector.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      sector.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   // Calculate sector statistics
-  const sectorStats = sectors.map(sector => {
-    const sectorBrands = brands.filter(brand => brand.sectorId === sector.id)
-    const activeBrands = sectorBrands.filter(brand => brand.status === "active")
-    const integrations = Array.from(new Set(sectorBrands.map(brand => brand.integration)))
-    
+  const sectorStats = sectors.map((sector) => {
+    const sectorBrands = brands.filter((brand) => brand.sectorId === sector.id);
+    const activeBrands = sectorBrands.filter((brand) => brand.status === 'active');
+    const integrations = Array.from(new Set(sectorBrands.map((brand) => brand.integration)));
+
     return {
       ...sector,
       totalBrands: sectorBrands.length,
       activeBrands: activeBrands.length,
       integrations: integrations.length,
-      brands: sectorBrands
-    }
-  })
+      brands: sectorBrands,
+    };
+  });
 
-  const totalBrands = brands.length
-  const totalActiveBrands = brands.filter(b => b.status === "active").length
-  const totalIntegrations = Array.from(new Set(brands.map(b => b.integration))).length
+  const totalBrands = brands.length;
+  const totalActiveBrands = brands.filter((b) => b.status === 'active').length;
+  const totalIntegrations = Array.from(new Set(brands.map((b) => b.integration))).length;
 
   const toggleSectorExpansion = (sectorId: number) => {
-    setExpandedSector(expandedSector === sectorId ? null : sectorId)
-  }
+    setExpandedSector(expandedSector === sectorId ? null : sectorId);
+  };
 
   const getSectorIcon = (sectorName: string) => {
-    if (sectorName.includes('Agriculture')) return '🌱'
-    if (sectorName.includes('Technology')) return '💻'
-    if (sectorName.includes('Healthcare')) return '🏥'
-    if (sectorName.includes('Finance')) return '💰'
-    if (sectorName.includes('Education')) return '📚'
-    if (sectorName.includes('Energy')) return '⚡'
-    if (sectorName.includes('Transport')) return '🚗'
-    if (sectorName.includes('Retail')) return '🛍️'
-    if (sectorName.includes('Media')) return '📺'
-    if (sectorName.includes('Construction')) return '🏗️'
-    return '🏢'
-  }
+    if (sectorName.includes('Agriculture')) return '🌱';
+    if (sectorName.includes('Technology')) return '💻';
+    if (sectorName.includes('Healthcare')) return '🏥';
+    if (sectorName.includes('Finance')) return '💰';
+    if (sectorName.includes('Education')) return '📚';
+    if (sectorName.includes('Energy')) return '⚡';
+    if (sectorName.includes('Transport')) return '🚗';
+    if (sectorName.includes('Retail')) return '🛍️';
+    if (sectorName.includes('Media')) return '📺';
+    if (sectorName.includes('Construction')) return '🏗️';
+    return '🏢';
+  };
 
   return (
     <div className="space-y-8">
@@ -145,20 +156,16 @@ export default function SectorsPage() {
               Search & View Sectors
             </CardTitle>
             <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowStats(!showStats)}
-              >
+              <Button variant="outline" size="sm" onClick={() => setShowStats(!showStats)}>
                 {showStats ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 Stats
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setViewMode(viewMode === "grid" ? "list" : "grid")}
+                onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
               >
-                {viewMode === "grid" ? <List className="h-4 w-4" /> : <Grid className="h-4 w-4" />}
+                {viewMode === 'grid' ? <List className="h-4 w-4" /> : <Grid className="h-4 w-4" />}
               </Button>
             </div>
           </div>
@@ -182,10 +189,13 @@ export default function SectorsPage() {
       {/* Sectors Display */}
       <div className="space-y-4">
         {sectorsLoading ? (
-          <div className={viewMode === "grid" 
-            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            : "space-y-4"
-          }>
+          <div
+            className={
+              viewMode === 'grid'
+                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                : 'space-y-4'
+            }
+          >
             {Array.from({ length: 9 }).map((_, i) => (
               <div key={i} className="bg-white dark:bg-gray-800 rounded-xl p-6 animate-pulse">
                 <div className="w-12 h-12 bg-gray-300 dark:bg-gray-600 rounded-lg mb-4"></div>
@@ -206,27 +216,35 @@ export default function SectorsPage() {
               <p className="text-gray-600 dark:text-gray-400 mb-4">
                 Try adjusting your search terms
               </p>
-              <Button onClick={() => setSearchQuery("")}>Clear Search</Button>
+              <Button onClick={() => setSearchQuery('')}>Clear Search</Button>
             </CardContent>
           </Card>
         ) : (
-          <div className={viewMode === "grid" 
-            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            : "space-y-4"
-          }>
+          <div
+            className={
+              viewMode === 'grid'
+                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                : 'space-y-4'
+            }
+          >
             {filteredSectors.map((sector) => {
-              const stats = sectorStats.find(s => s.id === sector.id)
-              const completionPercentage = stats ? Math.round((stats.activeBrands / Math.max(stats.totalBrands, 1)) * 100) : 0
-              
-              return viewMode === "grid" ? (
+              const stats = sectorStats.find((s) => s.id === sector.id);
+              const completionPercentage = stats
+                ? Math.round((stats.activeBrands / Math.max(stats.totalBrands, 1)) * 100)
+                : 0;
+
+              return viewMode === 'grid' ? (
                 <div key={sector.id}>
-                  <SectorNavigationCard 
+                  <SectorNavigationCard
                     sector={sector}
                     className="hover:shadow-lg transition-all"
                   />
                 </div>
               ) : (
-                <Card key={sector.id} className="hover:shadow-lg transition-all cursor-pointer group">
+                <Card
+                  key={sector.id}
+                  className="hover:shadow-lg transition-all cursor-pointer group"
+                >
                   <CardHeader className="pb-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -252,11 +270,15 @@ export default function SectorsPage() {
                         size="sm"
                         onClick={() => toggleSectorExpansion(sector.id)}
                       >
-                        {expandedSector === sector.id ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {expandedSector === sector.id ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
                       </Button>
                     </div>
                   </CardHeader>
-                  
+
                   <CardContent className="space-y-4">
                     {sector.description && (
                       <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-2">
@@ -280,7 +302,9 @@ export default function SectorsPage() {
                         <p className="text-xs text-gray-500">Total Brands</p>
                       </div>
                       <div className="p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                        <p className="text-lg font-bold text-green-600">{stats?.activeBrands || 0}</p>
+                        <p className="text-lg font-bold text-green-600">
+                          {stats?.activeBrands || 0}
+                        </p>
                         <p className="text-xs text-gray-500">Active</p>
                       </div>
                     </div>
@@ -291,7 +315,10 @@ export default function SectorsPage() {
                         <h4 className="font-medium mb-3 text-sm">Brands in this sector:</h4>
                         <div className="space-y-2 max-h-40 overflow-y-auto">
                           {stats.brands.slice(0, 10).map((brand) => (
-                            <div key={brand.id} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                            <div
+                              key={brand.id}
+                              className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded"
+                            >
                               <div className="flex items-center gap-2">
                                 <div className="w-6 h-6 bg-gradient-to-r from-blue-400 to-purple-400 rounded text-white text-xs flex items-center justify-center">
                                   {brand.name.substring(0, 1)}
@@ -302,8 +329,8 @@ export default function SectorsPage() {
                                 <Badge variant="outline" className="text-xs">
                                   {brand.integration}
                                 </Badge>
-                                <Badge 
-                                  variant={brand.status === "active" ? "default" : "secondary"} 
+                                <Badge
+                                  variant={brand.status === 'active' ? 'default' : 'secondary'}
                                   className="text-xs capitalize"
                                 >
                                   {brand.status}
@@ -321,11 +348,11 @@ export default function SectorsPage() {
                     )}
                   </CardContent>
                 </Card>
-              )
+              );
             })}
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }

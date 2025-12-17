@@ -5,17 +5,20 @@
 **⚠️ Architecture Consideration**
 
 This application is a full-stack Express.js + React application with:
+
 - Express server with file system operations
 - Database migrations
 - File downloads/uploads
 - Background processing
 
 **Vercel is optimized for:**
+
 - Static sites
 - Serverless functions
 - Edge functions
 
 **Recommended Deployment Platforms:**
+
 1. **Railway** - Better for full-stack apps with persistent storage
 2. **Render** - Supports Express + PostgreSQL easily
 3. **Fly.io** - Great for full-stack Node.js apps
@@ -27,6 +30,7 @@ This application is a full-stack Express.js + React application with:
 ### Prerequisites
 
 1. **Environment Variables Required:**
+
    ```
    DATABASE_URL=postgresql://...
    NODE_ENV=production
@@ -64,6 +68,7 @@ vercel env add DATABASE_URL production
 Go to: Project Settings → Environment Variables
 
 Add:
+
 - `DATABASE_URL`: Your PostgreSQL connection string
 - `NODE_ENV`: production
 - `PORT`: 5000 (optional)
@@ -71,6 +76,7 @@ Add:
 #### 3. Configure Build Settings
 
 In Vercel dashboard:
+
 - **Build Command**: `npm run build`
 - **Output Directory**: `dist`
 - **Install Command**: `npm install`
@@ -101,21 +107,27 @@ vercel --prod
 ### Workarounds
 
 #### 1. Generate Packages On-Demand
+
 Instead of pre-generating all packages, generate them when requested:
+
 - User clicks download
 - Server generates package in memory
 - Stream directly to user
 - No file system storage needed
 
 #### 2. Use External Storage
+
 Store generated packages in:
+
 - AWS S3
 - Cloudinary
 - Vercel Blob Storage
 - Firebase Storage
 
 #### 3. Background Jobs
+
 For bulk operations, use:
+
 - Vercel Cron Jobs (limited)
 - External job queue (Bull, RabbitMQ)
 - Separate worker service
@@ -125,11 +137,13 @@ For bulk operations, use:
 Deploy frontend and backend separately:
 
 **Frontend (Vercel):**
+
 - React app only
 - Static assets
 - Fast global CDN
 
 **Backend (Railway/Render):**
+
 - Express API
 - Database
 - File operations
@@ -153,22 +167,26 @@ Update API calls to point to backend URL.
 ### Railway Deployment
 
 1. **Install Railway CLI**
+
    ```bash
    npm i -g @railway/cli
    ```
 
 2. **Login and Initialize**
+
    ```bash
    railway login
    railway init
    ```
 
 3. **Add PostgreSQL**
+
    ```bash
    railway add postgresql
    ```
 
 4. **Deploy**
+
    ```bash
    railway up
    ```
@@ -179,6 +197,7 @@ Update API calls to point to backend URL.
    ```
 
 Railway will:
+
 - Detect Node.js app automatically
 - Set up PostgreSQL
 - Configure environment variables
@@ -220,6 +239,7 @@ To make it work on Vercel immediately:
    - Stream directly without saving
 
 2. **Use environment check**
+
    ```typescript
    const isVercel = process.env.VERCEL === '1';
    if (isVercel) {
@@ -276,6 +296,7 @@ NODE_ENV=production node dist/index.js
 ## Conclusion
 
 While Vercel can host this app, **Railway, Render, or Fly.io are better suited** for this full-stack architecture with:
+
 - Express server
 - File operations
 - Database migrations
@@ -285,4 +306,4 @@ If you must use Vercel, implement on-demand package generation and use external 
 
 ---
 
-*For immediate deployment success, we recommend Railway or Render.*
+_For immediate deployment success, we recommend Railway or Render._

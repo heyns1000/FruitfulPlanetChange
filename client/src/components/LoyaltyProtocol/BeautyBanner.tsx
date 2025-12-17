@@ -1,6 +1,6 @@
 /**
  * BeautyBanner Component - Batch 2 Airshow Loyalty Protocol
- * 
+ *
  * Displays the Beauty principle banner with pink flyer cascade animation
  * and PulseGlow™ heartbeat integration (0.9s timing)
  */
@@ -23,11 +23,11 @@ interface BeautyBannerProps {
   className?: string;
 }
 
-export function BeautyBanner({ 
-  flyerCount = 400000, 
+export function BeautyBanner({
+  flyerCount = 400000,
   displayLimit = 50,
   showMetrics = true,
-  className = ''
+  className = '',
 }: BeautyBannerProps) {
   const [flyers, setFlyers] = useState<Flyer[]>([]);
   const [isPulsing, setIsPulsing] = useState(true);
@@ -50,10 +50,10 @@ export function BeautyBanner({
   // Respawn flyers continuously
   useEffect(() => {
     const interval = setInterval(() => {
-      setFlyers(prevFlyers => {
+      setFlyers((prevFlyers) => {
         // Only create new array if at least one flyer needs respawning
         let hasChanges = false;
-        const newFlyers = prevFlyers.map(flyer => {
+        const newFlyers = prevFlyers.map((flyer) => {
           // Check if flyer has fallen off screen
           if (flyer.y > 110) {
             hasChanges = true;
@@ -68,7 +68,7 @@ export function BeautyBanner({
           }
           return flyer;
         });
-        
+
         // Only update state if changes were made
         return hasChanges ? newFlyers : prevFlyers;
       });
@@ -177,9 +177,7 @@ export function BeautyBanner({
               >
                 {flyerCount.toLocaleString()}
               </motion.div>
-              <p className="text-sm text-pink-700 dark:text-pink-300">
-                Pink Flyers Deployed
-              </p>
+              <p className="text-sm text-pink-700 dark:text-pink-300">Pink Flyers Deployed</p>
             </div>
           )}
         </div>
@@ -202,13 +200,13 @@ export function BeautyBanner({
                 PulseGlow™ Active (0.9s)
               </span>
             </div>
-            
+
             <div className="flex items-center gap-2">
               <span className="text-sm font-semibold text-green-600 dark:text-green-400">
                 ✅ DEPLOYED
               </span>
             </div>
-            
+
             <div className="flex items-center gap-2">
               <span className="text-sm text-pink-700 dark:text-pink-300">
                 Authorization: FAAC-4.5.1-BEAUTY-GO
@@ -225,8 +223,8 @@ export function BeautyBanner({
           transition={{ delay: 0.5 }}
         >
           <p className="text-sm italic text-pink-800 dark:text-pink-200">
-            "Beauty is not just what we see—it's the harmony beneath the surface, 
-            the elegance in structure, and the grace in every interaction."
+            "Beauty is not just what we see—it's the harmony beneath the surface, the elegance in
+            structure, and the grace in every interaction."
           </p>
         </motion.div>
       </motion.div>

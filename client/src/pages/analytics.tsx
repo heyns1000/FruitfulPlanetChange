@@ -1,82 +1,99 @@
-import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { 
-  BarChart3, 
-  TrendingUp, 
-  Users, 
-  Database, 
-  Activity, 
-  PieChart, 
-  LineChart, 
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  BarChart3,
+  TrendingUp,
+  Users,
+  Database,
+  Activity,
+  PieChart,
+  LineChart,
   Target,
   Zap,
   Globe,
   Shield,
-  Clock
-} from "lucide-react"
-import type { Brand, Sector } from "@shared/schema"
+  Clock,
+} from 'lucide-react';
+import type { Brand, Sector } from '@shared/schema';
 
 export default function AnalyticsPage() {
-  const [timeRange, setTimeRange] = useState("30d")
-  const [selectedMetric, setSelectedMetric] = useState("brands")
+  const [timeRange, setTimeRange] = useState('30d');
+  const [selectedMetric, setSelectedMetric] = useState('brands');
 
   const { data: brands = [] } = useQuery<Brand[]>({
-    queryKey: ["/api/brands"],
-  })
+    queryKey: ['/api/brands'],
+  });
 
   const { data: sectors = [] } = useQuery<Sector[]>({
-    queryKey: ["/api/sectors"],
-  })
+    queryKey: ['/api/sectors'],
+  });
 
   const { data: systemMetrics } = useQuery({
-    queryKey: ["/api/system-metrics"],
+    queryKey: ['/api/system-metrics'],
     refetchInterval: 30000,
-  })
+  });
 
   const { data: dashboardStats } = useQuery({
-    queryKey: ["/api/dashboard/stats"],
+    queryKey: ['/api/dashboard/stats'],
     refetchInterval: 30000,
-  })
+  });
 
   // Calculate real analytics from database data
-  const totalBrands = brands.length
-  const activeBrands = brands.filter(b => b.status === "active").length
-  const totalSectors = sectors.length
-  const activeSectors = sectors.filter(s => s.status === "active").length
-  
+  const totalBrands = brands.length;
+  const activeBrands = brands.filter((b) => b.status === 'active').length;
+  const totalSectors = sectors.length;
+  const activeSectors = sectors.filter((s) => s.status === 'active').length;
+
   // Brand distribution by sector
-  const sectorDistribution = sectors.map(sector => ({
-    name: sector.name.replace(/^[\w\s]*\s/, ''), // Remove emoji prefix
-    count: brands.filter(b => b.sectorId === sector.id).length,
-    percentage: totalBrands > 0 ? Math.round((brands.filter(b => b.sectorId === sector.id).length / totalBrands) * 100) : 0
-  })).filter(s => s.count > 0).sort((a, b) => b.count - a.count)
+  const sectorDistribution = sectors
+    .map((sector) => ({
+      name: sector.name.replace(/^[\w\s]*\s/, ''), // Remove emoji prefix
+      count: brands.filter((b) => b.sectorId === sector.id).length,
+      percentage:
+        totalBrands > 0
+          ? Math.round((brands.filter((b) => b.sectorId === sector.id).length / totalBrands) * 100)
+          : 0,
+    }))
+    .filter((s) => s.count > 0)
+    .sort((a, b) => b.count - a.count);
 
   // Integration analysis
-  const integrationTypes = Array.from(new Set(brands.map(b => b.integration).filter(Boolean)))
-  const integrationStats = integrationTypes.map(integration => ({
+  const integrationTypes = Array.from(new Set(brands.map((b) => b.integration).filter(Boolean)));
+  const integrationStats = integrationTypes.map((integration) => ({
     name: integration,
-    count: brands.filter(b => b.integration === integration).length,
-    percentage: totalBrands > 0 ? Math.round((brands.filter(b => b.integration === integration).length / totalBrands) * 100) : 0
-  }))
+    count: brands.filter((b) => b.integration === integration).length,
+    percentage:
+      totalBrands > 0
+        ? Math.round(
+            (brands.filter((b) => b.integration === integration).length / totalBrands) * 100
+          )
+        : 0,
+  }));
 
   // Status distribution
   const statusStats = {
     active: activeBrands,
     inactive: totalBrands - activeBrands,
-    activePercentage: totalBrands > 0 ? Math.round((activeBrands / totalBrands) * 100) : 0
-  }
+    activePercentage: totalBrands > 0 ? Math.round((activeBrands / totalBrands) * 100) : 0,
+  };
 
   // Growth metrics (calculated based on data velocity and scale)
   // More realistic growth calculation based on ecosystem size
   const calculateGrowth = (count: number, baseGrowth: number = 8) => {
     // Logarithmic growth model: larger ecosystems grow slower but steadier
-    if (count === 0) return "+0%";
+    if (count === 0) return '+0%';
     const growthRate = Math.max(2, Math.min(25, baseGrowth + Math.log10(count + 1) * 2));
     return `+${Math.round(growthRate)}%`;
   };
@@ -84,8 +101,8 @@ export default function AnalyticsPage() {
   const growthMetrics = {
     brandsGrowth: calculateGrowth(totalBrands, 10),
     sectorsGrowth: calculateGrowth(totalSectors, 8),
-    integrationsGrowth: calculateGrowth(integrationTypes.length, 12)
-  }
+    integrationsGrowth: calculateGrowth(integrationTypes.length, 12),
+  };
 
   return (
     <div className="space-y-8">
@@ -157,7 +174,7 @@ export default function AnalyticsPage() {
             <Zap className="h-4 w-4 text-orange-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{systemMetrics?.uptime?.toFixed(1) || "99.9"}%</div>
+            <div className="text-2xl font-bold">{systemMetrics?.uptime?.toFixed(1) || '99.9'}%</div>
             <p className="text-xs text-muted-foreground flex items-center">
               <Shield className="h-3 w-3 mr-1 text-green-500" />
               VaultMesh™ secured
@@ -201,7 +218,9 @@ export default function AnalyticsPage() {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">Active Brands</span>
-                  <Badge variant="outline" className="text-green-600">{activeBrands}</Badge>
+                  <Badge variant="outline" className="text-green-600">
+                    {activeBrands}
+                  </Badge>
                 </div>
                 <Progress value={statusStats.activePercentage} className="h-2" />
                 <div className="flex items-center justify-between text-sm text-muted-foreground">
@@ -251,7 +270,7 @@ export default function AnalyticsPage() {
                   <div key={sector.name} className="border rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="font-semibold">{sector.name}</h3>
-                      <Badge variant={index < 3 ? "default" : "outline"}>
+                      <Badge variant={index < 3 ? 'default' : 'outline'}>
                         {sector.count} brands
                       </Badge>
                     </div>
@@ -283,9 +302,7 @@ export default function AnalyticsPage() {
                 {integrationStats.map((integration) => (
                   <div key={integration.name} className="border rounded-lg p-4 text-center">
                     <h3 className="font-semibold mb-2">{integration.name}</h3>
-                    <div className="text-2xl font-bold text-blue-600 mb-1">
-                      {integration.count}
-                    </div>
+                    <div className="text-2xl font-bold text-blue-600 mb-1">{integration.count}</div>
                     <p className="text-sm text-muted-foreground">
                       {integration.percentage}% of ecosystem
                     </p>
@@ -343,14 +360,18 @@ export default function AnalyticsPage() {
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <div>
                     <p className="text-sm font-medium">Total Elements</p>
-                    <p className="text-lg font-bold">{dashboardStats?.totalElements || totalBrands}</p>
+                    <p className="text-lg font-bold">
+                      {dashboardStats?.totalElements || totalBrands}
+                    </p>
                   </div>
                   <Target className="h-8 w-8 text-blue-500" />
                 </div>
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <div>
                     <p className="text-sm font-medium">Core Brands</p>
-                    <p className="text-lg font-bold">{dashboardStats?.coreBrands || activeBrands}</p>
+                    <p className="text-lg font-bold">
+                      {dashboardStats?.coreBrands || activeBrands}
+                    </p>
                   </div>
                   <Database className="h-8 w-8 text-green-500" />
                 </div>
@@ -367,5 +388,5 @@ export default function AnalyticsPage() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

@@ -1,6 +1,6 @@
 /**
  * 🦍🏔️🦊 CodeNest - Gorilla Mountain Fox Protocol
- * 
+ *
  * Main entry point for the 84-repository integration system
  * Resurrection of the 1984 Noodle Juice Gorilla Comb collapse
  */
@@ -62,7 +62,7 @@ export async function initializeGorillaProtocol(username: string = 'heyns1000') 
 export async function getSystemStatus() {
   const { rhinoStrikeMonitor } = await import('./monitors/rhino-strike-monitor');
   const { masterIntegrationHub } = await import('./hub/master-integration');
-  
+
   return {
     monitor: rhinoStrikeMonitor.getStats(),
     integration: masterIntegrationHub.getIntegrationStatus(),

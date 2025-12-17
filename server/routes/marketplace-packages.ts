@@ -14,7 +14,6 @@ const downloadLimiter = rateLimit({
 });
 
 export default function registerMarketplacePackagesRoutes(app: Express) {
-  
   /**
    * GET /api/marketplace/packages
    * Browse all marketplace packages with optional filters
@@ -37,18 +36,19 @@ export default function registerMarketplacePackagesRoutes(app: Express) {
       // Apply search filter if provided
       if (search && typeof search === 'string') {
         const searchLower = search.toLowerCase();
-        packages = packages.filter(pkg => 
-          pkg.packageName.toLowerCase().includes(searchLower) ||
-          pkg.description?.toLowerCase().includes(searchLower)
+        packages = packages.filter(
+          (pkg) =>
+            pkg.packageName.toLowerCase().includes(searchLower) ||
+            pkg.description?.toLowerCase().includes(searchLower)
         );
       }
 
       res.json(packages);
     } catch (error) {
       console.error('Error fetching marketplace packages:', error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: 'Failed to fetch marketplace packages',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message : 'Unknown error',
       });
     }
   });
@@ -60,7 +60,7 @@ export default function registerMarketplacePackagesRoutes(app: Express) {
   app.get('/api/marketplace/packages/:id', async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      
+
       if (isNaN(id)) {
         return res.status(400).json({ error: 'Invalid package ID' });
       }
@@ -84,9 +84,9 @@ export default function registerMarketplacePackagesRoutes(app: Express) {
       });
     } catch (error) {
       console.error('Error fetching package details:', error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: 'Failed to fetch package details',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message : 'Unknown error',
       });
     }
   });
@@ -99,7 +99,7 @@ export default function registerMarketplacePackagesRoutes(app: Express) {
   app.get('/api/marketplace/packages/:id/download', downloadLimiter, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      
+
       if (isNaN(id)) {
         return res.status(400).json({ error: 'Invalid package ID' });
       }
@@ -136,12 +136,12 @@ export default function registerMarketplacePackagesRoutes(app: Express) {
 
       // Stream the file
       const fileStream = fs.createReadStream(pkg.filePath);
-      
+
       fileStream.on('error', async (error) => {
         console.error('Error streaming package file:', error);
-        res.status(500).json({ 
+        res.status(500).json({
           error: 'Failed to download package',
-          message: 'Error reading package file'
+          message: 'Error reading package file',
         });
       });
 
@@ -151,12 +151,11 @@ export default function registerMarketplacePackagesRoutes(app: Express) {
       });
 
       fileStream.pipe(res);
-
     } catch (error) {
       console.error('Error downloading package:', error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: 'Failed to download package',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message : 'Unknown error',
       });
     }
   });
@@ -172,16 +171,19 @@ export default function registerMarketplacePackagesRoutes(app: Express) {
       // Calculate statistics
       const totalPackages = allPackages.length;
       const totalDownloads = allPackages.reduce((sum, pkg) => sum + (pkg.downloadCount || 0), 0);
-      const tierDistribution = allPackages.reduce((acc, pkg) => {
-        acc[pkg.themeTier] = (acc[pkg.themeTier] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
+      const tierDistribution = allPackages.reduce(
+        (acc, pkg) => {
+          acc[pkg.themeTier] = (acc[pkg.themeTier] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>
+      );
 
       const appStoreCompatibility = {
-        apple: allPackages.filter(pkg => pkg.appleStoreCompatible).length,
-        google: allPackages.filter(pkg => pkg.googleStoreCompatible).length,
-        microsoft: allPackages.filter(pkg => pkg.microsoftStoreCompatible).length,
-        web: allPackages.filter(pkg => pkg.webCompatible).length,
+        apple: allPackages.filter((pkg) => pkg.appleStoreCompatible).length,
+        google: allPackages.filter((pkg) => pkg.googleStoreCompatible).length,
+        microsoft: allPackages.filter((pkg) => pkg.microsoftStoreCompatible).length,
+        web: allPackages.filter((pkg) => pkg.webCompatible).length,
       };
 
       res.json({
@@ -189,13 +191,13 @@ export default function registerMarketplacePackagesRoutes(app: Express) {
         totalDownloads,
         tierDistribution,
         appStoreCompatibility,
-        glimpseEnabled: allPackages.filter(pkg => pkg.glimpseEnabled).length,
+        glimpseEnabled: allPackages.filter((pkg) => pkg.glimpseEnabled).length,
       });
     } catch (error) {
       console.error('Error fetching package stats:', error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: 'Failed to fetch package statistics',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message : 'Unknown error',
       });
     }
   });
