@@ -29,12 +29,12 @@ export class TripleSyncValidator {
   private appUrls = {
     fruitfulPlanetChange: 'https://fruitful-planet-change.replit.app/api/public/summary',
     pythonBackend: 'https://fruitful-phyton-backend.replit.app/api/internal/summary',
-    treatyFlame: 'https://flametreaty.replit.app/api/treaty/status'
+    treatyFlame: 'https://flametreaty.replit.app/api/treaty/status',
   };
 
   async validateTripleSync(): Promise<SyncValidationResult> {
     console.log('🔒 Initiating Triple-Sync Lock validation...');
-    
+
     const result: SyncValidationResult = {
       isValid: false,
       allAppsOnline: false,
@@ -43,10 +43,10 @@ export class TripleSyncValidator {
       appStatuses: {
         hsomni9000: null,
         fruitfulPlanetChange: null,
-        pythonBackend: null
+        pythonBackend: null,
       },
       syncAllowed: false,
-      lastValidation: new Date().toISOString()
+      lastValidation: new Date().toISOString(),
     };
 
     try {
@@ -57,7 +57,7 @@ export class TripleSyncValidator {
       // Fetch external app summaries with timeout
       const [fruitfulSummary, pythonSummary] = await Promise.allSettled([
         this.fetchWithTimeout(this.appUrls.fruitfulPlanetChange, 10000),
-        this.fetchWithTimeout(this.appUrls.pythonBackend, 10000)
+        this.fetchWithTimeout(this.appUrls.pythonBackend, 10000),
       ]);
 
       // Process Fruitful Planet Change response
@@ -75,7 +75,7 @@ export class TripleSyncValidator {
       }
 
       // Check if all apps are responding
-      const onlineApps = Object.values(result.appStatuses).filter(app => app !== null);
+      const onlineApps = Object.values(result.appStatuses).filter((app) => app !== null);
       result.allAppsOnline = onlineApps.length === 3;
 
       if (!result.allAppsOnline) {
@@ -85,7 +85,7 @@ export class TripleSyncValidator {
       // Validate data consistency across online apps
       if (onlineApps.length >= 2) {
         result.dataConsistent = this.validateDataConsistency(onlineApps);
-        
+
         if (!result.dataConsistent) {
           result.discrepancies.push('Data counts do not match across apps');
           this.logDataDiscrepancies(onlineApps);
@@ -93,7 +93,7 @@ export class TripleSyncValidator {
       }
 
       // Check treaty compliance
-      const allTreatyCompliant = onlineApps.every(app => app.treatyCompliant === true);
+      const allTreatyCompliant = onlineApps.every((app) => app.treatyCompliant === true);
       if (!allTreatyCompliant) {
         result.discrepancies.push('Not all apps are treaty compliant');
       }
@@ -112,7 +112,6 @@ export class TripleSyncValidator {
       }
 
       return result;
-
     } catch (error) {
       console.error('❌ Triple-Sync validation error:', error);
       result.discrepancies.push(`Validation error: ${error.message}`);
@@ -123,20 +122,17 @@ export class TripleSyncValidator {
   private async getLocalSummary(): Promise<AppSummary> {
     // Import storage here to avoid circular dependencies
     const { storage } = await import('./storage');
-    
-    const [sectors, brands] = await Promise.all([
-      storage.getAllSectors(),
-      storage.getAllBrands()
-    ]);
+
+    const [sectors, brands] = await Promise.all([storage.getAllSectors(), storage.getAllBrands()]);
 
     return {
       sectors: sectors.length,
       brands: brands.length,
       totalElements: sectors.length + brands.length,
-      appName: "HSOMNI9000",
+      appName: 'HSOMNI9000',
       lastUpdated: new Date().toISOString(),
       dataHash: this.generateSimpleHash(sectors.length + brands.length),
-      treatyCompliant: true
+      treatyCompliant: true,
     };
   }
 
@@ -148,9 +144,9 @@ export class TripleSyncValidator {
       const response = await fetch(url, {
         signal: controller.signal,
         headers: {
-          'Accept': 'application/json',
-          'User-Agent': 'HSOMNI9000-Triple-Sync-Validator'
-        }
+          Accept: 'application/json',
+          'User-Agent': 'HSOMNI9000-Triple-Sync-Validator',
+        },
       });
       clearTimeout(timeoutId);
       return response;
@@ -164,22 +160,27 @@ export class TripleSyncValidator {
     if (apps.length < 2) return true;
 
     const firstApp = apps[0];
-    return apps.every(app => 
-      app.sectors === firstApp.sectors &&
-      app.brands === firstApp.brands &&
-      app.totalElements === firstApp.totalElements
+    return apps.every(
+      (app) =>
+        app.sectors === firstApp.sectors &&
+        app.brands === firstApp.brands &&
+        app.totalElements === firstApp.totalElements
     );
   }
 
   private logDataDiscrepancies(apps: AppSummary[]): void {
     console.log('📊 Data comparison across apps:');
-    apps.forEach(app => {
-      console.log(`  ${app.appName}: Sectors=${app.sectors}, Brands=${app.brands}, Total=${app.totalElements}`);
+    apps.forEach((app) => {
+      console.log(
+        `  ${app.appName}: Sectors=${app.sectors}, Brands=${app.brands}, Total=${app.totalElements}`
+      );
     });
   }
 
   private generateSimpleHash(value: number): string {
-    return Math.abs(value * 31 + Date.now()).toString(16).padStart(8, '0');
+    return Math.abs(value * 31 + Date.now())
+      .toString(16)
+      .padStart(8, '0');
   }
 
   // Check if sync operations are currently allowed
@@ -193,36 +194,35 @@ export class TripleSyncValidator {
     try {
       // Quick local check first
       const localSummary = await this.getLocalSummary();
-      
+
       // If local app is not treaty compliant, deny immediately
       if (!localSummary.treatyCompliant) {
-        return { 
-          allowed: false, 
-          reason: 'Local app not treaty compliant' 
+        return {
+          allowed: false,
+          reason: 'Local app not treaty compliant',
         };
       }
 
       // Quick ping to other services (shorter timeout)
       const quickChecks = await Promise.allSettled([
         this.fetchWithTimeout(this.appUrls.fruitfulPlanetChange + '?quick=true', 3000),
-        this.fetchWithTimeout(this.appUrls.pythonBackend + '?quick=true', 3000)
+        this.fetchWithTimeout(this.appUrls.pythonBackend + '?quick=true', 3000),
       ]);
 
-      const onlineCount = quickChecks.filter(check => check.status === 'fulfilled').length;
-      
+      const onlineCount = quickChecks.filter((check) => check.status === 'fulfilled').length;
+
       if (onlineCount < 2) {
-        return { 
-          allowed: false, 
-          reason: `Only ${onlineCount + 1}/3 apps responding` 
+        return {
+          allowed: false,
+          reason: `Only ${onlineCount + 1}/3 apps responding`,
         };
       }
 
       return { allowed: true };
-
     } catch (error) {
-      return { 
-        allowed: false, 
-        reason: `Quick status check failed: ${error.message}` 
+      return {
+        allowed: false,
+        reason: `Quick status check failed: ${error.message}`,
       };
     }
   }

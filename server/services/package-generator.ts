@@ -63,7 +63,7 @@ export class PackageGenerator {
     const srcFolder = zip.folder('src');
     if (srcFolder) {
       srcFolder.file('index.jsx', this.generateIndexFile(brand, theme));
-      
+
       const componentsFolder = srcFolder.folder('components');
       if (componentsFolder) {
         componentsFolder.file('GlimpseCard.jsx', this.generateGlimpseCard(theme));
@@ -120,7 +120,8 @@ export class PackageGenerator {
     return {
       name: `@fruitfulplanet/${packageName}`,
       version: '1.0.0',
-      description: brand.description || `${brand.name} - Powered by FruitfulPlanet Global Marketplace`,
+      description:
+        brand.description || `${brand.name} - Powered by FruitfulPlanet Global Marketplace`,
       main: 'src/index.jsx',
       scripts: {
         dev: 'vite',
@@ -475,27 +476,31 @@ body {
    * Generate PWA manifest for app stores
    */
   private generateManifest(brand: Brand, packageName: string): string {
-    return JSON.stringify({
-      name: brand.name,
-      short_name: brand.name,
-      description: brand.description || `${brand.name} - FruitfulPlanet`,
-      start_url: '/',
-      display: 'standalone',
-      background_color: '#000000',
-      theme_color: '#9333ea',
-      icons: [
-        {
-          src: '/icon-192.png',
-          sizes: '192x192',
-          type: 'image/png',
-        },
-        {
-          src: '/icon-512.png',
-          sizes: '512x512',
-          type: 'image/png',
-        },
-      ],
-    }, null, 2);
+    return JSON.stringify(
+      {
+        name: brand.name,
+        short_name: brand.name,
+        description: brand.description || `${brand.name} - FruitfulPlanet`,
+        start_url: '/',
+        display: 'standalone',
+        background_color: '#000000',
+        theme_color: '#9333ea',
+        icons: [
+          {
+            src: '/icon-192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: '/icon-512.png',
+            sizes: '512x512',
+            type: 'image/png',
+          },
+        ],
+      },
+      null,
+      2
+    );
   }
 
   /**

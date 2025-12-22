@@ -1,10 +1,19 @@
-import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Search, GitBranch, Star, GitFork, Activity, Database, Code, ExternalLink } from "lucide-react";
-import type { Brand, Sector } from "@shared/schema";
+import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import {
+  Search,
+  GitBranch,
+  Star,
+  GitFork,
+  Activity,
+  Database,
+  Code,
+  ExternalLink,
+} from 'lucide-react';
+import type { Brand, Sector } from '@shared/schema';
 
 interface CodeNestRepo {
   repoId: string;
@@ -37,28 +46,28 @@ interface RepositoryStats {
 export default function EcosystemExplorer3() {
   const [repositories, setRepositories] = useState<CodeNestRepo[]>([]);
   const [stats, setStats] = useState<RepositoryStats | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState<string>("all");
-  
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState<string>('all');
+
   // Fetch brands and sectors data
   const { data: brands = [] } = useQuery<Brand[]>({
-    queryKey: ["/api/brands"],
-  })
+    queryKey: ['/api/brands'],
+  });
 
   const { data: sectors = [] } = useQuery<Sector[]>({
-    queryKey: ["/api/sectors"],
+    queryKey: ['/api/sectors'],
   });
 
   // Core 8 repositories from Signal_To_Chuck
   const coreRepositories = [
-    { name: "seedwave", id: 999727712, subdomain: "seedwave.faa.zone" },
-    { name: "fruitful", id: 1004545653, subdomain: "fruitful.faa.zone" },
-    { name: "FruitfulPlanetChange", id: 1062754976, subdomain: "fruitfulplanetchange.faa.zone" },
-    { name: "codenest", id: 1098332863, subdomain: "codenest.faa.zone" },
-    { name: "faa.zone", id: 958953084, subdomain: "faa.zone" },
-    { name: "hotstack", id: 1088770327, subdomain: "hotstack.faa.zone" },
-    { name: "vaultmesh", id: 992184183, subdomain: "vaultmesh.faa.zone" },
-    { name: "heyns1000", id: 1115164096, subdomain: "github.com/heyns1000" },
+    { name: 'seedwave', id: 999727712, subdomain: 'seedwave.faa.zone' },
+    { name: 'fruitful', id: 1004545653, subdomain: 'fruitful.faa.zone' },
+    { name: 'FruitfulPlanetChange', id: 1062754976, subdomain: 'fruitfulplanetchange.faa.zone' },
+    { name: 'codenest', id: 1098332863, subdomain: 'codenest.faa.zone' },
+    { name: 'faa.zone', id: 958953084, subdomain: 'faa.zone' },
+    { name: 'hotstack', id: 1088770327, subdomain: 'hotstack.faa.zone' },
+    { name: 'vaultmesh', id: 992184183, subdomain: 'vaultmesh.faa.zone' },
+    { name: 'heyns1000', id: 1115164096, subdomain: 'github.com/heyns1000' },
   ];
 
   // Fetch repositories
@@ -77,26 +86,31 @@ export default function EcosystemExplorer3() {
     };
 
     fetchRepositories();
-    
+
     // Refresh every 30 seconds
     const interval = setInterval(fetchRepositories, 30000);
 
     return () => clearInterval(interval);
   }, []);
 
-  const filteredRepos = repositories.filter(repo => {
-    const matchesSearch = repo.repoName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         repo.subdomain?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = filterStatus === "all" || repo.status === filterStatus;
+  const filteredRepos = repositories.filter((repo) => {
+    const matchesSearch =
+      repo.repoName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      repo.subdomain?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = filterStatus === 'all' || repo.status === filterStatus;
     return matchesSearch && matchesStatus;
   });
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "active": return "bg-green-500";
-      case "archived": return "bg-gray-500";
-      case "private": return "bg-blue-500";
-      default: return "bg-yellow-500";
+      case 'active':
+        return 'bg-green-500';
+      case 'archived':
+        return 'bg-gray-500';
+      case 'private':
+        return 'bg-blue-500';
+      default:
+        return 'bg-yellow-500';
     }
   };
 
@@ -151,7 +165,9 @@ export default function EcosystemExplorer3() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Active</p>
-                <p className="text-2xl font-bold text-green-600">{stats?.active_repositories || 0}</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {stats?.active_repositories || 0}
+                </p>
               </div>
               <Activity className="h-8 w-8 text-green-500" />
             </div>
@@ -163,7 +179,9 @@ export default function EcosystemExplorer3() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Total Stars</p>
-                <p className="text-2xl font-bold text-yellow-600">{formatNumber(stats?.total_stars)}</p>
+                <p className="text-2xl font-bold text-yellow-600">
+                  {formatNumber(stats?.total_stars)}
+                </p>
               </div>
               <Star className="h-8 w-8 text-yellow-500" />
             </div>
@@ -175,7 +193,9 @@ export default function EcosystemExplorer3() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Total Forks</p>
-                <p className="text-2xl font-bold text-purple-600">{formatNumber(stats?.total_forks)}</p>
+                <p className="text-2xl font-bold text-purple-600">
+                  {formatNumber(stats?.total_forks)}
+                </p>
               </div>
               <GitFork className="h-8 w-8 text-purple-500" />
             </div>
@@ -187,7 +207,9 @@ export default function EcosystemExplorer3() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Total Commits</p>
-                <p className="text-2xl font-bold text-orange-600">{formatNumber(stats?.total_commits)}</p>
+                <p className="text-2xl font-bold text-orange-600">
+                  {formatNumber(stats?.total_commits)}
+                </p>
               </div>
               <Code className="h-8 w-8 text-orange-500" />
             </div>
@@ -209,7 +231,7 @@ export default function EcosystemExplorer3() {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             {coreRepositories.map((repo) => (
-              <div 
+              <div
                 key={repo.id}
                 className="border rounded-lg p-3 hover:shadow-lg transition-shadow bg-blue-50 dark:bg-blue-950"
               >
@@ -241,24 +263,24 @@ export default function EcosystemExplorer3() {
           />
         </div>
         <div className="flex gap-2">
-          <Badge 
-            variant={filterStatus === "all" ? "default" : "outline"}
+          <Badge
+            variant={filterStatus === 'all' ? 'default' : 'outline'}
             className="cursor-pointer px-4 py-2"
-            onClick={() => setFilterStatus("all")}
+            onClick={() => setFilterStatus('all')}
           >
             All
           </Badge>
-          <Badge 
-            variant={filterStatus === "active" ? "default" : "outline"}
+          <Badge
+            variant={filterStatus === 'active' ? 'default' : 'outline'}
             className="cursor-pointer px-4 py-2"
-            onClick={() => setFilterStatus("active")}
+            onClick={() => setFilterStatus('active')}
           >
             Active
           </Badge>
-          <Badge 
-            variant={filterStatus === "archived" ? "default" : "outline"}
+          <Badge
+            variant={filterStatus === 'archived' ? 'default' : 'outline'}
             className="cursor-pointer px-4 py-2"
-            onClick={() => setFilterStatus("archived")}
+            onClick={() => setFilterStatus('archived')}
           >
             Archived
           </Badge>
@@ -277,9 +299,7 @@ export default function EcosystemExplorer3() {
                 </div>
                 <div className={`w-3 h-3 rounded-full ${getStatusColor(repo.status)}`} />
               </div>
-              {repo.subdomain && (
-                <p className="text-xs text-gray-500 truncate">{repo.subdomain}</p>
-              )}
+              {repo.subdomain && <p className="text-xs text-gray-500 truncate">{repo.subdomain}</p>}
             </CardHeader>
             <CardContent className="pt-0">
               <div className="space-y-3">
@@ -308,7 +328,7 @@ export default function EcosystemExplorer3() {
                 )}
 
                 {repo.subdomain && (
-                  <a 
+                  <a
                     href={`https://${repo.subdomain}`}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -330,7 +350,9 @@ export default function EcosystemExplorer3() {
             <Database className="h-12 w-12 mx-auto mb-2 opacity-50" />
             <p>No repositories found matching your search.</p>
             {repositories.length === 0 && (
-              <p className="text-sm mt-2">Repositories will appear here once metadata is aggregated.</p>
+              <p className="text-sm mt-2">
+                Repositories will appear here once metadata is aggregated.
+              </p>
             )}
           </CardContent>
         </Card>

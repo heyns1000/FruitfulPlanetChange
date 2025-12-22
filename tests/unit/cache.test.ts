@@ -36,14 +36,14 @@ describe('Cache', () => {
 
   it('should expire keys based on TTL', async () => {
     await cache.set('test_key', 'test_value', 1); // 1 second TTL
-    
+
     // Should exist immediately
     let value = await cache.get('test_key');
     expect(value).toBe('test_value');
-    
+
     // Wait for expiration
-    await new Promise(resolve => setTimeout(resolve, 1100));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1100));
+
     // Should be expired
     value = await cache.get('test_key');
     expect(value).toBeNull();
@@ -52,19 +52,14 @@ describe('Cache', () => {
 
 describe('CacheKeyBuilder', () => {
   it('should build cache keys', () => {
-    const key = new CacheKeyBuilder('test')
-      .add('user')
-      .add(123)
-      .build();
-    
+    const key = new CacheKeyBuilder('test').add('user').add(123).build();
+
     expect(key).toBe('test:user:123');
   });
 
   it('should use default prefix', () => {
-    const key = new CacheKeyBuilder()
-      .add('session')
-      .build();
-    
+    const key = new CacheKeyBuilder().add('session').build();
+
     expect(key).toContain('fruitfulplanet:');
   });
 });

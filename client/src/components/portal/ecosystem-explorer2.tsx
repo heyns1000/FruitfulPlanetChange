@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Activity, Zap, Network, Database, GitBranch } from "lucide-react";
-import type { Brand, Sector } from "@shared/schema";
+import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Activity, Zap, Network, Database, GitBranch } from 'lucide-react';
+import type { Brand, Sector } from '@shared/schema';
 
 interface EcosystemPulse {
   pulse_id: string;
@@ -35,14 +35,14 @@ export default function EcosystemExplorer2() {
   const [latestPulse, setLatestPulse] = useState<EcosystemPulse | null>(null);
   const [vaultNetwork, setVaultNetwork] = useState<VaultNode[]>([]);
   const [pulseHistory, setPulseHistory] = useState<EcosystemPulse[]>([]);
-  
+
   // Fetch brands and sectors data
   const { data: brands = [] } = useQuery<Brand[]>({
-    queryKey: ["/api/brands"],
-  })
+    queryKey: ['/api/brands'],
+  });
 
   const { data: sectors = [] } = useQuery<Sector[]>({
-    queryKey: ["/api/sectors"],
+    queryKey: ['/api/sectors'],
   });
 
   // Fetch latest pulse every 9 seconds
@@ -53,9 +53,9 @@ export default function EcosystemExplorer2() {
         if (response.ok) {
           const data = await response.json();
           setLatestPulse(data);
-          
+
           // Add to history (keep last 10)
-          setPulseHistory(prev => [data, ...prev.slice(0, 9)]);
+          setPulseHistory((prev) => [data, ...prev.slice(0, 9)]);
         }
       } catch (error) {
         console.error('Failed to fetch pulse:', error);
@@ -96,10 +96,14 @@ export default function EcosystemExplorer2() {
 
   const getLayerColor = (layer: string) => {
     switch (layer) {
-      case 'KAU_TRACE': return 'bg-blue-500';
-      case 'CLAIM_TRACE': return 'bg-purple-500';
-      case 'VAULT_TRACE': return 'bg-green-500';
-      default: return 'bg-gray-500';
+      case 'KAU_TRACE':
+        return 'bg-blue-500';
+      case 'CLAIM_TRACE':
+        return 'bg-purple-500';
+      case 'VAULT_TRACE':
+        return 'bg-green-500';
+      default:
+        return 'bg-gray-500';
     }
   };
 
@@ -108,7 +112,9 @@ export default function EcosystemExplorer2() {
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg p-6 text-white">
         <h1 className="text-3xl font-bold mb-2">🕸️ Ecosystem Network Graph</h1>
-        <p className="text-purple-100">VaultTrace™ Network Visualization with Live Pulse Monitoring</p>
+        <p className="text-purple-100">
+          VaultTrace™ Network Visualization with Live Pulse Monitoring
+        </p>
         <div className="flex gap-4 mt-4 text-sm">
           <Badge className="bg-white/20 text-white border-white/30">
             <Network className="h-3 w-3 mr-1" />
@@ -140,7 +146,7 @@ export default function EcosystemExplorer2() {
             </div>
             <div className="mt-2">
               <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                <div 
+                <div
                   className="bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full transition-all duration-1000"
                   style={{ width: `${latestPulse?.signal_strength || 0}%` }}
                 />
@@ -160,9 +166,7 @@ export default function EcosystemExplorer2() {
               </div>
               <Database className="h-8 w-8 text-blue-500" />
             </div>
-            <p className="text-xs text-gray-500 mt-2">
-              Trend: {calculateSignalTrend()}
-            </p>
+            <p className="text-xs text-gray-500 mt-2">Trend: {calculateSignalTrend()}</p>
           </CardContent>
         </Card>
 
@@ -233,7 +237,7 @@ export default function EcosystemExplorer2() {
             {/* Network Nodes Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {vaultNetwork.map((node) => (
-                <div 
+                <div
                   key={node.nodeId}
                   className="border rounded-lg p-3 hover:shadow-lg transition-shadow"
                 >
@@ -279,25 +283,27 @@ export default function EcosystemExplorer2() {
         <CardContent>
           <div className="space-y-2">
             {pulseHistory.map((pulse, index) => (
-              <div 
+              <div
                 key={pulse.pulse_id}
                 className={`flex items-center justify-between p-3 rounded-lg ${
-                  index === 0 ? 'bg-green-50 dark:bg-green-950 border border-green-200' : 'bg-gray-50 dark:bg-gray-900'
+                  index === 0
+                    ? 'bg-green-50 dark:bg-green-950 border border-green-200'
+                    : 'bg-gray-50 dark:bg-gray-900'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-2 h-2 rounded-full ${index === 0 ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`} />
+                  <div
+                    className={`w-2 h-2 rounded-full ${index === 0 ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}
+                  />
                   <div>
                     <p className="text-sm font-medium">
                       {new Date(pulse.timestamp).toLocaleString()}
                     </p>
-                    <p className="text-xs text-gray-500">
-                      {pulse.pulse_id}
-                    </p>
+                    <p className="text-xs text-gray-500">{pulse.pulse_id}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <Badge variant={pulse.signal_strength >= 90 ? "default" : "secondary"}>
+                  <Badge variant={pulse.signal_strength >= 90 ? 'default' : 'secondary'}>
                     {pulse.signal_strength}%
                   </Badge>
                   <span className="text-xs text-gray-500">
@@ -307,9 +313,7 @@ export default function EcosystemExplorer2() {
               </div>
             ))}
             {pulseHistory.length === 0 && (
-              <p className="text-center py-4 text-gray-500">
-                Waiting for pulse data...
-              </p>
+              <p className="text-center py-4 text-gray-500">Waiting for pulse data...</p>
             )}
           </div>
         </CardContent>

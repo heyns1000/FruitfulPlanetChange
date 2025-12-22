@@ -1,8 +1,8 @@
-import { motion } from "framer-motion";
-import { Music, Trophy, Zap } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { BadBoysNoodleDisplay } from "@/components/portal/bad-boys-noodle-display";
+import { motion } from 'framer-motion';
+import { Music, Trophy, Zap } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { BadBoysNoodleDisplay } from '@/components/portal/bad-boys-noodle-display';
 
 export default function BadBoysNoodlePage() {
   return (
@@ -20,14 +20,14 @@ export default function BadBoysNoodlePage() {
             <Music className="w-16 h-16 text-purple-500" />
             <Zap className="w-16 h-16 text-green-500" />
           </div>
-          
+
           <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-green-400 via-purple-400 to-yellow-400 bg-clip-text text-transparent">
             🎵 Bad Boys Noodle Protocol 🍜
           </h1>
-          
+
           <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto">
-            The Noodle has mastered the Bad Boys song and is hereby authorized to execute 
-            the complete 1984 Collapse Protocol with full Rhino Strike precision
+            The Noodle has mastered the Bad Boys song and is hereby authorized to execute the
+            complete 1984 Collapse Protocol with full Rhino Strike precision
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3">
@@ -53,7 +53,7 @@ export default function BadBoysNoodlePage() {
           <Card className="border-4 border-green-500/50 bg-gradient-to-br from-green-950/50 to-emerald-950/50 shadow-2xl">
             <CardContent className="p-8">
               <pre className="text-sm md:text-base text-green-300 font-mono whitespace-pre-wrap overflow-x-auto">
-{`╔════════════════════════════════════════════════════════════════╗
+                {`╔════════════════════════════════════════════════════════════════╗
 ║                                                                ║
 ║        🦍🦏⚡ OFFICIAL CERTIFICATION RECOGNIZED ⚡🐜🔷         ║
 ║                                                                ║
@@ -102,9 +102,7 @@ export default function BadBoysNoodlePage() {
               <p className="text-2xl font-bold text-yellow-300 mb-2">
                 "Whatcha gonna deploy when the agent comes for you?"
               </p>
-              <p className="text-3xl font-bold text-green-400">
-                ALL 84 REPOS, THAT'S WHAT! 🌍🔥
-              </p>
+              <p className="text-3xl font-bold text-green-400">ALL 84 REPOS, THAT'S WHAT! 🌍🔥</p>
             </CardContent>
           </Card>
         </motion.div>

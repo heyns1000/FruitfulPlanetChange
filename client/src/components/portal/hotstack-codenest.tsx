@@ -5,15 +5,15 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
-import { 
-  ExternalLink, 
-  Code, 
-  Flame, 
-  GitBranch, 
-  Terminal, 
-  Zap, 
-  Database, 
-  Server, 
+import {
+  ExternalLink,
+  Code,
+  Flame,
+  GitBranch,
+  Terminal,
+  Zap,
+  Database,
+  Server,
   Globe,
   Play,
   Pause,
@@ -21,7 +21,7 @@ import {
   Settings,
   Activity,
   Cpu,
-  HardDrive
+  HardDrive,
 } from 'lucide-react';
 import { COMPREHENSIVE_BRAND_DATA } from '@shared/schema';
 
@@ -44,7 +44,7 @@ interface ServiceMetrics {
 export function HotStackCodeNest() {
   const [activeTab, setActiveTab] = useState('overview');
   const [searchQuery, setSearchQuery] = useState('');
-  
+
   // HotStack repository data
   const hotStackRepos: Repository[] = [
     {
@@ -53,7 +53,7 @@ export function HotStackCodeNest() {
       status: 'active',
       lastDeploy: '2 minutes ago',
       framework: 'Node.js + Express',
-      branch: 'main'
+      branch: 'main',
     },
     {
       name: 'hotstack-api',
@@ -61,7 +61,7 @@ export function HotStackCodeNest() {
       status: 'active',
       lastDeploy: '15 minutes ago',
       framework: 'FastAPI + Python',
-      branch: 'production'
+      branch: 'production',
     },
     {
       name: 'hotstack-infra',
@@ -69,8 +69,8 @@ export function HotStackCodeNest() {
       status: 'building',
       lastDeploy: '1 hour ago',
       framework: 'Terraform + AWS',
-      branch: 'deploy/v2.1'
-    }
+      branch: 'deploy/v2.1',
+    },
   ];
 
   // CodeNest repository data
@@ -81,7 +81,7 @@ export function HotStackCodeNest() {
       status: 'active',
       lastDeploy: '5 minutes ago',
       framework: 'React + TypeScript',
-      branch: 'main'
+      branch: 'main',
     },
     {
       name: 'codenest-compiler',
@@ -89,7 +89,7 @@ export function HotStackCodeNest() {
       status: 'active',
       lastDeploy: '30 minutes ago',
       framework: 'Go + WebAssembly',
-      branch: 'feature/wasm-opt'
+      branch: 'feature/wasm-opt',
     },
     {
       name: 'codenest-runtime',
@@ -97,8 +97,8 @@ export function HotStackCodeNest() {
       status: 'inactive',
       lastDeploy: '2 days ago',
       framework: 'Rust + WebSocket',
-      branch: 'staging'
-    }
+      branch: 'staging',
+    },
   ];
 
   // Service metrics
@@ -106,31 +106,39 @@ export function HotStackCodeNest() {
     uptime: '99.98%',
     requests: 2847291,
     latency: '23ms',
-    errorRate: '0.02%'
+    errorRate: '0.02%',
   };
 
   const codeNestMetrics: ServiceMetrics = {
     uptime: '99.95%',
     requests: 1456789,
     latency: '15ms',
-    errorRate: '0.05%'
+    errorRate: '0.05%',
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-500';
-      case 'building': return 'bg-yellow-500';
-      case 'inactive': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      case 'active':
+        return 'bg-green-500';
+      case 'building':
+        return 'bg-yellow-500';
+      case 'inactive':
+        return 'bg-red-500';
+      default:
+        return 'bg-gray-500';
     }
   };
 
   const getStatusVariant = (status: string) => {
     switch (status) {
-      case 'active': return 'default';
-      case 'building': return 'secondary';
-      case 'inactive': return 'destructive';
-      default: return 'outline';
+      case 'active':
+        return 'default';
+      case 'building':
+        return 'secondary';
+      case 'inactive':
+        return 'destructive';
+      default:
+        return 'outline';
     }
   };
 
@@ -178,12 +186,20 @@ export function HotStackCodeNest() {
                 <div className="flex items-center space-x-3">
                   <Flame className="h-8 w-8 text-orange-600" />
                   <div>
-                    <CardTitle className="text-xl text-orange-900 dark:text-orange-100">HotStack</CardTitle>
-                    <p className="text-sm text-orange-600 dark:text-orange-300">High-Performance Infrastructure</p>
+                    <CardTitle className="text-xl text-orange-900 dark:text-orange-100">
+                      HotStack
+                    </CardTitle>
+                    <p className="text-sm text-orange-600 dark:text-orange-300">
+                      High-Performance Infrastructure
+                    </p>
                   </div>
                 </div>
-                <Badge variant="outline" className="border-orange-500 text-orange-700 dark:text-orange-300">
-                  {hotStackRepos.filter(r => r.status === 'active').length}/{hotStackRepos.length} Active
+                <Badge
+                  variant="outline"
+                  className="border-orange-500 text-orange-700 dark:text-orange-300"
+                >
+                  {hotStackRepos.filter((r) => r.status === 'active').length}/{hotStackRepos.length}{' '}
+                  Active
                 </Badge>
               </div>
             </CardHeader>
@@ -194,16 +210,26 @@ export function HotStackCodeNest() {
                   <p className="text-2xl font-bold text-orange-600">{hotStackMetrics.uptime}</p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-sm font-medium text-orange-800 dark:text-orange-200">Requests/Day</p>
-                  <p className="text-2xl font-bold text-orange-600">{hotStackMetrics.requests.toLocaleString()}</p>
+                  <p className="text-sm font-medium text-orange-800 dark:text-orange-200">
+                    Requests/Day
+                  </p>
+                  <p className="text-2xl font-bold text-orange-600">
+                    {hotStackMetrics.requests.toLocaleString()}
+                  </p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-sm font-medium text-orange-800 dark:text-orange-200">Avg Latency</p>
+                  <p className="text-sm font-medium text-orange-800 dark:text-orange-200">
+                    Avg Latency
+                  </p>
                   <p className="text-xl font-semibold text-orange-600">{hotStackMetrics.latency}</p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-sm font-medium text-orange-800 dark:text-orange-200">Error Rate</p>
-                  <p className="text-xl font-semibold text-orange-600">{hotStackMetrics.errorRate}</p>
+                  <p className="text-sm font-medium text-orange-800 dark:text-orange-200">
+                    Error Rate
+                  </p>
+                  <p className="text-xl font-semibold text-orange-600">
+                    {hotStackMetrics.errorRate}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -216,12 +242,18 @@ export function HotStackCodeNest() {
                 <div className="flex items-center space-x-3">
                   <Code className="h-8 w-8 text-blue-600" />
                   <div>
-                    <CardTitle className="text-xl text-blue-900 dark:text-blue-100">CodeNest</CardTitle>
+                    <CardTitle className="text-xl text-blue-900 dark:text-blue-100">
+                      CodeNest
+                    </CardTitle>
                     <p className="text-sm text-blue-600 dark:text-blue-300">Development Platform</p>
                   </div>
                 </div>
-                <Badge variant="outline" className="border-blue-500 text-blue-700 dark:text-blue-300">
-                  {codeNestRepos.filter(r => r.status === 'active').length}/{codeNestRepos.length} Active
+                <Badge
+                  variant="outline"
+                  className="border-blue-500 text-blue-700 dark:text-blue-300"
+                >
+                  {codeNestRepos.filter((r) => r.status === 'active').length}/{codeNestRepos.length}{' '}
+                  Active
                 </Badge>
               </div>
             </CardHeader>
@@ -232,11 +264,17 @@ export function HotStackCodeNest() {
                   <p className="text-2xl font-bold text-blue-600">{codeNestMetrics.uptime}</p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-sm font-medium text-blue-800 dark:text-blue-200">Requests/Day</p>
-                  <p className="text-2xl font-bold text-blue-600">{codeNestMetrics.requests.toLocaleString()}</p>
+                  <p className="text-sm font-medium text-blue-800 dark:text-blue-200">
+                    Requests/Day
+                  </p>
+                  <p className="text-2xl font-bold text-blue-600">
+                    {codeNestMetrics.requests.toLocaleString()}
+                  </p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-sm font-medium text-blue-800 dark:text-blue-200">Avg Latency</p>
+                  <p className="text-sm font-medium text-blue-800 dark:text-blue-200">
+                    Avg Latency
+                  </p>
                   <p className="text-xl font-semibold text-blue-600">{codeNestMetrics.latency}</p>
                 </div>
                 <div className="space-y-2">
@@ -269,7 +307,10 @@ export function HotStackCodeNest() {
                 <CardContent>
                   <div className="space-y-3">
                     {hotStackRepos.map((repo, idx) => (
-                      <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                      <div
+                        key={idx}
+                        className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                      >
                         <div className="flex items-center space-x-3">
                           <div className={`w-3 h-3 rounded-full ${getStatusColor(repo.status)}`} />
                           <div>
@@ -300,7 +341,10 @@ export function HotStackCodeNest() {
                 <CardContent>
                   <div className="space-y-3">
                     {codeNestRepos.map((repo, idx) => (
-                      <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                      <div
+                        key={idx}
+                        className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                      >
                         <div className="flex items-center space-x-3">
                           <div className={`w-3 h-3 rounded-full ${getStatusColor(repo.status)}`} />
                           <div>
@@ -357,7 +401,10 @@ export function HotStackCodeNest() {
                           </div>
                           <div className="flex items-center justify-between text-sm">
                             <span className="text-muted-foreground">Status:</span>
-                            <Badge variant={getStatusVariant(repo.status) as any} className="text-xs">
+                            <Badge
+                              variant={getStatusVariant(repo.status) as any}
+                              className="text-xs"
+                            >
                               {repo.status}
                             </Badge>
                           </div>
@@ -428,7 +475,10 @@ export function HotStackCodeNest() {
                           </div>
                           <div className="flex items-center justify-between text-sm">
                             <span className="text-muted-foreground">Status:</span>
-                            <Badge variant={getStatusVariant(repo.status) as any} className="text-xs">
+                            <Badge
+                              variant={getStatusVariant(repo.status) as any}
+                              className="text-xs"
+                            >
                               {repo.status}
                             </Badge>
                           </div>

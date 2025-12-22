@@ -1,69 +1,75 @@
-import { useState, useMemo } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { useLocation } from "wouter"
-import { Search, Filter, Sparkles, Loader2, Download } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useToast } from "@/hooks/use-toast"
-import type { Brand } from "@shared/schema"
+import { useState, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useLocation } from 'wouter';
+import { Search, Filter, Sparkles, Loader2, Download } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
+import type { Brand } from '@shared/schema';
 
 // Helper function to extract metadata field from brand
 function getBrandMetadataField(brand: Brand, field: string, defaultValue: string): string {
   if (brand.metadata && typeof brand.metadata === 'object' && field in brand.metadata) {
-    return String(brand.metadata[field as keyof typeof brand.metadata])
+    return String(brand.metadata[field as keyof typeof brand.metadata]);
   }
-  return defaultValue
+  return defaultValue;
 }
 
 export default function GlobalMarketplace() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [tierFilter, setTierFilter] = useState<string>("all")
-  const [divisionFilter, setDivisionFilter] = useState<string>("all")
-  const [isDeploying, setIsDeploying] = useState<number | null>(null)
-  const [isDownloading, setIsDownloading] = useState<number | null>(null)
-  const [, setLocation] = useLocation()
-  const { toast } = useToast()
+  const [searchQuery, setSearchQuery] = useState('');
+  const [tierFilter, setTierFilter] = useState<string>('all');
+  const [divisionFilter, setDivisionFilter] = useState<string>('all');
+  const [isDeploying, setIsDeploying] = useState<number | null>(null);
+  const [isDownloading, setIsDownloading] = useState<number | null>(null);
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
 
   // Fetch all brands
   const { data: brands = [], isLoading } = useQuery<Brand[]>({
-    queryKey: ["/api/brands"],
-  })
+    queryKey: ['/api/brands'],
+  });
 
   // Filter and search brands
   const filteredBrands = useMemo(() => {
-    return brands.filter(brand => {
+    return brands.filter((brand) => {
       // Search filter
       if (searchQuery && !brand.name.toLowerCase().includes(searchQuery.toLowerCase())) {
-        return false
+        return false;
       }
 
       // Tier filter - extract from metadata
-      if (tierFilter !== "all") {
-        const brandTier = getBrandMetadataField(brand, 'tier', 'market').toLowerCase()
+      if (tierFilter !== 'all') {
+        const brandTier = getBrandMetadataField(brand, 'tier', 'market').toLowerCase();
         if (brandTier !== tierFilter.toLowerCase()) {
-          return false
+          return false;
         }
       }
 
       // Division filter - extract from metadata
-      if (divisionFilter !== "all") {
-        const brandDivision = getBrandMetadataField(brand, 'division', 'A').toUpperCase()
+      if (divisionFilter !== 'all') {
+        const brandDivision = getBrandMetadataField(brand, 'division', 'A').toUpperCase();
         if (brandDivision !== divisionFilter.toUpperCase()) {
-          return false
+          return false;
         }
       }
 
-      return true
-    })
-  }, [brands, searchQuery, tierFilter, divisionFilter])
+      return true;
+    });
+  }, [brands, searchQuery, tierFilter, divisionFilter]);
 
   // Handle deployment
   const handleDeploy = async (brand: Brand) => {
-    setIsDeploying(brand.id)
-    
+    setIsDeploying(brand.id);
+
     try {
       const response = await fetch('/api/integration/deploy', {
         method: 'POST',
@@ -79,99 +85,94 @@ export default function GlobalMarketplace() {
             brandName: brand.name,
           },
         }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (data.success) {
         toast({
-          title: "🚀 Deployment Started",
+          title: '🚀 Deployment Started',
           description: `Integration for ${brand.name} has been queued. Redirecting to dashboard...`,
-        })
+        });
 
         // Redirect to dashboard after 1.5 seconds
         setTimeout(() => {
-          setLocation('/deployment-dashboard')
-        }, 1500)
+          setLocation('/deployment-dashboard');
+        }, 1500);
       } else {
-        throw new Error(data.error || 'Deployment failed')
+        throw new Error(data.error || 'Deployment failed');
       }
     } catch (error) {
       toast({
-        title: "❌ Deployment Failed",
+        title: '❌ Deployment Failed',
         description: error instanceof Error ? error.message : 'Failed to start deployment',
-        variant: "destructive",
-      })
+        variant: 'destructive',
+      });
     } finally {
-      setIsDeploying(null)
+      setIsDeploying(null);
     }
-  }
+  };
 
   // Handle package download
   const handleDownload = async (brand: Brand) => {
-    setIsDownloading(brand.id)
-    
+    setIsDownloading(brand.id);
+
     try {
       toast({
-        title: "📦 Download Started",
+        title: '📦 Download Started',
         description: `Preparing ${brand.name} package for download...`,
-      })
+      });
 
       // Fetch the package ZIP file
-      const response = await fetch(`/api/marketplace/packages/${brand.id}/download`)
-      
+      const response = await fetch(`/api/marketplace/packages/${brand.id}/download`);
+
       if (!response.ok) {
-        throw new Error('Failed to download package')
+        throw new Error('Failed to download package');
       }
 
       // Get the blob
-      const blob = await response.blob()
-      
+      const blob = await response.blob();
+
       // Create download link
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `${brand.name.toLowerCase().replace(/[^a-z0-9-]/g, '-')}-v1.0.0.zip`
-      document.body.appendChild(a)
-      a.click()
-      
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${brand.name.toLowerCase().replace(/[^a-z0-9-]/g, '-')}-v1.0.0.zip`;
+      document.body.appendChild(a);
+      a.click();
+
       // Cleanup
-      window.URL.revokeObjectURL(url)
-      document.body.removeChild(a)
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
 
       toast({
-        title: "✅ Download Complete",
+        title: '✅ Download Complete',
         description: `${brand.name} package downloaded successfully!`,
-      })
-
+      });
     } catch (error) {
       toast({
-        title: "❌ Download Failed",
+        title: '❌ Download Failed',
         description: error instanceof Error ? error.message : 'Failed to download package',
-        variant: "destructive",
-      })
+        variant: 'destructive',
+      });
     } finally {
-      setIsDownloading(null)
+      setIsDownloading(null);
     }
-  }
+  };
 
   // Get tier badge variant
   const getTierBadge = (brand: Brand) => {
-    const tier = getBrandMetadataField(brand, 'tier', 'Market')
-    
-    const colors = {
-      'Sovereign': 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-      'Dynastic': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-      'Operational': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-      'Market': 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200',
-    }
+    const tier = getBrandMetadataField(brand, 'tier', 'Market');
 
-    return (
-      <Badge className={colors[tier as keyof typeof colors] || colors.Market}>
-        {tier}
-      </Badge>
-    )
-  }
+    const colors = {
+      Sovereign: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+      Dynastic: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+      Operational: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+      Market: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200',
+    };
+
+    return <Badge className={colors[tier as keyof typeof colors] || colors.Market}>{tier}</Badge>;
+  };
 
   return (
     <div className="p-6 md:p-8 space-y-6">
@@ -182,7 +183,8 @@ export default function GlobalMarketplace() {
           <div>
             <h1 className="text-3xl font-bold">Global Marketplace</h1>
             <p className="text-muted-foreground">
-              {filteredBrands.length.toLocaleString()} of {brands.length.toLocaleString()}+ brands available for integration
+              {filteredBrands.length.toLocaleString()} of {brands.length.toLocaleString()}+ brands
+              available for integration
             </p>
           </div>
         </div>
@@ -251,31 +253,21 @@ export default function GlobalMarketplace() {
           </div>
 
           {/* Active Filters Display */}
-          {(searchQuery || tierFilter !== "all" || divisionFilter !== "all") && (
+          {(searchQuery || tierFilter !== 'all' || divisionFilter !== 'all') && (
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-sm text-muted-foreground">Active filters:</span>
-              {searchQuery && (
-                <Badge variant="secondary">
-                  Search: {searchQuery}
-                </Badge>
-              )}
-              {tierFilter !== "all" && (
-                <Badge variant="secondary">
-                  Tier: {tierFilter}
-                </Badge>
-              )}
-              {divisionFilter !== "all" && (
-                <Badge variant="secondary">
-                  Division: {divisionFilter}
-                </Badge>
+              {searchQuery && <Badge variant="secondary">Search: {searchQuery}</Badge>}
+              {tierFilter !== 'all' && <Badge variant="secondary">Tier: {tierFilter}</Badge>}
+              {divisionFilter !== 'all' && (
+                <Badge variant="secondary">Division: {divisionFilter}</Badge>
               )}
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => {
-                  setSearchQuery("")
-                  setTierFilter("all")
-                  setDivisionFilter("all")
+                  setSearchQuery('');
+                  setTierFilter('all');
+                  setDivisionFilter('all');
                 }}
               >
                 Clear all
@@ -343,7 +335,7 @@ export default function GlobalMarketplace() {
                       </>
                     )}
                   </Button>
-                  
+
                   <Button
                     variant="outline"
                     onClick={() => handleDownload(brand)}
@@ -362,5 +354,5 @@ export default function GlobalMarketplace() {
         </div>
       )}
     </div>
-  )
+  );
 }

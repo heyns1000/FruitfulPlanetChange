@@ -1,7 +1,8 @@
 ![Baobab_bosveld](Baobab_bosveld.mp4)
 
 # 🌳 The Baobab Security Network™: Empower. Protect. Sustain.
-*A Living Blueprint for a Better World.*
+
+_A Living Blueprint for a Better World._
 
 Welcome to the official GitHub repository for **The Baobab Security Network™**! This project is a conceptual single-page application (SPA) and a strategic framework, demonstrating how AI, geospatial mapping, and advanced data analytics can be leveraged for global protection, empowerment, and sustainable resource management.
 
@@ -49,11 +50,12 @@ This repository contains the foundational web application files and conceptual b
 The project features a comprehensive set of dashboards designed to make complex global data accessible and interactive.
 
 ### 1. Global Thematic Dashboards
-*Accessible via `baobab_spa_dashboard.html` and individual files:*
+
+_Accessible via `baobab_spa_dashboard.html` and individual files:_
 
 This SPA allows you to explore critical global issues through interactive data visualizations. Users can navigate these sections fluidly without page reloads within the SPA. For direct access, individual HTML files are also provided.
 
-- **Overview**: Introduction to the Baobab Security Network's mission and capabilities. *(Integrated in `baobab_spa_dashboard.html`)*
+- **Overview**: Introduction to the Baobab Security Network's mission and capabilities. _(Integrated in `baobab_spa_dashboard.html`)_
 - **Deforestation** (`deforestation_dashboard.html`): Monitoring forest loss and conservation efforts worldwide.
 - **Ocean Plastic** (`ocean_plastic_dashboard.html`): Tracking plastic pollution hotspots and global cleanup progress.
 - **Wildlife Protection** (`wildlife_protection_dashboard.html`): Insights into endangered species, anti-poaching initiatives, and habitat conservation.
@@ -92,6 +94,7 @@ cd baobab
 ```
 
 ### 2. View the Website (Static Files - Easiest Way)
+
 No server required for local viewing — ideal for quick previews!
 
 - Navigate to the cloned directory:
@@ -129,25 +132,25 @@ The Baobab Security Network is envisioned as a holistic, data-driven platform de
 
 - Real-time data dashboards for critical global indicators (deforestation, ocean health, air quality, etc.).
 - AI-powered analytics for predictive modeling, anomaly detection, and comprehensive impact assessments.
-- *Target audience*: Governments, environmental NGOs, research institutions, corporate sustainability divisions.
+- _Target audience_: Governments, environmental NGOs, research institutions, corporate sustainability divisions.
 
 ### Resource Optimization & Sustainability Consulting
 
 - AI-driven advice for efficient resource management (water, energy, land use) across regions and industries.
 - Tailored solutions for sustainable development, circular economy, and waste reduction.
-- *Target audience*: Large enterprises, urban planners, regional development bodies.
+- _Target audience_: Large enterprises, urban planners, regional development bodies.
 
 ### Community Empowerment & Resilience Solutions
 
 - Tools and insights for disaster preparedness, resource optimization, and economic opportunity in vulnerable communities.
 - Integration of geospatial data with local needs for actionable development plans.
-- *Target audience*: Local governments, humanitarian organizations, community groups.
+- _Target audience_: Local governments, humanitarian organizations, community groups.
 
 ### Security & Intervention Systems (AI-powered)
 
 - Advanced AI for early threat detection (e.g., illegal poaching, unauthorized resource extraction).
 - Proactive intervention mechanisms (e.g., AI-powered signal disruption for environmental protection).
-- *Target audience*: National security agencies, wildlife protection authorities, maritime enforcement.
+- _Target audience_: National security agencies, wildlife protection authorities, maritime enforcement.
 
 ---
 
@@ -241,6 +244,6 @@ This project is open-source and available under the **MIT License**. For full de
 
 **Heyns Schoeman ™**  
 Founder | Fruitful Global™ | FAA ™ 🌍  
-*"Sustain. Protect. Empower."*
+_"Sustain. Protect. Empower."_
 
 **Water the Seed™ | Baobab™ Security | AI-Powered Global Expansion**

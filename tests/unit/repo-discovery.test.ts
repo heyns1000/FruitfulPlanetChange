@@ -15,7 +15,7 @@ describe('RepoDiscoveryService', () => {
   describe('discoverAllRepos', () => {
     it('should discover repositories for a username', async () => {
       const repos = await service.discoverAllRepos({ username: 'heyns1000' });
-      
+
       expect(repos).toBeDefined();
       expect(Array.isArray(repos)).toBe(true);
       expect(repos.length).toBeGreaterThan(0);
@@ -23,8 +23,8 @@ describe('RepoDiscoveryService', () => {
 
     it('should assign ant lattice positions to repositories', async () => {
       const repos = await service.discoverAllRepos({ username: 'heyns1000' });
-      
-      repos.forEach(repo => {
+
+      repos.forEach((repo) => {
         expect(repo.antLatticeNode).toBeDefined();
         expect(repo.antLatticeNode.x).toBeGreaterThanOrEqual(0);
         expect(repo.antLatticeNode.x).toBeLessThan(84);
@@ -37,29 +37,29 @@ describe('RepoDiscoveryService', () => {
 
     it('should include core repositories', async () => {
       const repos = await service.discoverAllRepos({ username: 'heyns1000' });
-      const repoNames = repos.map(r => r.name);
-      
+      const repoNames = repos.map((r) => r.name);
+
       expect(repoNames).toContain('codenest');
       expect(repoNames).toContain('LicenseVault');
       expect(repoNames).toContain('hotstack');
     });
 
     it('should respect maxRepos limit', async () => {
-      const repos = await service.discoverAllRepos({ 
+      const repos = await service.discoverAllRepos({
         username: 'heyns1000',
-        maxRepos: 5 
+        maxRepos: 5,
       });
-      
+
       expect(repos.length).toBeLessThanOrEqual(5);
     });
 
     it('should filter by language when specified', async () => {
-      const repos = await service.discoverAllRepos({ 
+      const repos = await service.discoverAllRepos({
         username: 'heyns1000',
-        filterByLanguage: 'TypeScript'
+        filterByLanguage: 'TypeScript',
       });
-      
-      repos.forEach(repo => {
+
+      repos.forEach((repo) => {
         expect(repo.language).toBe('TypeScript');
       });
     });
@@ -69,19 +69,19 @@ describe('RepoDiscoveryService', () => {
     it('should return empty array for unoccupied coordinates', async () => {
       await service.discoverAllRepos({ username: 'heyns1000' });
       const repos = service.getRepositoriesByCoordinates(83, 83, 83);
-      
+
       expect(Array.isArray(repos)).toBe(true);
     });
 
     it('should find repositories at specific coordinates', async () => {
       await service.discoverAllRepos({ username: 'heyns1000' });
       const allRepos = service.getAllRepositories();
-      
+
       if (allRepos.length > 0) {
         const firstRepo = allRepos[0];
         const { x, y, z } = firstRepo.antLatticeNode;
         const foundRepos = service.getRepositoriesByCoordinates(x, y, z);
-        
+
         expect(foundRepos).toContain(firstRepo);
       }
     });
@@ -96,7 +96,7 @@ describe('RepoDiscoveryService', () => {
     it('should return all discovered repositories', async () => {
       await service.discoverAllRepos({ username: 'heyns1000' });
       const repos = service.getAllRepositories();
-      
+
       expect(repos.length).toBeGreaterThan(0);
     });
   });
@@ -110,7 +110,7 @@ describe('RepoDiscoveryService', () => {
     it('should count repositories by language', async () => {
       await service.discoverAllRepos({ username: 'heyns1000' });
       const counts = service.getRepositoryCountByLanguage();
-      
+
       expect(counts.size).toBeGreaterThan(0);
       expect(counts.get('TypeScript')).toBeGreaterThan(0);
     });
@@ -125,7 +125,7 @@ describe('RepoDiscoveryService', () => {
     it('should calculate fill percentage after discovery', async () => {
       await service.discoverAllRepos({ username: 'heyns1000' });
       const percentage = service.getOmnicubeFillPercentage();
-      
+
       expect(percentage).toBeGreaterThan(0);
       expect(percentage).toBeLessThanOrEqual(100);
     });
@@ -135,7 +135,7 @@ describe('RepoDiscoveryService', () => {
       const percentage = service.getOmnicubeFillPercentage();
       const totalPositions = 84 * 84 * 84; // 592,704
       const expectedPercentage = (repos.length / totalPositions) * 100;
-      
+
       expect(percentage).toBeCloseTo(expectedPercentage, 10);
     });
   });
@@ -144,7 +144,7 @@ describe('RepoDiscoveryService', () => {
     it('should export valid JSON', async () => {
       await service.discoverAllRepos({ username: 'heyns1000' });
       const json = service.exportOmnicubeStructure();
-      
+
       expect(() => JSON.parse(json)).not.toThrow();
     });
 
@@ -152,7 +152,7 @@ describe('RepoDiscoveryService', () => {
       await service.discoverAllRepos({ username: 'heyns1000' });
       const json = service.exportOmnicubeStructure();
       const data = JSON.parse(json);
-      
+
       expect(data).toHaveProperty('totalRepositories');
       expect(data).toHaveProperty('dimensions');
       expect(data).toHaveProperty('fillPercentage');
@@ -164,7 +164,7 @@ describe('RepoDiscoveryService', () => {
       await service.discoverAllRepos({ username: 'heyns1000' });
       const json = service.exportOmnicubeStructure();
       const data = JSON.parse(json);
-      
+
       expect(data.dimensions).toEqual([84, 84, 84]);
     });
   });

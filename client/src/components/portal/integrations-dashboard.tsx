@@ -1,212 +1,213 @@
-import { useState, useEffect } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { 
-  Search, 
-  ExternalLink, 
-  Download, 
-  CheckCircle, 
-  AlertCircle, 
+import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Search,
+  ExternalLink,
+  Download,
+  CheckCircle,
+  AlertCircle,
   Zap,
   Code,
   Database,
   Shield,
   Settings,
-  Cloud
-} from "lucide-react"
-import { motion } from "framer-motion"
+  Cloud,
+} from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface Extension {
-  id: string
-  name: string
-  description: string
-  author: string
-  version: string
-  downloads: number
-  category: string
-  tags: string[]
-  status: 'active' | 'inactive' | 'error'
-  icon: string
-  integrationLevel: 'native' | 'api' | 'webhook' | 'manual'
+  id: string;
+  name: string;
+  description: string;
+  author: string;
+  version: string;
+  downloads: number;
+  category: string;
+  tags: string[];
+  status: 'active' | 'inactive' | 'error';
+  icon: string;
+  integrationLevel: 'native' | 'api' | 'webhook' | 'manual';
 }
 
 interface IntegrationCategory {
-  id: string
-  name: string
-  description: string
-  extensions: Extension[]
-  icon: string
-  color: string
+  id: string;
+  name: string;
+  description: string;
+  extensions: Extension[];
+  icon: string;
+  color: string;
 }
 
 export function IntegrationsDashboard() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("all")
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
   // Fetch real installed extensions from API
   const { data: installedExtensions = [], isLoading: extensionsLoading } = useQuery<Extension[]>({
-    queryKey: ["/api/extensions/installed"],
-  })
+    queryKey: ['/api/extensions/installed'],
+  });
 
   const { data: extensionStats, isLoading: statsLoading } = useQuery({
-    queryKey: ["/api/extensions/stats"],
-  })
+    queryKey: ['/api/extensions/stats'],
+  });
 
   // Built-in Seedwave integrations - ensure all have required properties
   const seedwaveIntegrations: Extension[] = [
     {
-      id: "vaultmesh-core",
-      name: "VaultMesh™ Core",
-      description: "Core infrastructure and security layer powering the entire Seedwave ecosystem",
-      author: "Seedwave™",
-      version: "3.2.1",
+      id: 'vaultmesh-core',
+      name: 'VaultMesh™ Core',
+      description: 'Core infrastructure and security layer powering the entire Seedwave ecosystem',
+      author: 'Seedwave™',
+      version: '3.2.1',
       downloads: 6005,
-      category: "infrastructure",
-      tags: ["security", "infrastructure", "core", "vault"],
-      status: "active",
-      icon: "🔒",
-      integrationLevel: "native"
+      category: 'infrastructure',
+      tags: ['security', 'infrastructure', 'core', 'vault'],
+      status: 'active',
+      icon: '🔒',
+      integrationLevel: 'native',
     },
     {
-      id: "faa-quantum-nexus",
-      name: "FAA Quantum Nexus™",
-      description: "Revolutionary AI economic expansion model with quantum processing",
-      author: "FAA.ZONE™",
-      version: "1.0.0",
+      id: 'faa-quantum-nexus',
+      name: 'FAA Quantum Nexus™',
+      description: 'Revolutionary AI economic expansion model with quantum processing',
+      author: 'FAA.ZONE™',
+      version: '1.0.0',
       downloads: 1247,
-      category: "ai",
-      tags: ["quantum", "ai", "economic", "nexus"],
-      status: "active",
-      icon: "🚀",
-      integrationLevel: "native"
+      category: 'ai',
+      tags: ['quantum', 'ai', 'economic', 'nexus'],
+      status: 'active',
+      icon: '🚀',
+      integrationLevel: 'native',
     },
     {
-      id: "omnilevel-ai",
-      name: "Omnilevel AI Logic",
-      description: "Advanced AI-powered sector recommendation and completion system",
-      author: "Seedwave™",
-      version: "2.5.0",
+      id: 'omnilevel-ai',
+      name: 'Omnilevel AI Logic',
+      description: 'Advanced AI-powered sector recommendation and completion system',
+      author: 'Seedwave™',
+      version: '2.5.0',
       downloads: 2156,
-      category: "ai",
-      tags: ["ai", "logic", "recommendations", "sectors"],
-      status: "active",
-      icon: "🧠",
-      integrationLevel: "native"
+      category: 'ai',
+      tags: ['ai', 'logic', 'recommendations', 'sectors'],
+      status: 'active',
+      icon: '🧠',
+      integrationLevel: 'native',
     },
     {
-      id: "securesign-vip",
-      name: "SecureSign™ VIP",
-      description: "Enterprise-grade legal document management and NDA processing",
-      author: "Seedwave™",
-      version: "1.8.2",
+      id: 'securesign-vip',
+      name: 'SecureSign™ VIP',
+      description: 'Enterprise-grade legal document management and NDA processing',
+      author: 'Seedwave™',
+      version: '1.8.2',
       downloads: 856,
-      category: "legal",
-      tags: ["legal", "documents", "nda", "security"],
-      status: "active",
-      icon: "📋",
-      integrationLevel: "native"
+      category: 'legal',
+      tags: ['legal', 'documents', 'nda', 'security'],
+      status: 'active',
+      icon: '📋',
+      integrationLevel: 'native',
     },
     {
-      id: "banimal-charitable",
-      name: "Banimal™ Global Giving",
-      description: "Charitable giving loop integration with comprehensive impact tracking",
-      author: "Banimal™",
-      version: "1.4.1",
+      id: 'banimal-charitable',
+      name: 'Banimal™ Global Giving',
+      description: 'Charitable giving loop integration with comprehensive impact tracking',
+      author: 'Banimal™',
+      version: '1.4.1',
       downloads: 723,
-      category: "charitable",
-      tags: ["charity", "giving", "impact", "global"],
-      status: "active",
-      icon: "🍼",
-      integrationLevel: "webhook"
+      category: 'charitable',
+      tags: ['charity', 'giving', 'impact', 'global'],
+      status: 'active',
+      icon: '🍼',
+      integrationLevel: 'webhook',
     },
     {
-      id: "motion-media-sonic",
-      name: "Motion, Media & Sonic Studio",
-      description: "Comprehensive media processing and sonic engine management",
-      author: "Seedwave™",
-      version: "2.0.3",
+      id: 'motion-media-sonic',
+      name: 'Motion, Media & Sonic Studio',
+      description: 'Comprehensive media processing and sonic engine management',
+      author: 'Seedwave™',
+      version: '2.0.3',
       downloads: 445,
-      category: "media",
-      tags: ["media", "processing", "sonic", "studio"],
-      status: "active",
-      icon: "🎬",
-      integrationLevel: "api"
-    }
-  ]
+      category: 'media',
+      tags: ['media', 'processing', 'sonic', 'studio'],
+      status: 'active',
+      icon: '🎬',
+      integrationLevel: 'api',
+    },
+  ];
 
   const integrationCategories: IntegrationCategory[] = [
     {
-      id: "data",
-      name: "Data & Analytics",
-      description: "Extensions for data processing, visualization, and analytics",
-      extensions: [...installedExtensions.filter(ext => ext.category === "data")],
-      icon: "📊",
-      color: "bg-blue-500"
+      id: 'data',
+      name: 'Data & Analytics',
+      description: 'Extensions for data processing, visualization, and analytics',
+      extensions: [...installedExtensions.filter((ext) => ext.category === 'data')],
+      icon: '📊',
+      color: 'bg-blue-500',
     },
     {
-      id: "development", 
-      name: "Development Tools",
-      description: "Development workflow and productivity extensions",
-      extensions: [...installedExtensions.filter(ext => ext.category === "development")],
-      icon: "💻",
-      color: "bg-green-500"
+      id: 'development',
+      name: 'Development Tools',
+      description: 'Development workflow and productivity extensions',
+      extensions: [...installedExtensions.filter((ext) => ext.category === 'development')],
+      icon: '💻',
+      color: 'bg-green-500',
     },
     {
-      id: "infrastructure",
-      name: "Infrastructure & Security",
-      description: "Core infrastructure and security integrations",
-      extensions: [...seedwaveIntegrations.filter(ext => ext.category === "infrastructure")],
-      icon: "🔒",
-      color: "bg-purple-500"
+      id: 'infrastructure',
+      name: 'Infrastructure & Security',
+      description: 'Core infrastructure and security integrations',
+      extensions: [...seedwaveIntegrations.filter((ext) => ext.category === 'infrastructure')],
+      icon: '🔒',
+      color: 'bg-purple-500',
     },
     {
-      id: "ai",
-      name: "AI & Machine Learning", 
-      description: "Artificial intelligence and machine learning capabilities",
-      extensions: [...seedwaveIntegrations.filter(ext => ext.category === "ai")],
-      icon: "🧠",
-      color: "bg-cyan-500"
+      id: 'ai',
+      name: 'AI & Machine Learning',
+      description: 'Artificial intelligence and machine learning capabilities',
+      extensions: [...seedwaveIntegrations.filter((ext) => ext.category === 'ai')],
+      icon: '🧠',
+      color: 'bg-cyan-500',
     },
     {
-      id: "legal",
-      name: "Legal & Compliance",
-      description: "Legal document management and compliance tools",
-      extensions: [...seedwaveIntegrations.filter(ext => ext.category === "legal")],
-      icon: "📋",
-      color: "bg-yellow-500"
+      id: 'legal',
+      name: 'Legal & Compliance',
+      description: 'Legal document management and compliance tools',
+      extensions: [...seedwaveIntegrations.filter((ext) => ext.category === 'legal')],
+      icon: '📋',
+      color: 'bg-yellow-500',
     },
     {
-      id: "charitable",
-      name: "Charitable & Impact",
-      description: "Charitable giving and social impact integrations",
-      extensions: [...seedwaveIntegrations.filter(ext => ext.category === "charitable")],
-      icon: "💝",
-      color: "bg-pink-500"
+      id: 'charitable',
+      name: 'Charitable & Impact',
+      description: 'Charitable giving and social impact integrations',
+      extensions: [...seedwaveIntegrations.filter((ext) => ext.category === 'charitable')],
+      icon: '💝',
+      color: 'bg-pink-500',
     },
     {
-      id: "media",
-      name: "Media & Creative",
-      description: "Media processing and creative content tools",
-      extensions: [...seedwaveIntegrations.filter(ext => ext.category === "media")],
-      icon: "🎨",
-      color: "bg-orange-500"
-    }
-  ]
+      id: 'media',
+      name: 'Media & Creative',
+      description: 'Media processing and creative content tools',
+      extensions: [...seedwaveIntegrations.filter((ext) => ext.category === 'media')],
+      icon: '🎨',
+      color: 'bg-orange-500',
+    },
+  ];
 
   // Combine all extensions - handle loading state
-  const allExtensions = [...(installedExtensions || []), ...seedwaveIntegrations]
+  const allExtensions = [...(installedExtensions || []), ...seedwaveIntegrations];
 
-  const filteredExtensions = allExtensions.filter(ext => {
-    const matchesSearch = ext.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         ext.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         (ext.tags || []).some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-    const matchesCategory = selectedCategory === "all" || ext.category === selectedCategory
-    return matchesSearch && matchesCategory
-  })
+  const filteredExtensions = allExtensions.filter((ext) => {
+    const matchesSearch =
+      ext.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      ext.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (ext.tags || []).some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+    const matchesCategory = selectedCategory === 'all' || ext.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   const getExtensionIcon = (extension: Extension) => {
     // Specific icons for known Replit extensions
@@ -219,59 +220,65 @@ export function IntegrationsDashboard() {
       'repl-tv': '📺',
       'gpt-replit': '🤖',
       'secrets-generator': '🔐',
-      'api-request-tester': '🔌'
-    }
-    
+      'api-request-tester': '🔌',
+    };
+
     if (specificIcons[extension.id]) {
-      return specificIcons[extension.id]
+      return specificIcons[extension.id];
     }
-    
+
     // Use extension.icon if available, otherwise fallback to category
     if (extension.icon) {
-      return extension.icon
+      return extension.icon;
     }
-    
+
     // Fallback to category icons
     const categoryIcons: Record<string, string> = {
-      'data': '📊',
-      'development': '💻',
-      'design': '🎨',
-      'ai': '🤖',
-      'security': '🔒',
-      'media': '📺',
-      'infrastructure': '⚙️',
-      'unknown': '🔧'
-    }
-    return categoryIcons[extension.category] || '🔧'
-  }
+      data: '📊',
+      development: '💻',
+      design: '🎨',
+      ai: '🤖',
+      security: '🔒',
+      media: '📺',
+      infrastructure: '⚙️',
+      unknown: '🔧',
+    };
+    return categoryIcons[extension.category] || '🔧';
+  };
 
   const getIntegrationIcon = (level: string) => {
     switch (level) {
-      case 'native': return <CheckCircle className="h-4 w-4 text-green-500" />
-      case 'api': return <Zap className="h-4 w-4 text-blue-500" />
-      case 'webhook': return <Cloud className="h-4 w-4 text-purple-500" />
-      case 'manual': return <Settings className="h-4 w-4 text-yellow-500" />
-      default: return <AlertCircle className="h-4 w-4 text-gray-500" />
+      case 'native':
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case 'api':
+        return <Zap className="h-4 w-4 text-blue-500" />;
+      case 'webhook':
+        return <Cloud className="h-4 w-4 text-purple-500" />;
+      case 'manual':
+        return <Settings className="h-4 w-4 text-yellow-500" />;
+      default:
+        return <AlertCircle className="h-4 w-4 text-gray-500" />;
     }
-  }
+  };
 
   const getIntegrationLabel = (level: string) => {
     switch (level) {
-      case 'native': return 'Native'
-      case 'api': return 'API'
-      case 'webhook': return 'Webhook'
-      case 'manual': return 'Manual'
-      default: return 'Unknown'
+      case 'native':
+        return 'Native';
+      case 'api':
+        return 'API';
+      case 'webhook':
+        return 'Webhook';
+      case 'manual':
+        return 'Manual';
+      default:
+        return 'Unknown';
     }
-  }
+  };
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-3xl font-bold">Integrations Dashboard</h1>
@@ -281,10 +288,12 @@ export function IntegrationsDashboard() {
           </div>
           <div className="flex items-center gap-2">
             <Badge variant="secondary" className="text-sm">
-              {extensionsLoading ? "Loading..." : `${allExtensions.length} Total Integrations`}
+              {extensionsLoading ? 'Loading...' : `${allExtensions.length} Total Integrations`}
             </Badge>
             <Badge variant="outline" className="text-sm">
-              {extensionsLoading ? "..." : `${(installedExtensions || []).length} Replit Extensions`}
+              {extensionsLoading
+                ? '...'
+                : `${(installedExtensions || []).length} Replit Extensions`}
             </Badge>
           </div>
         </div>
@@ -302,16 +311,16 @@ export function IntegrationsDashboard() {
           </div>
           <div className="flex gap-2 overflow-x-auto">
             <Button
-              variant={selectedCategory === "all" ? "default" : "outline"}
+              variant={selectedCategory === 'all' ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setSelectedCategory("all")}
+              onClick={() => setSelectedCategory('all')}
             >
               All Categories
             </Button>
             {integrationCategories.map((category) => (
               <Button
                 key={category.id}
-                variant={selectedCategory === category.id ? "default" : "outline"}
+                variant={selectedCategory === category.id ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setSelectedCategory(category.id)}
                 className="whitespace-nowrap"
@@ -365,7 +374,7 @@ export function IntegrationsDashboard() {
                     <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
                       {extension.description || 'No description available'}
                     </p>
-                    
+
                     <div className="flex flex-wrap gap-1 mb-4">
                       {(extension.tags || []).slice(0, 3).map((tag) => (
                         <Badge key={tag} variant="secondary" className="text-xs">
@@ -391,8 +400,8 @@ export function IntegrationsDashboard() {
                     </div>
 
                     <div className="flex gap-2">
-                      <Button 
-                        size="sm" 
+                      <Button
+                        size="sm"
                         className="flex-1"
                         variant={extension.status === 'active' ? 'default' : 'outline'}
                       >
@@ -426,9 +435,7 @@ export function IntegrationsDashboard() {
                       </div>
                       <div>
                         <CardTitle className="text-xl">{category.name}</CardTitle>
-                        <p className="text-sm text-muted-foreground">
-                          {category.description}
-                        </p>
+                        <p className="text-sm text-muted-foreground">{category.description}</p>
                       </div>
                     </div>
                   </CardHeader>
@@ -436,7 +443,10 @@ export function IntegrationsDashboard() {
                     <div className="space-y-3">
                       {category.extensions.length > 0 ? (
                         category.extensions.map((ext) => (
-                          <div key={ext.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                          <div
+                            key={ext.id}
+                            className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
+                          >
                             <div className="flex items-center gap-3">
                               <span className="text-lg">{ext.icon}</span>
                               <div>
@@ -475,7 +485,8 @@ export function IntegrationsDashboard() {
                 <div className="text-6xl mb-4">🛍️</div>
                 <h3 className="text-xl font-semibold mb-2">Extension Marketplace</h3>
                 <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                  Browse and install extensions from the Replit marketplace to add new capabilities to your workspace.
+                  Browse and install extensions from the Replit marketplace to add new capabilities
+                  to your workspace.
                 </p>
                 <Button>
                   <ExternalLink className="h-4 w-4 mr-2" />
@@ -487,5 +498,5 @@ export function IntegrationsDashboard() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

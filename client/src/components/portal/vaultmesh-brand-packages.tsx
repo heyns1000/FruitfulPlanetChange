@@ -1,126 +1,140 @@
-import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Shield, Globe, Search, Star, Package, Zap, CheckCircle, ArrowRight } from "lucide-react"
-import type { Brand, Sector } from "@shared/schema"
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Shield, Globe, Search, Star, Package, Zap, CheckCircle, ArrowRight } from 'lucide-react';
+import type { Brand, Sector } from '@shared/schema';
 
 export function VaultMeshBrandPackages() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedSector, setSelectedSector] = useState("all")
-  const [selectedPackage, setSelectedPackage] = useState<string | null>(null)
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedSector, setSelectedSector] = useState('all');
+  const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
 
   const { data: brands = [] } = useQuery<Brand[]>({
-    queryKey: ["/api/brands"],
-  })
+    queryKey: ['/api/brands'],
+  });
 
   const { data: sectors = [] } = useQuery<Sector[]>({
-    queryKey: ["/api/sectors"],
-  })
+    queryKey: ['/api/sectors'],
+  });
 
   // Package definitions for different brand tiers
   const brandPackages = [
     {
-      id: "startup",
-      name: "Startup Package",
+      id: 'startup',
+      name: 'Startup Package',
       price: 299,
       brandLimit: 5,
       features: [
-        "Basic VaultMesh™ integration",
-        "Standard security protocols",
-        "Community support",
-        "Basic analytics dashboard",
-        "Standard deployment tools"
+        'Basic VaultMesh™ integration',
+        'Standard security protocols',
+        'Community support',
+        'Basic analytics dashboard',
+        'Standard deployment tools',
       ],
       recommended: false,
-      popular: false
+      popular: false,
     },
     {
-      id: "growth",
-      name: "Growth Package", 
+      id: 'growth',
+      name: 'Growth Package',
       price: 799,
       brandLimit: 25,
       features: [
-        "Advanced VaultMesh™ protocols",
-        "Enhanced security suite",
-        "Priority support",
-        "Advanced analytics & insights",
-        "Custom integrations",
-        "Multi-region deployment",
-        "SecureSign™ integration"
+        'Advanced VaultMesh™ protocols',
+        'Enhanced security suite',
+        'Priority support',
+        'Advanced analytics & insights',
+        'Custom integrations',
+        'Multi-region deployment',
+        'SecureSign™ integration',
       ],
       recommended: false,
-      popular: true
+      popular: true,
     },
     {
-      id: "enterprise",
-      name: "Enterprise Package",
+      id: 'enterprise',
+      name: 'Enterprise Package',
       price: 2499,
       brandLimit: 100,
       features: [
-        "Full VaultMesh™ infrastructure",
-        "Enterprise security suite",
-        "24/7 dedicated support",
-        "Complete analytics platform",
-        "White-label solutions",
-        "Global deployment network",
-        "Omni Grid™ access",
-        "Custom development",
-        "Compliance suite",
-        "API marketplace access"
+        'Full VaultMesh™ infrastructure',
+        'Enterprise security suite',
+        '24/7 dedicated support',
+        'Complete analytics platform',
+        'White-label solutions',
+        'Global deployment network',
+        'Omni Grid™ access',
+        'Custom development',
+        'Compliance suite',
+        'API marketplace access',
       ],
       recommended: true,
-      popular: false
+      popular: false,
     },
     {
-      id: "ecosystem",
-      name: "Ecosystem Package",
+      id: 'ecosystem',
+      name: 'Ecosystem Package',
       price: 9999,
       brandLimit: 1000,
       features: [
-        "Complete VaultMesh™ ecosystem",
-        "Military-grade security",
-        "Dedicated infrastructure",
-        "Custom analytics platform",
-        "Fully white-labeled solution",
-        "Private cloud deployment",
-        "Custom protocol development",
-        "Regulatory compliance suite",
-        "Dedicated account management",
-        "Research & development access",
-        "Quantum-ready protocols"
+        'Complete VaultMesh™ ecosystem',
+        'Military-grade security',
+        'Dedicated infrastructure',
+        'Custom analytics platform',
+        'Fully white-labeled solution',
+        'Private cloud deployment',
+        'Custom protocol development',
+        'Regulatory compliance suite',
+        'Dedicated account management',
+        'Research & development access',
+        'Quantum-ready protocols',
       ],
       recommended: false,
-      popular: false
-    }
-  ]
+      popular: false,
+    },
+  ];
 
   // Filter brands based on search and sector
-  const filteredBrands = brands.filter(brand => {
-    const matchesSearch = brand.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         brand.description?.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesSector = selectedSector === "all" || brand.sectorId?.toString() === selectedSector
-    return matchesSearch && matchesSector
-  })
+  const filteredBrands = brands.filter((brand) => {
+    const matchesSearch =
+      brand.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      brand.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSector = selectedSector === 'all' || brand.sectorId?.toString() === selectedSector;
+    return matchesSearch && matchesSector;
+  });
 
   // Group brands by sector for display
-  const brandsBySector = sectors.map(sector => ({
-    ...sector,
-    brands: filteredBrands.filter(brand => brand.sectorId === sector.id)
-  })).filter(sector => sector.brands.length > 0)
+  const brandsBySector = sectors
+    .map((sector) => ({
+      ...sector,
+      brands: filteredBrands.filter((brand) => brand.sectorId === sector.id),
+    }))
+    .filter((sector) => sector.brands.length > 0);
 
   const getPackageColor = (packageId: string) => {
     switch (packageId) {
-      case "startup": return "border-blue-200 bg-blue-50 dark:bg-blue-900/20"
-      case "growth": return "border-green-200 bg-green-50 dark:bg-green-900/20"
-      case "enterprise": return "border-purple-200 bg-purple-50 dark:bg-purple-900/20"
-      case "ecosystem": return "border-orange-200 bg-orange-50 dark:bg-orange-900/20"
-      default: return ""
+      case 'startup':
+        return 'border-blue-200 bg-blue-50 dark:bg-blue-900/20';
+      case 'growth':
+        return 'border-green-200 bg-green-50 dark:bg-green-900/20';
+      case 'enterprise':
+        return 'border-purple-200 bg-purple-50 dark:bg-purple-900/20';
+      case 'ecosystem':
+        return 'border-orange-200 bg-orange-50 dark:bg-orange-900/20';
+      default:
+        return '';
     }
-  }
+  };
 
   return (
     <div className="space-y-8">
@@ -128,20 +142,18 @@ export function VaultMeshBrandPackages() {
       <div className="text-center">
         <h1 className="text-3xl font-bold mb-4">VaultMesh™ Brand Integration Packages</h1>
         <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-          Comprehensive brand management solutions powered by VaultMesh™ infrastructure.
-          Secure, scalable, and compliant brand ecosystems for every business size.
+          Comprehensive brand management solutions powered by VaultMesh™ infrastructure. Secure,
+          scalable, and compliant brand ecosystems for every business size.
         </p>
       </div>
 
       {/* Package Selection */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {brandPackages.map((pkg) => (
-          <Card 
+          <Card
             key={pkg.id}
             className={`relative cursor-pointer transition-all duration-300 hover:shadow-lg ${
-              selectedPackage === pkg.id 
-                ? 'ring-2 ring-cyan-500 shadow-lg' 
-                : 'hover:shadow-md'
+              selectedPackage === pkg.id ? 'ring-2 ring-cyan-500 shadow-lg' : 'hover:shadow-md'
             } ${getPackageColor(pkg.id)}`}
             onClick={() => setSelectedPackage(pkg.id)}
           >
@@ -186,7 +198,7 @@ export function VaultMeshBrandPackages() {
                 )}
               </ul>
 
-              <Button 
+              <Button
                 className={`w-full ${
                   selectedPackage === pkg.id
                     ? 'bg-cyan-500 hover:bg-cyan-600'
@@ -209,7 +221,8 @@ export function VaultMeshBrandPackages() {
             Brand Ecosystem Explorer
           </CardTitle>
           <p className="text-gray-600 dark:text-gray-400">
-            Explore {brands.length} brands across {sectors.length} sectors available for VaultMesh™ integration
+            Explore {brands.length} brands across {sectors.length} sectors available for VaultMesh™
+            integration
           </p>
         </CardHeader>
 
@@ -251,7 +264,7 @@ export function VaultMeshBrandPackages() {
                     {sector.brands.length} brands
                   </Badge>
                 </h3>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {sector.brands.map((brand) => (
                     <Card key={brand.id} className="hover:shadow-md transition-shadow">
@@ -270,9 +283,7 @@ export function VaultMeshBrandPackages() {
                           </p>
                         )}
                         <div className="flex items-center justify-between">
-                          <span className="text-xs text-gray-500">
-                            ID: {brand.id}
-                          </span>
+                          <span className="text-xs text-gray-500">ID: {brand.id}</span>
                           <Button size="sm" variant="outline">
                             <ArrowRight className="w-3 h-3 mr-1" />
                             Integrate
@@ -302,13 +313,15 @@ export function VaultMeshBrandPackages() {
       {selectedPackage && (
         <Card className="bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20">
           <CardHeader>
-            <CardTitle>Selected Package: {brandPackages.find(pkg => pkg.id === selectedPackage)?.name}</CardTitle>
+            <CardTitle>
+              Selected Package: {brandPackages.find((pkg) => pkg.id === selectedPackage)?.name}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center">
                 <div className="text-3xl font-bold text-cyan-500">
-                  {brandPackages.find(pkg => pkg.id === selectedPackage)?.brandLimit}
+                  {brandPackages.find((pkg) => pkg.id === selectedPackage)?.brandLimit}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">Brand Limit</div>
               </div>
@@ -321,7 +334,7 @@ export function VaultMeshBrandPackages() {
                 <div className="text-sm text-gray-600 dark:text-gray-400">Supported Sectors</div>
               </div>
             </div>
-            
+
             <div className="mt-6 text-center">
               <Button className="bg-cyan-500 hover:bg-cyan-600" size="lg">
                 <Globe className="w-4 h-4 mr-2" />
@@ -332,5 +345,5 @@ export function VaultMeshBrandPackages() {
         </Card>
       )}
     </div>
-  )
+  );
 }

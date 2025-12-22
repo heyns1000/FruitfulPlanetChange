@@ -1,310 +1,320 @@
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { ChevronRight, ChevronLeft, CheckCircle, PlayCircle, ArrowRight, Sparkles, Target, Zap, Globe } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import {
+  ChevronRight,
+  ChevronLeft,
+  CheckCircle,
+  PlayCircle,
+  ArrowRight,
+  Sparkles,
+  Target,
+  Zap,
+  Globe,
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface SectorStep {
-  id: string
-  title: string
-  description: string
-  icon: string
-  features: string[]
-  benefits: string[]
-  nextSteps: string[]
-  estimatedTime: string
-  difficulty: "beginner" | "intermediate" | "advanced"
-  category: string
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  features: string[];
+  benefits: string[];
+  nextSteps: string[];
+  estimatedTime: string;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  category: string;
 }
 
 interface OnboardingFlow {
-  id: string
-  name: string
-  description: string
-  steps: SectorStep[]
-  totalTime: string
-  difficulty: "beginner" | "intermediate" | "advanced"
+  id: string;
+  name: string;
+  description: string;
+  steps: SectorStep[];
+  totalTime: string;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
 }
 
 export function SectorOnboardingFlow() {
-  const [currentFlow, setCurrentFlow] = useState<string>("ecosystem-overview")
-  const [currentStep, setCurrentStep] = useState<number>(0)
-  const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set())
-  const [isOnboarding, setIsOnboarding] = useState<boolean>(false)
+  const [currentFlow, setCurrentFlow] = useState<string>('ecosystem-overview');
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
+  const [isOnboarding, setIsOnboarding] = useState<boolean>(false);
 
   const onboardingFlows: OnboardingFlow[] = [
     {
-      id: "ecosystem-overview",
-      name: "🌐 Ecosystem Overview",
-      description: "Get acquainted with the complete Seedwave™ ecosystem and core infrastructure",
-      totalTime: "15 minutes",
-      difficulty: "beginner",
+      id: 'ecosystem-overview',
+      name: '🌐 Ecosystem Overview',
+      description: 'Get acquainted with the complete Seedwave™ ecosystem and core infrastructure',
+      totalTime: '15 minutes',
+      difficulty: 'beginner',
       steps: [
         {
-          id: "welcome",
-          title: "Welcome to Seedwave™",
-          description: "Your gateway to the FAA.zone™ ecosystem with 25+ integrated sectors",
-          icon: "🌱",
+          id: 'welcome',
+          title: 'Welcome to Seedwave™',
+          description: 'Your gateway to the FAA.zone™ ecosystem with 25+ integrated sectors',
+          icon: '🌱',
           features: [
-            "6,005+ brand management system",
-            "VaultMesh™ security infrastructure", 
-            "Real-time analytics dashboard",
-            "Cross-sector integration"
+            '6,005+ brand management system',
+            'VaultMesh™ security infrastructure',
+            'Real-time analytics dashboard',
+            'Cross-sector integration',
           ],
           benefits: [
-            "Centralized brand management",
-            "Enterprise-grade security",
-            "Scalable infrastructure",
-            "Global deployment ready"
+            'Centralized brand management',
+            'Enterprise-grade security',
+            'Scalable infrastructure',
+            'Global deployment ready',
           ],
           nextSteps: [
-            "Explore the Global Dashboard",
-            "Review system status",
-            "Check your authentication"
+            'Explore the Global Dashboard',
+            'Review system status',
+            'Check your authentication',
           ],
-          estimatedTime: "3 minutes",
-          difficulty: "beginner",
-          category: "infrastructure"
+          estimatedTime: '3 minutes',
+          difficulty: 'beginner',
+          category: 'infrastructure',
         },
         {
-          id: "navigation",
-          title: "Portal Navigation",
-          description: "Master the Seedwave portal navigation and key features",
-          icon: "🧭",
+          id: 'navigation',
+          title: 'Portal Navigation',
+          description: 'Master the Seedwave portal navigation and key features',
+          icon: '🧭',
           features: [
-            "Ecosystem explorer with 45+ sectors",
-            "VaultMesh™ product suite",
-            "Legal documentation hub",
-            "Repository management"
+            'Ecosystem explorer with 45+ sectors',
+            'VaultMesh™ product suite',
+            'Legal documentation hub',
+            'Repository management',
           ],
           benefits: [
-            "Efficient workflow navigation",
-            "Quick access to all tools",
-            "Organized sector management",
-            "Streamlined operations"
+            'Efficient workflow navigation',
+            'Quick access to all tools',
+            'Organized sector management',
+            'Streamlined operations',
           ],
           nextSteps: [
-            "Try the ecosystem explorer",
-            "Browse VaultMesh products",
-            "Check repository hub"
+            'Try the ecosystem explorer',
+            'Browse VaultMesh products',
+            'Check repository hub',
           ],
-          estimatedTime: "5 minutes",
-          difficulty: "beginner",
-          category: "navigation"
+          estimatedTime: '5 minutes',
+          difficulty: 'beginner',
+          category: 'navigation',
         },
         {
-          id: "core-features",
-          title: "Core Features Overview",
-          description: "Understand the main capabilities and integration points",
-          icon: "⚡",
+          id: 'core-features',
+          title: 'Core Features Overview',
+          description: 'Understand the main capabilities and integration points',
+          icon: '⚡',
           features: [
-            "AI-powered sector recommendations",
-            "Real-time system monitoring",
-            "Payment processing integration",
-            "Legal compliance tracking"
+            'AI-powered sector recommendations',
+            'Real-time system monitoring',
+            'Payment processing integration',
+            'Legal compliance tracking',
           ],
           benefits: [
-            "Intelligent decision making",
-            "Proactive system management", 
-            "Secure transactions",
-            "Automated compliance"
+            'Intelligent decision making',
+            'Proactive system management',
+            'Secure transactions',
+            'Automated compliance',
           ],
           nextSteps: [
-            "Set up payment integration",
-            "Configure monitoring alerts",
-            "Review legal documents"
+            'Set up payment integration',
+            'Configure monitoring alerts',
+            'Review legal documents',
           ],
-          estimatedTime: "7 minutes",
-          difficulty: "intermediate",
-          category: "features"
-        }
-      ]
+          estimatedTime: '7 minutes',
+          difficulty: 'intermediate',
+          category: 'features',
+        },
+      ],
     },
     {
-      id: "vaultmesh-setup",
-      name: "🔐 VaultMesh™ Setup",
-      description: "Configure VaultMesh™ security and payment infrastructure",
-      totalTime: "25 minutes",
-      difficulty: "intermediate",
+      id: 'vaultmesh-setup',
+      name: '🔐 VaultMesh™ Setup',
+      description: 'Configure VaultMesh™ security and payment infrastructure',
+      totalTime: '25 minutes',
+      difficulty: 'intermediate',
       steps: [
         {
-          id: "security-setup",
-          title: "Security Configuration",
-          description: "Set up enterprise-grade security with VaultMesh™ protocols",
-          icon: "🛡️",
+          id: 'security-setup',
+          title: 'Security Configuration',
+          description: 'Set up enterprise-grade security with VaultMesh™ protocols',
+          icon: '🛡️',
           features: [
-            "Multi-factor authentication",
-            "API key management",
-            "Encrypted data storage",
-            "Audit trail logging"
+            'Multi-factor authentication',
+            'API key management',
+            'Encrypted data storage',
+            'Audit trail logging',
           ],
           benefits: [
-            "Enhanced security posture",
-            "Compliance readiness",
-            "Risk mitigation",
-            "Operational transparency"
+            'Enhanced security posture',
+            'Compliance readiness',
+            'Risk mitigation',
+            'Operational transparency',
           ],
-          nextSteps: [
-            "Configure API keys",
-            "Set up audit logging",
-            "Test security protocols"
-          ],
-          estimatedTime: "10 minutes",
-          difficulty: "intermediate",
-          category: "security"
+          nextSteps: ['Configure API keys', 'Set up audit logging', 'Test security protocols'],
+          estimatedTime: '10 minutes',
+          difficulty: 'intermediate',
+          category: 'security',
         },
         {
-          id: "payment-integration",
-          title: "Payment Processing",
-          description: "Integrate PayPal and Stripe for secure transactions",
-          icon: "💳",
+          id: 'payment-integration',
+          title: 'Payment Processing',
+          description: 'Integrate PayPal and Stripe for secure transactions',
+          icon: '💳',
           features: [
-            "PayPal business integration",
-            "Stripe payment processing",
-            "Transaction monitoring",
-            "Automated invoicing"
+            'PayPal business integration',
+            'Stripe payment processing',
+            'Transaction monitoring',
+            'Automated invoicing',
           ],
           benefits: [
-            "Secure payment processing",
-            "Multiple payment options",
-            "Automated financial tracking",
-            "Reduced manual overhead"
+            'Secure payment processing',
+            'Multiple payment options',
+            'Automated financial tracking',
+            'Reduced manual overhead',
           ],
-          nextSteps: [
-            "Connect PayPal account",
-            "Configure Stripe settings",
-            "Test payment flows"
-          ],
-          estimatedTime: "15 minutes",
-          difficulty: "advanced",
-          category: "finance"
-        }
-      ]
+          nextSteps: ['Connect PayPal account', 'Configure Stripe settings', 'Test payment flows'],
+          estimatedTime: '15 minutes',
+          difficulty: 'advanced',
+          category: 'finance',
+        },
+      ],
     },
     {
-      id: "sector-specialization",
-      name: "🎯 Sector Specialization",
-      description: "Choose and configure your primary sector focus areas",
-      totalTime: "30 minutes", 
-      difficulty: "intermediate",
+      id: 'sector-specialization',
+      name: '🎯 Sector Specialization',
+      description: 'Choose and configure your primary sector focus areas',
+      totalTime: '30 minutes',
+      difficulty: 'intermediate',
       steps: [
         {
-          id: "sector-selection",
-          title: "Choose Your Sectors",
-          description: "Select primary sectors for your business focus",
-          icon: "🎯",
+          id: 'sector-selection',
+          title: 'Choose Your Sectors',
+          description: 'Select primary sectors for your business focus',
+          icon: '🎯',
           features: [
-            "AI-powered sector matching",
-            "Cross-sector synergy analysis",
-            "Performance metrics tracking",
-            "Growth opportunity mapping"
+            'AI-powered sector matching',
+            'Cross-sector synergy analysis',
+            'Performance metrics tracking',
+            'Growth opportunity mapping',
           ],
           benefits: [
-            "Optimized sector alignment",
-            "Strategic decision support",
-            "Performance visibility",
-            "Growth pathway clarity"
+            'Optimized sector alignment',
+            'Strategic decision support',
+            'Performance visibility',
+            'Growth pathway clarity',
           ],
           nextSteps: [
-            "Complete sector assessment",
-            "Review recommendations",
-            "Configure sector dashboards"
+            'Complete sector assessment',
+            'Review recommendations',
+            'Configure sector dashboards',
           ],
-          estimatedTime: "12 minutes",
-          difficulty: "intermediate",
-          category: "strategy"
+          estimatedTime: '12 minutes',
+          difficulty: 'intermediate',
+          category: 'strategy',
         },
         {
-          id: "sector-configuration",
-          title: "Sector Configuration",
-          description: "Customize your chosen sectors with specific settings",
-          icon: "⚙️",
+          id: 'sector-configuration',
+          title: 'Sector Configuration',
+          description: 'Customize your chosen sectors with specific settings',
+          icon: '⚙️',
           features: [
-            "Custom dashboard layouts",
-            "Automated reporting",
-            "Integration workflows",
-            "Performance thresholds"
+            'Custom dashboard layouts',
+            'Automated reporting',
+            'Integration workflows',
+            'Performance thresholds',
           ],
           benefits: [
-            "Tailored user experience",
-            "Automated insights",
-            "Streamlined operations",
-            "Proactive monitoring"
+            'Tailored user experience',
+            'Automated insights',
+            'Streamlined operations',
+            'Proactive monitoring',
           ],
-          nextSteps: [
-            "Set up dashboards",
-            "Configure alerts",
-            "Test integrations"
-          ],
-          estimatedTime: "18 minutes",
-          difficulty: "advanced",
-          category: "configuration"
-        }
-      ]
-    }
-  ]
+          nextSteps: ['Set up dashboards', 'Configure alerts', 'Test integrations'],
+          estimatedTime: '18 minutes',
+          difficulty: 'advanced',
+          category: 'configuration',
+        },
+      ],
+    },
+  ];
 
-  const currentFlowData = onboardingFlows.find(flow => flow.id === currentFlow)
-  const currentStepData = currentFlowData?.steps[currentStep]
-  const progress = currentFlowData ? ((currentStep + 1) / currentFlowData.steps.length) * 100 : 0
+  const currentFlowData = onboardingFlows.find((flow) => flow.id === currentFlow);
+  const currentStepData = currentFlowData?.steps[currentStep];
+  const progress = currentFlowData ? ((currentStep + 1) / currentFlowData.steps.length) * 100 : 0;
 
   const handleNextStep = () => {
     if (currentFlowData && currentStep < currentFlowData.steps.length - 1) {
       if (currentStepData) {
-        setCompletedSteps(prev => new Set([...Array.from(prev), currentStepData.id]))
+        setCompletedSteps((prev) => new Set([...Array.from(prev), currentStepData.id]));
       }
-      setCurrentStep(currentStep + 1)
+      setCurrentStep(currentStep + 1);
     }
-  }
+  };
 
   const handlePrevStep = () => {
     if (currentStep > 0) {
-      setCurrentStep(currentStep - 1)
+      setCurrentStep(currentStep - 1);
     }
-  }
+  };
 
   const handleCompleteStep = () => {
     if (currentStepData) {
-      setCompletedSteps(prev => new Set([...Array.from(prev), currentStepData.id]))
+      setCompletedSteps((prev) => new Set([...Array.from(prev), currentStepData.id]));
     }
-  }
+  };
 
   const handleStartOnboarding = (flowId: string) => {
-    setCurrentFlow(flowId)
-    setCurrentStep(0)
-    setIsOnboarding(true)
-  }
+    setCurrentFlow(flowId);
+    setCurrentStep(0);
+    setIsOnboarding(true);
+  };
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case "beginner": return "bg-green-500"
-      case "intermediate": return "bg-yellow-500"
-      case "advanced": return "bg-red-500"
-      default: return "bg-gray-500"
+      case 'beginner':
+        return 'bg-green-500';
+      case 'intermediate':
+        return 'bg-yellow-500';
+      case 'advanced':
+        return 'bg-red-500';
+      default:
+        return 'bg-gray-500';
     }
-  }
+  };
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case "infrastructure": return "🏗️"
-      case "navigation": return "🧭"
-      case "features": return "⚡"
-      case "security": return "🛡️"
-      case "finance": return "💳"
-      case "strategy": return "🎯"
-      case "configuration": return "⚙️"
-      default: return "📋"
+      case 'infrastructure':
+        return '🏗️';
+      case 'navigation':
+        return '🧭';
+      case 'features':
+        return '⚡';
+      case 'security':
+        return '🛡️';
+      case 'finance':
+        return '💳';
+      case 'strategy':
+        return '🎯';
+      case 'configuration':
+        return '⚙️';
+      default:
+        return '📋';
     }
-  }
+  };
 
   if (!isOnboarding) {
     return (
       <div className="space-y-6">
         {/* Header */}
         <div className="text-center space-y-4">
-          <motion.h1 
+          <motion.h1
             className="text-4xl font-bold bg-gradient-to-r from-green-400 to-cyan-500 bg-clip-text text-transparent"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -313,7 +323,7 @@ export function SectorOnboardingFlow() {
             Sector Transition Onboarding
           </motion.h1>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Navigate your journey through the Seedwave™ ecosystem with guided onboarding flows 
+            Navigate your journey through the Seedwave™ ecosystem with guided onboarding flows
             tailored to your specific needs and experience level.
           </p>
         </div>
@@ -335,7 +345,9 @@ export function SectorOnboardingFlow() {
                       <Sparkles className="h-5 w-5 text-green-400" />
                       {flow.name}
                     </span>
-                    <Badge className={`${getDifficultyColor(flow.difficulty)} text-white flex-shrink-0`}>
+                    <Badge
+                      className={`${getDifficultyColor(flow.difficulty)} text-white flex-shrink-0`}
+                    >
                       {flow.difficulty}
                     </Badge>
                   </CardTitle>
@@ -343,7 +355,7 @@ export function SectorOnboardingFlow() {
                 <CardContent className="flex flex-col flex-grow justify-between space-y-4">
                   <div className="space-y-4 flex-grow">
                     <p className="text-gray-300 text-sm leading-relaxed">{flow.description}</p>
-                    
+
                     <div className="flex justify-between text-sm text-gray-400 bg-gray-900/50 rounded-lg p-3">
                       <span className="flex items-center gap-1">
                         <Target className="h-4 w-4" />
@@ -359,8 +371,13 @@ export function SectorOnboardingFlow() {
                       <div className="text-sm font-medium text-gray-300">Steps Overview:</div>
                       <div className="space-y-1 max-h-32 overflow-y-auto custom-scrollbar">
                         {flow.steps.map((step, stepIndex) => (
-                          <div key={step.id} className="flex items-center gap-2 text-sm text-gray-400 py-1">
-                            <span className="text-base flex-shrink-0">{getCategoryIcon(step.category)}</span>
+                          <div
+                            key={step.id}
+                            className="flex items-center gap-2 text-sm text-gray-400 py-1"
+                          >
+                            <span className="text-base flex-shrink-0">
+                              {getCategoryIcon(step.category)}
+                            </span>
                             <span className="truncate flex-1">{step.title}</span>
                             {completedSteps.has(step.id) && (
                               <CheckCircle className="h-4 w-4 text-green-400 flex-shrink-0" />
@@ -372,7 +389,7 @@ export function SectorOnboardingFlow() {
                   </div>
 
                   <div className="flex-shrink-0 pt-2">
-                    <Button 
+                    <Button
                       className="w-full bg-gradient-to-r from-green-500 to-cyan-500 hover:from-green-600 hover:to-cyan-600 text-white font-bold h-12 text-sm"
                       onClick={() => handleStartOnboarding(flow.id)}
                     >
@@ -397,7 +414,9 @@ export function SectorOnboardingFlow() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-green-400">{Array.from(completedSteps).length}</div>
+                <div className="text-3xl font-bold text-green-400">
+                  {Array.from(completedSteps).length}
+                </div>
                 <div className="text-gray-400">Steps Completed</div>
               </div>
               <div className="text-center">
@@ -408,7 +427,12 @@ export function SectorOnboardingFlow() {
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-yellow-400">
-                  {Math.round((Array.from(completedSteps).length / onboardingFlows.reduce((total, flow) => total + flow.steps.length, 0)) * 100)}%
+                  {Math.round(
+                    (Array.from(completedSteps).length /
+                      onboardingFlows.reduce((total, flow) => total + flow.steps.length, 0)) *
+                      100
+                  )}
+                  %
                 </div>
                 <div className="text-gray-400">Overall Progress</div>
               </div>
@@ -416,7 +440,7 @@ export function SectorOnboardingFlow() {
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   return (
@@ -427,8 +451,8 @@ export function SectorOnboardingFlow() {
           <h2 className="text-2xl font-bold text-white">{currentFlowData?.name}</h2>
           <p className="text-gray-400">{currentFlowData?.description}</p>
         </div>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           onClick={() => setIsOnboarding(false)}
           className="border-gray-600 text-gray-300 hover:bg-gray-700"
         >
@@ -439,7 +463,9 @@ export function SectorOnboardingFlow() {
       {/* Progress Bar */}
       <div className="space-y-2">
         <div className="flex justify-between text-sm text-gray-400">
-          <span>Step {currentStep + 1} of {currentFlowData?.steps.length}</span>
+          <span>
+            Step {currentStep + 1} of {currentFlowData?.steps.length}
+          </span>
           <span>{Math.round(progress)}% Complete</span>
         </div>
         <Progress value={progress} className="h-2 bg-gray-700" />
@@ -527,7 +553,7 @@ export function SectorOnboardingFlow() {
 
                 {/* Action Buttons */}
                 <div className="flex justify-between items-center pt-4 border-t border-gray-700">
-                  <Button 
+                  <Button
                     variant="outline"
                     onClick={handlePrevStep}
                     disabled={currentStep === 0}
@@ -539,7 +565,7 @@ export function SectorOnboardingFlow() {
 
                   <div className="flex gap-3">
                     {!completedSteps.has(currentStepData.id) && (
-                      <Button 
+                      <Button
                         variant="outline"
                         onClick={handleCompleteStep}
                         className="border-green-500 text-green-400 hover:bg-green-500 hover:text-white"
@@ -548,13 +574,17 @@ export function SectorOnboardingFlow() {
                         Mark Complete
                       </Button>
                     )}
-                    
-                    <Button 
+
+                    <Button
                       onClick={handleNextStep}
-                      disabled={currentFlowData ? currentStep >= currentFlowData.steps.length - 1 : true}
+                      disabled={
+                        currentFlowData ? currentStep >= currentFlowData.steps.length - 1 : true
+                      }
                       className="bg-gradient-to-r from-green-500 to-cyan-500 hover:from-green-600 hover:to-cyan-600 text-white"
                     >
-                      {currentFlowData && currentStep >= currentFlowData.steps.length - 1 ? 'Complete Flow' : 'Next Step'}
+                      {currentFlowData && currentStep >= currentFlowData.steps.length - 1
+                        ? 'Complete Flow'
+                        : 'Next Step'}
                       <ChevronRight className="h-4 w-4 ml-2" />
                     </Button>
                   </div>
@@ -565,5 +595,5 @@ export function SectorOnboardingFlow() {
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }

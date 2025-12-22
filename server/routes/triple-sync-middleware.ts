@@ -1,13 +1,13 @@
-import type { Request, Response, NextFunction } from "express";
-import { tripleSyncValidator } from "../triple-sync-validator";
+import type { Request, Response, NextFunction } from 'express';
+import { tripleSyncValidator } from '../triple-sync-validator';
 
 // Middleware to protect sync operations with triple-sync validation
 export async function requireTripleSyncLock(req: Request, res: Response, next: NextFunction) {
   try {
     console.log('🔒 Checking triple-sync lock for protected operation...');
-    
+
     const syncStatus = await tripleSyncValidator.getQuickSyncStatus();
-    
+
     if (syncStatus.allowed) {
       console.log('✅ Triple-sync lock validated - operation approved');
       next();
@@ -17,14 +17,14 @@ export async function requireTripleSyncLock(req: Request, res: Response, next: N
         error: 'Operation blocked by triple-sync lock',
         reason: syncStatus.reason,
         treatyCompliant: false,
-        retryAfter: 30 // seconds
+        retryAfter: 30, // seconds
       });
     }
   } catch (error) {
     console.error('❌ Triple-sync validation error:', error);
     res.status(500).json({
       error: 'Triple-sync validation failed',
-      treatyCompliant: false
+      treatyCompliant: false,
     });
   }
 }
@@ -34,14 +34,14 @@ export function logCrossAppOperation(operationType: string) {
   return (req: Request, res: Response, next: NextFunction) => {
     console.log(`🌐 Cross-app operation initiated: ${operationType}`);
     console.log(`📊 Request from: ${req.ip} at ${new Date().toISOString()}`);
-    
+
     // Add operation metadata to request
     (req as any).crossAppOperation = {
       type: operationType,
       timestamp: new Date().toISOString(),
-      sourceApp: 'HSOMNI9000'
+      sourceApp: 'HSOMNI9000',
     };
-    
+
     next();
   };
 }
@@ -53,16 +53,16 @@ export function requireTreatyCompliance(req: Request, res: Response, next: NextF
     'HSOMNI9000-Triple-Sync-Validator',
     'Fruitful-Planet-Change',
     'Treaty-Flame-Client',
-    'Python-Backend-Sync'
+    'Python-Backend-Sync',
   ];
 
-  const isValidSource = validSources.some(source => userAgent.includes(source));
-  
+  const isValidSource = validSources.some((source) => userAgent.includes(source));
+
   if (!isValidSource && process.env.NODE_ENV === 'production') {
     console.log(`⚖️ Treaty compliance check failed for User-Agent: ${userAgent}`);
     res.status(403).json({
       error: 'Treaty compliance required',
-      treatyCompliant: false
+      treatyCompliant: false,
     });
     return;
   }

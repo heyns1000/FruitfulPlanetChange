@@ -1,20 +1,20 @@
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Progress } from "@/components/ui/progress"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { 
-  Trees, 
-  Droplets, 
-  Wind, 
-  Globe, 
-  Heart, 
-  Shield, 
-  Scale, 
-  FileText, 
-  TrendingUp, 
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Progress } from '@/components/ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Trees,
+  Droplets,
+  Wind,
+  Globe,
+  Heart,
+  Shield,
+  Scale,
+  FileText,
+  TrendingUp,
   AlertCircle,
   CheckCircle,
   Users,
@@ -34,203 +34,230 @@ import {
   Download,
   ExternalLink,
   Search,
-  Filter
-} from "lucide-react"
-import { motion } from "framer-motion"
+  Filter,
+} from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface EnvironmentalMetric {
-  id: string
-  title: string
-  value: number
-  unit: string
-  change: number
-  status: "critical" | "warning" | "good" | "excellent"
-  icon: any
-  description: string
+  id: string;
+  title: string;
+  value: number;
+  unit: string;
+  change: number;
+  status: 'critical' | 'warning' | 'good' | 'excellent';
+  icon: any;
+  description: string;
 }
 
 interface LegalCase {
-  id: string
-  title: string
-  status: "active" | "pending" | "resolved" | "appeal"
-  priority: "high" | "medium" | "low"
-  category: string
-  location: string
-  lastUpdate: string
-  description: string
-  environmentalImpact: string
+  id: string;
+  title: string;
+  status: 'active' | 'pending' | 'resolved' | 'appeal';
+  priority: 'high' | 'medium' | 'low';
+  category: string;
+  location: string;
+  lastUpdate: string;
+  description: string;
+  environmentalImpact: string;
 }
 
 interface BaobabEnvironmentalLawHubProps {
-  sectorId?: number
-  sectorName?: string
-  className?: string
+  sectorId?: number;
+  sectorName?: string;
+  className?: string;
 }
 
-export function BaobabEnvironmentalLawHub({ sectorId, sectorName, className = "" }: BaobabEnvironmentalLawHubProps) {
-  const [activeTab, setActiveTab] = useState("overview")
-  const [selectedMetric, setSelectedMetric] = useState<EnvironmentalMetric | null>(null)
-  const [selectedCase, setSelectedCase] = useState<LegalCase | null>(null)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [loading, setLoading] = useState(true)
+export function BaobabEnvironmentalLawHub({
+  sectorId,
+  sectorName,
+  className = '',
+}: BaobabEnvironmentalLawHubProps) {
+  const [activeTab, setActiveTab] = useState('overview');
+  const [selectedMetric, setSelectedMetric] = useState<EnvironmentalMetric | null>(null);
+  const [selectedCase, setSelectedCase] = useState<LegalCase | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
 
   // Environmental metrics data
   const environmentalMetrics: EnvironmentalMetric[] = [
     {
-      id: "deforestation",
-      title: "Deforestation Rate",
+      id: 'deforestation',
+      title: 'Deforestation Rate',
       value: 7.2,
-      unit: "million hectares/year",
+      unit: 'million hectares/year',
       change: -12.5,
-      status: "warning",
+      status: 'warning',
       icon: Trees,
-      description: "Global forest loss monitoring and conservation legal frameworks"
+      description: 'Global forest loss monitoring and conservation legal frameworks',
     },
     {
-      id: "water_security",
-      title: "Water Security Index",
+      id: 'water_security',
+      title: 'Water Security Index',
       value: 68,
-      unit: "% secure",
+      unit: '% secure',
       change: 3.2,
-      status: "good",
+      status: 'good',
       icon: Droplets,
-      description: "Water rights, pollution litigation, and resource allocation law"
+      description: 'Water rights, pollution litigation, and resource allocation law',
     },
     {
-      id: "air_quality",
-      title: "Air Quality Index",
+      id: 'air_quality',
+      title: 'Air Quality Index',
       value: 142,
-      unit: "AQI",
+      unit: 'AQI',
       change: -8.1,
-      status: "critical",
+      status: 'critical',
       icon: Wind,
-      description: "Air pollution regulations, emissions law, and public health litigation"
+      description: 'Air pollution regulations, emissions law, and public health litigation',
     },
     {
-      id: "biodiversity",
-      title: "Biodiversity Index",
+      id: 'biodiversity',
+      title: 'Biodiversity Index',
       value: 73,
-      unit: "% intact",
+      unit: '% intact',
       change: -2.8,
-      status: "warning",
+      status: 'warning',
       icon: Leaf,
-      description: "Wildlife protection law, habitat conservation, and species rights"
+      description: 'Wildlife protection law, habitat conservation, and species rights',
     },
     {
-      id: "climate_action",
-      title: "Climate Action Score",
+      id: 'climate_action',
+      title: 'Climate Action Score',
       value: 58,
-      unit: "points",
+      unit: 'points',
       change: 15.7,
-      status: "good",
+      status: 'good',
       icon: Globe,
-      description: "Climate litigation, carbon law, and environmental justice cases"
+      description: 'Climate litigation, carbon law, and environmental justice cases',
     },
     {
-      id: "renewable_energy",
-      title: "Renewable Energy Adoption",
+      id: 'renewable_energy',
+      title: 'Renewable Energy Adoption',
       value: 31,
-      unit: "% of total",
+      unit: '% of total',
       change: 23.4,
-      status: "excellent",
+      status: 'excellent',
       icon: Zap,
-      description: "Energy law, renewable contracts, and grid transition regulations"
-    }
-  ]
+      description: 'Energy law, renewable contracts, and grid transition regulations',
+    },
+  ];
 
   // Legal cases data
   const legalCases: LegalCase[] = [
     {
-      id: "1",
-      title: "Mining Company Environmental Damage Case",
-      status: "active",
-      priority: "high",
-      category: "Environmental Damage",
-      location: "South Africa",
-      lastUpdate: "2024-01-15",
-      description: "Class action lawsuit against mining corporation for groundwater contamination and ecosystem destruction",
-      environmentalImpact: "Severe groundwater contamination affecting 50,000+ residents and local wildlife habitats"
+      id: '1',
+      title: 'Mining Company Environmental Damage Case',
+      status: 'active',
+      priority: 'high',
+      category: 'Environmental Damage',
+      location: 'South Africa',
+      lastUpdate: '2024-01-15',
+      description:
+        'Class action lawsuit against mining corporation for groundwater contamination and ecosystem destruction',
+      environmentalImpact:
+        'Severe groundwater contamination affecting 50,000+ residents and local wildlife habitats',
     },
     {
-      id: "2",
-      title: "Coastal Development vs Marine Conservation",
-      status: "pending",
-      priority: "high",
-      category: "Marine Law",
-      location: "Cape Town",
-      lastUpdate: "2024-01-12",
-      description: "Legal challenge to proposed coastal development threatening marine protected areas",
-      environmentalImpact: "Potential destruction of critical penguin breeding grounds and marine ecosystems"
+      id: '2',
+      title: 'Coastal Development vs Marine Conservation',
+      status: 'pending',
+      priority: 'high',
+      category: 'Marine Law',
+      location: 'Cape Town',
+      lastUpdate: '2024-01-12',
+      description:
+        'Legal challenge to proposed coastal development threatening marine protected areas',
+      environmentalImpact:
+        'Potential destruction of critical penguin breeding grounds and marine ecosystems',
     },
     {
-      id: "3",
-      title: "Air Pollution Public Health Litigation",
-      status: "appeal",
-      priority: "medium",
-      category: "Public Health",
-      location: "Johannesburg",
-      lastUpdate: "2024-01-10",
-      description: "Community lawsuit against industrial polluters for health damages from air contamination",
-      environmentalImpact: "Air quality violations affecting 200,000+ residents with increased respiratory illness"
+      id: '3',
+      title: 'Air Pollution Public Health Litigation',
+      status: 'appeal',
+      priority: 'medium',
+      category: 'Public Health',
+      location: 'Johannesburg',
+      lastUpdate: '2024-01-10',
+      description:
+        'Community lawsuit against industrial polluters for health damages from air contamination',
+      environmentalImpact:
+        'Air quality violations affecting 200,000+ residents with increased respiratory illness',
     },
     {
-      id: "4",
-      title: "Forest Conservation vs Development Rights",
-      status: "resolved",
-      priority: "medium",
-      category: "Forest Law",
-      location: "Garden Route",
-      lastUpdate: "2024-01-08",
-      description: "Successfully protected indigenous forest from commercial development through conservation easement",
-      environmentalImpact: "Preserved 5,000 hectares of indigenous forest and protected endemic species habitat"
-    }
-  ]
+      id: '4',
+      title: 'Forest Conservation vs Development Rights',
+      status: 'resolved',
+      priority: 'medium',
+      category: 'Forest Law',
+      location: 'Garden Route',
+      lastUpdate: '2024-01-08',
+      description:
+        'Successfully protected indigenous forest from commercial development through conservation easement',
+      environmentalImpact:
+        'Preserved 5,000 hectares of indigenous forest and protected endemic species habitat',
+    },
+  ];
 
   useEffect(() => {
     // Simulate loading environmental data
     setTimeout(() => {
-      setLoading(false)
-    }, 1000)
-  }, [])
+      setLoading(false);
+    }, 1000);
+  }, []);
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "critical": return "text-red-600 bg-red-50 dark:bg-red-900/20"
-      case "warning": return "text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20"
-      case "good": return "text-green-600 bg-green-50 dark:bg-green-900/20"
-      case "excellent": return "text-blue-600 bg-blue-50 dark:bg-blue-900/20"
-      default: return "text-gray-600 bg-gray-50 dark:bg-gray-900/20"
+      case 'critical':
+        return 'text-red-600 bg-red-50 dark:bg-red-900/20';
+      case 'warning':
+        return 'text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20';
+      case 'good':
+        return 'text-green-600 bg-green-50 dark:bg-green-900/20';
+      case 'excellent':
+        return 'text-blue-600 bg-blue-50 dark:bg-blue-900/20';
+      default:
+        return 'text-gray-600 bg-gray-50 dark:bg-gray-900/20';
     }
-  }
+  };
 
   const getCaseStatusColor = (status: string) => {
     switch (status) {
-      case "active": return "bg-green-500"
-      case "pending": return "bg-yellow-500"
-      case "resolved": return "bg-blue-500"
-      case "appeal": return "bg-purple-500"
-      default: return "bg-gray-500"
+      case 'active':
+        return 'bg-green-500';
+      case 'pending':
+        return 'bg-yellow-500';
+      case 'resolved':
+        return 'bg-blue-500';
+      case 'appeal':
+        return 'bg-purple-500';
+      default:
+        return 'bg-gray-500';
     }
-  }
+  };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case "high": return "text-red-600"
-      case "medium": return "text-yellow-600"
-      case "low": return "text-green-600"
-      default: return "text-gray-600"
+      case 'high':
+        return 'text-red-600';
+      case 'medium':
+        return 'text-yellow-600';
+      case 'low':
+        return 'text-green-600';
+      default:
+        return 'text-gray-600';
     }
-  }
+  };
 
   const formatNumber = (num: number) => {
-    return new Intl.NumberFormat().format(num)
-  }
+    return new Intl.NumberFormat().format(num);
+  };
 
-  const filteredCases = legalCases.filter(case_ => 
-    case_.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    case_.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    case_.location.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  const filteredCases = legalCases.filter(
+    (case_) =>
+      case_.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      case_.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      case_.location.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className={`space-y-6 ${className}`}>
@@ -240,7 +267,11 @@ export function BaobabEnvironmentalLawHub({ sectorId, sectorName, className = ""
           <h2 className="text-2xl font-bold flex items-center gap-3">
             <Trees className="h-8 w-8 text-green-600" />
             Baobab Environmental Law Hub
-            {sectorName && <Badge variant="outline" className="ml-2">{sectorName}</Badge>}
+            {sectorName && (
+              <Badge variant="outline" className="ml-2">
+                {sectorName}
+              </Badge>
+            )}
           </h2>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
             Comprehensive environmental law, social justice, and sustainability legal framework
@@ -351,11 +382,15 @@ export function BaobabEnvironmentalLawHub({ sectorId, sectorName, className = ""
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-3 text-blue-600">Fruitful Crate Dance & Banimal Giving Loop Integration</h4>
+                  <h4 className="font-semibold mb-3 text-blue-600">
+                    Fruitful Crate Dance & Banimal Giving Loop Integration
+                  </h4>
                   <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                     <p className="text-sm mb-3">
-                      Our environmental law practice directly supports the <strong>Fruitful Crate Dance</strong> ecosystem 
-                      by providing legal frameworks for sustainable business practices and the <strong>Banimal Giving Loop</strong> 
+                      Our environmental law practice directly supports the{' '}
+                      <strong>Fruitful Crate Dance</strong> ecosystem by providing legal frameworks
+                      for sustainable business practices and the{' '}
+                      <strong>Banimal Giving Loop</strong>
                       charitable distribution network.
                     </p>
                     <div className="flex items-center gap-2 text-xs text-blue-600">
@@ -401,9 +436,11 @@ export function BaobabEnvironmentalLawHub({ sectorId, sectorName, className = ""
                       className="cursor-pointer"
                       onClick={() => setSelectedMetric(metric)}
                     >
-                      <Card className={`transition-all hover:shadow-lg ${
-                        selectedMetric?.id === metric.id ? 'ring-2 ring-green-500' : ''
-                      }`}>
+                      <Card
+                        className={`transition-all hover:shadow-lg ${
+                          selectedMetric?.id === metric.id ? 'ring-2 ring-green-500' : ''
+                        }`}
+                      >
                         <CardContent className="p-4">
                           <div className="flex items-center gap-4">
                             <div className={`p-3 rounded-full ${getStatusColor(metric.status)}`}>
@@ -415,10 +452,15 @@ export function BaobabEnvironmentalLawHub({ sectorId, sectorName, className = ""
                                 <Badge variant="outline">{metric.status}</Badge>
                               </div>
                               <div className="flex items-center gap-2 mb-2">
-                                <span className="text-2xl font-bold">{formatNumber(metric.value)}</span>
+                                <span className="text-2xl font-bold">
+                                  {formatNumber(metric.value)}
+                                </span>
                                 <span className="text-sm text-gray-600">{metric.unit}</span>
-                                <span className={`text-sm ${metric.change > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                  {metric.change > 0 ? '+' : ''}{metric.change}%
+                                <span
+                                  className={`text-sm ${metric.change > 0 ? 'text-green-600' : 'text-red-600'}`}
+                                >
+                                  {metric.change > 0 ? '+' : ''}
+                                  {metric.change}%
                                 </span>
                               </div>
                               <p className="text-xs text-gray-500">{metric.description}</p>
@@ -453,15 +495,21 @@ export function BaobabEnvironmentalLawHub({ sectorId, sectorName, className = ""
                       </div>
                       <div>
                         <span className="text-sm font-medium">Change:</span>
-                        <div className={`text-2xl font-bold ${selectedMetric.change > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                          {selectedMetric.change > 0 ? '+' : ''}{selectedMetric.change}%
+                        <div
+                          className={`text-2xl font-bold ${selectedMetric.change > 0 ? 'text-green-600' : 'text-red-600'}`}
+                        >
+                          {selectedMetric.change > 0 ? '+' : ''}
+                          {selectedMetric.change}%
                         </div>
                       </div>
                     </div>
-                    
+
                     <div>
                       <span className="text-sm font-medium">Status:</span>
-                      <Badge variant="outline" className={`ml-2 ${getStatusColor(selectedMetric.status)}`}>
+                      <Badge
+                        variant="outline"
+                        className={`ml-2 ${getStatusColor(selectedMetric.status)}`}
+                      >
                         {selectedMetric.status.toUpperCase()}
                       </Badge>
                     </div>
@@ -533,7 +581,9 @@ export function BaobabEnvironmentalLawHub({ sectorId, sectorName, className = ""
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Cases List */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Active Environmental Law Cases ({filteredCases.length})</h3>
+              <h3 className="text-lg font-semibold">
+                Active Environmental Law Cases ({filteredCases.length})
+              </h3>
               <div className="space-y-3">
                 {filteredCases.map((case_) => (
                   <motion.div
@@ -543,14 +593,18 @@ export function BaobabEnvironmentalLawHub({ sectorId, sectorName, className = ""
                     className="cursor-pointer"
                     onClick={() => setSelectedCase(case_)}
                   >
-                    <Card className={`transition-all hover:shadow-lg ${
-                      selectedCase?.id === case_.id ? 'ring-2 ring-green-500' : ''
-                    }`}>
+                    <Card
+                      className={`transition-all hover:shadow-lg ${
+                        selectedCase?.id === case_.id ? 'ring-2 ring-green-500' : ''
+                      }`}
+                    >
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between mb-2">
                           <h4 className="font-medium text-sm">{case_.title}</h4>
                           <div className="flex items-center gap-2">
-                            <div className={`w-2 h-2 rounded-full ${getCaseStatusColor(case_.status)}`}></div>
+                            <div
+                              className={`w-2 h-2 rounded-full ${getCaseStatusColor(case_.status)}`}
+                            ></div>
                             <Badge variant="outline" className="text-xs">
                               {case_.category}
                             </Badge>
@@ -591,7 +645,9 @@ export function BaobabEnvironmentalLawHub({ sectorId, sectorName, className = ""
                       <div>
                         <span className="font-medium">Status:</span>
                         <div className="flex items-center gap-2 mt-1">
-                          <div className={`w-2 h-2 rounded-full ${getCaseStatusColor(selectedCase.status)}`}></div>
+                          <div
+                            className={`w-2 h-2 rounded-full ${getCaseStatusColor(selectedCase.status)}`}
+                          ></div>
                           <span className="capitalize">{selectedCase.status}</span>
                         </div>
                       </div>
@@ -669,7 +725,9 @@ export function BaobabEnvironmentalLawHub({ sectorId, sectorName, className = ""
               <div className="text-center text-gray-500 py-12">
                 <Shield className="w-16 h-16 mx-auto mb-4 opacity-50" />
                 <p>Environmental compliance monitoring and legal framework analysis</p>
-                <p className="text-sm">Real-time regulatory compliance tracking in development...</p>
+                <p className="text-sm">
+                  Real-time regulatory compliance tracking in development...
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -692,5 +750,5 @@ export function BaobabEnvironmentalLawHub({ sectorId, sectorName, className = ""
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }
