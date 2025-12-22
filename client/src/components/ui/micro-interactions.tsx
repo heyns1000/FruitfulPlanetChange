@@ -1,22 +1,28 @@
-import { motion, AnimatePresence } from 'framer-motion'
-import { useState, useEffect } from 'react'
-import { cn } from '@/lib/utils'
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { cn } from '@/lib/utils';
 
 // Sparkle effect for success states
-export const SparkleEffect = ({ children, trigger }: { children: React.ReactNode, trigger?: boolean }) => {
-  const [sparkles, setSparkles] = useState<Array<{ id: number, x: number, y: number }>>([])
+export const SparkleEffect = ({
+  children,
+  trigger,
+}: {
+  children: React.ReactNode;
+  trigger?: boolean;
+}) => {
+  const [sparkles, setSparkles] = useState<Array<{ id: number; x: number; y: number }>>([]);
 
   useEffect(() => {
     if (trigger) {
       const newSparkles = Array.from({ length: 6 }, (_, i) => ({
         id: Date.now() + i,
         x: Math.random() * 100,
-        y: Math.random() * 100
-      }))
-      setSparkles(newSparkles)
-      setTimeout(() => setSparkles([]), 1000)
+        y: Math.random() * 100,
+      }));
+      setSparkles(newSparkles);
+      setTimeout(() => setSparkles([]), 1000);
     }
-  }, [trigger])
+  }, [trigger]);
 
   return (
     <motion.div className="relative overflow-hidden">
@@ -28,67 +34,71 @@ export const SparkleEffect = ({ children, trigger }: { children: React.ReactNode
             className="absolute w-1 h-1 bg-yellow-400 rounded-full pointer-events-none"
             style={{ left: `${sparkle.x}%`, top: `${sparkle.y}%` }}
             initial={{ scale: 0, opacity: 1 }}
-            animate={{ 
-              scale: [0, 1, 0], 
+            animate={{
+              scale: [0, 1, 0],
               opacity: [1, 1, 0],
               y: -20,
-              rotate: 360
+              rotate: 360,
             }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
           >
             ✨
           </motion.div>
         ))}
       </AnimatePresence>
     </motion.div>
-  )
-}
+  );
+};
 
 // Ripple effect for button clicks
-export const RippleButton = ({ 
-  children, 
-  className, 
-  onClick, 
-  variant = "default",
-  ...props 
-}: { 
-  children: React.ReactNode
-  className?: string
-  onClick?: () => void
-  variant?: "default" | "success" | "warning" | "destructive"
+export const RippleButton = ({
+  children,
+  className,
+  onClick,
+  variant = 'default',
+  ...props
+}: {
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+  variant?: 'default' | 'success' | 'warning' | 'destructive';
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) => {
-  const [ripples, setRipples] = useState<Array<{ id: number, x: number, y: number }>>([])
+  const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([]);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    
-    const newRipple = { id: Date.now(), x, y }
-    setRipples(prev => [...prev, newRipple])
-    
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const newRipple = { id: Date.now(), x, y };
+    setRipples((prev) => [...prev, newRipple]);
+
     setTimeout(() => {
-      setRipples(prev => prev.filter(r => r.id !== newRipple.id))
-    }, 600)
-    
-    onClick?.()
-  }
+      setRipples((prev) => prev.filter((r) => r.id !== newRipple.id));
+    }, 600);
+
+    onClick?.();
+  };
 
   const getVariantColors = () => {
     switch (variant) {
-      case "success": return "bg-green-400/30"
-      case "warning": return "bg-yellow-400/30"
-      case "destructive": return "bg-red-400/30"
-      default: return "bg-blue-400/30"
+      case 'success':
+        return 'bg-green-400/30';
+      case 'warning':
+        return 'bg-yellow-400/30';
+      case 'destructive':
+        return 'bg-red-400/30';
+      default:
+        return 'bg-blue-400/30';
     }
-  }
+  };
 
   return (
     <motion.button
       className={cn(
-        "relative overflow-hidden transition-all duration-200",
-        "hover:scale-105 active:scale-95",
+        'relative overflow-hidden transition-all duration-200',
+        'hover:scale-105 active:scale-95',
         className
       )}
       onClick={handleClick}
@@ -100,42 +110,42 @@ export const RippleButton = ({
         {ripples.map((ripple) => (
           <motion.div
             key={ripple.id}
-            className={cn("absolute rounded-full pointer-events-none", getVariantColors())}
+            className={cn('absolute rounded-full pointer-events-none', getVariantColors())}
             style={{
               left: ripple.x - 25,
               top: ripple.y - 25,
               width: 50,
-              height: 50
+              height: 50,
             }}
             initial={{ scale: 0, opacity: 1 }}
             animate={{ scale: 4, opacity: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
           />
         ))}
       </AnimatePresence>
     </motion.button>
-  )
-}
+  );
+};
 
 // Progress ring with animation
-export const ProgressRing = ({ 
-  progress, 
-  size = 120, 
+export const ProgressRing = ({
+  progress,
+  size = 120,
   strokeWidth = 8,
-  className 
-}: { 
-  progress: number
-  size?: number
-  strokeWidth?: number
-  className?: string
+  className,
+}: {
+  progress: number;
+  size?: number;
+  strokeWidth?: number;
+  className?: string;
 }) => {
-  const radius = (size - strokeWidth) / 2
-  const circumference = radius * 2 * Math.PI
-  const offset = circumference - (progress / 100) * circumference
+  const radius = (size - strokeWidth) / 2;
+  const circumference = radius * 2 * Math.PI;
+  const offset = circumference - (progress / 100) * circumference;
 
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn('relative', className)}>
       <svg width={size} height={size} className="transform -rotate-90">
         <circle
           cx={size / 2}
@@ -156,12 +166,12 @@ export const ProgressRing = ({
           strokeDasharray={circumference}
           initial={{ strokeDashoffset: circumference }}
           animate={{ strokeDashoffset: offset }}
-          transition={{ duration: 1, ease: "easeInOut" }}
+          transition={{ duration: 1, ease: 'easeInOut' }}
           className="text-blue-500"
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
-        <motion.span 
+        <motion.span
           className="text-2xl font-bold"
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -171,96 +181,91 @@ export const ProgressRing = ({
         </motion.span>
       </div>
     </div>
-  )
-}
+  );
+};
 
 // Pulse indicator for active states
-export const PulseIndicator = ({ 
-  active = false, 
-  color = "blue",
-  size = "md"
-}: { 
-  active?: boolean
-  color?: "blue" | "green" | "red" | "yellow" | "purple"
-  size?: "sm" | "md" | "lg"
+export const PulseIndicator = ({
+  active = false,
+  color = 'blue',
+  size = 'md',
+}: {
+  active?: boolean;
+  color?: 'blue' | 'green' | 'red' | 'yellow' | 'purple';
+  size?: 'sm' | 'md' | 'lg';
 }) => {
   const getColorClasses = () => {
     switch (color) {
-      case "green": return "bg-green-500"
-      case "red": return "bg-red-500"
-      case "yellow": return "bg-yellow-500"
-      case "purple": return "bg-purple-500"
-      default: return "bg-blue-500"
+      case 'green':
+        return 'bg-green-500';
+      case 'red':
+        return 'bg-red-500';
+      case 'yellow':
+        return 'bg-yellow-500';
+      case 'purple':
+        return 'bg-purple-500';
+      default:
+        return 'bg-blue-500';
     }
-  }
+  };
 
   const getSizeClasses = () => {
     switch (size) {
-      case "sm": return "w-2 h-2"
-      case "lg": return "w-4 h-4"
-      default: return "w-3 h-3"
+      case 'sm':
+        return 'w-2 h-2';
+      case 'lg':
+        return 'w-4 h-4';
+      default:
+        return 'w-3 h-3';
     }
-  }
+  };
 
   if (!active) {
-    return (
-      <div className={cn(
-        "rounded-full opacity-50",
-        getColorClasses(),
-        getSizeClasses()
-      )} />
-    )
+    return <div className={cn('rounded-full opacity-50', getColorClasses(), getSizeClasses())} />;
   }
 
   return (
     <div className="relative">
       <motion.div
-        className={cn(
-          "rounded-full",
-          getColorClasses(),
-          getSizeClasses()
-        )}
+        className={cn('rounded-full', getColorClasses(), getSizeClasses())}
         animate={{ scale: [1, 1.2, 1] }}
-        transition={{ 
-          duration: 1.5, 
-          repeat: Infinity, 
-          ease: "easeInOut" 
+        transition={{
+          duration: 1.5,
+          repeat: Infinity,
+          ease: 'easeInOut',
         }}
       />
       <motion.div
-        className={cn(
-          "absolute inset-0 rounded-full opacity-40",
-          getColorClasses()
-        )}
+        className={cn('absolute inset-0 rounded-full opacity-40', getColorClasses())}
         animate={{ scale: [1, 2, 1], opacity: [0.4, 0, 0.4] }}
-        transition={{ 
-          duration: 1.5, 
-          repeat: Infinity, 
-          ease: "easeInOut" 
+        transition={{
+          duration: 1.5,
+          repeat: Infinity,
+          ease: 'easeInOut',
         }}
       />
     </div>
-  )
-}
+  );
+};
 
 // Morphing button states
-export const MorphingButton = ({ 
-  children, 
+export const MorphingButton = ({
+  children,
   isLoading = false,
   isSuccess = false,
   className,
-  ...props 
-}: { 
-  children: React.ReactNode
-  isLoading?: boolean
-  isSuccess?: boolean
-  className?: string
+  ...props
+}: {
+  children: React.ReactNode;
+  isLoading?: boolean;
+  isSuccess?: boolean;
+  className?: string;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) => {
   return (
     <motion.button
       className={cn(
-        "relative px-6 py-3 rounded-lg font-medium transition-all duration-300",
-        "bg-blue-500 hover:bg-blue-600 text-white",
+        'relative px-6 py-3 rounded-lg font-medium transition-all duration-300',
+        'bg-blue-500 hover:bg-blue-600 text-white',
         className
       )}
       layout
@@ -277,7 +282,7 @@ export const MorphingButton = ({
             <motion.div
               className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
               animate={{ rotate: 360 }}
-              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
             />
             Loading...
           </motion.div>
@@ -310,36 +315,36 @@ export const MorphingButton = ({
         )}
       </AnimatePresence>
     </motion.button>
-  )
-}
+  );
+};
 
 // Typing animation for text
-export const TypingText = ({ 
-  text, 
+export const TypingText = ({
+  text,
   speed = 50,
-  className 
-}: { 
-  text: string
-  speed?: number
-  className?: string
+  className,
+}: {
+  text: string;
+  speed?: number;
+  className?: string;
 }) => {
-  const [displayText, setDisplayText] = useState('')
+  const [displayText, setDisplayText] = useState('');
 
   useEffect(() => {
-    setDisplayText('')
-    let currentIndex = 0
-    
+    setDisplayText('');
+    let currentIndex = 0;
+
     const timer = setInterval(() => {
       if (currentIndex <= text.length) {
-        setDisplayText(text.slice(0, currentIndex))
-        currentIndex++
+        setDisplayText(text.slice(0, currentIndex));
+        currentIndex++;
       } else {
-        clearInterval(timer)
+        clearInterval(timer);
       }
-    }, speed)
+    }, speed);
 
-    return () => clearInterval(timer)
-  }, [text, speed])
+    return () => clearInterval(timer);
+  }, [text, speed]);
 
   return (
     <span className={className}>
@@ -352,16 +357,16 @@ export const TypingText = ({
         |
       </motion.span>
     </span>
-  )
-}
+  );
+};
 
 // Success checkmark animation
-export const SuccessCheckmark = ({ 
-  visible = false, 
-  size = 24 
-}: { 
-  visible?: boolean
-  size?: number
+export const SuccessCheckmark = ({
+  visible = false,
+  size = 24,
+}: {
+  visible?: boolean;
+  size?: number;
 }) => {
   return (
     <AnimatePresence>
@@ -387,72 +392,72 @@ export const SuccessCheckmark = ({
               strokeLinejoin="round"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: 1 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
+              transition={{ duration: 0.5, ease: 'easeInOut' }}
             />
           </motion.svg>
         </motion.div>
       )}
     </AnimatePresence>
-  )
-}
+  );
+};
 
 // Interactive Card component
-export const InteractiveCard = ({ 
-  children, 
-  className = "", 
+export const InteractiveCard = ({
+  children,
+  className = '',
   onClick,
-  ...props 
-}: { 
-  children: React.ReactNode
-  className?: string
-  onClick?: () => void
+  ...props
+}: {
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
 } & React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <motion.div
       onClick={onClick}
       className={`border rounded-lg transition-all duration-200 ${className}`}
-      whileHover={{ 
-        scale: 1.02, 
-        boxShadow: "0 10px 25px rgba(0,0,0,0.1)" 
+      whileHover={{
+        scale: 1.02,
+        boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
       }}
       whileTap={{ scale: 0.98 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       {...props}
     >
       {children}
     </motion.div>
-  )
-}
+  );
+};
 
 // Ripple Effect component for interactive elements
-export const RippleEffect = ({ 
-  children, 
+export const RippleEffect = ({
+  children,
   onClick,
-  className = "",
-  ...props 
-}: { 
-  children: React.ReactNode
-  onClick?: () => void
-  className?: string
+  className = '',
+  ...props
+}: {
+  children: React.ReactNode;
+  onClick?: () => void;
+  className?: string;
 } & React.HTMLAttributes<HTMLDivElement>) => {
-  const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([])
+  const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([]);
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    
-    const newRipple = { id: Date.now(), x, y }
-    setRipples(prev => [...prev, newRipple])
-    
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const newRipple = { id: Date.now(), x, y };
+    setRipples((prev) => [...prev, newRipple]);
+
     setTimeout(() => {
-      setRipples(prev => prev.filter(ripple => ripple.id !== newRipple.id))
-    }, 600)
-    
-    onClick?.()
-  }
+      setRipples((prev) => prev.filter((ripple) => ripple.id !== newRipple.id));
+    }, 600);
+
+    onClick?.();
+  };
 
   return (
     <motion.div
@@ -464,7 +469,7 @@ export const RippleEffect = ({
     >
       {children}
       <AnimatePresence>
-        {ripples.map(ripple => (
+        {ripples.map((ripple) => (
           <motion.div
             key={ripple.id}
             className="absolute rounded-full bg-white/30 pointer-events-none"
@@ -477,10 +482,10 @@ export const RippleEffect = ({
             initial={{ scale: 0, opacity: 1 }}
             animate={{ scale: 4, opacity: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
           />
         ))}
       </AnimatePresence>
     </motion.div>
-  )
-}
+  );
+};

@@ -1,6 +1,6 @@
 /**
  * Database Configuration
- * 
+ *
  * Database connection pooling and configuration
  */
 
@@ -24,7 +24,9 @@ export function loadDatabaseConfig(): DatabaseConfig {
     url: process.env.DATABASE_URL,
     poolSize: process.env.DB_POOL_SIZE ? parseInt(process.env.DB_POOL_SIZE) : undefined,
     idleTimeout: process.env.DB_IDLE_TIMEOUT ? parseInt(process.env.DB_IDLE_TIMEOUT) : undefined,
-    connectionTimeout: process.env.DB_CONNECTION_TIMEOUT ? parseInt(process.env.DB_CONNECTION_TIMEOUT) : undefined,
+    connectionTimeout: process.env.DB_CONNECTION_TIMEOUT
+      ? parseInt(process.env.DB_CONNECTION_TIMEOUT)
+      : undefined,
     ssl: process.env.DB_SSL !== 'false',
   });
 

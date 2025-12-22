@@ -33,29 +33,30 @@ interface ValidationResult {
 async function validateLicense(brandId: number): Promise<ValidationResult> {
   try {
     const result = await db.select().from(brands).where(eq(brands.id, brandId)).limit(1);
-    
+
     if (!result.length) {
       return {
         valid: false,
         error: 'Brand not found in system',
       };
     }
-    
+
     const brand = result[0];
-    
+
     if (brand.status !== 'active') {
       return {
         valid: false,
         error: 'Brand license is inactive',
       };
     }
-    
+
     return {
       valid: true,
       brandName: brand.name,
-      tier: (typeof brand.metadata === 'object' && brand.metadata !== null && 'tier' in brand.metadata) 
-        ? String(brand.metadata.tier) 
-        : 'standard',
+      tier:
+        typeof brand.metadata === 'object' && brand.metadata !== null && 'tier' in brand.metadata
+          ? String(brand.metadata.tier)
+          : 'standard',
       licenseStatus: 'active',
     };
   } catch (error) {
@@ -71,9 +72,14 @@ async function validateLicense(brandId: number): Promise<ValidationResult> {
  * Creates deployment record in database
  * Loop Collapse Check: Persists deployment state before external triggers
  */
-async function createDeploymentRecord(data: z.infer<typeof IntegrationRequestSchema> & { validationResult: ValidationResult; brandIdNum: number }) {
+async function createDeploymentRecord(
+  data: z.infer<typeof IntegrationRequestSchema> & {
+    validationResult: ValidationResult;
+    brandIdNum: number;
+  }
+) {
   const deploymentId = `deploy_${Date.now()}_${data.brandIdNum.toString().padStart(8, '0')}`;
-  
+
   try {
     await db.insert(integrationDeployments).values({
       id: deploymentId,
@@ -83,7 +89,7 @@ async function createDeploymentRecord(data: z.infer<typeof IntegrationRequestSch
       status: 'pending',
       metadata: data.metadata || {},
     });
-    
+
     console.log('🚀 Deployment record created:', {
       deploymentId,
       userId: data.userId,
@@ -91,7 +97,7 @@ async function createDeploymentRecord(data: z.infer<typeof IntegrationRequestSch
       brandName: data.validationResult.brandName,
       timestamp: new Date().toISOString(),
     });
-    
+
     return deploymentId;
   } catch (error) {
     console.error('Error creating deployment record:', error);
@@ -105,13 +111,14 @@ async function createDeploymentRecord(data: z.infer<typeof IntegrationRequestSch
  */
 async function triggerExternalIntegrations(deploymentId: string, brandId: number) {
   console.log(`[${deploymentId}] Triggering external integrations for brand ${brandId}`);
-  
+
   try {
     // Simulate async processing (Phase 2-5 will replace with actual API calls)
-    await new Promise(resolve => setTimeout(resolve, EXTERNAL_INTEGRATION_TIMEOUT_MS));
-    
+    await new Promise((resolve) => setTimeout(resolve, EXTERNAL_INTEGRATION_TIMEOUT_MS));
+
     // Update deployment status to success
-    await db.update(integrationDeployments)
+    await db
+      .update(integrationDeployments)
       .set({
         status: 'success',
         deploymentUrl: `https://fruitful-global-deployment.faa.zone/integrations/${deploymentId}`,
@@ -119,12 +126,13 @@ async function triggerExternalIntegrations(deploymentId: string, brandId: number
         updatedAt: new Date(),
       })
       .where(eq(integrationDeployments.id, deploymentId));
-    
+
     console.log(`[${deploymentId}] Deployment completed successfully`);
   } catch (error) {
     console.error(`[${deploymentId}] External integration error:`, error);
-    
-    await db.update(integrationDeployments)
+
+    await db
+      .update(integrationDeployments)
       .set({
         status: 'failed',
         errorMessage: (error as Error).message,
@@ -144,7 +152,7 @@ function getDeploymentSteps(status: string) {
     { name: 'Build Integration Package', completed: status === 'success' || status === 'failed' },
     { name: 'Deploy to Production', completed: status === 'success' },
   ];
-  
+
   return steps;
 }
 
@@ -158,18 +166,18 @@ export function registerIntegrationWebhook(app: Router) {
     try {
       // Step 1: Validate request payload
       const data = IntegrationRequestSchema.parse(req.body);
-      
+
       console.log('📦 Integration request received:', {
         userId: data.userId,
         brandId: data.brandId,
         type: data.integrationType,
       });
-      
+
       // Convert brandId from UUID string to integer for database lookup
       // In the problem statement, brandId is UUID but our brands table uses serial integer
       // We'll need to handle this by extracting a numeric ID or using a different approach
       // For now, we'll try to parse it as an integer if possible, or find by UUID in metadata
-      
+
       let brandIdNum: number;
       try {
         // Parse brand ID as integer (radix 10 to avoid octal interpretation)
@@ -187,10 +195,10 @@ export function registerIntegrationWebhook(app: Router) {
           error: 'Invalid brand ID format',
         });
       }
-      
+
       // Step 2: LOOP COLLAPSE - Validate license before proceeding
       const validationResult = await validateLicense(brandIdNum);
-      
+
       if (!validationResult.valid) {
         console.error('❌ License validation failed:', validationResult.error);
         return res.status(404).json({
@@ -198,19 +206,19 @@ export function registerIntegrationWebhook(app: Router) {
           error: validationResult.error || 'License validation failed',
         });
       }
-      
+
       console.log('✅ License validated:', {
         brandName: validationResult.brandName,
         tier: validationResult.tier,
       });
-      
+
       // Step 3: LOOP COLLAPSE - Create deployment record
       const deploymentId = await createDeploymentRecord({
         ...data,
         brandIdNum,
         validationResult,
       });
-      
+
       // Step 4: Return success response
       const response: IntegrationResponse = {
         success: true,
@@ -220,19 +228,18 @@ export function registerIntegrationWebhook(app: Router) {
         estimatedTime: '3-5 minutes',
         statusUrl: `/api/deployment/status/${deploymentId}`,
       };
-      
+
       console.log('🎉 Integration queued successfully:', deploymentId);
-      
+
       res.json(response);
-      
+
       // Step 5: Trigger async deployment (non-blocking)
       // Using process.nextTick for better error handling
       process.nextTick(() => {
-        triggerExternalIntegrations(deploymentId, brandIdNum).catch(error => {
+        triggerExternalIntegrations(deploymentId, brandIdNum).catch((error) => {
           console.error(`[${deploymentId}] Unhandled error in background processing:`, error);
         });
       });
-      
     } catch (error) {
       if (error instanceof z.ZodError) {
         console.error('❌ Validation error:', error.errors);
@@ -242,7 +249,7 @@ export function registerIntegrationWebhook(app: Router) {
           details: error.errors,
         });
       }
-      
+
       console.error('❌ Integration webhook error:', error);
       res.status(500).json({
         success: false,
@@ -250,12 +257,12 @@ export function registerIntegrationWebhook(app: Router) {
       });
     }
   });
-  
+
   // Deployment status endpoint
   app.get('/api/deployment/status/:deploymentId', async (req: Request, res: Response) => {
     try {
       const { deploymentId } = req.params;
-      
+
       const result = await db
         .select({
           deployment: integrationDeployments,
@@ -265,16 +272,16 @@ export function registerIntegrationWebhook(app: Router) {
         .leftJoin(brands, eq(integrationDeployments.brandId, brands.id))
         .where(eq(integrationDeployments.id, deploymentId))
         .limit(1);
-      
+
       if (!result.length) {
         return res.status(404).json({
           success: false,
           error: 'Deployment not found',
         });
       }
-      
+
       const { deployment, brand } = result[0];
-      
+
       res.json({
         success: true,
         deploymentId: deployment.id,
@@ -287,7 +294,6 @@ export function registerIntegrationWebhook(app: Router) {
         completedAt: deployment.completedAt,
         steps: getDeploymentSteps(deployment.status),
       });
-      
     } catch (error) {
       console.error('Status check error:', error);
       res.status(500).json({
@@ -296,14 +302,14 @@ export function registerIntegrationWebhook(app: Router) {
       });
     }
   });
-  
+
   // User deployments endpoint
   app.get('/api/integration/user-deployments', async (req: Request, res: Response) => {
     try {
       // TODO: Replace with actual authenticated user ID from session/JWT when auth is implemented
       // For Phase 2 demo purposes only - all users see the same deployments
       const userId = 'demo-user-123';
-      
+
       const result = await db
         .select({
           deployment: integrationDeployments,
@@ -314,7 +320,7 @@ export function registerIntegrationWebhook(app: Router) {
         .where(eq(integrationDeployments.userId, userId))
         .orderBy(desc(integrationDeployments.createdAt))
         .limit(50);
-      
+
       const deploymentsWithSteps = result.map((row) => ({
         id: row.deployment.id,
         user_id: row.deployment.userId,
@@ -328,7 +334,7 @@ export function registerIntegrationWebhook(app: Router) {
         completed_at: row.deployment.completedAt || undefined,
         steps: getDeploymentSteps(row.deployment.status),
       }));
-      
+
       res.json({
         success: true,
         deployments: deploymentsWithSteps,
@@ -338,7 +344,7 @@ export function registerIntegrationWebhook(app: Router) {
       res.status(500).json({ success: false, error: 'Failed to fetch deployments' });
     }
   });
-  
+
   // Health check endpoint for integration service
   app.get('/api/integration/health', (req: Request, res: Response) => {
     res.json({

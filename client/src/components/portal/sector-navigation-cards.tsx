@@ -1,51 +1,52 @@
-import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { useLocation } from "wouter"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { ChevronRight, BarChart3, TrendingUp, Users, Settings } from "lucide-react"
-import { motion } from "framer-motion"
-import SectorTransitionLoader from "@/components/loading/SectorTransitionLoader"
-import { useSectorTransition } from "@/hooks/useSectorTransition"
-import type { Sector, Brand } from "@shared/schema"
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useLocation } from 'wouter';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { ChevronRight, BarChart3, TrendingUp, Users, Settings } from 'lucide-react';
+import { motion } from 'framer-motion';
+import SectorTransitionLoader from '@/components/loading/SectorTransitionLoader';
+import { useSectorTransition } from '@/hooks/useSectorTransition';
+import type { Sector, Brand } from '@shared/schema';
 
 interface SectorNavigationCardsProps {
-  onSectorSelect: (sectorId: string) => void
+  onSectorSelect: (sectorId: string) => void;
 }
 
 export function SectorNavigationCards({ onSectorSelect }: SectorNavigationCardsProps) {
-  const [hoveredSector, setHoveredSector] = useState<string | null>(null)
-  const [, setLocation] = useLocation()
-  const { isTransitioning, currentSector, targetSector, startTransition, completeTransition } = useSectorTransition()
+  const [hoveredSector, setHoveredSector] = useState<string | null>(null);
+  const [, setLocation] = useLocation();
+  const { isTransitioning, currentSector, targetSector, startTransition, completeTransition } =
+    useSectorTransition();
 
   const { data: sectors = [] } = useQuery<Sector[]>({
-    queryKey: ["/api/sectors"],
-  })
+    queryKey: ['/api/sectors'],
+  });
 
   const { data: brands = [] } = useQuery<Brand[]>({
-    queryKey: ["/api/brands"],
-  })
+    queryKey: ['/api/brands'],
+  });
 
   // Get sector statistics
   const getSectorStats = (sectorId: number) => {
-    const sectorBrands = brands.filter(brand => brand.sectorId === sectorId)
+    const sectorBrands = brands.filter((brand) => brand.sectorId === sectorId);
     return {
       brandCount: sectorBrands.length,
-      activeCount: sectorBrands.filter(brand => brand.status === 'active').length,
-      coreCount: sectorBrands.filter(brand => brand.isCore).length
-    }
-  }
+      activeCount: sectorBrands.filter((brand) => brand.status === 'active').length,
+      coreCount: sectorBrands.filter((brand) => brand.isCore).length,
+    };
+  };
 
   // Create sector slug for navigation (consistent with dashboard)
   const createSectorSlug = (sectorName: string) => {
     return sectorName
       .toLowerCase()
       .replace(/[^a-z0-9]/g, '') // Remove ALL special chars and spaces
-      .replace(/^[⚡🌱💼🏢📦🔧🎮🎨🎭🍎♻️🎵💊⚡🏠]/g, '') // Remove emoji prefixes
-  }
+      .replace(/^[⚡🌱💼🏢📦🔧🎮🎨🎭🍎♻️🎵💊⚡🏠]/g, ''); // Remove emoji prefixes
+  };
 
-  const availableSectors = sectors.filter(sector => sector.name && sector.name.trim() !== "")
+  const availableSectors = sectors.filter((sector) => sector.name && sector.name.trim() !== '');
 
   return (
     <div className="space-y-6">
@@ -54,15 +55,16 @@ export function SectorNavigationCards({ onSectorSelect }: SectorNavigationCardsP
           Sector Dashboard Access
         </h2>
         <p className="text-gray-400 max-w-2xl mx-auto">
-          Choose a sector to access its dedicated dashboard with comprehensive analytics, brand management, and performance metrics.
+          Choose a sector to access its dedicated dashboard with comprehensive analytics, brand
+          management, and performance metrics.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {availableSectors.map((sector, index) => {
-          const stats = getSectorStats(sector.id)
-          const sectorSlug = createSectorSlug(sector.name)
-          
+          const stats = getSectorStats(sector.id);
+          const sectorSlug = createSectorSlug(sector.name);
+
           return (
             <motion.div
               key={sector.id}
@@ -76,22 +78,23 @@ export function SectorNavigationCards({ onSectorSelect }: SectorNavigationCardsP
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between text-white">
                     <div className="flex items-center gap-3">
-                      <span className="text-2xl">{sector.emoji || "🔧"}</span>
+                      <span className="text-2xl">{sector.emoji || '🔧'}</span>
                       <div>
                         <div className="text-lg font-bold">{sector.name}</div>
                         <div className="text-sm text-gray-400 font-normal">
-                          {sector.description || "Sector management dashboard"}
+                          {sector.description || 'Sector management dashboard'}
                         </div>
                       </div>
                     </div>
                     <div className="flex flex-col items-end gap-1">
                       {sector.price && (
-                        <div className="text-amber-400 font-bold text-xl">
-                          ${sector.price}
-                        </div>
+                        <div className="text-amber-400 font-bold text-xl">${sector.price}</div>
                       )}
                       {(sector.metadata as any)?.tier && (
-                        <Badge variant="secondary" className="text-xs bg-purple-600 text-white border-purple-500">
+                        <Badge
+                          variant="secondary"
+                          className="text-xs bg-purple-600 text-white border-purple-500"
+                        >
                           {(sector.metadata as any).tier}
                         </Badge>
                       )}
@@ -139,21 +142,23 @@ export function SectorNavigationCards({ onSectorSelect }: SectorNavigationCardsP
                   </div>
 
                   {/* Action Button */}
-                  <Button 
+                  <Button
                     className="w-full bg-gradient-to-r from-green-500 to-cyan-500 hover:from-green-600 hover:to-cyan-600 text-white font-bold"
                     onClick={(e) => {
-                      e.preventDefault()
-                      console.log(`🎯 SECTOR DASHBOARD ACCESS:`, sector.name, sector.id)
-                      
+                      e.preventDefault();
+                      console.log(`🎯 SECTOR DASHBOARD ACCESS:`, sector.name, sector.id);
+
                       // Navigate immediately to sector dashboard
-                      setLocation(`/sector/${sector.id}`)
+                      setLocation(`/sector/${sector.id}`);
                     }}
                   >
                     <span className="flex items-center justify-center gap-2">
                       Access Dashboard
-                      <ChevronRight className={`h-4 w-4 transition-transform ${
-                        hoveredSector === sector.id.toString() ? 'translate-x-1' : ''
-                      }`} />
+                      <ChevronRight
+                        className={`h-4 w-4 transition-transform ${
+                          hoveredSector === sector.id.toString() ? 'translate-x-1' : ''
+                        }`}
+                      />
                     </span>
                   </Button>
 
@@ -166,7 +171,7 @@ export function SectorNavigationCards({ onSectorSelect }: SectorNavigationCardsP
                 </CardContent>
               </Card>
             </motion.div>
-          )
+          );
         })}
       </div>
 
@@ -190,5 +195,5 @@ export function SectorNavigationCards({ onSectorSelect }: SectorNavigationCardsP
         onComplete={completeTransition}
       />
     </div>
-  )
+  );
 }

@@ -3,7 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useState } from 'react';
 import { CurrencyConverter } from '@/components/ui/currency-converter';
 import { Search, Filter, BarChart3, Zap, Eye } from 'lucide-react';
@@ -14,12 +20,12 @@ export function CompleteSectorListing() {
 
   const { data: sectors = [], isLoading } = useQuery({
     queryKey: ['/api/sectors'],
-    refetchInterval: 30000
+    refetchInterval: 30000,
   });
 
   const { data: sectorBreakdown = [] } = useQuery({
     queryKey: ['/api/admin-panel/sector-breakdown'],
-    refetchInterval: 30000
+    refetchInterval: 30000,
   });
 
   // Combine sectors with breakdown data
@@ -30,15 +36,16 @@ export function CompleteSectorListing() {
       coreBrands: breakdown?.coreBrands || 0,
       totalNodes: breakdown?.totalNodes || 0,
       monthlyFee: breakdown?.monthlyFee || 79,
-      tier: breakdown?.tier || 'A'
+      tier: breakdown?.tier || 'A',
     };
   });
 
   // Filter and sort
   const filteredSectors = enrichedSectors
-    .filter((sector: any) => 
-      sector.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      sector.description?.toLowerCase().includes(searchTerm.toLowerCase())
+    .filter(
+      (sector: any) =>
+        sector.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        sector.description?.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .sort((a: any, b: any) => {
       switch (sortBy) {
@@ -57,11 +64,16 @@ export function CompleteSectorListing() {
 
   const getTierColor = (tier: string) => {
     switch (tier) {
-      case 'A++': return 'bg-purple-600 text-white';
-      case 'A+': return 'bg-blue-600 text-white';
-      case 'A': return 'bg-green-600 text-white';
-      case 'B+': return 'bg-orange-600 text-white';
-      default: return 'bg-gray-600 text-white';
+      case 'A++':
+        return 'bg-purple-600 text-white';
+      case 'A+':
+        return 'bg-blue-600 text-white';
+      case 'A':
+        return 'bg-green-600 text-white';
+      case 'B+':
+        return 'bg-orange-600 text-white';
+      default:
+        return 'bg-gray-600 text-white';
     }
   };
 
@@ -138,7 +150,7 @@ export function CompleteSectorListing() {
                 </div>
               </div>
             </CardHeader>
-            
+
             <CardContent className="space-y-3">
               {/* Metrics */}
               <div className="grid grid-cols-2 gap-4 text-sm">
@@ -212,8 +224,11 @@ export function CompleteSectorListing() {
             </div>
             <div>
               <div className="text-2xl font-bold">
-                <CurrencyConverter 
-                  usdAmount={Math.round(filteredSectors.reduce((sum: number, s: any) => sum + s.monthlyFee, 0) / filteredSectors.length)} 
+                <CurrencyConverter
+                  usdAmount={Math.round(
+                    filteredSectors.reduce((sum: number, s: any) => sum + s.monthlyFee, 0) /
+                      filteredSectors.length
+                  )}
                   showConverter={false}
                 />
               </div>

@@ -10,7 +10,7 @@ import {
   DEPLOYMENT_MESSAGES,
   getProtocolStatus,
   getGitHubProfilePulse,
-  type NoodleBadBoysProtocol
+  type NoodleBadBoysProtocol,
 } from '../../shared/bad-boys-noodle-protocol';
 
 describe('Bad Boys Noodle Protocol', () => {
@@ -29,7 +29,7 @@ describe('Bad Boys Noodle Protocol', () => {
 
     it('should have valid deployment sequence phases', () => {
       const { phase1, phase2, phase3 } = NOODLE_BAD_BOYS_PROTOCOL.deploymentSequence;
-      
+
       // Phase 1: Rhino Strike
       expect(phase1.action).toBe('RHINO_STRIKE');
       expect(phase1.timing).toBe(0.08);
@@ -51,7 +51,7 @@ describe('Bad Boys Noodle Protocol', () => {
 
     it('should have all achievements completed', () => {
       const achievements = NOODLE_BAD_BOYS_PROTOCOL.achievements;
-      
+
       expect(achievements.badBoysMaster).toBe(true);
       expect(achievements.gorillaMountainFoxApproval).toBe(true);
       expect(achievements.rhinoStrikeSynchronized).toBe(true);
@@ -64,7 +64,7 @@ describe('Bad Boys Noodle Protocol', () => {
   describe('Protocol Status Checker', () => {
     it('should return fully operational status', () => {
       const status = getProtocolStatus();
-      
+
       expect(status.isFullyOperational).toBe(true);
       expect(status.completionPercentage).toBe(100);
       expect(status.status).toBe('✅ OPERATIONAL');
@@ -81,7 +81,7 @@ describe('Bad Boys Noodle Protocol', () => {
           antLatticeDancing: false,
           tShirtWhiteComplete: false,
           repos84Ready: false,
-        }
+        },
       };
 
       const status = getProtocolStatus(partialProtocol);
@@ -94,7 +94,7 @@ describe('Bad Boys Noodle Protocol', () => {
   describe('GitHub Profile Pulse', () => {
     it('should generate correct profile pulse display', () => {
       const pulse = getGitHubProfilePulse();
-      
+
       expect(pulse.noodleStatus).toContain('BAD_BOYS_HUMMING');
       expect(pulse.noodleStatus).toContain('COMPLETE');
       expect(pulse.rhinoStrikes).toContain('0.08s');
@@ -152,7 +152,7 @@ describe('Bad Boys Noodle Protocol', () => {
       const validCertifications: Array<'MASTERED' | 'IN_PROGRESS' | 'PENDING'> = [
         'MASTERED',
         'IN_PROGRESS',
-        'PENDING'
+        'PENDING',
       ];
       expect(validCertifications).toContain(NOODLE_BAD_BOYS_PROTOCOL.soundtrack.certification);
     });
@@ -161,7 +161,7 @@ describe('Bad Boys Noodle Protocol', () => {
       const validSkills: Array<'BAD_BOYS_HUMMING' | 'TRAINING' | 'IDLE'> = [
         'BAD_BOYS_HUMMING',
         'TRAINING',
-        'IDLE'
+        'IDLE',
       ];
       expect(validSkills).toContain(NOODLE_BAD_BOYS_PROTOCOL.noodleStatus.skill);
     });
@@ -170,7 +170,7 @@ describe('Bad Boys Noodle Protocol', () => {
       const validMasteries: Array<'COMPLETE' | 'PARTIAL' | 'NONE'> = [
         'COMPLETE',
         'PARTIAL',
-        'NONE'
+        'NONE',
       ];
       expect(validMasteries).toContain(NOODLE_BAD_BOYS_PROTOCOL.noodleStatus.mastery);
     });

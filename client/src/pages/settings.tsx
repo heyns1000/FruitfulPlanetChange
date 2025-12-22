@@ -1,52 +1,58 @@
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Switch } from "@/components/ui/switch"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { Settings, User, Shield, Globe, Bell, Database, Key, Monitor } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
+import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Settings, User, Shield, Globe, Bell, Database, Key, Monitor } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function SettingsPage() {
   const [userSettings, setUserSettings] = useState({
-    displayName: "Fruitful Admin",
-    email: "admin@fruitfulcratedance.com",
-    timezone: "Africa/Johannesburg",
-    language: "en",
+    displayName: 'Fruitful Admin',
+    email: 'admin@fruitfulcratedance.com',
+    timezone: 'Africa/Johannesburg',
+    language: 'en',
     notifications: true,
     darkMode: true,
-    autoSave: true
-  })
+    autoSave: true,
+  });
 
   const [dnsSettings, setDnsSettings] = useState({
-    primaryDns: "8.8.8.8",
-    secondaryDns: "8.8.4.4",
-    customDomain: "www.fruitfulcratedance.com",
+    primaryDns: '8.8.8.8',
+    secondaryDns: '8.8.4.4',
+    customDomain: 'www.fruitfulcratedance.com',
     sslEnabled: true,
-    cdnEnabled: true
-  })
+    cdnEnabled: true,
+  });
 
   const [systemSettings, setSystemSettings] = useState({
-    cacheTimeout: "300",
-    maxConnections: "1000",
+    cacheTimeout: '300',
+    maxConnections: '1000',
     debugMode: false,
     maintenanceMode: false,
     backupEnabled: true,
-    compressionEnabled: true
-  })
+    compressionEnabled: true,
+  });
 
-  const { toast } = useToast()
+  const { toast } = useToast();
 
   const handleSaveSettings = (section: string) => {
     toast({
-      title: "Settings Updated",
+      title: 'Settings Updated',
       description: `${section} settings have been saved successfully.`,
-    })
-  }
+    });
+  };
 
   return (
     <div className="space-y-8">
@@ -99,7 +105,9 @@ export default function SettingsPage() {
                   <Input
                     id="displayName"
                     value={userSettings.displayName}
-                    onChange={(e) => setUserSettings(prev => ({ ...prev, displayName: e.target.value }))}
+                    onChange={(e) =>
+                      setUserSettings((prev) => ({ ...prev, displayName: e.target.value }))
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -108,7 +116,9 @@ export default function SettingsPage() {
                     id="email"
                     type="email"
                     value={userSettings.email}
-                    onChange={(e) => setUserSettings(prev => ({ ...prev, email: e.target.value }))}
+                    onChange={(e) =>
+                      setUserSettings((prev) => ({ ...prev, email: e.target.value }))
+                    }
                   />
                 </div>
               </div>
@@ -116,12 +126,19 @@ export default function SettingsPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="timezone">Timezone</Label>
-                  <Select value={userSettings.timezone} onValueChange={(value) => setUserSettings(prev => ({ ...prev, timezone: value }))}>
+                  <Select
+                    value={userSettings.timezone}
+                    onValueChange={(value) =>
+                      setUserSettings((prev) => ({ ...prev, timezone: value }))
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Africa/Johannesburg">Africa/Johannesburg (SAST)</SelectItem>
+                      <SelectItem value="Africa/Johannesburg">
+                        Africa/Johannesburg (SAST)
+                      </SelectItem>
                       <SelectItem value="UTC">UTC</SelectItem>
                       <SelectItem value="America/New_York">America/New_York (EST)</SelectItem>
                       <SelectItem value="Europe/London">Europe/London (GMT)</SelectItem>
@@ -130,7 +147,12 @@ export default function SettingsPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="language">Language</Label>
-                  <Select value={userSettings.language} onValueChange={(value) => setUserSettings(prev => ({ ...prev, language: value }))}>
+                  <Select
+                    value={userSettings.language}
+                    onValueChange={(value) =>
+                      setUserSettings((prev) => ({ ...prev, language: value }))
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -151,11 +173,15 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
                       <Label>Enable Notifications</Label>
-                      <p className="text-sm text-muted-foreground">Receive alerts for system events</p>
+                      <p className="text-sm text-muted-foreground">
+                        Receive alerts for system events
+                      </p>
                     </div>
                     <Switch
                       checked={userSettings.notifications}
-                      onCheckedChange={(checked) => setUserSettings(prev => ({ ...prev, notifications: checked }))}
+                      onCheckedChange={(checked) =>
+                        setUserSettings((prev) => ({ ...prev, notifications: checked }))
+                      }
                     />
                   </div>
                   <div className="flex items-center justify-between">
@@ -165,7 +191,9 @@ export default function SettingsPage() {
                     </div>
                     <Switch
                       checked={userSettings.darkMode}
-                      onCheckedChange={(checked) => setUserSettings(prev => ({ ...prev, darkMode: checked }))}
+                      onCheckedChange={(checked) =>
+                        setUserSettings((prev) => ({ ...prev, darkMode: checked }))
+                      }
                     />
                   </div>
                   <div className="flex items-center justify-between">
@@ -175,13 +203,15 @@ export default function SettingsPage() {
                     </div>
                     <Switch
                       checked={userSettings.autoSave}
-                      onCheckedChange={(checked) => setUserSettings(prev => ({ ...prev, autoSave: checked }))}
+                      onCheckedChange={(checked) =>
+                        setUserSettings((prev) => ({ ...prev, autoSave: checked }))
+                      }
                     />
                   </div>
                 </div>
               </div>
 
-              <Button onClick={() => handleSaveSettings("User")} className="w-full">
+              <Button onClick={() => handleSaveSettings('User')} className="w-full">
                 Save User Settings
               </Button>
             </CardContent>
@@ -204,7 +234,9 @@ export default function SettingsPage() {
                   <Input
                     id="primaryDns"
                     value={dnsSettings.primaryDns}
-                    onChange={(e) => setDnsSettings(prev => ({ ...prev, primaryDns: e.target.value }))}
+                    onChange={(e) =>
+                      setDnsSettings((prev) => ({ ...prev, primaryDns: e.target.value }))
+                    }
                     placeholder="8.8.8.8"
                   />
                 </div>
@@ -213,7 +245,9 @@ export default function SettingsPage() {
                   <Input
                     id="secondaryDns"
                     value={dnsSettings.secondaryDns}
-                    onChange={(e) => setDnsSettings(prev => ({ ...prev, secondaryDns: e.target.value }))}
+                    onChange={(e) =>
+                      setDnsSettings((prev) => ({ ...prev, secondaryDns: e.target.value }))
+                    }
                     placeholder="8.8.4.4"
                   />
                 </div>
@@ -224,7 +258,9 @@ export default function SettingsPage() {
                 <Input
                   id="customDomain"
                   value={dnsSettings.customDomain}
-                  onChange={(e) => setDnsSettings(prev => ({ ...prev, customDomain: e.target.value }))}
+                  onChange={(e) =>
+                    setDnsSettings((prev) => ({ ...prev, customDomain: e.target.value }))
+                  }
                   placeholder="www.fruitfulcratedance.com"
                 />
                 <p className="text-sm text-muted-foreground">
@@ -240,33 +276,45 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
                       <Label>SSL/TLS Encryption</Label>
-                      <p className="text-sm text-muted-foreground">Enable HTTPS for secure connections</p>
+                      <p className="text-sm text-muted-foreground">
+                        Enable HTTPS for secure connections
+                      </p>
                     </div>
                     <div className="flex items-center gap-2">
                       <Switch
                         checked={dnsSettings.sslEnabled}
-                        onCheckedChange={(checked) => setDnsSettings(prev => ({ ...prev, sslEnabled: checked }))}
+                        onCheckedChange={(checked) =>
+                          setDnsSettings((prev) => ({ ...prev, sslEnabled: checked }))
+                        }
                       />
-                      <Badge variant="outline" className="text-green-600">Active</Badge>
+                      <Badge variant="outline" className="text-green-600">
+                        Active
+                      </Badge>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
                       <Label>CDN Acceleration</Label>
-                      <p className="text-sm text-muted-foreground">Content delivery network optimization</p>
+                      <p className="text-sm text-muted-foreground">
+                        Content delivery network optimization
+                      </p>
                     </div>
                     <div className="flex items-center gap-2">
                       <Switch
                         checked={dnsSettings.cdnEnabled}
-                        onCheckedChange={(checked) => setDnsSettings(prev => ({ ...prev, cdnEnabled: checked }))}
+                        onCheckedChange={(checked) =>
+                          setDnsSettings((prev) => ({ ...prev, cdnEnabled: checked }))
+                        }
                       />
-                      <Badge variant="outline" className="text-blue-600">Global</Badge>
+                      <Badge variant="outline" className="text-blue-600">
+                        Global
+                      </Badge>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <Button onClick={() => handleSaveSettings("DNS")} className="w-full">
+              <Button onClick={() => handleSaveSettings('DNS')} className="w-full">
                 Save DNS Settings
               </Button>
             </CardContent>
@@ -289,7 +337,9 @@ export default function SettingsPage() {
                   <Input
                     id="cacheTimeout"
                     value={systemSettings.cacheTimeout}
-                    onChange={(e) => setSystemSettings(prev => ({ ...prev, cacheTimeout: e.target.value }))}
+                    onChange={(e) =>
+                      setSystemSettings((prev) => ({ ...prev, cacheTimeout: e.target.value }))
+                    }
                     type="number"
                   />
                 </div>
@@ -298,7 +348,9 @@ export default function SettingsPage() {
                   <Input
                     id="maxConnections"
                     value={systemSettings.maxConnections}
-                    onChange={(e) => setSystemSettings(prev => ({ ...prev, maxConnections: e.target.value }))}
+                    onChange={(e) =>
+                      setSystemSettings((prev) => ({ ...prev, maxConnections: e.target.value }))
+                    }
                     type="number"
                   />
                 </div>
@@ -312,21 +364,29 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
                       <Label>Debug Mode</Label>
-                      <p className="text-sm text-muted-foreground">Enable detailed logging and debugging</p>
+                      <p className="text-sm text-muted-foreground">
+                        Enable detailed logging and debugging
+                      </p>
                     </div>
                     <Switch
                       checked={systemSettings.debugMode}
-                      onCheckedChange={(checked) => setSystemSettings(prev => ({ ...prev, debugMode: checked }))}
+                      onCheckedChange={(checked) =>
+                        setSystemSettings((prev) => ({ ...prev, debugMode: checked }))
+                      }
                     />
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
                       <Label>Maintenance Mode</Label>
-                      <p className="text-sm text-muted-foreground">Put system in maintenance mode</p>
+                      <p className="text-sm text-muted-foreground">
+                        Put system in maintenance mode
+                      </p>
                     </div>
                     <Switch
                       checked={systemSettings.maintenanceMode}
-                      onCheckedChange={(checked) => setSystemSettings(prev => ({ ...prev, maintenanceMode: checked }))}
+                      onCheckedChange={(checked) =>
+                        setSystemSettings((prev) => ({ ...prev, maintenanceMode: checked }))
+                      }
                     />
                   </div>
                   <div className="flex items-center justify-between">
@@ -336,23 +396,29 @@ export default function SettingsPage() {
                     </div>
                     <Switch
                       checked={systemSettings.backupEnabled}
-                      onCheckedChange={(checked) => setSystemSettings(prev => ({ ...prev, backupEnabled: checked }))}
+                      onCheckedChange={(checked) =>
+                        setSystemSettings((prev) => ({ ...prev, backupEnabled: checked }))
+                      }
                     />
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
                       <Label>Response Compression</Label>
-                      <p className="text-sm text-muted-foreground">Enable gzip compression for responses</p>
+                      <p className="text-sm text-muted-foreground">
+                        Enable gzip compression for responses
+                      </p>
                     </div>
                     <Switch
                       checked={systemSettings.compressionEnabled}
-                      onCheckedChange={(checked) => setSystemSettings(prev => ({ ...prev, compressionEnabled: checked }))}
+                      onCheckedChange={(checked) =>
+                        setSystemSettings((prev) => ({ ...prev, compressionEnabled: checked }))
+                      }
                     />
                   </div>
                 </div>
               </div>
 
-              <Button onClick={() => handleSaveSettings("System")} className="w-full">
+              <Button onClick={() => handleSaveSettings('System')} className="w-full">
                 Save System Settings
               </Button>
             </CardContent>
@@ -377,28 +443,36 @@ export default function SettingsPage() {
                       <Label className="font-medium">PayPal API</Label>
                       <p className="text-sm text-muted-foreground">Payment processing</p>
                     </div>
-                    <Badge variant="outline" className="text-green-600">Active</Badge>
+                    <Badge variant="outline" className="text-green-600">
+                      Active
+                    </Badge>
                   </div>
                   <div className="flex items-center justify-between p-3 border rounded-lg">
                     <div className="space-y-1">
                       <Label className="font-medium">Stripe API</Label>
                       <p className="text-sm text-muted-foreground">Secondary payments</p>
                     </div>
-                    <Badge variant="outline" className="text-green-600">Active</Badge>
+                    <Badge variant="outline" className="text-green-600">
+                      Active
+                    </Badge>
                   </div>
                   <div className="flex items-center justify-between p-3 border rounded-lg">
                     <div className="space-y-1">
                       <Label className="font-medium">Firebase</Label>
                       <p className="text-sm text-muted-foreground">Authentication & database</p>
                     </div>
-                    <Badge variant="outline" className="text-green-600">Active</Badge>
+                    <Badge variant="outline" className="text-green-600">
+                      Active
+                    </Badge>
                   </div>
                   <div className="flex items-center justify-between p-3 border rounded-lg">
                     <div className="space-y-1">
                       <Label className="font-medium">VaultMesh™</Label>
                       <p className="text-sm text-muted-foreground">Security infrastructure</p>
                     </div>
-                    <Badge variant="outline" className="text-blue-600">Secured</Badge>
+                    <Badge variant="outline" className="text-blue-600">
+                      Secured
+                    </Badge>
                   </div>
                 </div>
               </div>
@@ -413,7 +487,9 @@ export default function SettingsPage() {
                       <Label>Two-Factor Authentication</Label>
                       <p className="text-sm text-muted-foreground">Enhanced account security</p>
                     </div>
-                    <Badge variant="outline" className="text-green-600">Enabled</Badge>
+                    <Badge variant="outline" className="text-green-600">
+                      Enabled
+                    </Badge>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
@@ -427,13 +503,15 @@ export default function SettingsPage() {
                       <Label>IP Whitelist</Label>
                       <p className="text-sm text-muted-foreground">Restrict access by IP address</p>
                     </div>
-                    <Badge variant="outline" className="text-orange-600">Configured</Badge>
+                    <Badge variant="outline" className="text-orange-600">
+                      Configured
+                    </Badge>
                   </div>
                 </div>
               </div>
 
               <div className="flex gap-3">
-                <Button onClick={() => handleSaveSettings("Security")} className="flex-1">
+                <Button onClick={() => handleSaveSettings('Security')} className="flex-1">
                   Save Security Settings
                 </Button>
                 <Button variant="outline" className="flex items-center gap-2">
@@ -446,5 +524,5 @@ export default function SettingsPage() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

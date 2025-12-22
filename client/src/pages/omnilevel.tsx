@@ -8,14 +8,16 @@ import { ArrowLeft, Brain, Sparkles, CheckCircle, Zap } from 'lucide-react';
 import { Link } from 'wouter';
 
 export function OmnilevelPage() {
-  const [selectedSectors, setSelectedSectors] = useState<Array<{key: string, data: any}>>([]);
-  const [completionStatus, setCompletionStatus] = useState<'idle' | 'processing' | 'complete'>('idle');
+  const [selectedSectors, setSelectedSectors] = useState<Array<{ key: string; data: any }>>([]);
+  const [completionStatus, setCompletionStatus] = useState<'idle' | 'processing' | 'complete'>(
+    'idle'
+  );
 
   const handleSectorSelect = (sectorKey: string, sectorData: any) => {
-    setSelectedSectors(prev => {
-      const existing = prev.find(s => s.key === sectorKey);
+    setSelectedSectors((prev) => {
+      const existing = prev.find((s) => s.key === sectorKey);
       if (existing) {
-        return prev.filter(s => s.key !== sectorKey);
+        return prev.filter((s) => s.key !== sectorKey);
       }
       return [...prev, { key: sectorKey, data: sectorData }];
     });
@@ -30,7 +32,7 @@ export function OmnilevelPage() {
 
   const processCompletionLogic = () => {
     setCompletionStatus('processing');
-    
+
     // Simulate AI processing
     setTimeout(() => {
       setCompletionStatus('complete');
@@ -123,10 +125,11 @@ export function OmnilevelPage() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {selectedSectors.map(({ key, data }) => (
-                <div key={key} className="p-3 border rounded-lg bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
-                  <div className="font-medium text-blue-900 dark:text-blue-100">
-                    {data.name}
-                  </div>
+                <div
+                  key={key}
+                  className="p-3 border rounded-lg bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800"
+                >
+                  <div className="font-medium text-blue-900 dark:text-blue-100">{data.name}</div>
                   <div className="text-xs text-blue-700 dark:text-blue-300 mt-1">
                     {data.baseUrl}
                   </div>
@@ -144,8 +147,9 @@ export function OmnilevelPage() {
                   <span className="font-medium">Omnilevel Completion Successful!</span>
                 </div>
                 <p className="text-sm text-green-700 dark:text-green-300 mt-2">
-                  AI logic has processed your sector selection and identified optimal cross-sector synergies. 
-                  All {selectedSectors.length} selected sectors are now fully integrated within the ecosystem.
+                  AI logic has processed your sector selection and identified optimal cross-sector
+                  synergies. All {selectedSectors.length} selected sectors are now fully integrated
+                  within the ecosystem.
                 </p>
               </div>
             )}
@@ -157,7 +161,7 @@ export function OmnilevelPage() {
       {selectedSectors.length > 0 && (
         <div className="mb-6">
           <RecommendationPanel
-            selectedSectors={selectedSectors.map(s => s.key)}
+            selectedSectors={selectedSectors.map((s) => s.key)}
             onSectorRecommend={handleRecommendedSectorAdd}
             userProfile={{
               searchHistory: [],
@@ -165,8 +169,8 @@ export function OmnilevelPage() {
               preferences: {
                 businessStage: 'growth',
                 riskTolerance: 'medium',
-                focusAreas: ['ai', 'automation', 'ecosystem']
-              }
+                focusAreas: ['ai', 'automation', 'ecosystem'],
+              },
             }}
           />
         </div>
@@ -175,7 +179,7 @@ export function OmnilevelPage() {
       {/* Main Selector */}
       <OmnilevelSelector
         onSectorSelect={handleSectorSelect}
-        selectedSectors={selectedSectors.map(s => s.key)}
+        selectedSectors={selectedSectors.map((s) => s.key)}
         multiSelect={true}
         showBrands={true}
       />
@@ -193,7 +197,7 @@ export function OmnilevelPage() {
                 AI-Powered Recommendations
               </h4>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Advanced recommendation engine analyzes sector synergies, business compatibility, 
+                Advanced recommendation engine analyzes sector synergies, business compatibility,
                 and strategic value to suggest optimal sector combinations for your ecosystem.
               </p>
             </div>
@@ -203,8 +207,8 @@ export function OmnilevelPage() {
                 Intelligent Analysis
               </h4>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Real-time analysis of cross-sector relationships, technology stack overlaps, 
-                and supply chain completeness to maximize ecosystem efficiency.
+                Real-time analysis of cross-sector relationships, technology stack overlaps, and
+                supply chain completeness to maximize ecosystem efficiency.
               </p>
             </div>
           </div>

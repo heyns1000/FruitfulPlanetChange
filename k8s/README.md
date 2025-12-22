@@ -102,6 +102,7 @@ kubectl rollout undo deployment/fruitfulplanet-app -n fruitfulplanet
 Prometheus metrics are exposed on `/metrics` endpoint (port 5000).
 
 Health checks:
+
 - Liveness probe: `/api/health/liveness`
 - Readiness probe: `/api/health/readiness`
 

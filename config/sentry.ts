@@ -1,6 +1,6 @@
 /**
  * Sentry Configuration
- * 
+ *
  * Error tracking and performance monitoring
  */
 
@@ -43,7 +43,7 @@ export function initSentry(): void {
 
   // In a real implementation:
   // import * as Sentry from '@sentry/node';
-  // 
+  //
   // Sentry.init({
   //   dsn: config.dsn,
   //   environment: config.environment,
@@ -71,7 +71,10 @@ export function captureException(error: Error, context?: Record<string, any>): v
 /**
  * Capture message (stub)
  */
-export function captureMessage(message: string, level: 'info' | 'warning' | 'error' = 'info'): void {
+export function captureMessage(
+  message: string,
+  level: 'info' | 'warning' | 'error' = 'info'
+): void {
   const config = getSentryConfig();
 
   if (!config.enabled) {

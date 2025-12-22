@@ -1,6 +1,6 @@
 /**
  * Security Middleware
- * 
+ *
  * Implements comprehensive security measures:
  * - Helmet.js for security headers
  * - Rate limiting
@@ -26,16 +26,16 @@ export function configureHelmet() {
         defaultSrc: ["'self'"],
         styleSrc: ["'self'", "'unsafe-inline'"],
         scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // Needed for Vite dev
-        imgSrc: ["'self'", "data:", "https:"],
-        connectSrc: ["'self'", "wss:", "ws:"],
-        fontSrc: ["'self'", "data:"],
+        imgSrc: ["'self'", 'data:', 'https:'],
+        connectSrc: ["'self'", 'wss:', 'ws:'],
+        fontSrc: ["'self'", 'data:'],
         objectSrc: ["'none'"],
         mediaSrc: ["'self'"],
         frameSrc: ["'none'"],
       },
     },
     crossOriginEmbedderPolicy: false, // Needed for some third-party integrations
-    crossOriginResourcePolicy: { policy: "cross-origin" },
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
   });
 }
 
@@ -178,10 +178,10 @@ export function validateRequest(req: Request, res: Response, next: NextFunction)
 
   // Check for suspicious patterns in URL
   const suspiciousPatterns = [
-    /\.\./,  // Directory traversal
-    /<script/i,  // Script injection
-    /javascript:/i,  // JavaScript protocol
-    /on\w+=/i,  // Event handlers
+    /\.\./, // Directory traversal
+    /<script/i, // Script injection
+    /javascript:/i, // JavaScript protocol
+    /on\w+=/i, // Event handlers
   ];
 
   for (const pattern of suspiciousPatterns) {
