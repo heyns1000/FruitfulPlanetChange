@@ -1,25 +1,31 @@
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { CreditCard, Shield, Globe, Zap, CheckCircle, AlertTriangle } from "lucide-react"
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { CreditCard, Shield, Globe, Zap, CheckCircle, AlertTriangle } from 'lucide-react';
 
 interface CheckoutPackage {
-  id: string
-  name: string
-  price: number
-  currency: string
-  features: string[]
-  recommended?: boolean
-  popular?: boolean
+  id: string;
+  name: string;
+  price: number;
+  currency: string;
+  features: string[];
+  recommended?: boolean;
+  popular?: boolean;
 }
 
 export function VaultMeshGlobalCheckout() {
-  const [selectedPackage, setSelectedPackage] = useState<string | null>(null)
-  const [paymentMethod, setPaymentMethod] = useState("paypal")
-  const [selectedProduct, setSelectedProduct] = useState<any>(null)
+  const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState('paypal');
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
   // Check for marketplace product selection
   useEffect(() => {
@@ -45,58 +51,58 @@ export function VaultMeshGlobalCheckout() {
         console.error('Error parsing selected product:', error);
       }
     }
-  }, [])
+  }, []);
 
   const packages: CheckoutPackage[] = [
     {
-      id: "wildlife-basic",
-      name: "FlowNature™ Wildlife Basic",
+      id: 'wildlife-basic',
+      name: 'FlowNature™ Wildlife Basic',
       price: 29.99,
-      currency: "USD",
+      currency: 'USD',
       popular: true,
       features: [
-        "Natural flow monitoring",
-        "Ecosystem surveillance",
-        "Wildlife & Habitat protection",
-        "Basic conservation tools",
-        "Community reporting"
-      ]
+        'Natural flow monitoring',
+        'Ecosystem surveillance',
+        'Wildlife & Habitat protection',
+        'Basic conservation tools',
+        'Community reporting',
+      ],
     },
     {
-      id: "wildlife-preserve", 
-      name: "GridPreserve™ Wildlife Network",
+      id: 'wildlife-preserve',
+      name: 'GridPreserve™ Wildlife Network',
       price: 29.99,
-      currency: "USD",
+      currency: 'USD',
       features: [
-        "Wildlife preservation grid",
-        "Habitat protection zones",
-        "Real-time monitoring",
-        "Conservation analytics",
-        "Preservation reporting"
-      ]
+        'Wildlife preservation grid',
+        'Habitat protection zones',
+        'Real-time monitoring',
+        'Conservation analytics',
+        'Preservation reporting',
+      ],
     },
     {
-      id: "wildlife-protection",
-      name: "ProtectZone™ Advanced Protection",
+      id: 'wildlife-protection',
+      name: 'ProtectZone™ Advanced Protection',
       price: 299.99,
-      currency: "USD",
+      currency: 'USD',
       recommended: true,
       features: [
-        "Advanced protection zones",
-        "Wildlife sanctuaries management", 
-        "Professional conservation tools",
-        "24/7 monitoring systems",
-        "Priority conservation support",
-        "Full ecosystem protection"
-      ]
-    }
-  ]
+        'Advanced protection zones',
+        'Wildlife sanctuaries management',
+        'Professional conservation tools',
+        '24/7 monitoring systems',
+        'Priority conservation support',
+        'Full ecosystem protection',
+      ],
+    },
+  ];
 
   const handlePackageSelect = (packageId: string) => {
-    setSelectedPackage(packageId)
-  }
+    setSelectedPackage(packageId);
+  };
 
-  const selectedPkg = packages.find(pkg => pkg.id === selectedPackage)
+  const selectedPkg = packages.find((pkg) => pkg.id === selectedPackage);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
@@ -115,18 +121,16 @@ export function VaultMeshGlobalCheckout() {
         {/* Package Selection */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           {packages.map((pkg) => (
-            <Card 
+            <Card
               key={pkg.id}
               className={`relative cursor-pointer transition-all duration-300 hover:shadow-lg ${
-                selectedPackage === pkg.id 
-                  ? 'ring-2 ring-cyan-500 shadow-lg' 
-                  : 'hover:shadow-md'
+                selectedPackage === pkg.id ? 'ring-2 ring-cyan-500 shadow-lg' : 'hover:shadow-md'
               } ${
-                pkg.recommended 
-                  ? 'border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20' 
-                  : pkg.popular 
-                  ? 'border-green-200 bg-gradient-to-br from-green-50 to-cyan-50 dark:from-green-900/20 dark:to-cyan-900/20'
-                  : ''
+                pkg.recommended
+                  ? 'border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20'
+                  : pkg.popular
+                    ? 'border-green-200 bg-gradient-to-br from-green-50 to-cyan-50 dark:from-green-900/20 dark:to-cyan-900/20'
+                    : ''
               }`}
               onClick={() => handlePackageSelect(pkg.id)}
             >
@@ -146,7 +150,7 @@ export function VaultMeshGlobalCheckout() {
                   </Badge>
                 </div>
               )}
-              
+
               <CardHeader className="text-center pb-4">
                 <CardTitle className="text-2xl font-bold">{pkg.name}</CardTitle>
                 <div className="text-4xl font-bold text-cyan-600 dark:text-cyan-400">
@@ -154,7 +158,7 @@ export function VaultMeshGlobalCheckout() {
                   <span className="text-lg text-gray-500 font-normal">/month</span>
                 </div>
               </CardHeader>
-              
+
               <CardContent>
                 <ul className="space-y-3">
                   {pkg.features.map((feature, index) => (
@@ -164,8 +168,8 @@ export function VaultMeshGlobalCheckout() {
                     </li>
                   ))}
                 </ul>
-                
-                <Button 
+
+                <Button
                   className={`w-full mt-6 ${
                     selectedPackage === pkg.id
                       ? 'bg-cyan-500 hover:bg-cyan-600'
@@ -192,7 +196,7 @@ export function VaultMeshGlobalCheckout() {
                 Complete your VaultMesh™ subscription
               </p>
             </CardHeader>
-            
+
             <CardContent className="space-y-6">
               {/* Order Summary */}
               <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
@@ -243,8 +247,8 @@ export function VaultMeshGlobalCheckout() {
                       Enterprise Security
                     </h4>
                     <p className="text-sm text-blue-800 dark:text-blue-200 mt-1">
-                      All transactions are secured by VaultMesh™ protocols with end-to-end encryption 
-                      and compliance with international security standards.
+                      All transactions are secured by VaultMesh™ protocols with end-to-end
+                      encryption and compliance with international security standards.
                     </p>
                   </div>
                 </div>
@@ -252,8 +256,8 @@ export function VaultMeshGlobalCheckout() {
 
               {/* Action Buttons */}
               <div className="flex gap-4">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="flex-1"
                   onClick={() => setSelectedPackage(null)}
                 >
@@ -281,7 +285,7 @@ export function VaultMeshGlobalCheckout() {
                 </p>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent className="p-6 text-center">
                 <Globe className="w-12 h-12 text-green-500 mx-auto mb-4" />
@@ -291,7 +295,7 @@ export function VaultMeshGlobalCheckout() {
                 </p>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent className="p-6 text-center">
                 <Zap className="w-12 h-12 text-purple-500 mx-auto mb-4" />
@@ -305,5 +309,5 @@ export function VaultMeshGlobalCheckout() {
         </div>
       </div>
     </div>
-  )
+  );
 }

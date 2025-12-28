@@ -144,9 +144,7 @@
         "artwork_categories_name_unique": {
           "name": "artwork_categories_name_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
+          "columns": ["name"]
         }
       },
       "policies": {},
@@ -253,12 +251,8 @@
           "name": "artwork_orders_artwork_id_artworks_id_fk",
           "tableFrom": "artwork_orders",
           "tableTo": "artworks",
-          "columnsFrom": [
-            "artwork_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["artwork_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -268,9 +262,7 @@
         "artwork_orders_order_id_unique": {
           "name": "artwork_orders_order_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "order_id"
-          ]
+          "columns": ["order_id"]
         }
       },
       "policies": {},
@@ -378,12 +370,8 @@
           "name": "artworks_artist_id_users_id_fk",
           "tableFrom": "artworks",
           "tableTo": "users",
-          "columnsFrom": [
-            "artist_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["artist_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -482,9 +470,7 @@
         "banimal_transactions_transaction_id_unique": {
           "name": "banimal_transactions_transaction_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "transaction_id"
-          ]
+          "columns": ["transaction_id"]
         }
       },
       "policies": {},
@@ -565,12 +551,8 @@
           "name": "brands_sector_id_sectors_id_fk",
           "tableFrom": "brands",
           "tableTo": "sectors",
-          "columnsFrom": [
-            "sector_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["sector_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -654,12 +636,8 @@
           "name": "charitable_distributions_transaction_id_banimal_transactions_transaction_id_fk",
           "tableFrom": "charitable_distributions",
           "tableTo": "banimal_transactions",
-          "columnsFrom": [
-            "transaction_id"
-          ],
-          "columnsTo": [
-            "transaction_id"
-          ],
+          "columnsFrom": ["transaction_id"],
+          "columnsTo": ["transaction_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -774,9 +752,7 @@
         "codenest_repositories_repo_id_unique": {
           "name": "codenest_repositories_repo_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "repo_id"
-          ]
+          "columns": ["repo_id"]
         }
       },
       "policies": {},
@@ -894,9 +870,7 @@
         "ecosystem_pulses_pulse_id_unique": {
           "name": "ecosystem_pulses_pulse_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "pulse_id"
-          ]
+          "columns": ["pulse_id"]
         }
       },
       "policies": {},
@@ -977,12 +951,8 @@
           "name": "family_events_user_id_users_id_fk",
           "tableFrom": "family_events",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1065,12 +1035,8 @@
           "name": "family_members_user_id_users_id_fk",
           "tableFrom": "family_members",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1196,9 +1162,7 @@
         "global_logic_configs_config_id_unique": {
           "name": "global_logic_configs_config_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "config_id"
-          ]
+          "columns": ["config_id"]
         }
       },
       "policies": {},
@@ -1302,12 +1266,8 @@
           "name": "heritage_documents_user_id_users_id_fk",
           "tableFrom": "heritage_documents",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -1315,12 +1275,8 @@
           "name": "heritage_documents_family_member_id_family_members_id_fk",
           "tableFrom": "heritage_documents",
           "tableTo": "family_members",
-          "columnsFrom": [
-            "family_member_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["family_member_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1403,12 +1359,8 @@
           "name": "heritage_metrics_user_id_users_id_fk",
           "tableFrom": "heritage_metrics",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1560,12 +1512,8 @@
           "name": "integration_deployments_brand_id_brands_id_fk",
           "tableFrom": "integration_deployments",
           "tableTo": "brands",
-          "columnsFrom": [
-            "brand_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["brand_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1665,9 +1613,7 @@
         "interstellar_nodes_node_id_unique": {
           "name": "interstellar_nodes_node_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "node_id"
-          ]
+          "columns": ["node_id"]
         }
       },
       "policies": {},
@@ -1834,9 +1780,7 @@
         "media_projects_project_id_unique": {
           "name": "media_projects_project_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "project_id"
-          ]
+          "columns": ["project_id"]
         }
       },
       "policies": {},
@@ -1911,12 +1855,8 @@
           "name": "payments_user_id_users_id_fk",
           "tableFrom": "payments",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -2039,12 +1979,8 @@
           "name": "portfolio_projects_artist_id_users_id_fk",
           "tableFrom": "portfolio_projects",
           "tableTo": "users",
-          "columnsFrom": [
-            "artist_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["artist_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -2124,9 +2060,7 @@
         "processing_engines_engine_id_unique": {
           "name": "processing_engines_engine_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "engine_id"
-          ]
+          "columns": ["engine_id"]
         }
       },
       "policies": {},
@@ -2187,12 +2121,8 @@
           "name": "pulse_history_pulse_id_ecosystem_pulses_pulse_id_fk",
           "tableFrom": "pulse_history",
           "tableTo": "ecosystem_pulses",
-          "columnsFrom": [
-            "pulse_id"
-          ],
-          "columnsTo": [
-            "pulse_id"
-          ],
+          "columnsFrom": ["pulse_id"],
+          "columnsTo": ["pulse_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -2304,9 +2234,7 @@
         "sector_mapping_cache_cache_key_unique": {
           "name": "sector_mapping_cache_cache_key_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "cache_key"
-          ]
+          "columns": ["cache_key"]
         }
       },
       "policies": {},
@@ -2388,12 +2316,8 @@
           "name": "sector_relationships_source_id_sectors_id_fk",
           "tableFrom": "sector_relationships",
           "tableTo": "sectors",
-          "columnsFrom": [
-            "source_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["source_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -2401,12 +2325,8 @@
           "name": "sector_relationships_target_id_sectors_id_fk",
           "tableFrom": "sector_relationships",
           "tableTo": "sectors",
-          "columnsFrom": [
-            "target_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["target_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -2728,9 +2648,7 @@
         "system_status_service_unique": {
           "name": "system_status_service_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "service"
-          ]
+          "columns": ["service"]
         }
       },
       "policies": {},
@@ -2793,9 +2711,7 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -2883,9 +2799,7 @@
         "vault_actions_action_id_unique": {
           "name": "vault_actions_action_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "action_id"
-          ]
+          "columns": ["action_id"]
         }
       },
       "policies": {},
@@ -2981,9 +2895,7 @@
         "vault_trace_network_node_id_unique": {
           "name": "vault_trace_network_node_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "node_id"
-          ]
+          "columns": ["node_id"]
         }
       },
       "policies": {},

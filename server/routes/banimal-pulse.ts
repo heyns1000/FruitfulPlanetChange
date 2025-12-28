@@ -1,15 +1,19 @@
-import type { Express } from "express";
-import { db } from "../db";
-import { ecosystemPulses, pulseHistory, codeNestRepositories, vaultTraceNetwork } from "@shared/schema";
-import { eq, desc } from "drizzle-orm";
-import signalData from "@shared/Signal_To_Chuck.json";
+import type { Express } from 'express';
+import { db } from '../db';
+import {
+  ecosystemPulses,
+  pulseHistory,
+  codeNestRepositories,
+  vaultTraceNetwork,
+} from '@shared/schema';
+import { eq, desc } from 'drizzle-orm';
+import signalData from '@shared/Signal_To_Chuck.json';
 
 /**
  * Banimal Ecosystem Pulse Routes
  * Handles 9-second pulse integration from WordPress connector
  */
 export function registerBanimalPulseRoutes(app: Express) {
-  
   /**
    * POST /api/banimal/pulse
    * Receive and process ecosystem pulse from Banimal WordPress connector
@@ -17,12 +21,12 @@ export function registerBanimalPulseRoutes(app: Express) {
   app.post('/api/banimal/pulse', async (req, res) => {
     try {
       const pulseData = req.body;
-      
+
       // Validate required fields
       if (!pulseData.timestamp) {
-        return res.status(400).json({ 
+        return res.status(400).json({
           error: 'Missing required field: timestamp',
-          status: 'error'
+          status: 'error',
         });
       }
 
@@ -30,21 +34,24 @@ export function registerBanimalPulseRoutes(app: Express) {
       const pulseId = `PULSE-${Date.now()}-${crypto.randomUUID().substring(0, 8)}`;
 
       // Store pulse in database
-      const [pulse] = await db.insert(ecosystemPulses).values({
-        pulseId,
-        timestamp: new Date(pulseData.timestamp),
-        vaultIds: pulseData.vault_ids || [],
-        activeSectors: pulseData.active_sectors || [],
-        brandHealth: pulseData.brand_health || [],
-        codenestDigest: pulseData.codenest_digest || [],
-        signalStrength: pulseData.signal_strength || 100,
-        seedwaveMetadata: pulseData.seedwave_metadata || {},
-        networkGraphData: pulseData.network_graph_data || {},
-        pulseSource: pulseData.source || 'banimal-connector',
-        status: 'active',
-        forwardedToGithub: false,
-        metadata: pulseData.metadata || {},
-      }).returning();
+      const [pulse] = await db
+        .insert(ecosystemPulses)
+        .values({
+          pulseId,
+          timestamp: new Date(pulseData.timestamp),
+          vaultIds: pulseData.vault_ids || [],
+          activeSectors: pulseData.active_sectors || [],
+          brandHealth: pulseData.brand_health || [],
+          codenestDigest: pulseData.codenest_digest || [],
+          signalStrength: pulseData.signal_strength || 100,
+          seedwaveMetadata: pulseData.seedwave_metadata || {},
+          networkGraphData: pulseData.network_graph_data || {},
+          pulseSource: pulseData.source || 'banimal-connector',
+          status: 'active',
+          forwardedToGithub: false,
+          metadata: pulseData.metadata || {},
+        })
+        .returning();
 
       // Log pulse receipt in history
       await db.insert(pulseHistory).values({
@@ -62,20 +69,19 @@ export function registerBanimalPulseRoutes(app: Express) {
         forwarded_to: 'https://github.com/heyns1000',
         timestamp: pulse.timestamp,
         signal_strength: pulse.signalStrength,
-        message: 'Pulse received and stored successfully'
+        message: 'Pulse received and stored successfully',
       });
 
       // Asynchronously process pulse (don't wait for this)
-      processPulseAsync(pulse.pulseId).catch(err => {
+      processPulseAsync(pulse.pulseId).catch((err) => {
         console.error('Error processing pulse:', err);
       });
-
     } catch (error) {
       console.error('Error receiving pulse:', error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: 'Failed to receive pulse',
         status: 'error',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
   });
@@ -93,9 +99,9 @@ export function registerBanimalPulseRoutes(app: Express) {
         .limit(1);
 
       if (!latestPulse) {
-        return res.status(404).json({ 
+        return res.status(404).json({
           error: 'No pulses found',
-          status: 'not_found'
+          status: 'not_found',
         });
       }
 
@@ -113,9 +119,9 @@ export function registerBanimalPulseRoutes(app: Express) {
       });
     } catch (error) {
       console.error('Error fetching latest pulse:', error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: 'Failed to fetch latest pulse',
-        status: 'error'
+        status: 'error',
       });
     }
   });
@@ -127,7 +133,7 @@ export function registerBanimalPulseRoutes(app: Express) {
   app.get('/api/banimal/pulse/history', async (req, res) => {
     try {
       const limit = parseInt(req.query.limit as string) || 50;
-      
+
       const pulses = await db
         .select()
         .from(ecosystemPulses)
@@ -137,13 +143,13 @@ export function registerBanimalPulseRoutes(app: Express) {
       res.json({
         pulses,
         count: pulses.length,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       console.error('Error fetching pulse history:', error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: 'Failed to fetch pulse history',
-        status: 'error'
+        status: 'error',
       });
     }
   });
@@ -164,7 +170,7 @@ export function registerBanimalPulseRoutes(app: Express) {
         return res.json({
           status: 'no_pulse',
           message: 'No pulses received yet',
-          color: 'inactive'
+          color: 'inactive',
         });
       }
 
@@ -174,7 +180,7 @@ export function registerBanimalPulseRoutes(app: Express) {
 
       let status = 'active';
       let color = 'brightgreen';
-      
+
       if (secondsSince > 30) {
         status = 'delayed';
         color = 'yellow';
@@ -190,14 +196,14 @@ export function registerBanimalPulseRoutes(app: Express) {
         last_pulse: latestPulse.timestamp,
         seconds_since: secondsSince,
         signal_strength: latestPulse.signalStrength,
-        message: `Last pulse ${secondsSince}s ago`
+        message: `Last pulse ${secondsSince}s ago`,
       });
     } catch (error) {
       console.error('Error checking pulse status:', error);
-      res.status(500).json({ 
+      res.status(500).json({
         status: 'error',
         color: 'critical',
-        message: 'Failed to check pulse status'
+        message: 'Failed to check pulse status',
       });
     }
   });
@@ -224,14 +230,14 @@ export function registerBanimalPulseRoutes(app: Express) {
       res.json({
         nodes: networkNodes,
         total_nodes: networkNodes.length,
-        active_layers: [...new Set(networkNodes.map(n => n.traceLayer))],
-        timestamp: new Date().toISOString()
+        active_layers: [...new Set(networkNodes.map((n) => n.traceLayer))],
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       console.error('Error fetching vault network:', error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: 'Failed to fetch vault network',
-        status: 'error'
+        status: 'error',
       });
     }
   });
@@ -249,7 +255,7 @@ export function registerBanimalPulseRoutes(app: Express) {
 
       const stats = {
         total_repositories: repos.length,
-        active_repositories: repos.filter(r => r.status === 'active').length,
+        active_repositories: repos.filter((r) => r.status === 'active').length,
         total_commits: repos.reduce((sum, r) => sum + (r.commitCount || 0), 0),
         total_stars: repos.reduce((sum, r) => sum + (r.starCount || 0), 0),
         total_forks: repos.reduce((sum, r) => sum + (r.forksCount || 0), 0),
@@ -258,13 +264,13 @@ export function registerBanimalPulseRoutes(app: Express) {
       res.json({
         repositories: repos,
         stats,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       console.error('Error fetching CodeNest repositories:', error);
-      res.status(500).json({ 
+      res.status(500).json({
         error: 'Failed to fetch CodeNest repositories',
-        status: 'error'
+        status: 'error',
       });
     }
   });
@@ -275,7 +281,7 @@ export function registerBanimalPulseRoutes(app: Express) {
  */
 async function processPulseAsync(pulseId: string) {
   const startTime = Date.now();
-  
+
   try {
     // Log processing start
     await db.insert(pulseHistory).values({
@@ -289,10 +295,10 @@ async function processPulseAsync(pulseId: string) {
     // 1. Forward to GitHub API
     // 2. Update ecosystem-explorer caches
     // 3. Trigger any downstream notifications
-    
+
     // For now, just mark as processed
     const processingTime = Date.now() - startTime;
-    
+
     await db.insert(pulseHistory).values({
       pulseId,
       eventType: 'processed',
@@ -304,7 +310,7 @@ async function processPulseAsync(pulseId: string) {
     console.log(`✅ Pulse ${pulseId} processed in ${processingTime}ms`);
   } catch (error) {
     const processingTime = Date.now() - startTime;
-    
+
     await db.insert(pulseHistory).values({
       pulseId,
       eventType: 'processed',

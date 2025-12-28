@@ -1,11 +1,14 @@
 /**
  * 📊 Profile Pulse Generator
- * 
+ *
  * Generates live deployment pulse for GitHub profile
  * Shows real-time status of the Gorilla Mountain Fox Protocol
  */
 
-import { COLLAPSE_PROTOCOL_1984, getSpotifyAuthorization } from '../codenest/config/collapse-protocol-1984';
+import {
+  COLLAPSE_PROTOCOL_1984,
+  getSpotifyAuthorization,
+} from '../codenest/config/collapse-protocol-1984';
 import { rhinoStrikeMonitor } from '../codenest/monitors/rhino-strike-monitor';
 import { masterIntegrationHub } from '../codenest/hub/master-integration';
 
@@ -50,7 +53,7 @@ export interface PulseData {
  */
 export function generateProfilePulse(data?: PulseData): string {
   const pulseData = data || getDefaultPulseData();
-  
+
   return `
 # 🦍 Heyns Schoeman - Live Deployment Pulse
 ## Post-1984 Collapse Resurrection System
@@ -113,10 +116,10 @@ function getDefaultPulseData(): PulseData {
   return {
     rhinoStrike: {
       interval: `${protocol.rhinoStrike.interval}s`,
-      lastStrike: monitorStats.lastStrikeTime 
+      lastStrike: monitorStats.lastStrikeTime
         ? new Date(monitorStats.lastStrikeTime).toISOString()
         : '0.08s ago',
-      nextStrike: monitorStats.nextStrikeTime 
+      nextStrike: monitorStats.nextStrikeTime
         ? new Date(monitorStats.nextStrikeTime).toISOString()
         : 'Imminent',
       totalStrikes: monitorStats.totalStrikes,
@@ -164,7 +167,7 @@ function getDefaultPulseData(): PulseData {
  */
 export function generateCompactPulse(): string {
   const pulseData = getDefaultPulseData();
-  
+
   return `
 ![Rhino](https://img.shields.io/badge/🦏_Strikes-${pulseData.rhinoStrike.interval}-critical)
 ![Omnicube](https://img.shields.io/badge/🐜_Omnicube-${pulseData.antLattice.stability}-blue)

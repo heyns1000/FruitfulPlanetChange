@@ -6,7 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -39,7 +45,7 @@ export function VaultMeshCheckout({ onBack }: { onBack?: () => void }) {
     billingAddress: '',
     city: '',
     country: '',
-    paymentMethod: 'paypal'
+    paymentMethod: 'paypal',
   });
 
   const { toast } = useToast();
@@ -48,7 +54,7 @@ export function VaultMeshCheckout({ onBack }: { onBack?: () => void }) {
     { id: 1, title: 'Product Selection', completed: currentStep > 1 },
     { id: 2, title: 'Customer Info', completed: currentStep > 2 },
     { id: 3, title: 'Payment', completed: currentStep > 3 },
-    { id: 4, title: 'Confirmation', completed: false }
+    { id: 4, title: 'Confirmation', completed: false },
   ];
 
   // Banimal Loop products for VaultMesh™
@@ -64,9 +70,9 @@ export function VaultMeshCheckout({ onBack }: { onBack?: () => void }) {
         'Real-time market simulation',
         'Portfolio tracking',
         'Risk management tools',
-        'Email support'
+        'Email support',
       ],
-      integrations: ['VaultMesh™ Core', 'Basic API Access']
+      integrations: ['VaultMesh™ Core', 'Basic API Access'],
     },
     {
       id: 'professional-loop',
@@ -80,9 +86,9 @@ export function VaultMeshCheckout({ onBack }: { onBack?: () => void }) {
         'Custom strategy builder',
         'Advanced risk metrics',
         'Real-time alerts',
-        'Priority support'
+        'Priority support',
       ],
-      integrations: ['VaultMesh™ Pro', 'HotStack Integration', 'Full API Suite']
+      integrations: ['VaultMesh™ Pro', 'HotStack Integration', 'Full API Suite'],
     },
     {
       id: 'enterprise-loop',
@@ -97,10 +103,10 @@ export function VaultMeshCheckout({ onBack }: { onBack?: () => void }) {
         'Advanced analytics dashboard',
         'White-label solutions',
         'Dedicated account manager',
-        '24/7 phone support'
+        '24/7 phone support',
       ],
-      integrations: ['Full VaultMesh™ Suite', 'HotStack Pro', 'FAA.ZONE™ Access', 'Custom APIs']
-    }
+      integrations: ['Full VaultMesh™ Suite', 'HotStack Pro', 'FAA.ZONE™ Access', 'Custom APIs'],
+    },
   ];
 
   useEffect(() => {
@@ -129,8 +135,8 @@ export function VaultMeshCheckout({ onBack }: { onBack?: () => void }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           product: selectedProduct,
-          customer: checkoutData
-        })
+          customer: checkoutData,
+        }),
       });
 
       if (!response.ok) throw new Error('Checkout failed');
@@ -139,17 +145,17 @@ export function VaultMeshCheckout({ onBack }: { onBack?: () => void }) {
     onSuccess: () => {
       setCurrentStep(4);
       toast({
-        title: "Order placed successfully!",
+        title: 'Order placed successfully!',
         description: `Your ${selectedProduct?.name} order has been processed.`,
       });
     },
     onError: (error) => {
       toast({
-        title: "Checkout failed",
+        title: 'Checkout failed',
         description: error.message,
-        variant: "destructive",
+        variant: 'destructive',
       });
-    }
+    },
   });
 
   const renderStepIndicator = () => (
@@ -158,26 +164,18 @@ export function VaultMeshCheckout({ onBack }: { onBack?: () => void }) {
         <div key={step.id} className="flex items-center">
           <div
             className={cn(
-              "w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold",
+              'w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold',
               currentStep === step.id
-                ? "bg-cyan-500 text-white"
+                ? 'bg-cyan-500 text-white'
                 : step.completed
-                ? "bg-green-500 text-white"
-                : "bg-muted text-muted-foreground"
+                  ? 'bg-green-500 text-white'
+                  : 'bg-muted text-muted-foreground'
             )}
           >
-            {step.completed ? (
-              <Check className="w-5 h-5" />
-            ) : (
-              step.id
-            )}
+            {step.completed ? <Check className="w-5 h-5" /> : step.id}
           </div>
-          <div className="ml-2 mr-4 text-sm font-medium">
-            {step.title}
-          </div>
-          {index < checkoutSteps.length - 1 && (
-            <div className="w-8 h-0.5 bg-muted mx-4" />
-          )}
+          <div className="ml-2 mr-4 text-sm font-medium">{step.title}</div>
+          {index < checkoutSteps.length - 1 && <div className="w-8 h-0.5 bg-muted mx-4" />}
         </div>
       ))}
     </div>
@@ -197,9 +195,9 @@ export function VaultMeshCheckout({ onBack }: { onBack?: () => void }) {
           <Card
             key={product.id}
             className={cn(
-              "cursor-pointer transition-all duration-300 hover:shadow-lg",
-              selectedProduct?.id === product.id && "ring-2 ring-cyan-500",
-              product.id === 'professional-loop' && "border-purple-500/50"
+              'cursor-pointer transition-all duration-300 hover:shadow-lg',
+              selectedProduct?.id === product.id && 'ring-2 ring-cyan-500',
+              product.id === 'professional-loop' && 'border-purple-500/50'
             )}
             onClick={() => setSelectedProduct(product)}
           >
@@ -266,7 +264,7 @@ export function VaultMeshCheckout({ onBack }: { onBack?: () => void }) {
           <Input
             id="firstName"
             value={checkoutData.firstName}
-            onChange={(e) => setCheckoutData({...checkoutData, firstName: e.target.value})}
+            onChange={(e) => setCheckoutData({ ...checkoutData, firstName: e.target.value })}
             placeholder="John"
           />
         </div>
@@ -275,7 +273,7 @@ export function VaultMeshCheckout({ onBack }: { onBack?: () => void }) {
           <Input
             id="lastName"
             value={checkoutData.lastName}
-            onChange={(e) => setCheckoutData({...checkoutData, lastName: e.target.value})}
+            onChange={(e) => setCheckoutData({ ...checkoutData, lastName: e.target.value })}
             placeholder="Doe"
           />
         </div>
@@ -287,7 +285,7 @@ export function VaultMeshCheckout({ onBack }: { onBack?: () => void }) {
           id="email"
           type="email"
           value={checkoutData.email}
-          onChange={(e) => setCheckoutData({...checkoutData, email: e.target.value})}
+          onChange={(e) => setCheckoutData({ ...checkoutData, email: e.target.value })}
           placeholder="john@company.com"
         />
       </div>
@@ -297,7 +295,7 @@ export function VaultMeshCheckout({ onBack }: { onBack?: () => void }) {
         <Input
           id="company"
           value={checkoutData.company}
-          onChange={(e) => setCheckoutData({...checkoutData, company: e.target.value})}
+          onChange={(e) => setCheckoutData({ ...checkoutData, company: e.target.value })}
           placeholder="Acme Corp"
         />
       </div>
@@ -309,7 +307,7 @@ export function VaultMeshCheckout({ onBack }: { onBack?: () => void }) {
         <Input
           id="billingAddress"
           value={checkoutData.billingAddress}
-          onChange={(e) => setCheckoutData({...checkoutData, billingAddress: e.target.value})}
+          onChange={(e) => setCheckoutData({ ...checkoutData, billingAddress: e.target.value })}
           placeholder="123 Main Street"
         />
       </div>
@@ -320,13 +318,16 @@ export function VaultMeshCheckout({ onBack }: { onBack?: () => void }) {
           <Input
             id="city"
             value={checkoutData.city}
-            onChange={(e) => setCheckoutData({...checkoutData, city: e.target.value})}
+            onChange={(e) => setCheckoutData({ ...checkoutData, city: e.target.value })}
             placeholder="New York"
           />
         </div>
         <div>
           <Label htmlFor="country">Country</Label>
-          <Select value={checkoutData.country} onValueChange={(value) => setCheckoutData({...checkoutData, country: value})}>
+          <Select
+            value={checkoutData.country}
+            onValueChange={(value) => setCheckoutData({ ...checkoutData, country: value })}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select country" />
             </SelectTrigger>
@@ -347,9 +348,7 @@ export function VaultMeshCheckout({ onBack }: { onBack?: () => void }) {
     <div className="space-y-6 max-w-2xl mx-auto">
       <div className="text-center">
         <h2 className="text-2xl font-bold mb-4">Payment Information</h2>
-        <p className="text-muted-foreground">
-          Secure payment processing via PayPal integration
-        </p>
+        <p className="text-muted-foreground">Secure payment processing via PayPal integration</p>
       </div>
 
       <Card>
@@ -377,7 +376,7 @@ export function VaultMeshCheckout({ onBack }: { onBack?: () => void }) {
               Secured by PayPal • 256-bit SSL encryption
             </span>
           </div>
-          
+
           <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg">
             <div className="flex items-center mb-2">
               <CreditCard className="w-5 h-5 text-blue-500 mr-2" />
@@ -397,11 +396,11 @@ export function VaultMeshCheckout({ onBack }: { onBack?: () => void }) {
       <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto">
         <Check className="w-10 h-10 text-white" />
       </div>
-      
+
       <h2 className="text-2xl font-bold text-green-600">Order Confirmed!</h2>
       <p className="text-muted-foreground max-w-md mx-auto">
-        Your {selectedProduct?.name} subscription has been activated. 
-        You'll receive a confirmation email shortly with your access details.
+        Your {selectedProduct?.name} subscription has been activated. You'll receive a confirmation
+        email shortly with your access details.
       </p>
 
       <Card className="max-w-md mx-auto">
@@ -437,8 +436,12 @@ export function VaultMeshCheckout({ onBack }: { onBack?: () => void }) {
             )}
             <div className="flex-1" />
             <div className="flex space-x-2">
-              <Badge variant="outline" className="border-cyan-500 text-cyan-400">VaultMesh™</Badge>
-              <Badge variant="outline" className="border-blue-500 text-blue-400">Banimal Loop</Badge>
+              <Badge variant="outline" className="border-cyan-500 text-cyan-400">
+                VaultMesh™
+              </Badge>
+              <Badge variant="outline" className="border-blue-500 text-blue-400">
+                Banimal Loop
+              </Badge>
             </div>
           </div>
           <CardTitle className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
@@ -466,17 +469,16 @@ export function VaultMeshCheckout({ onBack }: { onBack?: () => void }) {
       {/* Navigation */}
       {currentStep < 4 && (
         <div className="flex justify-between">
-          <Button 
-            variant="outline" 
-            onClick={handlePreviousStep}
-            disabled={currentStep === 1}
-          >
+          <Button variant="outline" onClick={handlePreviousStep} disabled={currentStep === 1}>
             Previous
           </Button>
-          <Button 
+          <Button
             onClick={currentStep === 3 ? () => processCheckout.mutate() : handleNextStep}
-            disabled={processCheckout.isPending || 
-              (currentStep === 2 && (!checkoutData.email || !checkoutData.firstName || !checkoutData.lastName))}
+            disabled={
+              processCheckout.isPending ||
+              (currentStep === 2 &&
+                (!checkoutData.email || !checkoutData.firstName || !checkoutData.lastName))
+            }
           >
             {currentStep === 3 ? 'Complete Order' : 'Next Step'}
           </Button>

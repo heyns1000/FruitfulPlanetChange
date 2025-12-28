@@ -1,12 +1,16 @@
 /**
  * 🦏⚡ Rhino Strike Monitor
- * 
+ *
  * Monitors for Rhino Strikes at 0.08-second intervals
  * Triggers Ant Lattice Omnicube cascade and T-Shirt transformation
  * Part of the Gorilla Mountain Fox Protocol
  */
 
-import { COLLAPSE_PROTOCOL_1984, getNextRhinoStrike, getTShirtTransformationProgress } from '../config/collapse-protocol-1984';
+import {
+  COLLAPSE_PROTOCOL_1984,
+  getNextRhinoStrike,
+  getTShirtTransformationProgress,
+} from '../config/collapse-protocol-1984';
 
 export interface RhinoStrikeEvent {
   timestamp: number;
@@ -152,11 +156,15 @@ export class RhinoStrikeMonitor {
   private async initiateTShirtTransformation(): Promise<void> {
     const duration = COLLAPSE_PROTOCOL_1984.tShirtTransformation.duration;
     console.log(`👕 Starting ${duration}-second T-Shirt transformation...`);
-    console.log(`🌊 Color: ${COLLAPSE_PROTOCOL_1984.tShirtTransformation.initialColor} → ${COLLAPSE_PROTOCOL_1984.tShirtTransformation.finalColor}`);
+    console.log(
+      `🌊 Color: ${COLLAPSE_PROTOCOL_1984.tShirtTransformation.initialColor} → ${COLLAPSE_PROTOCOL_1984.tShirtTransformation.finalColor}`
+    );
 
     for (let i = 1; i <= duration; i++) {
       const progress = getTShirtTransformationProgress(i);
-      console.log(`Second ${i}/${duration}: Draining Noodle Juice... (${progress.toFixed(1)}% complete)`);
+      console.log(
+        `Second ${i}/${duration}: Draining Noodle Juice... (${progress.toFixed(1)}% complete)`
+      );
       await this.sleep(1);
     }
 
@@ -169,7 +177,7 @@ export class RhinoStrikeMonitor {
    * @param seconds Number of seconds to sleep
    */
   private sleep(seconds: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+    return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
   }
 
   /**

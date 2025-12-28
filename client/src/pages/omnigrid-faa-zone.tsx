@@ -1,7 +1,7 @@
-import { OmniGridFAAZone } from "@/components/portal/omnigrid-faa-zone";
-import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
+import { OmniGridFAAZone } from '@/components/portal/omnigrid-faa-zone';
+import { ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Link } from 'wouter';
 
 export function OmniGridFAAZonePage() {
   return (
@@ -20,7 +20,8 @@ export function OmniGridFAAZonePage() {
               🌐 OmniGrid™ FAA.zone™
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              Universal Interconnected Network with PulseTrade™ System Override Grid, VaultMesh™ Infrastructure & Atom-Level Engines
+              Universal Interconnected Network with PulseTrade™ System Override Grid, VaultMesh™
+              Infrastructure & Atom-Level Engines
             </p>
           </div>
         </div>

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { 
-  FileText, 
-  Download, 
-  Upload, 
-  Shield, 
-  Scale, 
+import {
+  FileText,
+  Download,
+  Upload,
+  Shield,
+  Scale,
   Eye,
   BookOpen,
   AlertTriangle,
@@ -13,15 +13,28 @@ import {
   Clock,
   Search,
   Filter,
-  Loader2
+  Loader2,
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
@@ -66,7 +79,7 @@ export function LegalHub() {
       const response = await fetch('/api/legal-documents');
       if (!response.ok) throw new Error('Failed to fetch documents');
       return response.json() as LegalDocument[];
-    }
+    },
   });
 
   // Fetch repositories
@@ -76,7 +89,7 @@ export function LegalHub() {
       const response = await fetch('/api/repositories');
       if (!response.ok) throw new Error('Failed to fetch repositories');
       return response.json() as Repository[];
-    }
+    },
   });
 
   // Sample data for demonstration (will be replaced by real API data)
@@ -89,7 +102,7 @@ export function LegalHub() {
       priority: 'high',
       content: 'Master licensing agreement for VaultMesh™ platform usage and integration.',
       createdAt: new Date().toISOString(),
-      expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
+      expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
     },
     {
       id: '2',
@@ -98,7 +111,7 @@ export function LegalHub() {
       status: 'review',
       priority: 'medium',
       content: 'Development and integration agreement for HotStack services.',
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     },
     {
       id: '3',
@@ -107,8 +120,8 @@ export function LegalHub() {
       status: 'approved',
       priority: 'critical',
       content: 'Comprehensive compliance guidelines for FAA.ZONE™ operations.',
-      createdAt: new Date().toISOString()
-    }
+      createdAt: new Date().toISOString(),
+    },
   ];
 
   const sampleRepositories: Repository[] = [
@@ -120,7 +133,7 @@ export function LegalHub() {
       access: 'restricted',
       documentCount: 1247,
       lastUpdated: new Date().toISOString(),
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     },
     {
       id: '2',
@@ -130,7 +143,7 @@ export function LegalHub() {
       access: 'confidential',
       documentCount: 89,
       lastUpdated: new Date().toISOString(),
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     },
     {
       id: '3',
@@ -140,70 +153,97 @@ export function LegalHub() {
       access: 'restricted',
       documentCount: 334,
       lastUpdated: new Date().toISOString(),
-      createdAt: new Date().toISOString()
-    }
+      createdAt: new Date().toISOString(),
+    },
   ];
 
   const displayDocuments = documents.length > 0 ? documents : sampleDocuments;
   const displayRepositories = repositories.length > 0 ? repositories : sampleRepositories;
 
-  const filteredDocuments = displayDocuments.filter(doc => {
-    const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         doc.content.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredDocuments = displayDocuments.filter((doc) => {
+    const matchesSearch =
+      doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      doc.content.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = categoryFilter === 'all' || doc.category === categoryFilter;
     const matchesStatus = statusFilter === 'all' || doc.status === statusFilter;
-    
+
     return matchesSearch && matchesCategory && matchesStatus;
   });
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'contract': return 'bg-blue-500';
-      case 'license': return 'bg-green-500';
-      case 'policy': return 'bg-yellow-500';
-      case 'compliance': return 'bg-red-500';
-      case 'ip': return 'bg-purple-500';
-      case 'nda': return 'bg-gray-500';
-      default: return 'bg-gray-500';
+      case 'contract':
+        return 'bg-blue-500';
+      case 'license':
+        return 'bg-green-500';
+      case 'policy':
+        return 'bg-yellow-500';
+      case 'compliance':
+        return 'bg-red-500';
+      case 'ip':
+        return 'bg-purple-500';
+      case 'nda':
+        return 'bg-gray-500';
+      default:
+        return 'bg-gray-500';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'approved': return 'bg-green-500';
-      case 'review': return 'bg-yellow-500';
-      case 'draft': return 'bg-gray-500';
-      case 'expired': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      case 'approved':
+        return 'bg-green-500';
+      case 'review':
+        return 'bg-yellow-500';
+      case 'draft':
+        return 'bg-gray-500';
+      case 'expired':
+        return 'bg-red-500';
+      default:
+        return 'bg-gray-500';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'critical': return 'bg-red-500';
-      case 'high': return 'bg-orange-500';
-      case 'medium': return 'bg-yellow-500';
-      case 'low': return 'bg-green-500';
-      default: return 'bg-gray-500';
+      case 'critical':
+        return 'bg-red-500';
+      case 'high':
+        return 'bg-orange-500';
+      case 'medium':
+        return 'bg-yellow-500';
+      case 'low':
+        return 'bg-green-500';
+      default:
+        return 'bg-gray-500';
     }
   };
 
   const getAccessColor = (access: string) => {
     switch (access) {
-      case 'public': return 'bg-green-500';
-      case 'restricted': return 'bg-yellow-500';
-      case 'confidential': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      case 'public':
+        return 'bg-green-500';
+      case 'restricted':
+        return 'bg-yellow-500';
+      case 'confidential':
+        return 'bg-red-500';
+      default:
+        return 'bg-gray-500';
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'approved': return <Check className="w-4 h-4" />;
-      case 'review': return <Clock className="w-4 h-4" />;
-      case 'draft': return <FileText className="w-4 h-4" />;
-      case 'expired': return <AlertTriangle className="w-4 h-4" />;
-      default: return <FileText className="w-4 h-4" />;
+      case 'approved':
+        return <Check className="w-4 h-4" />;
+      case 'review':
+        return <Clock className="w-4 h-4" />;
+      case 'draft':
+        return <FileText className="w-4 h-4" />;
+      case 'expired':
+        return <AlertTriangle className="w-4 h-4" />;
+      default:
+        return <FileText className="w-4 h-4" />;
     }
   };
 
@@ -219,9 +259,15 @@ export function LegalHub() {
             Comprehensive legal document management and intellectual property repository
           </CardDescription>
           <div className="flex justify-center space-x-2 mt-4">
-            <Badge variant="outline" className="border-green-500 text-green-400">Legal Repository</Badge>
-            <Badge variant="outline" className="border-blue-500 text-blue-400">IP Management</Badge>
-            <Badge variant="outline" className="border-purple-500 text-purple-400">Compliance Ready</Badge>
+            <Badge variant="outline" className="border-green-500 text-green-400">
+              Legal Repository
+            </Badge>
+            <Badge variant="outline" className="border-blue-500 text-blue-400">
+              IP Management
+            </Badge>
+            <Badge variant="outline" className="border-purple-500 text-purple-400">
+              Compliance Ready
+            </Badge>
           </div>
         </CardHeader>
       </Card>
@@ -303,41 +349,34 @@ export function LegalHub() {
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex items-center space-x-2">
-                        <div className={cn(
-                          "w-3 h-3 rounded-full",
-                          getStatusColor(doc.status)
-                        )} />
+                        <div className={cn('w-3 h-3 rounded-full', getStatusColor(doc.status))} />
                         <CardTitle className="text-lg">{doc.title}</CardTitle>
                       </div>
-                      <Badge 
-                        className={cn("text-xs text-white", getPriorityColor(doc.priority))}
-                      >
+                      <Badge className={cn('text-xs text-white', getPriorityColor(doc.priority))}>
                         {doc.priority}
                       </Badge>
                     </div>
                   </CardHeader>
-                  
+
                   <CardContent className="space-y-4">
                     <div className="flex space-x-2">
-                      <Badge 
-                        variant="outline" 
-                        className={cn("border-0 text-white", getCategoryColor(doc.category))}
+                      <Badge
+                        variant="outline"
+                        className={cn('border-0 text-white', getCategoryColor(doc.category))}
                       >
                         {doc.category}
                       </Badge>
-                      <Badge 
+                      <Badge
                         variant="outline"
-                        className={cn("border-0 text-white", getStatusColor(doc.status))}
+                        className={cn('border-0 text-white', getStatusColor(doc.status))}
                       >
                         <span className="mr-1">{getStatusIcon(doc.status)}</span>
                         {doc.status}
                       </Badge>
                     </div>
-                    
-                    <p className="text-sm text-muted-foreground line-clamp-3">
-                      {doc.content}
-                    </p>
-                    
+
+                    <p className="text-sm text-muted-foreground line-clamp-3">{doc.content}</p>
+
                     <div className="text-xs text-muted-foreground">
                       Created: {new Date(doc.createdAt).toLocaleDateString()}
                       {doc.expiresAt && (
@@ -347,11 +386,15 @@ export function LegalHub() {
                         </>
                       )}
                     </div>
-                    
+
                     <div className="flex space-x-2">
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Button size="sm" variant="outline" onClick={() => setSelectedDocument(doc)}>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setSelectedDocument(doc)}
+                          >
                             <Eye className="w-4 h-4 mr-1" />
                             View
                           </Button>
@@ -370,7 +413,7 @@ export function LegalHub() {
                           </div>
                         </DialogContent>
                       </Dialog>
-                      
+
                       <Button size="sm" variant="outline">
                         <Download className="w-4 h-4 mr-1" />
                         Download
@@ -396,31 +439,29 @@ export function LegalHub() {
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <CardTitle className="text-lg">{repo.name}</CardTitle>
-                      <Badge 
-                        className={cn("text-xs text-white", getAccessColor(repo.access))}
-                      >
+                      <Badge className={cn('text-xs text-white', getAccessColor(repo.access))}>
                         <Shield className="w-3 h-3 mr-1" />
                         {repo.access}
                       </Badge>
                     </div>
                     <CardDescription>{repo.description}</CardDescription>
                   </CardHeader>
-                  
+
                   <CardContent className="space-y-4">
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Type:</span>
                       <Badge variant="outline">{repo.type}</Badge>
                     </div>
-                    
+
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Documents:</span>
                       <span className="font-semibold">{repo.documentCount.toLocaleString()}</span>
                     </div>
-                    
+
                     <div className="text-xs text-muted-foreground">
                       Last Updated: {new Date(repo.lastUpdated).toLocaleDateString()}
                     </div>
-                    
+
                     <div className="flex space-x-2">
                       <Button size="sm" className="flex-1">
                         <BookOpen className="w-4 h-4 mr-1" />
@@ -448,9 +489,13 @@ export function LegalHub() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
               { name: 'VaultMesh™ Legal', status: 'active', integration: 'License Management' },
-              { name: 'HotStack Contracts', status: 'active', integration: 'Development Agreements' },
+              {
+                name: 'HotStack Contracts',
+                status: 'active',
+                integration: 'Development Agreements',
+              },
               { name: 'FAA.ZONE™ Compliance', status: 'active', integration: 'Regulatory Docs' },
-              { name: 'Fruitful Holdings IP', status: 'active', integration: 'Patent Portfolio' }
+              { name: 'Fruitful Holdings IP', status: 'active', integration: 'Patent Portfolio' },
             ].map((service) => (
               <div key={service.name} className="text-center p-4 border rounded-lg">
                 <div className="w-3 h-3 bg-green-500 rounded-full mx-auto mb-2"></div>

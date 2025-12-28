@@ -1,6 +1,6 @@
 /**
  * Application Configuration
- * 
+ *
  * Centralized configuration with environment variable validation
  */
 
@@ -23,13 +23,13 @@ const configSchema = z.object({
   // Features
   enableMetrics: z.coerce.boolean().default(true),
   enableCache: z.coerce.boolean().default(false),
-  
+
   // Logging
   logLevel: z.enum(['error', 'warn', 'info', 'debug']).default('info'),
 
   // Security
   allowedOrigins: z.string().optional(),
-  
+
   // External Services
   stripeSecretKey: z.string().optional(),
   stripePublishableKey: z.string().optional(),

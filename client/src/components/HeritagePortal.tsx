@@ -24,13 +24,13 @@ interface HeritagePortalProps {
   queryClient: any;
 }
 
-export default function HeritagePortal({ 
-  newFamilyMember, 
-  setNewFamilyMember, 
-  newEvent, 
-  setNewEvent, 
-  toast, 
-  queryClient 
+export default function HeritagePortal({
+  newFamilyMember,
+  setNewFamilyMember,
+  newEvent,
+  setNewEvent,
+  toast,
+  queryClient,
 }: HeritagePortalProps) {
   // Heritage API queries
   const { data: familyMembers = [], isLoading: membersLoading } = useQuery({
@@ -55,10 +55,14 @@ export default function HeritagePortal({
       queryClient.invalidateQueries({ queryKey: ['/api/heritage/family-members'] });
       queryClient.invalidateQueries({ queryKey: ['/api/heritage/metrics'] });
       setNewFamilyMember({ name: '', relationship: '', birthDate: '', location: '' });
-      toast({ title: "Success", description: "Family member added successfully!" });
+      toast({ title: 'Success', description: 'Family member added successfully!' });
     },
     onError: (error) => {
-      toast({ title: "Error", description: "Failed to add family member. Please try again.", variant: "destructive" });
+      toast({
+        title: 'Error',
+        description: 'Failed to add family member. Please try again.',
+        variant: 'destructive',
+      });
     },
   });
 
@@ -67,16 +71,24 @@ export default function HeritagePortal({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/heritage/events'] });
       setNewEvent({ title: '', date: '', description: '', type: '' });
-      toast({ title: "Success", description: "Family event added successfully!" });
+      toast({ title: 'Success', description: 'Family event added successfully!' });
     },
     onError: (error) => {
-      toast({ title: "Error", description: "Failed to add family event. Please try again.", variant: "destructive" });
+      toast({
+        title: 'Error',
+        description: 'Failed to add family event. Please try again.',
+        variant: 'destructive',
+      });
     },
   });
 
   const handleAddFamilyMember = () => {
     if (!newFamilyMember.name || !newFamilyMember.relationship) {
-      toast({ title: "Error", description: "Please fill in name and relationship fields.", variant: "destructive" });
+      toast({
+        title: 'Error',
+        description: 'Please fill in name and relationship fields.',
+        variant: 'destructive',
+      });
       return;
     }
     addFamilyMemberMutation.mutate(newFamilyMember);
@@ -84,7 +96,11 @@ export default function HeritagePortal({
 
   const handleAddEvent = () => {
     if (!newEvent.title || !newEvent.date) {
-      toast({ title: "Error", description: "Please fill in title and date fields.", variant: "destructive" });
+      toast({
+        title: 'Error',
+        description: 'Please fill in title and date fields.',
+        variant: 'destructive',
+      });
       return;
     }
     addEventMutation.mutate(newEvent);
@@ -98,7 +114,9 @@ export default function HeritagePortal({
           AncestorTag™ Heritage Portal
         </h2>
         <p className="text-gray-600 dark:text-gray-300 max-w-4xl mx-auto">
-          Experience AncestorTag: Linking Generations in the Digital Cosmos. Seamlessly connect your invaluable cultural content to its ancestral lineage, providing irrefutable digital provenance and enriching history for eons to come.
+          Experience AncestorTag: Linking Generations in the Digital Cosmos. Seamlessly connect your
+          invaluable cultural content to its ancestral lineage, providing irrefutable digital
+          provenance and enriching history for eons to come.
         </p>
         <Button className="mt-4 bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-full text-lg font-bold">
           ➕ Tag New Ancestral Content
@@ -107,7 +125,6 @@ export default function HeritagePortal({
 
       {/* Main Dashboard Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        
         {/* Left Sidebar - Live Metrics */}
         <div className="lg:col-span-1 space-y-6">
           <Card>
@@ -155,7 +172,6 @@ export default function HeritagePortal({
 
         {/* Main Content Area */}
         <div className="lg:col-span-3 space-y-8">
-          
           {/* Family Tree Management */}
           <div>
             <h3 className="text-2xl font-bold mb-6">Family Tree Management 🌳</h3>
@@ -167,49 +183,57 @@ export default function HeritagePortal({
                 <CardContent className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium mb-1">Name</label>
-                    <input 
-                      type="text" 
-                      placeholder="e.g., John Doe" 
+                    <input
+                      type="text"
+                      placeholder="e.g., John Doe"
                       value={newFamilyMember.name}
-                      onChange={(e) => setNewFamilyMember({...newFamilyMember, name: e.target.value})}
+                      onChange={(e) =>
+                        setNewFamilyMember({ ...newFamilyMember, name: e.target.value })
+                      }
                       className="w-full p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600"
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">Relationship</label>
-                    <input 
-                      type="text" 
-                      placeholder="e.g., Father, Sister" 
+                    <input
+                      type="text"
+                      placeholder="e.g., Father, Sister"
                       value={newFamilyMember.relationship}
-                      onChange={(e) => setNewFamilyMember({...newFamilyMember, relationship: e.target.value})}
+                      onChange={(e) =>
+                        setNewFamilyMember({ ...newFamilyMember, relationship: e.target.value })
+                      }
                       className="w-full p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600"
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">Date of Birth</label>
-                    <input 
-                      type="date" 
+                    <input
+                      type="date"
                       value={newFamilyMember.birthDate}
-                      onChange={(e) => setNewFamilyMember({...newFamilyMember, birthDate: e.target.value})}
+                      onChange={(e) =>
+                        setNewFamilyMember({ ...newFamilyMember, birthDate: e.target.value })
+                      }
                       className="w-full p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600"
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">Current Location</label>
-                    <input 
-                      type="text" 
-                      placeholder="e.g., London, UK" 
+                    <input
+                      type="text"
+                      placeholder="e.g., London, UK"
                       value={newFamilyMember.location}
-                      onChange={(e) => setNewFamilyMember({...newFamilyMember, location: e.target.value})}
+                      onChange={(e) =>
+                        setNewFamilyMember({ ...newFamilyMember, location: e.target.value })
+                      }
                       className="w-full p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600"
                     />
                   </div>
-                  <Button 
+                  <Button
                     onClick={handleAddFamilyMember}
                     disabled={addFamilyMemberMutation.isPending}
                     className="w-full bg-green-600 hover:bg-green-700"
                   >
-                    {addFamilyMemberMutation.isPending ? "Adding..." : "Add Member"}
+                    {addFamilyMemberMutation.isPending ? 'Adding...' : 'Add Member'}
                   </Button>
                 </CardContent>
               </Card>
@@ -234,7 +258,11 @@ export default function HeritagePortal({
                         <div key={member.id} className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                           <div className="font-medium">{member.name}</div>
                           <div className="text-sm text-gray-600 dark:text-gray-400">
-                            {member.relationship} • Born: {member.birthDate ? new Date(member.birthDate).getFullYear() : 'Unknown'} • {member.location || 'Location unknown'}
+                            {member.relationship} • Born:{' '}
+                            {member.birthDate
+                              ? new Date(member.birthDate).getFullYear()
+                              : 'Unknown'}{' '}
+                            • {member.location || 'Location unknown'}
                           </div>
                         </div>
                       ))
@@ -262,38 +290,38 @@ export default function HeritagePortal({
                 <CardContent className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium mb-1">Event Title</label>
-                    <input 
-                      type="text" 
-                      placeholder="e.g., Wedding Anniversary" 
+                    <input
+                      type="text"
+                      placeholder="e.g., Wedding Anniversary"
                       value={newEvent.title}
-                      onChange={(e) => setNewEvent({...newEvent, title: e.target.value})}
+                      onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
                       className="w-full p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600"
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">Date</label>
-                    <input 
-                      type="date" 
+                    <input
+                      type="date"
                       value={newEvent.date}
-                      onChange={(e) => setNewEvent({...newEvent, date: e.target.value})}
+                      onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })}
                       className="w-full p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600"
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">Description</label>
-                    <textarea 
-                      placeholder="Event details..." 
+                    <textarea
+                      placeholder="Event details..."
                       value={newEvent.description}
-                      onChange={(e) => setNewEvent({...newEvent, description: e.target.value})}
+                      onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
                       className="w-full p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600"
                       rows={3}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">Event Type</label>
-                    <select 
+                    <select
                       value={newEvent.type}
-                      onChange={(e) => setNewEvent({...newEvent, type: e.target.value})}
+                      onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}
                       className="w-full p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600"
                     >
                       <option value="">Select type...</option>
@@ -304,12 +332,12 @@ export default function HeritagePortal({
                       <option value="other">Other</option>
                     </select>
                   </div>
-                  <Button 
+                  <Button
                     onClick={handleAddEvent}
                     disabled={addEventMutation.isPending}
                     className="w-full bg-blue-600 hover:bg-blue-700"
                   >
-                    {addEventMutation.isPending ? "Adding..." : "Add Event"}
+                    {addEventMutation.isPending ? 'Adding...' : 'Add Event'}
                   </Button>
                 </CardContent>
               </Card>
@@ -345,7 +373,9 @@ export default function HeritagePortal({
                       <div className="text-center py-8 text-gray-500">
                         <History className="w-12 h-12 mx-auto mb-4 opacity-50" />
                         <p>No family events recorded yet.</p>
-                        <p className="text-sm">Add your first family event to start building your timeline!</p>
+                        <p className="text-sm">
+                          Add your first family event to start building your timeline!
+                        </p>
                       </div>
                     )}
                   </div>
@@ -371,21 +401,24 @@ export default function HeritagePortal({
                   <div className="text-3xl mb-3">🔗</div>
                   <h4 className="font-semibold mb-2">Blockchain Security</h4>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
-                    Every family artifact and document is secured with blockchain technology for permanent preservation
+                    Every family artifact and document is secured with blockchain technology for
+                    permanent preservation
                   </p>
                 </div>
                 <div className="text-center p-4 border border-purple-200 dark:border-purple-800 rounded-lg">
                   <div className="text-3xl mb-3">🌍</div>
                   <h4 className="font-semibold mb-2">Global Heritage Network</h4>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
-                    Connect with other families worldwide and discover shared ancestry through our heritage network
+                    Connect with other families worldwide and discover shared ancestry through our
+                    heritage network
                   </p>
                 </div>
                 <div className="text-center p-4 border border-purple-200 dark:border-purple-800 rounded-lg">
                   <div className="text-3xl mb-3">⏰</div>
                   <h4 className="font-semibold mb-2">Eternal Preservation</h4>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
-                    Your family legacy is preserved for future generations with atomic-level digital provenance
+                    Your family legacy is preserved for future generations with atomic-level digital
+                    provenance
                   </p>
                 </div>
               </div>

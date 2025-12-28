@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ArrowUpDown, DollarSign } from 'lucide-react';
@@ -11,16 +17,16 @@ interface CurrencyConverterProps {
 }
 
 const exchangeRates = {
-  USD: 1.00,
+  USD: 1.0,
   EUR: 0.85,
   GBP: 0.73,
-  ZAR: 18.50,
+  ZAR: 18.5,
   JPY: 110.0,
   AUD: 1.35,
   CAD: 1.25,
   CHF: 0.92,
   CNY: 6.45,
-  INR: 74.5
+  INR: 74.5,
 };
 
 const currencySymbols = {
@@ -33,10 +39,14 @@ const currencySymbols = {
   CAD: 'C$',
   CHF: 'CHF',
   CNY: '¥',
-  INR: '₹'
+  INR: '₹',
 };
 
-export function CurrencyConverter({ usdAmount, size = 'md', showConverter = false }: CurrencyConverterProps) {
+export function CurrencyConverter({
+  usdAmount,
+  size = 'md',
+  showConverter = false,
+}: CurrencyConverterProps) {
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
   const [convertedAmount, setConvertedAmount] = useState(usdAmount);
 
@@ -49,7 +59,7 @@ export function CurrencyConverter({ usdAmount, size = 'md', showConverter = fals
     const symbol = currencySymbols[currency as keyof typeof currencySymbols];
     return `${symbol}${amount.toLocaleString('en-US', {
       minimumFractionDigits: currency === 'JPY' ? 0 : 2,
-      maximumFractionDigits: currency === 'JPY' ? 0 : 2
+      maximumFractionDigits: currency === 'JPY' ? 0 : 2,
     })}`;
   };
 
@@ -58,15 +68,13 @@ export function CurrencyConverter({ usdAmount, size = 'md', showConverter = fals
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <span className="cursor-help">
-              {formatAmount(usdAmount, 'USD')}
-            </span>
+            <span className="cursor-help">{formatAmount(usdAmount, 'USD')}</span>
           </TooltipTrigger>
           <TooltipContent>
             <div className="space-y-1 text-xs">
               <div>💱 Currency Conversions:</div>
               <div>🇺🇸 USD: ${usdAmount.toFixed(2)}</div>
-              <div>🇿🇦 ZAR: R{(usdAmount * 18.50).toFixed(2)}</div>
+              <div>🇿🇦 ZAR: R{(usdAmount * 18.5).toFixed(2)}</div>
               <div>🇪🇺 EUR: €{(usdAmount * 0.85).toFixed(2)}</div>
               <div>🇬🇧 GBP: £{(usdAmount * 0.73).toFixed(2)}</div>
             </div>

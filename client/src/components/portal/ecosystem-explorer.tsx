@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, ExternalLink, Activity, Layers, Database, Zap, Globe } from "lucide-react";
-import type { Brand, Sector } from "@shared/schema";
+import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Search, ExternalLink, Activity, Layers, Database, Zap, Globe } from 'lucide-react';
+import type { Brand, Sector } from '@shared/schema';
 
 interface SectorZone {
   key: string;
@@ -18,7 +18,7 @@ interface SectorZone {
   repositories: string[];
   description: string;
   integrations: number;
-  status: "active" | "maintenance" | "development";
+  status: 'active' | 'maintenance' | 'development';
 }
 
 interface EcosystemPulse {
@@ -35,16 +35,16 @@ interface EcosystemPulse {
 }
 
 export default function EcosystemExplorer() {
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState('');
   const [latestPulse, setLatestPulse] = useState<EcosystemPulse | null>(null);
-  
+
   // Fetch brands and sectors data
   const { data: brands = [] } = useQuery<Brand[]>({
-    queryKey: ["/api/brands"],
-  })
+    queryKey: ['/api/brands'],
+  });
 
   const { data: sectors = [] } = useQuery<Sector[]>({
-    queryKey: ["/api/sectors"],
+    queryKey: ['/api/sectors'],
   });
   const [selectedZone, setSelectedZone] = useState<string | null>(null);
 
@@ -74,191 +74,196 @@ export default function EcosystemExplorer() {
   // Comprehensive sector zones following codenest ecosystem map logic
   const sectorZones: SectorZone[] = [
     {
-      key: "agriculture",
-      name: "Agriculture & Biotech",
-      emoji: "🌱",
-      subdomain: "agriculture.seedwave.faa.zone",
+      key: 'agriculture',
+      name: 'Agriculture & Biotech',
+      emoji: '🌱',
+      subdomain: 'agriculture.seedwave.faa.zone',
       totalBrands: 84,
       activeBrands: 56,
-      repositories: ["agriculture-seedwave-admin", "biotech-core", "crop-analytics"],
-      description: "Agriculture & Biotech solutions and infrastructure",
+      repositories: ['agriculture-seedwave-admin', 'biotech-core', 'crop-analytics'],
+      description: 'Agriculture & Biotech solutions and infrastructure',
       integrations: 3,
-      status: "active"
+      status: 'active',
     },
     {
-      key: "banking",
-      name: "Banking & Finance",
-      emoji: "🏦",
-      subdomain: "banking.seedwave.faa.zone",
+      key: 'banking',
+      name: 'Banking & Finance',
+      emoji: '🏦',
+      subdomain: 'banking.seedwave.faa.zone',
       totalBrands: 60,
       activeBrands: 40,
-      repositories: ["banking-seedwave-admin", "finance-core", "payment-systems"],
-      description: "Banking & Finance solutions and infrastructure",
+      repositories: ['banking-seedwave-admin', 'finance-core', 'payment-systems'],
+      description: 'Banking & Finance solutions and infrastructure',
       integrations: 3,
-      status: "active"
+      status: 'active',
     },
     {
-      key: "logistics",
-      name: "Logistics & Packaging",
-      emoji: "📦",
-      subdomain: "logistics.seedwave.faa.zone",
+      key: 'logistics',
+      name: 'Logistics & Packaging',
+      emoji: '📦',
+      subdomain: 'logistics.seedwave.faa.zone',
       totalBrands: 30,
       activeBrands: 20,
-      repositories: ["logistics-seedwave-admin", "packaging-core", "supply-chain"],
-      description: "Logistics & Packaging solutions and infrastructure",
+      repositories: ['logistics-seedwave-admin', 'packaging-core', 'supply-chain'],
+      description: 'Logistics & Packaging solutions and infrastructure',
       integrations: 3,
-      status: "active"
+      status: 'active',
     },
     {
-      key: "professional",
-      name: "Professional Services",
-      emoji: "💼",
-      subdomain: "professional.seedwave.faa.zone",
+      key: 'professional',
+      name: 'Professional Services',
+      emoji: '💼',
+      subdomain: 'professional.seedwave.faa.zone',
       totalBrands: 30,
       activeBrands: 20,
-      repositories: ["professional-seedwave-admin", "services-core", "consulting"],
-      description: "Professional Services solutions and infrastructure",
+      repositories: ['professional-seedwave-admin', 'services-core', 'consulting'],
+      description: 'Professional Services solutions and infrastructure',
       integrations: 3,
-      status: "active"
+      status: 'active',
     },
     {
-      key: "saas",
-      name: "SaaS & Licensing",
-      emoji: "💻",
-      subdomain: "saas.seedwave.faa.zone",
+      key: 'saas',
+      name: 'SaaS & Licensing',
+      emoji: '💻',
+      subdomain: 'saas.seedwave.faa.zone',
       totalBrands: 20,
       activeBrands: 13,
-      repositories: ["saas-seedwave-admin", "licensing-core", "software-platforms"],
-      description: "SaaS & Licensing solutions and infrastructure",
+      repositories: ['saas-seedwave-admin', 'licensing-core', 'software-platforms'],
+      description: 'SaaS & Licensing solutions and infrastructure',
       integrations: 3,
-      status: "active"
+      status: 'active',
     },
     {
-      key: "nft",
-      name: "NFT & Ownership",
-      emoji: "🎨",
-      subdomain: "nft.seedwave.faa.zone",
+      key: 'nft',
+      name: 'NFT & Ownership',
+      emoji: '🎨',
+      subdomain: 'nft.seedwave.faa.zone',
       totalBrands: 20,
       activeBrands: 13,
-      repositories: ["nft-seedwave-admin", "ownership-core", "blockchain-assets"],
-      description: "NFT & Ownership solutions and infrastructure",
+      repositories: ['nft-seedwave-admin', 'ownership-core', 'blockchain-assets'],
+      description: 'NFT & Ownership solutions and infrastructure',
       integrations: 3,
-      status: "active"
+      status: 'active',
     },
     {
-      key: "quantum",
-      name: "Quantum Protocols",
-      emoji: "⚛️",
-      subdomain: "quantum.seedwave.faa.zone",
+      key: 'quantum',
+      name: 'Quantum Protocols',
+      emoji: '⚛️',
+      subdomain: 'quantum.seedwave.faa.zone',
       totalBrands: 20,
       activeBrands: 13,
-      repositories: ["quantum-seedwave-admin", "protocols-core", "quantum-systems"],
-      description: "Quantum Protocols solutions and infrastructure",
+      repositories: ['quantum-seedwave-admin', 'protocols-core', 'quantum-systems'],
+      description: 'Quantum Protocols solutions and infrastructure',
       integrations: 3,
-      status: "development"
+      status: 'development',
     },
     {
-      key: "ritual",
-      name: "Ritual & Culture",
-      emoji: "🎭",
-      subdomain: "ritual.seedwave.faa.zone",
+      key: 'ritual',
+      name: 'Ritual & Culture',
+      emoji: '🎭',
+      subdomain: 'ritual.seedwave.faa.zone',
       totalBrands: 20,
       activeBrands: 13,
-      repositories: ["ritual-seedwave-admin", "culture-core", "tradition-systems"],
-      description: "Ritual & Culture solutions and infrastructure",
+      repositories: ['ritual-seedwave-admin', 'culture-core', 'tradition-systems'],
+      description: 'Ritual & Culture solutions and infrastructure',
       integrations: 3,
-      status: "active"
+      status: 'active',
     },
     {
-      key: "nutrition",
-      name: "Nutrition & Food Chain",
-      emoji: "🍎",
-      subdomain: "nutrition.seedwave.faa.zone",
+      key: 'nutrition',
+      name: 'Nutrition & Food Chain',
+      emoji: '🍎',
+      subdomain: 'nutrition.seedwave.faa.zone',
       totalBrands: 20,
       activeBrands: 13,
-      repositories: ["nutrition-seedwave-admin", "food-chain-core", "health-systems"],
-      description: "Nutrition & Food Chain solutions and infrastructure",
+      repositories: ['nutrition-seedwave-admin', 'food-chain-core', 'health-systems'],
+      description: 'Nutrition & Food Chain solutions and infrastructure',
       integrations: 3,
-      status: "active"
+      status: 'active',
     },
     {
-      key: "zerowaste",
-      name: "Zero Waste",
-      emoji: "♻️",
-      subdomain: "zerowaste.seedwave.faa.zone",
+      key: 'zerowaste',
+      name: 'Zero Waste',
+      emoji: '♻️',
+      subdomain: 'zerowaste.seedwave.faa.zone',
       totalBrands: 20,
       activeBrands: 13,
-      repositories: ["zerowaste-seedwave-admin", "sustainability-core", "waste-systems"],
-      description: "Zero Waste solutions and infrastructure",
+      repositories: ['zerowaste-seedwave-admin', 'sustainability-core', 'waste-systems'],
+      description: 'Zero Waste solutions and infrastructure',
       integrations: 3,
-      status: "active"
+      status: 'active',
     },
     {
-      key: "voice",
-      name: "Voice & Audio",
-      emoji: "🎤",
-      subdomain: "voice.seedwave.faa.zone",
+      key: 'voice',
+      name: 'Voice & Audio',
+      emoji: '🎤',
+      subdomain: 'voice.seedwave.faa.zone',
       totalBrands: 12,
       activeBrands: 8,
-      repositories: ["voice-seedwave-admin", "audio-core", "sound-systems"],
-      description: "Voice & Audio solutions and infrastructure",
+      repositories: ['voice-seedwave-admin', 'audio-core', 'sound-systems'],
+      description: 'Voice & Audio solutions and infrastructure',
       integrations: 3,
-      status: "active"
+      status: 'active',
     },
     {
-      key: "wellness",
-      name: "Wellness Tech & Nodes",
-      emoji: "🧘",
-      subdomain: "wellness.seedwave.faa.zone",
+      key: 'wellness',
+      name: 'Wellness Tech & Nodes',
+      emoji: '🧘',
+      subdomain: 'wellness.seedwave.faa.zone',
       totalBrands: 12,
       activeBrands: 8,
-      repositories: ["wellness-seedwave-admin", "health-tech-core", "node-systems"],
-      description: "Wellness Tech & Nodes solutions and infrastructure",
+      repositories: ['wellness-seedwave-admin', 'health-tech-core', 'node-systems'],
+      description: 'Wellness Tech & Nodes solutions and infrastructure',
       integrations: 3,
-      status: "active"
+      status: 'active',
     },
     {
-      key: "utilities",
-      name: "Utilities & Energy",
-      emoji: "⚡",
-      subdomain: "utilities.seedwave.faa.zone",
+      key: 'utilities',
+      name: 'Utilities & Energy',
+      emoji: '⚡',
+      subdomain: 'utilities.seedwave.faa.zone',
       totalBrands: 12,
       activeBrands: 8,
-      repositories: ["utilities-seedwave-admin", "energy-core", "power-systems"],
-      description: "Utilities & Energy solutions and infrastructure",
+      repositories: ['utilities-seedwave-admin', 'energy-core', 'power-systems'],
+      description: 'Utilities & Energy solutions and infrastructure',
       integrations: 3,
-      status: "active"
+      status: 'active',
     },
     {
-      key: "creative",
-      name: "Creative Tech",
-      emoji: "🎨",
-      subdomain: "creative.seedwave.faa.zone",
+      key: 'creative',
+      name: 'Creative Tech',
+      emoji: '🎨',
+      subdomain: 'creative.seedwave.faa.zone',
       totalBrands: 10,
       activeBrands: 7,
-      repositories: ["creative-seedwave-admin", "tech-core", "innovation-systems"],
-      description: "Creative Tech solutions and infrastructure",
+      repositories: ['creative-seedwave-admin', 'tech-core', 'innovation-systems'],
+      description: 'Creative Tech solutions and infrastructure',
       integrations: 3,
-      status: "active"
-    }
+      status: 'active',
+    },
   ];
 
-  const filteredZones = sectorZones.filter(zone =>
-    zone.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    zone.subdomain.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredZones = sectorZones.filter(
+    (zone) =>
+      zone.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      zone.subdomain.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Calculate real totals from database
   const totalBrands = brands.length;
-  const totalActive = brands.filter(b => b.status === "active").length;
+  const totalActive = brands.filter((b) => b.status === 'active').length;
   const totalNodes = sectors.reduce((sum, s) => sum + (s.subnodeCount || 0), 0);
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "active": return "bg-green-500";
-      case "maintenance": return "bg-yellow-500";
-      case "development": return "bg-blue-500";
-      default: return "bg-gray-500";
+      case 'active':
+        return 'bg-green-500';
+      case 'maintenance':
+        return 'bg-yellow-500';
+      case 'development':
+        return 'bg-blue-500';
+      default:
+        return 'bg-gray-500';
     }
   };
 
@@ -272,7 +277,9 @@ export default function EcosystemExplorer() {
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg p-6 text-white">
         <h1 className="text-3xl font-bold mb-2">🌐 Fruitful Global Ecosystem Explorer</h1>
-        <p className="text-blue-100">Complete omnilevel integration: 7,038 brands across 33 sectors</p>
+        <p className="text-blue-100">
+          Complete omnilevel integration: 7,038 brands across 33 sectors
+        </p>
         <div className="flex gap-4 mt-4 text-sm">
           <div className="flex items-center gap-2">
             <span className="text-blue-200">🌱 FAA.ZONE™</span>
@@ -308,7 +315,9 @@ export default function EcosystemExplorer() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
               <div>
                 <p className="text-gray-600 dark:text-gray-400">Last Pulse</p>
-                <p className="font-semibold">{new Date(latestPulse.timestamp).toLocaleTimeString()}</p>
+                <p className="font-semibold">
+                  {new Date(latestPulse.timestamp).toLocaleTimeString()}
+                </p>
               </div>
               <div>
                 <p className="text-gray-600 dark:text-gray-400">Vault IDs</p>
@@ -392,7 +401,10 @@ export default function EcosystemExplorer() {
       {/* Sector Zones Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredZones.map((zone) => (
-          <Card key={zone.key} className="hover:shadow-lg transition-shadow border-l-4 border-l-blue-500">
+          <Card
+            key={zone.key}
+            className="hover:shadow-lg transition-shadow border-l-4 border-l-blue-500"
+          >
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -417,9 +429,9 @@ export default function EcosystemExplorer() {
                     <span className="font-bold text-green-600">{zone.activeBrands}</span>
                   </div>
                 </div>
-                
+
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-                  <div 
+                  <div
                     className="bg-gradient-to-r from-blue-500 to-cyan-500 h-1.5 rounded-full transition-all duration-1000"
                     style={{ width: `${(zone.activeBrands / zone.totalBrands) * 100}%` }}
                   />
@@ -427,16 +439,20 @@ export default function EcosystemExplorer() {
 
                 <div className="flex flex-wrap gap-1">
                   {zone.repositories.slice(0, 2).map((repo, idx) => (
-                    <Badge key={idx} variant="outline" className="text-xs">{repo}</Badge>
+                    <Badge key={idx} variant="outline" className="text-xs">
+                      {repo}
+                    </Badge>
                   ))}
                   {zone.repositories.length > 2 && (
-                    <Badge variant="secondary" className="text-xs">+{zone.repositories.length - 2}</Badge>
+                    <Badge variant="secondary" className="text-xs">
+                      +{zone.repositories.length - 2}
+                    </Badge>
                   )}
                 </div>
 
-                <Button 
-                  size="sm" 
-                  className="w-full" 
+                <Button
+                  size="sm"
+                  className="w-full"
                   onClick={() => handleZoneAccess(zone.subdomain)}
                 >
                   <ExternalLink className="h-3 w-3 mr-1" />

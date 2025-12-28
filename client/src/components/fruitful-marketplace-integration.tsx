@@ -1,214 +1,213 @@
-import { useState } from "react"
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useToast } from "@/hooks/use-toast"
-import { 
-  ShoppingCart, 
-  Search, 
-  Star, 
-  TrendingUp, 
-  Package, 
-  CreditCard, 
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
+import {
+  ShoppingCart,
+  Search,
+  Star,
+  TrendingUp,
+  Package,
+  CreditCard,
   Filter,
   Grid3x3,
   List,
   ArrowRight,
   CheckCircle2,
-  Zap
-} from "lucide-react"
-import { apiRequest } from "@/lib/queryClient"
+  Zap,
+} from 'lucide-react';
+import { apiRequest } from '@/lib/queryClient';
 
 export function FruitfulMarketplaceIntegration() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("all")
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
-  const [cart, setCart] = useState<any[]>([])
-  const { toast } = useToast()
-  const queryClient = useQueryClient()
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [cart, setCart] = useState<any[]>([]);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // Fetch real brands from PostgreSQL database for marketplace
   const { data: brands = [], isLoading } = useQuery({
-    queryKey: ["/api/brands"],
+    queryKey: ['/api/brands'],
     refetchInterval: 30000,
-  })
+  });
 
   const { data: sectors = [] } = useQuery({
-    queryKey: ["/api/sectors"],
+    queryKey: ['/api/sectors'],
     refetchInterval: 30000,
-  })
+  });
 
   // REAL PayPal Purchase Processing
   const purchaseMutation = useMutation({
     mutationFn: async (purchaseData: any) => {
-      const response = await fetch("/api/purchases", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/purchases', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(purchaseData),
       });
-      if (!response.ok) throw new Error("Real payment processing failed");
+      if (!response.ok) throw new Error('Real payment processing failed');
       return response.json();
     },
     onSuccess: (data: any) => {
       if (data.paymentUrl) {
         // Redirect to real PayPal payment
         toast({
-          title: "Redirecting to PayPal",
+          title: 'Redirecting to PayPal',
           description: `Processing real payment for ${data.productName} - $${data.price}`,
-        })
+        });
         setTimeout(() => {
           window.location.href = data.paymentUrl;
         }, 2000);
       } else {
         toast({
-          title: "Payment Processing",
+          title: 'Payment Processing',
           description: `Real PayPal payment initiated for ${data.productName}`,
-        })
+        });
       }
-      queryClient.invalidateQueries({ queryKey: ["/api/purchases"] })
+      queryClient.invalidateQueries({ queryKey: ['/api/purchases'] });
     },
     onError: (error: any) => {
       toast({
-        title: "Payment Failed",
-        description: "Real payment processing failed. Please check payment details.",
-        variant: "destructive",
-      })
-    }
-  })
+        title: 'Payment Failed',
+        description: 'Real payment processing failed. Please check payment details.',
+        variant: 'destructive',
+      });
+    },
+  });
 
   // Process marketplace products from database brands with REAL PRICING
   const marketplaceProducts = brands.map((brand: any) => ({
     id: brand.id,
     name: brand.name,
-    description: brand.description || "Advanced business solution",
+    description: brand.description || 'Advanced business solution',
     category: brand.sectorId,
-    sector: sectors.find((s: any) => s.id === brand.sectorId)?.name || "Unknown",
+    sector: sectors.find((s: any) => s.id === brand.sectorId)?.name || 'Unknown',
     price: getRealDatabasePrice(brand),
     rating: 4.5 + Math.random() * 0.5,
     inStock: true,
-    features: generateProductFeatures(brand.name, brand.description || ""),
+    features: generateProductFeatures(brand.name, brand.description || ''),
     image: generateProductImage(brand.name),
-    status: brand.status || "active",
-    integration: brand.integration || "FAA.Zone™",
-    deployment: "Production Ready"
-  }))
+    status: brand.status || 'active',
+    integration: brand.integration || 'FAA.Zone™',
+    deployment: 'Production Ready',
+  }));
 
   function getRealDatabasePrice(brand: any): number {
     // Get REAL pricing from database metadata
     if (brand.metadata?.pricing?.monthly) {
       return brand.metadata.pricing.monthly;
     }
-    
+
     // Get display price if available
     if (brand.metadata?.displayPrice) {
       const price = parseFloat(brand.metadata.displayPrice.replace(/[$,]/g, ''));
       if (!isNaN(price)) return price;
     }
-    
+
     // Fallback to tier-based pricing from database update
     const tierPricing = {
-      'enterprise': 299.99,
-      'professional': 159.99,
-      'growth': 89.99,
-      'standard': 79.99,
-      'eco': 59.99
+      enterprise: 299.99,
+      professional: 159.99,
+      growth: 89.99,
+      standard: 79.99,
+      eco: 59.99,
     };
-    
+
     return tierPricing[brand.metadata?.pricing?.tier] || 79.99;
   }
 
   function generateProductFeatures(name: string, description: string): string[] {
     const commonFeatures = [
-      "24/7 Support",
-      "API Access",
-      "Cloud Deployment",
-      "Real-time Analytics"
-    ]
-    
-    const specificFeatures = description.toLowerCase().includes('wildlife') ? [
-      "Conservation Tracking",
-      "Species Monitoring",
-      "Habitat Analysis"
-    ] : description.toLowerCase().includes('secure') ? [
-      "Enterprise Security",
-      "Encrypted Storage", 
-      "Compliance Ready"
-    ] : [
-      "Custom Integration",
-      "Scalable Architecture",
-      "Advanced Metrics"
-    ]
-    
-    return [...commonFeatures, ...specificFeatures].slice(0, 5)
+      '24/7 Support',
+      'API Access',
+      'Cloud Deployment',
+      'Real-time Analytics',
+    ];
+
+    const specificFeatures = description.toLowerCase().includes('wildlife')
+      ? ['Conservation Tracking', 'Species Monitoring', 'Habitat Analysis']
+      : description.toLowerCase().includes('secure')
+        ? ['Enterprise Security', 'Encrypted Storage', 'Compliance Ready']
+        : ['Custom Integration', 'Scalable Architecture', 'Advanced Metrics'];
+
+    return [...commonFeatures, ...specificFeatures].slice(0, 5);
   }
 
   function generateProductImage(name: string): string {
     // Generate SVG placeholder images
-    const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6']
-    const color = colors[Math.floor(Math.random() * colors.length)]
+    const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
     return `data:image/svg+xml,${encodeURIComponent(`
       <svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
         <rect width="300" height="200" fill="${color}"/>
         <text x="150" y="100" font-family="Arial, sans-serif" font-size="16" fill="white" text-anchor="middle" dominant-baseline="middle">${name}</text>
       </svg>
-    `)}`
+    `)}`;
   }
 
   const filteredProducts = marketplaceProducts.filter((product: any) => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = selectedCategory === "all" || product.category.toString() === selectedCategory
-    return matchesSearch && matchesCategory
-  })
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      selectedCategory === 'all' || product.category.toString() === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   const addToCart = (product: any) => {
-    setCart(prev => [...prev, product])
+    setCart((prev) => [...prev, product]);
     toast({
-      title: "Added to Cart",
+      title: 'Added to Cart',
       description: `${product.name} added to your cart.`,
-    })
-  }
+    });
+  };
 
   const handlePurchase = (product: any) => {
     // Use existing Payment Portal in sidebar navigation
     toast({
-      title: "Opening Payment Portal",
+      title: 'Opening Payment Portal',
       description: `Processing ${product.name} through VaultMesh™ secure payment system`,
-    })
-    
+    });
+
     // Set the product details for checkout and open payment portal
-    localStorage.setItem('selectedProduct', JSON.stringify({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      category: product.sector,
-      description: product.description
-    }));
-    
+    localStorage.setItem(
+      'selectedProduct',
+      JSON.stringify({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        category: product.sector,
+        description: product.description,
+      })
+    );
+
     // Navigate directly to the existing Payment Portal in the sidebar
     setTimeout(() => {
       // Find and click the Payment Portal button in sidebar
-      const paymentButton = document.querySelector('[data-sidebar-item="payment-portal"]') as HTMLElement;
+      const paymentButton = document.querySelector(
+        '[data-sidebar-item="payment-portal"]'
+      ) as HTMLElement;
       if (paymentButton) {
         paymentButton.click();
       } else {
         // Fallback: Show toast if button not found
         toast({
-          title: "Navigate to Payment Portal",
+          title: 'Navigate to Payment Portal',
           description: "Click 'Payment Portal' in the sidebar to complete your purchase",
         });
       }
     }, 1000);
-  }
+  };
 
   const categories = sectors.map((sector: any) => ({
     id: sector.id.toString(),
     name: sector.name,
-    count: brands.filter((b: any) => b.sectorId === sector.id).length
-  }))
+    count: brands.filter((b: any) => b.sectorId === sector.id).length,
+  }));
 
   return (
     <div className="space-y-6">
@@ -220,7 +219,8 @@ export function FruitfulMarketplaceIntegration() {
               🛒 Fruitful Global Marketplace
             </h2>
             <p className="text-gray-600 dark:text-gray-400 mt-2">
-              {brands.length} products available • REAL Seedwave pricing • ProtectZone™ ($299.99), FlowNature™/GridPreserve™ ($29.99)
+              {brands.length} products available • REAL Seedwave pricing • ProtectZone™ ($299.99),
+              FlowNature™/GridPreserve™ ($29.99)
             </p>
           </div>
           <div className="text-right">
@@ -243,7 +243,7 @@ export function FruitfulMarketplaceIntegration() {
             />
           </div>
         </div>
-        
+
         <div className="flex gap-2">
           <select
             value={selectedCategory}
@@ -251,25 +251,25 @@ export function FruitfulMarketplaceIntegration() {
             className="px-3 py-2 border rounded-md bg-white dark:bg-gray-800"
           >
             <option value="all">All Categories ({brands.length})</option>
-            {categories.map(category => (
+            {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name} ({category.count})
               </option>
             ))}
           </select>
-          
+
           <Button
-            variant={viewMode === "grid" ? "default" : "outline"}
+            variant={viewMode === 'grid' ? 'default' : 'outline'}
             size="sm"
-            onClick={() => setViewMode("grid")}
+            onClick={() => setViewMode('grid')}
           >
             <Grid3x3 className="h-4 w-4" />
           </Button>
-          
+
           <Button
-            variant={viewMode === "list" ? "default" : "outline"}
+            variant={viewMode === 'list' ? 'default' : 'outline'}
             size="sm"
-            onClick={() => setViewMode("list")}
+            onClick={() => setViewMode('list')}
           >
             <List className="h-4 w-4" />
           </Button>
@@ -290,10 +290,16 @@ export function FruitfulMarketplaceIntegration() {
           ))}
         </div>
       ) : (
-        <div className={viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-4"}>
+        <div
+          className={
+            viewMode === 'grid'
+              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+              : 'space-y-4'
+          }
+        >
           {filteredProducts.map((product) => (
             <Card key={product.id} className="group hover:shadow-lg transition-all duration-300">
-              {viewMode === "grid" ? (
+              {viewMode === 'grid' ? (
                 <>
                   <div className="relative overflow-hidden rounded-t-lg">
                     <img
@@ -302,12 +308,10 @@ export function FruitfulMarketplaceIntegration() {
                       className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <div className="absolute top-4 right-4">
-                      <Badge className="bg-green-500 text-white">
-                        {product.status}
-                      </Badge>
+                      <Badge className="bg-green-500 text-white">{product.status}</Badge>
                     </div>
                   </div>
-                  
+
                   <CardContent className="p-4">
                     <div className="mb-3">
                       <h3 className="text-lg font-semibold mb-1">{product.name}</h3>
@@ -315,7 +319,7 @@ export function FruitfulMarketplaceIntegration() {
                         {product.description}
                       </p>
                     </div>
-                    
+
                     <div className="flex items-center gap-2 mb-3">
                       <div className="flex items-center gap-1">
                         {[...Array(5)].map((_, i) => (
@@ -325,20 +329,16 @@ export function FruitfulMarketplaceIntegration() {
                           />
                         ))}
                       </div>
-                      <span className="text-sm text-gray-500">
-                        ({product.rating.toFixed(1)})
-                      </span>
+                      <span className="text-sm text-gray-500">({product.rating.toFixed(1)})</span>
                     </div>
-                    
+
                     <div className="flex items-center justify-between mb-4">
-                      <div className="text-2xl font-bold text-green-600">
-                        ${product.price}
-                      </div>
+                      <div className="text-2xl font-bold text-green-600">${product.price}</div>
                       <Badge variant="outline" className="text-xs">
                         {product.sector}
                       </Badge>
                     </div>
-                    
+
                     <div className="flex gap-2">
                       <Button
                         onClick={() => addToCart(product)}
@@ -376,9 +376,7 @@ export function FruitfulMarketplaceIntegration() {
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="text-lg font-semibold">{product.name}</h3>
-                        <div className="text-xl font-bold text-green-600">
-                          ${product.price}
-                        </div>
+                        <div className="text-xl font-bold text-green-600">${product.price}</div>
                       </div>
                       <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
                         {product.description}
@@ -386,11 +384,7 @@ export function FruitfulMarketplaceIntegration() {
                       <div className="flex items-center justify-between">
                         <Badge variant="outline">{product.sector}</Badge>
                         <div className="flex gap-2">
-                          <Button
-                            onClick={() => addToCart(product)}
-                            variant="outline"
-                            size="sm"
-                          >
+                          <Button onClick={() => addToCart(product)} variant="outline" size="sm">
                             Add to Cart
                           </Button>
                           <Button
@@ -428,9 +422,7 @@ export function FruitfulMarketplaceIntegration() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <ShoppingCart className="h-5 w-5 text-green-600" />
-                <span className="font-semibold">
-                  {cart.length} items in cart
-                </span>
+                <span className="font-semibold">{cart.length} items in cart</span>
               </div>
               <div className="flex items-center gap-4">
                 <div className="text-lg font-bold text-green-600">
@@ -446,5 +438,5 @@ export function FruitfulMarketplaceIntegration() {
         </Card>
       )}
     </div>
-  )
+  );
 }

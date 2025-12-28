@@ -9,6 +9,7 @@ This implementation creates a **living, breathing ecosystem** that pulses data e
 ### 1. Database Schema Enhancement
 
 **New Tables Added:**
+
 - `ecosystemPulses` - Stores pulse data with vault IDs, sector info, brand health, and CodeNest metadata
 - `pulseHistory` - Event log for pulse lifecycle (received, processed, forwarded)
 - `codeNestRepositories` - Metadata for 84+ repositories (commits, stars, forks, sync status)
@@ -19,6 +20,7 @@ This implementation creates a **living, breathing ecosystem** that pulses data e
 ### 2. API Endpoints (`/api/banimal/pulse`)
 
 **Created Routes:**
+
 - `POST /api/banimal/pulse` - Receive pulse from WordPress connector
   - Validates timestamp
   - Generates unique pulse ID using crypto.randomUUID()
@@ -51,12 +53,14 @@ This implementation creates a **living, breathing ecosystem** that pulses data e
 ### 3. Frontend Components
 
 **ecosystem-explorer.tsx** (Enhanced)
+
 - Added live pulse polling every 9 seconds
 - Real-time pulse indicator with signal strength
 - Shows last pulse timestamp, vault IDs, active sectors, CodeNest repos
 - Animated pulse badge with green/yellow/red status
 
 **ecosystem-explorer2.tsx** (New)
+
 - Network Graph visualization focused
 - VaultTrace™ network nodes display
 - Pulse history timeline (last 10 pulses)
@@ -64,6 +68,7 @@ This implementation creates a **living, breathing ecosystem** that pulses data e
 - Three trace layer visualization (KAU_TRACE, CLAIM_TRACE, VAULT_TRACE)
 
 **ecosystem-explorer3.tsx** (New)
+
 - CodeNest repository dashboard
 - 84+ repositories metadata display
 - Core 8 repositories highlighted
@@ -78,12 +83,14 @@ This implementation creates a **living, breathing ecosystem** that pulses data e
 **Classes Implemented:**
 
 #### BanimalEcosystemConnector (Main)
+
 - Registers cron jobs
 - Creates database tables
 - Registers REST API endpoints
 - Admin menu integration
 
 #### SeedwaveMetadataController
+
 - `pull_seedwave_metadata()` - Pulls metadata from Seedwave
 - `get_core_sectors()` - Returns 5 core sectors
 - `sync_core_subnodes()` - Syncs 150 subnodes
@@ -91,6 +98,7 @@ This implementation creates a **living, breathing ecosystem** that pulses data e
 - `get_brand_licensing_data()` - Returns licensing stats
 
 #### NineSecondPulseCalibrator
+
 - `calibrate_pulse()` - Main pulse generation
 - `collect_pulse_data()` - Aggregates data from all sources
 - `send_to_fruitful()` - Posts to FruitfulPlanetChange API
@@ -99,11 +107,13 @@ This implementation creates a **living, breathing ecosystem** that pulses data e
 **Note:** WordPress cron is pseudo-cron. For production 9-second precision, use system cron with proper job scheduler.
 
 #### CodeNestMetadataAggregator
+
 - `scan_all_repositories()` - Scans 8 core repos
 - `extract_metadata()` - Extracts repo metadata
 - `enrich_pulse_data()` - Enriches pulse with repo data
 
 #### VaultTraceNetworkGraph
+
 - `generate_network_graph()` - Creates network visualization
 - 5 nodes across 3 trace layers
 - Connection mapping
@@ -112,6 +122,7 @@ This implementation creates a **living, breathing ecosystem** that pulses data e
 ### 5. GitHub Profile Integration
 
 **README Template:** `github-profile/README.md`
+
 - Live pulse status with auto-update markers
 - Core 8 repositories table
 - Vault health progress bars
@@ -120,6 +131,7 @@ This implementation creates a **living, breathing ecosystem** that pulses data e
 - Quick links to all FAA™ services
 
 **GitHub Actions Workflow:** `github-profile/.github/workflows/pulse-update.yml`
+
 - Runs every minute (GitHub Actions minimum)
 - Fetches latest pulse from API
 - Updates README.md with pulse data
@@ -133,6 +145,7 @@ This implementation creates a **living, breathing ecosystem** that pulses data e
 **File:** `server/seed-ecosystem-pulse.ts`
 
 **Seeds:**
+
 - **Core 8 Repositories** from Signal_To_Chuck.json
   - seedwave, fruitful, FruitfulPlanetChange, codenest
   - faa.zone, hotstack, vaultmesh, heyns1000
@@ -158,6 +171,7 @@ This implementation creates a **living, breathing ecosystem** that pulses data e
 **File:** `shared/Signal_To_Chuck.json`
 
 Contains:
+
 - Signal ID: SEEDWAVE-011-CORE
 - Declared by: Heyns Schoeman
 - Platform: HSOMNI9000 / FAA.Zone
@@ -215,7 +229,7 @@ Contains:
 └─────────────────────────────────────────────────────────────┘
 ```
 
-*Note: WordPress cron is pseudo-cron. For production 9-second precision, use system cron.
+\*Note: WordPress cron is pseudo-cron. For production 9-second precision, use system cron.
 
 ## 📊 Data Flow
 
@@ -249,6 +263,7 @@ Contains:
 ## 🚀 Deployment Instructions
 
 ### 1. Database Setup
+
 ```bash
 # Generate migrations (already done)
 npm run db:generate
@@ -259,6 +274,7 @@ npm run db:migrate
 ```
 
 ### 2. WordPress Plugin Installation
+
 1. Upload `wordpress/banimal-ecosystem-connector.php` to `wp-content/plugins/`
 2. Activate in WordPress admin
 3. Plugin creates database tables automatically
@@ -269,6 +285,7 @@ npm run db:migrate
    ```
 
 ### 3. FruitfulPlanetChange API
+
 ```bash
 # Install dependencies
 npm install
@@ -281,6 +298,7 @@ npm start
 ```
 
 ### 4. GitHub Profile Setup
+
 1. Create new repository: `heyns1000/heyns1000` (special profile repo)
 2. Copy `github-profile/README.md` to repo root
 3. Copy `github-profile/.github/workflows/pulse-update.yml` to `.github/workflows/`
@@ -306,18 +324,23 @@ npm start
 ## 📝 Important Notes
 
 ### WordPress Cron Limitations
+
 WordPress cron is pseudo-cron and only runs on page loads. For true 9-second precision:
+
 - Use system cron: `*/1 * * * *` (every minute minimum)
 - Or use dedicated job scheduler (Laravel Queue, Bull, etc.)
 - Current implementation provides theoretical 9-second interval
 
 ### GitHub Actions Limitations
+
 GitHub Actions minimum cron interval is 1 minute. The workflow:
+
 - Fetches latest pulse every minute
 - Updates profile README
 - Actual pulse generation happens at API level (9 seconds)
 
 ### Pulse ID Generation
+
 Changed from `Math.random()` to `crypto.randomUUID()` for guaranteed uniqueness in high-frequency scenarios.
 
 ## 🔐 Security
@@ -332,24 +355,28 @@ Changed from `Math.random()` to `crypto.randomUUID()` for guaranteed uniqueness 
 ## 🌟 Features
 
 ### Real-Time Pulse Visualization
+
 - 9-second polling in frontend
 - Live signal strength indicator
 - Animated pulse badges
 - Time since last pulse display
 
 ### Network Graph
+
 - 10 nodes across 3 trace layers
 - Visual connection mapping
 - Layer color coding
 - Interactive node display
 
 ### Repository Dashboard
+
 - 84+ repos metadata ready
 - Core 8 highlighted
 - Search and filter
 - Real-time sync status
 
 ### GitHub Profile
+
 - Auto-updating README
 - Live pulse status
 - Vault health progress bars
@@ -358,6 +385,7 @@ Changed from `Math.random()` to `crypto.randomUUID()` for guaranteed uniqueness 
 ## 📦 Files Created/Modified
 
 **New Files:**
+
 - `shared/Signal_To_Chuck.json`
 - `server/routes/banimal-pulse.ts`
 - `server/seed-ecosystem-pulse.ts`
@@ -369,6 +397,7 @@ Changed from `Math.random()` to `crypto.randomUUID()` for guaranteed uniqueness 
 - `migrations/0000_unique_kid_colt.sql`
 
 **Modified Files:**
+
 - `shared/schema.ts` (added 4 tables)
 - `server/storage.ts` (added imports)
 - `server/routes.ts` (registered routes)

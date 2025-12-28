@@ -1,23 +1,23 @@
-import { useState, useCallback } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { Search } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import type { Sector } from "@shared/schema"
+import { useState, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import type { Sector } from '@shared/schema';
 
 interface SearchFiltersProps {
-  onSearch: (query: string) => void
-  onSectorFilter: (sectorId: number | null) => void
-  selectedSector: number | null
+  onSearch: (query: string) => void;
+  onSectorFilter: (sectorId: number | null) => void;
+  selectedSector: number | null;
 }
 
 export function SearchFilters({ onSearch, onSectorFilter, selectedSector }: SearchFiltersProps) {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [showAllSectors, setShowAllSectors] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showAllSectors, setShowAllSectors] = useState(false);
 
   const { data: sectors = [] } = useQuery<Sector[]>({
-    queryKey: ["/api/sectors"],
-  })
+    queryKey: ['/api/sectors'],
+  });
 
   const { data: stats } = useQuery<{
     totalElements: number;
@@ -35,17 +35,20 @@ export function SearchFilters({ onSearch, onSectorFilter, selectedSector }: Sear
     marketPenetration?: number;
     revenueGrowth?: number;
   }>({
-    queryKey: ["/api/dashboard/stats"],
-  })
+    queryKey: ['/api/dashboard/stats'],
+  });
 
-  const handleSearch = useCallback((value: string) => {
-    setSearchQuery(value)
-    onSearch(value)
-  }, [onSearch])
+  const handleSearch = useCallback(
+    (value: string) => {
+      setSearchQuery(value);
+      onSearch(value);
+    },
+    [onSearch]
+  );
 
   // Show first 6 sectors initially, then all when expanded
-  const displayedSectors = showAllSectors ? sectors : sectors.slice(0, 6)
-  const remainingSectors = sectors.length - 6
+  const displayedSectors = showAllSectors ? sectors : sectors.slice(0, 6);
+  const remainingSectors = sectors.length - 6;
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
@@ -75,13 +78,14 @@ export function SearchFilters({ onSearch, onSectorFilter, selectedSector }: Sear
         </h3>
         <div className="flex flex-wrap gap-2">
           <Button
-            variant={selectedSector === null ? "default" : "outline"}
+            variant={selectedSector === null ? 'default' : 'outline'}
             size="sm"
             onClick={() => onSectorFilter(null)}
             className={`
-              ${selectedSector === null 
-                ? 'bg-cyan-500 hover:bg-cyan-600 text-white' 
-                : 'border-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+              ${
+                selectedSector === null
+                  ? 'bg-cyan-500 hover:bg-cyan-600 text-white'
+                  : 'border-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
               }
             `}
           >
@@ -90,13 +94,14 @@ export function SearchFilters({ onSearch, onSectorFilter, selectedSector }: Sear
           {displayedSectors.map((sector) => (
             <Button
               key={sector.id}
-              variant={selectedSector === sector.id ? "default" : "outline"}
+              variant={selectedSector === sector.id ? 'default' : 'outline'}
               size="sm"
               onClick={() => onSectorFilter(sector.id)}
               className={`
-                ${selectedSector === sector.id
-                  ? 'bg-cyan-500 hover:bg-cyan-600 text-white'
-                  : 'border-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                ${
+                  selectedSector === sector.id
+                    ? 'bg-cyan-500 hover:bg-cyan-600 text-white'
+                    : 'border-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
                 }
               `}
             >
@@ -104,9 +109,9 @@ export function SearchFilters({ onSearch, onSectorFilter, selectedSector }: Sear
             </Button>
           ))}
           {sectors.length > 6 && !showAllSectors && (
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => setShowAllSectors(true)}
               className="border-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
             >
@@ -114,9 +119,9 @@ export function SearchFilters({ onSearch, onSectorFilter, selectedSector }: Sear
             </Button>
           )}
           {showAllSectors && sectors.length > 6 && (
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => setShowAllSectors(false)}
               className="border-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
             >
@@ -138,7 +143,9 @@ export function SearchFilters({ onSearch, onSectorFilter, selectedSector }: Sear
             <div className="text-sm opacity-80">Core Brands</div>
           </div>
           <div className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg p-4 text-white">
-            <div className="text-2xl font-bold">{(stats.subnodes || stats.subNodes || 0).toLocaleString()}</div>
+            <div className="text-2xl font-bold">
+              {(stats.subnodes || stats.subNodes || 0).toLocaleString()}
+            </div>
             <div className="text-sm opacity-80">Subnodes</div>
           </div>
           <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-lg p-4 text-white">
@@ -148,5 +155,5 @@ export function SearchFilters({ onSearch, onSectorFilter, selectedSector }: Sear
         </div>
       )}
     </div>
-  )
+  );
 }

@@ -17,10 +17,12 @@ export const DeploymentStatusSchema = z.object({
   deploymentUrl: z.string().optional(),
   createdAt: z.date(),
   completedAt: z.date().optional(),
-  steps: z.array(z.object({
-    name: z.string(),
-    completed: z.boolean(),
-  })),
+  steps: z.array(
+    z.object({
+      name: z.string(),
+      completed: z.boolean(),
+    })
+  ),
 });
 
 export type IntegrationRequest = z.infer<typeof IntegrationRequestSchema>;

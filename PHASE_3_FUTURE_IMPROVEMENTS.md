@@ -5,15 +5,18 @@ This document tracks potential improvements identified during code review that a
 ## Code Quality Improvements
 
 ### 1. Type Safety Enhancement
+
 **Priority**: Low  
 **Location**: `server/routes/marketplace-packages.ts` line 109
 
 **Current**:
+
 ```typescript
 userId: (req.user as any)?.id || null,
 ```
 
 **Recommended**:
+
 ```typescript
 // Define proper user type
 interface AuthenticatedRequest extends Request {
@@ -33,15 +36,18 @@ userId: (req as AuthenticatedRequest).user?.id || null,
 ---
 
 ### 2. Brand Metadata Type Definition
+
 **Priority**: Low  
 **Location**: `server/services/package-generator.ts` line 97
 
 **Current**:
+
 ```typescript
 const tier = (brand.metadata as any).tier?.toLowerCase();
 ```
 
 **Recommended**:
+
 ```typescript
 interface BrandMetadata {
   tier?: 'sovereign' | 'dynastic' | 'operational' | 'market';
@@ -64,12 +70,14 @@ const tier = brand.metadata?.tier?.toLowerCase();
 ---
 
 ### 3. Shared Tier Determination Utility
+
 **Priority**: Medium  
 **Location**: Duplicated in `server/services/package-generator.ts` and `server/scripts/generate-all-packages.ts`
 
 **Current**: Duplicate code in two files
 
 **Recommended**: Create shared utility
+
 ```typescript
 // server/utils/brand-helpers.ts
 export function determineBrandTier(brand: Brand): TierType {
@@ -92,18 +100,21 @@ export function getThemeConfig(tier: TierType): ThemeConfig {
 ---
 
 ### 4. Theme Glow Calculation Robustness
+
 **Priority**: Low  
 **Location**: `server/services/package-generator.ts` line 292
 
 **Current**:
+
 ```typescript
 'glimpse-lg': '${theme.glow.replace('20px', '30px')}',
 ```
 
 **Recommended**:
+
 ```typescript
 // In theme config generation
-const glowLg = theme.glow.includes('20px') 
+const glowLg = theme.glow.includes('20px')
   ? theme.glow.replace('20px', '30px')
   : `0 0 30px ${theme.primary}`;
 
@@ -126,6 +137,7 @@ None of these improvements are critical for the current functionality. They can 
 - ✅ Is production-ready
 
 These improvements are marked for potential future refactoring when:
+
 1. Adding new features that would benefit from stricter typing
 2. Experiencing actual runtime issues (none currently)
 3. Expanding metadata structure significantly
@@ -133,5 +145,5 @@ These improvements are marked for potential future refactoring when:
 
 ---
 
-*Created: 2024-12-13*  
-*Status: Optional future enhancements*
+_Created: 2024-12-13_  
+_Status: Optional future enhancements_

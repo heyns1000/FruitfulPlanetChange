@@ -2,7 +2,7 @@ import TreeCounter from '../../../components/TreeCounter';
 
 /**
  * Environmental Impact Page
- * 
+ *
  * Demonstrates the integration of the Plant-for-the-Planet tree counter widget
  * into the Fruitful Global Planet ecosystem.
  */
@@ -27,20 +27,20 @@ export default function EnvironmentalImpact() {
             Our Commitment to the Planet
           </h2>
           <p className="text-gray-700 leading-relaxed mb-4">
-            Fruitful Global Planet is proud to partner with Plant-for-the-Planet in their 
-            mission to plant 1 trillion trees worldwide. Every action we take contributes 
-            to a healthier planet for future generations.
+            Fruitful Global Planet is proud to partner with Plant-for-the-Planet in their mission to
+            plant 1 trillion trees worldwide. Every action we take contributes to a healthier planet
+            for future generations.
           </p>
           <p className="text-gray-700 leading-relaxed">
-            The tree counter below displays our real-time progress and impact. Together with 
-            our community across all HSOMNI9000 ecosystem applications, we're making a 
-            measurable difference in combating climate change.
+            The tree counter below displays our real-time progress and impact. Together with our
+            community across all HSOMNI9000 ecosystem applications, we're making a measurable
+            difference in combating climate change.
           </p>
         </div>
 
         {/* Tree Counter Widget */}
         <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
-          <TreeCounter 
+          <TreeCounter
             widgetUrl="YOUR_WIDGET_URL"
             width={500}
             height={350}
@@ -54,11 +54,9 @@ export default function EnvironmentalImpact() {
           <div className="bg-white p-6 rounded-xl shadow-md border border-green-200">
             <div className="text-3xl font-bold text-green-600 mb-2">🌱</div>
             <h3 className="text-lg font-semibold text-gray-800 mb-1">Trees Planted</h3>
-            <p className="text-gray-600 text-sm">
-              Contributing to global reforestation efforts
-            </p>
+            <p className="text-gray-600 text-sm">Contributing to global reforestation efforts</p>
           </div>
-          
+
           <div className="bg-white p-6 rounded-xl shadow-md border border-blue-200">
             <div className="text-3xl font-bold text-blue-600 mb-2">💧</div>
             <h3 className="text-lg font-semibold text-gray-800 mb-1">Water Conservation</h3>
@@ -66,13 +64,11 @@ export default function EnvironmentalImpact() {
               Trees help maintain water cycles and prevent erosion
             </p>
           </div>
-          
+
           <div className="bg-white p-6 rounded-xl shadow-md border border-purple-200">
             <div className="text-3xl font-bold text-purple-600 mb-2">🌍</div>
             <h3 className="text-lg font-semibold text-gray-800 mb-1">Carbon Offset</h3>
-            <p className="text-gray-600 text-sm">
-              Each tree absorbs CO₂ and produces oxygen
-            </p>
+            <p className="text-gray-600 text-sm">Each tree absorbs CO₂ and produces oxygen</p>
           </div>
         </div>
 
@@ -82,8 +78,8 @@ export default function EnvironmentalImpact() {
             🌐 HSOMNI9000 Ecosystem Integration
           </h2>
           <p className="text-gray-700 leading-relaxed mb-6">
-            The tree counter is integrated across all our ecosystem applications, 
-            ensuring transparency and visibility of our environmental impact:
+            The tree counter is integrated across all our ecosystem applications, ensuring
+            transparency and visibility of our environmental impact:
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div className="flex items-start gap-2">
@@ -135,10 +131,10 @@ export default function EnvironmentalImpact() {
         <div className="bg-emerald-600 text-white p-8 rounded-xl shadow-lg text-center">
           <h2 className="text-2xl font-bold mb-4">Join Our Mission</h2>
           <p className="text-emerald-50 leading-relaxed mb-6">
-            Every member of the Fruitful Global Planet community can contribute to 
-            our environmental goals. Learn more about how you can make a difference.
+            Every member of the Fruitful Global Planet community can contribute to our environmental
+            goals. Learn more about how you can make a difference.
           </p>
-          <a 
+          <a
             href="https://www.plant-for-the-planet.org"
             target="_blank"
             rel="noopener noreferrer"
@@ -150,14 +146,12 @@ export default function EnvironmentalImpact() {
 
         {/* Setup Instructions Link */}
         <div className="bg-blue-50 border border-blue-200 p-6 rounded-xl">
-          <h3 className="text-lg font-semibold text-blue-800 mb-2">
-            🔧 Widget Setup Instructions
-          </h3>
+          <h3 className="text-lg font-semibold text-blue-800 mb-2">🔧 Widget Setup Instructions</h3>
           <p className="text-gray-700 text-sm mb-4">
-            Want to integrate this widget into your own site or application? 
-            Check out our comprehensive setup guide.
+            Want to integrate this widget into your own site or application? Check out our
+            comprehensive setup guide.
           </p>
-          <a 
+          <a
             href="/docs/TREE_WIDGET_SETUP.md"
             className="text-blue-600 hover:text-blue-800 font-medium text-sm underline"
           >
