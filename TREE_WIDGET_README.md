@@ -5,26 +5,31 @@ This README provides a quick overview of the tree counter widget integration fil
 ## 📁 Files Created
 
 ### 1. Static HTML Implementation
+
 **File:** `tree-widget.html`  
 **Purpose:** Standalone HTML page with iframe embed  
 **Best for:** Static websites, WordPress, basic HTML sites
 
 ### 2. JavaScript Dynamic Loader
+
 **File:** `tree-widget-dynamic.html`  
 **Purpose:** Dynamic iframe creation with JavaScript  
 **Best for:** SPAs, dynamic loading scenarios, programmatic control
 
 ### 3. React Component
+
 **File:** `components/TreeCounter.jsx`  
 **Purpose:** Reusable React component  
 **Best for:** React applications, TypeScript projects, modern frameworks
 
 ### 4. Example Integration Page
+
 **File:** `client/src/pages/environmental-impact.tsx`  
 **Purpose:** Full-page example showing React component usage  
 **Best for:** Reference implementation, integration testing
 
 ### 5. Complete Setup Documentation
+
 **File:** `docs/TREE_WIDGET_SETUP.md`  
 **Purpose:** Comprehensive setup guide  
 **Contains:** Step-by-step instructions, troubleshooting, best practices
@@ -38,9 +43,9 @@ This README provides a quick overview of the tree counter widget integration fil
 3. Upload to your web server or use the iframe code directly
 
 ```html
-<iframe 
+<iframe
   src="https://www.plant-for-the-planet.org/treecounter/YOUR_PROFILE_NAME"
-  width="100%" 
+  width="100%"
   height="300"
   style="border: none;"
 ></iframe>
@@ -56,7 +61,7 @@ import TreeCounter from './components/TreeCounter';
 
 function MyPage() {
   return (
-    <TreeCounter 
+    <TreeCounter
       widgetUrl="https://www.plant-for-the-planet.org/treecounter/YOUR_PROFILE_NAME"
       width={400}
       height={300}
@@ -92,26 +97,26 @@ const TREE_WIDGET_CONFIG = {
 
 ### React Component Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `widgetUrl` | string | `'YOUR_WIDGET_URL'` | Your widget URL |
-| `width` | number | `400` | Container width in pixels |
-| `height` | number | `300` | Iframe height in pixels |
-| `borderRadius` | string | `'8px'` | Border radius |
-| `className` | string | `''` | Custom CSS class |
-| `showInfo` | boolean | `true` | Show info section |
+| Prop           | Type    | Default             | Description               |
+| -------------- | ------- | ------------------- | ------------------------- |
+| `widgetUrl`    | string  | `'YOUR_WIDGET_URL'` | Your widget URL           |
+| `width`        | number  | `400`               | Container width in pixels |
+| `height`       | number  | `300`               | Iframe height in pixels   |
+| `borderRadius` | string  | `'8px'`             | Border radius             |
+| `className`    | string  | `''`                | Custom CSS class          |
+| `showInfo`     | boolean | `true`              | Show info section         |
 
 ### JavaScript Config Object
 
 ```javascript
 const TREE_WIDGET_CONFIG = {
-  widgetUrl: 'YOUR_WIDGET_URL',      // Required
-  containerId: 'tree-counter',       // Container div ID
-  width: '100%',                     // Width
-  height: '300px',                   // Height
-  borderRadius: '8px',               // Border radius
-  scrolling: 'no',                   // Scrolling
-  loading: 'lazy'                    // Loading strategy
+  widgetUrl: 'YOUR_WIDGET_URL', // Required
+  containerId: 'tree-counter', // Container div ID
+  width: '100%', // Width
+  height: '300px', // Height
+  borderRadius: '8px', // Border radius
+  scrolling: 'no', // Scrolling
+  loading: 'lazy', // Loading strategy
   // Note: Border styling applied via CSS (border: 'none')
 };
 ```
@@ -135,9 +140,9 @@ Before deploying, verify:
 
 ```css
 .widget-wrapper {
-  max-width: 400px;      /* Adjust width */
-  height: 300px;         /* Adjust height */
-  border-radius: 8px;    /* Rounded corners */
+  max-width: 400px; /* Adjust width */
+  height: 300px; /* Adjust height */
+  border-radius: 8px; /* Rounded corners */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Shadow */
 }
 ```
@@ -145,12 +150,7 @@ Before deploying, verify:
 ### React Inline Styles
 
 ```jsx
-<TreeCounter 
-  widgetUrl={url}
-  width={500}
-  height={350}
-  borderRadius="12px"
-/>
+<TreeCounter widgetUrl={url} width={500} height={350} borderRadius="12px" />
 ```
 
 ### JavaScript Dynamic Styling
@@ -196,6 +196,7 @@ The tree counter can be integrated into all ecosystem apps:
 ## 📚 Documentation
 
 For complete setup instructions, troubleshooting, and best practices, see:
+
 - **[TREE_WIDGET_SETUP.md](docs/TREE_WIDGET_SETUP.md)** - Comprehensive guide
 
 ## 🔗 Resources

@@ -1,4 +1,3 @@
-
 export async function chatWithAI(message: string): Promise<string> {
   try {
     const response = await fetch('/api/openai/chat', {

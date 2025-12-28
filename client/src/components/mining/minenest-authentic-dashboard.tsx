@@ -1,17 +1,17 @@
 import React from 'react';
-import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Progress } from "@/components/ui/progress";
-import { 
-  Pickaxe, 
-  Activity, 
-  TrendingUp, 
-  Shield, 
-  Zap, 
-  Settings, 
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Progress } from '@/components/ui/progress';
+import {
+  Pickaxe,
+  Activity,
+  TrendingUp,
+  Shield,
+  Zap,
+  Settings,
   BarChart3,
   DollarSign,
   Users,
@@ -25,9 +25,9 @@ import {
   Wrench,
   Building,
   Search,
-  Filter
-} from "lucide-react";
-import { motion } from "framer-motion";
+  Filter,
+} from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface MiningDashboardData {
   sector: {
@@ -80,22 +80,22 @@ interface MiningDashboardData {
 export function MineNestAuthenticDashboard() {
   // Fetch authentic mining dashboard data
   const { data: miningData, isLoading } = useQuery<MiningDashboardData>({
-    queryKey: ["/api/mining/dashboard"],
+    queryKey: ['/api/mining/dashboard'],
     queryFn: async () => {
-      const response = await fetch("/api/mining/dashboard");
+      const response = await fetch('/api/mining/dashboard');
       if (!response.ok) throw new Error('Failed to fetch mining dashboard');
       return response.json();
-    }
+    },
   });
 
   // Fetch mining performance metrics
   const { data: metricsData } = useQuery({
-    queryKey: ["/api/mining/metrics"],
+    queryKey: ['/api/mining/metrics'],
     queryFn: async () => {
-      const response = await fetch("/api/mining/metrics");
+      const response = await fetch('/api/mining/metrics');
       if (!response.ok) throw new Error('Failed to fetch mining metrics');
       return response.json();
-    }
+    },
   });
 
   if (isLoading) {
@@ -117,9 +117,7 @@ export function MineNestAuthenticDashboard() {
   if (!miningData) {
     return (
       <div className="p-6">
-        <div className="text-center text-red-400">
-          Failed to load MineNest™ dashboard data
-        </div>
+        <div className="text-center text-red-400">Failed to load MineNest™ dashboard data</div>
       </div>
     );
   }
@@ -134,7 +132,8 @@ export function MineNestAuthenticDashboard() {
             MineNest™ Dashboard
           </h1>
           <p className="text-gray-400 mt-1">
-            Comprehensive mining ecosystem with exactly 30 mining brands from HTML data - {miningData.metrics.activeBrands} active brands with 100% integration
+            Comprehensive mining ecosystem with exactly 30 mining brands from HTML data -{' '}
+            {miningData.metrics.activeBrands} active brands with 100% integration
           </p>
         </div>
         <Badge variant="outline" className="text-green-400 border-green-400">
@@ -144,7 +143,11 @@ export function MineNestAuthenticDashboard() {
 
       {/* Key Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm text-gray-400 flex items-center gap-2">
@@ -159,7 +162,11 @@ export function MineNestAuthenticDashboard() {
           </Card>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm text-gray-400 flex items-center gap-2">
@@ -168,13 +175,19 @@ export function MineNestAuthenticDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-400">{miningData.metrics.totalActiveRigs}</div>
+              <div className="text-2xl font-bold text-green-400">
+                {miningData.metrics.totalActiveRigs}
+              </div>
               <p className="text-xs text-gray-400">Across all sites</p>
             </CardContent>
           </Card>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm text-gray-400 flex items-center gap-2">
@@ -183,13 +196,19 @@ export function MineNestAuthenticDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-blue-400">{miningData.metrics.coreSystems}</div>
+              <div className="text-2xl font-bold text-blue-400">
+                {miningData.metrics.coreSystems}
+              </div>
               <p className="text-xs text-gray-400">A+ & A tier</p>
             </CardContent>
           </Card>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm text-gray-400 flex items-center gap-2">
@@ -198,7 +217,9 @@ export function MineNestAuthenticDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-purple-400">{miningData.metrics.avgPerformance}%</div>
+              <div className="text-2xl font-bold text-purple-400">
+                {miningData.metrics.avgPerformance}%
+              </div>
               <p className="text-xs text-gray-400">Average system</p>
             </CardContent>
           </Card>
@@ -208,10 +229,18 @@ export function MineNestAuthenticDashboard() {
       {/* Main Dashboard Tabs */}
       <Tabs defaultValue="overview" className="w-full">
         <TabsList className="grid w-full grid-cols-4 bg-gray-800">
-          <TabsTrigger value="overview" className="data-[state=active]:bg-green-600">Overview</TabsTrigger>
-          <TabsTrigger value="brands" className="data-[state=active]:bg-green-600">Brand Management</TabsTrigger>
-          <TabsTrigger value="analytics" className="data-[state=active]:bg-green-600">Analytics</TabsTrigger>
-          <TabsTrigger value="settings" className="data-[state=active]:bg-green-600">Settings</TabsTrigger>
+          <TabsTrigger value="overview" className="data-[state=active]:bg-green-600">
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="brands" className="data-[state=active]:bg-green-600">
+            Brand Management
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="data-[state=active]:bg-green-600">
+            Analytics
+          </TabsTrigger>
+          <TabsTrigger value="settings" className="data-[state=active]:bg-green-600">
+            Settings
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
@@ -232,8 +261,8 @@ export function MineNestAuthenticDashboard() {
                         <span className="text-gray-400">{trend.month}</span>
                         <div className="flex items-center gap-2">
                           <div className="w-24 bg-gray-700 rounded-full h-2">
-                            <div 
-                              className="bg-green-400 h-2 rounded-full" 
+                            <div
+                              className="bg-green-400 h-2 rounded-full"
                               style={{ width: `${(trend.value / 6000) * 100}%` }}
                             ></div>
                           </div>
@@ -259,15 +288,18 @@ export function MineNestAuthenticDashboard() {
               <CardContent>
                 <div className="space-y-3">
                   {miningData.recentActivities.map((activity, index) => (
-                    <div key={index} className="flex items-center justify-between p-2 bg-gray-700 rounded">
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-2 bg-gray-700 rounded"
+                    >
                       <div>
                         <div className="text-white font-medium">{activity.action}</div>
                         <div className="text-gray-400 text-sm">{activity.brand}</div>
                       </div>
                       <div className="text-right">
-                        <Badge 
-                          variant={activity.status === "active" ? "default" : "secondary"}
-                          className={activity.status === "active" ? "bg-green-600" : "bg-gray-600"}
+                        <Badge
+                          variant={activity.status === 'active' ? 'default' : 'secondary'}
+                          className={activity.status === 'active' ? 'bg-green-600' : 'bg-gray-600'}
                         >
                           {activity.status}
                         </Badge>
@@ -290,9 +322,7 @@ export function MineNestAuthenticDashboard() {
                   <Pickaxe className="w-5 h-5" />
                   Brand Portfolio
                 </CardTitle>
-                <div className="text-sm">
-                  Manage all brands in ⛏️ Mining & Resources
-                </div>
+                <div className="text-sm">Manage all brands in ⛏️ Mining & Resources</div>
               </div>
             </CardHeader>
             <CardContent className="p-0">
@@ -332,23 +362,20 @@ export function MineNestAuthenticDashboard() {
 
                       {/* Brand Description */}
                       <p className="text-gray-300 text-xs mb-4 line-clamp-2 h-8">
-                        {brand.description?.includes("submodule") ? 
-                          `Specialized ${brand.name} submodule providing targeted mining operations support with advanced analytics, real-time...` :
-                          `Advanced ${brand.name} mining & resources management solution with comprehensive VaultMesh™ integration, real-time ore...`
-                        }
+                        {brand.description?.includes('submodule')
+                          ? `Specialized ${brand.name} submodule providing targeted mining operations support with advanced analytics, real-time...`
+                          : `Advanced ${brand.name} mining & resources management solution with comprehensive VaultMesh™ integration, real-time ore...`}
                       </p>
 
                       {/* Integration Badge */}
                       <div className="mb-4">
-                        <span className="text-gray-400 text-xs">
-                          {brand.integration}
-                        </span>
+                        <span className="text-gray-400 text-xs">{brand.integration}</span>
                       </div>
 
                       {/* Action Button */}
                       <div className="flex justify-end">
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-1 text-xs rounded"
                         >
                           Core
@@ -363,10 +390,16 @@ export function MineNestAuthenticDashboard() {
                   <Button className="bg-green-600 hover:bg-green-700 text-white px-8 py-2 rounded-lg flex-1">
                     Add New Brand
                   </Button>
-                  <Button variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-700 px-8 py-2 rounded-lg flex-1">
+                  <Button
+                    variant="outline"
+                    className="border-gray-600 text-gray-300 hover:bg-gray-700 px-8 py-2 rounded-lg flex-1"
+                  >
                     Import Brands
                   </Button>
-                  <Button variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-700 px-8 py-2 rounded-lg flex-1">
+                  <Button
+                    variant="outline"
+                    className="border-gray-600 text-gray-300 hover:bg-gray-700 px-8 py-2 rounded-lg flex-1"
+                  >
                     Export Portfolio
                   </Button>
                 </div>
@@ -387,19 +420,25 @@ export function MineNestAuthenticDashboard() {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <span className="text-gray-400">Active Brands</span>
-                      <span className="text-green-400 font-bold">{metricsData.statusDistribution.active}%</span>
+                      <span className="text-green-400 font-bold">
+                        {metricsData.statusDistribution.active}%
+                      </span>
                     </div>
                     <Progress value={metricsData.statusDistribution.active} className="h-2" />
-                    
+
                     <div className="flex items-center justify-between">
                       <span className="text-gray-400">Core Systems</span>
-                      <span className="text-blue-400 font-bold">{metricsData.statusDistribution.core}%</span>
+                      <span className="text-blue-400 font-bold">
+                        {metricsData.statusDistribution.core}%
+                      </span>
                     </div>
                     <Progress value={metricsData.statusDistribution.core} className="h-2" />
-                    
+
                     <div className="flex items-center justify-between">
                       <span className="text-gray-400">Development</span>
-                      <span className="text-yellow-400 font-bold">{metricsData.statusDistribution.development}%</span>
+                      <span className="text-yellow-400 font-bold">
+                        {metricsData.statusDistribution.development}%
+                      </span>
                     </div>
                     <Progress value={metricsData.statusDistribution.development} className="h-2" />
                   </div>
@@ -449,12 +488,12 @@ export function MineNestAuthenticDashboard() {
 // MineNest Settings Component - From HTML File
 function MineNestSettings() {
   const { data: settingsData } = useQuery({
-    queryKey: ["/api/mining/settings"],
+    queryKey: ['/api/mining/settings'],
     queryFn: async () => {
-      const response = await fetch("/api/mining/settings");
+      const response = await fetch('/api/mining/settings');
       if (!response.ok) throw new Error('Failed to fetch mining settings');
       return response.json();
-    }
+    },
   });
 
   if (!settingsData) {
@@ -482,12 +521,12 @@ function MineNestSettings() {
             <div key={key} className="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
               <div>
                 <div className="text-white font-medium">
-                  {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                  {key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())}
                 </div>
                 <div className="text-gray-400 text-sm">{config.description}</div>
               </div>
-              <Badge className={config.enabled ? "bg-green-600" : "bg-red-600"}>
-                {config.enabled ? "Enabled" : "Disabled"}
+              <Badge className={config.enabled ? 'bg-green-600' : 'bg-red-600'}>
+                {config.enabled ? 'Enabled' : 'Disabled'}
               </Badge>
             </div>
           ))}
@@ -545,11 +584,11 @@ function MineNestSettings() {
             <div key={key} className="flex items-center justify-between p-3 bg-gray-700 rounded">
               <div>
                 <div className="text-white font-medium">
-                  {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                  {key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())}
                 </div>
                 <div className="text-gray-400 text-sm">{integration.description}</div>
               </div>
-              <Badge className={integration.status === "Active" ? "bg-green-600" : "bg-gray-600"}>
+              <Badge className={integration.status === 'Active' ? 'bg-green-600' : 'bg-gray-600'}>
                 {integration.status}
               </Badge>
             </div>

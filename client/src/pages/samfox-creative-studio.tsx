@@ -6,11 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { 
-  Palette, 
-  Sparkles, 
-  Download, 
-  Eye, 
+import {
+  Palette,
+  Sparkles,
+  Download,
+  Eye,
   Heart,
   Star,
   Brush,
@@ -44,7 +44,7 @@ import {
   Search,
   Home,
   TreePine,
-  History
+  History,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -73,7 +73,7 @@ import FirstEyeDesign from '@assets/1st_eye_1753263376706.png';
 import ChiefDesign from '@assets/Chief_02_1753263376705.png';
 import DripDesign from '@assets/Drip_1753263376705.png';
 
-// Additional Sam Fox Artwork Images  
+// Additional Sam Fox Artwork Images
 import LinkedinHeader from '@assets/Linkedin_header_1753261659049.png';
 
 // Import PayPal Button component
@@ -84,58 +84,200 @@ import HeritagePortal from '@/components/HeritagePortal';
 
 // Sam Fox Design Gallery Data - 20 Unique Commercial Prints
 const designGallery = [
-  { id: 1, title: "Rabbit Sketch", image: RabbitSketch, price: 12.99, category: "Minimalist", description: "Clean line art rabbit design" },
-  { id: 2, title: "Wolf Monster", image: WolfDesign, price: 15.99, category: "Character Art", description: "Bold wolf character with vibrant colors" },
-  { id: 3, title: "Voetsek Hand", image: VoetsekDesign, price: 14.99, category: "Typography", description: "Iconic South African expression art" },
-  { id: 4, title: "Toad Creature", image: ToadColor, price: 13.99, category: "Character Art", description: "Whimsical toad character design" },
-  { id: 5, title: "Puma Cat (Pink)", image: PumasOne, price: 16.99, category: "Animal Art", description: "Stylized cat with geometric patterns" },
-  { id: 6, title: "Space Cat", image: PumasTwo, price: 16.99, category: "Sci-Fi", description: "Cat astronaut adventure design" },
-  { id: 7, title: "Sambreel Umbrella", image: SambreelDesign, price: 15.49, category: "Character Art", description: "Cute character with patterned umbrella" },
-  { id: 8, title: "Sheep Ice Cream", image: SheepCone, price: 14.49, category: "Food Art", description: "Adorable sheep ice cream cone" },
-  { id: 9, title: "OOG Eye Rabbit", image: OOGDesign, price: 13.49, category: "Surreal", description: "Surreal rabbit with prominent eye" },
-  { id: 10, title: "Nikon Camera Person", image: NikonDesign, price: 17.99, category: "Photography", description: "Photographer with camera gear" },
-  { id: 11, title: "MANDARK Monster", image: MonsterDesign, price: 18.99, category: "Typography", description: "Bold monster character with text" },
-  { id: 12, title: "In Love Character", image: InLoveColor, price: 15.99, category: "Romance", description: "Romantic character design" },
-  { id: 13, title: "Eyes Pattern", image: EyesDesign, price: 12.49, category: "Abstract", description: "Multiple eyes artistic pattern" },
-  { id: 14, title: "Dream Big", image: DreamBigDesign, price: 16.49, category: "Motivational", description: "Inspirational dream big artwork" },
-  { id: 15, title: "First Eye", image: FirstEyeDesign, price: 13.99, category: "Spiritual", description: "Third eye spiritual design" },
-  { id: 16, title: "Chief Portrait", image: ChiefDesign, price: 19.99, category: "Portrait", description: "Detailed chief character portrait" },
-  { id: 17, title: "Drip Style", image: DripDesign, price: 17.49, category: "Street Art", description: "Urban drip style artwork" },
-  { id: 18, title: "UFC Championship", image: UFCChampionImage, price: 21.99, category: "Sports Art", description: "Sweet Victory UFC championship celebration design" },
-  { id: 19, title: "Sam Fox Logo", image: SamFoxLogo, price: 24.99, category: "Branding", description: "Official Sam Fox Creative Studio logo" },
-  { id: 20, title: "LinkedIn Header", image: LinkedinHeader, price: 18.99, category: "Professional", description: "Professional LinkedIn header design" }
+  {
+    id: 1,
+    title: 'Rabbit Sketch',
+    image: RabbitSketch,
+    price: 12.99,
+    category: 'Minimalist',
+    description: 'Clean line art rabbit design',
+  },
+  {
+    id: 2,
+    title: 'Wolf Monster',
+    image: WolfDesign,
+    price: 15.99,
+    category: 'Character Art',
+    description: 'Bold wolf character with vibrant colors',
+  },
+  {
+    id: 3,
+    title: 'Voetsek Hand',
+    image: VoetsekDesign,
+    price: 14.99,
+    category: 'Typography',
+    description: 'Iconic South African expression art',
+  },
+  {
+    id: 4,
+    title: 'Toad Creature',
+    image: ToadColor,
+    price: 13.99,
+    category: 'Character Art',
+    description: 'Whimsical toad character design',
+  },
+  {
+    id: 5,
+    title: 'Puma Cat (Pink)',
+    image: PumasOne,
+    price: 16.99,
+    category: 'Animal Art',
+    description: 'Stylized cat with geometric patterns',
+  },
+  {
+    id: 6,
+    title: 'Space Cat',
+    image: PumasTwo,
+    price: 16.99,
+    category: 'Sci-Fi',
+    description: 'Cat astronaut adventure design',
+  },
+  {
+    id: 7,
+    title: 'Sambreel Umbrella',
+    image: SambreelDesign,
+    price: 15.49,
+    category: 'Character Art',
+    description: 'Cute character with patterned umbrella',
+  },
+  {
+    id: 8,
+    title: 'Sheep Ice Cream',
+    image: SheepCone,
+    price: 14.49,
+    category: 'Food Art',
+    description: 'Adorable sheep ice cream cone',
+  },
+  {
+    id: 9,
+    title: 'OOG Eye Rabbit',
+    image: OOGDesign,
+    price: 13.49,
+    category: 'Surreal',
+    description: 'Surreal rabbit with prominent eye',
+  },
+  {
+    id: 10,
+    title: 'Nikon Camera Person',
+    image: NikonDesign,
+    price: 17.99,
+    category: 'Photography',
+    description: 'Photographer with camera gear',
+  },
+  {
+    id: 11,
+    title: 'MANDARK Monster',
+    image: MonsterDesign,
+    price: 18.99,
+    category: 'Typography',
+    description: 'Bold monster character with text',
+  },
+  {
+    id: 12,
+    title: 'In Love Character',
+    image: InLoveColor,
+    price: 15.99,
+    category: 'Romance',
+    description: 'Romantic character design',
+  },
+  {
+    id: 13,
+    title: 'Eyes Pattern',
+    image: EyesDesign,
+    price: 12.49,
+    category: 'Abstract',
+    description: 'Multiple eyes artistic pattern',
+  },
+  {
+    id: 14,
+    title: 'Dream Big',
+    image: DreamBigDesign,
+    price: 16.49,
+    category: 'Motivational',
+    description: 'Inspirational dream big artwork',
+  },
+  {
+    id: 15,
+    title: 'First Eye',
+    image: FirstEyeDesign,
+    price: 13.99,
+    category: 'Spiritual',
+    description: 'Third eye spiritual design',
+  },
+  {
+    id: 16,
+    title: 'Chief Portrait',
+    image: ChiefDesign,
+    price: 19.99,
+    category: 'Portrait',
+    description: 'Detailed chief character portrait',
+  },
+  {
+    id: 17,
+    title: 'Drip Style',
+    image: DripDesign,
+    price: 17.49,
+    category: 'Street Art',
+    description: 'Urban drip style artwork',
+  },
+  {
+    id: 18,
+    title: 'UFC Championship',
+    image: UFCChampionImage,
+    price: 21.99,
+    category: 'Sports Art',
+    description: 'Sweet Victory UFC championship celebration design',
+  },
+  {
+    id: 19,
+    title: 'Sam Fox Logo',
+    image: SamFoxLogo,
+    price: 24.99,
+    category: 'Branding',
+    description: 'Official Sam Fox Creative Studio logo',
+  },
+  {
+    id: 20,
+    title: 'LinkedIn Header',
+    image: LinkedinHeader,
+    price: 18.99,
+    category: 'Professional',
+    description: 'Professional LinkedIn header design',
+  },
 ];
 
 // VIP Dashboard Component with Complete Portal Functionality
 function VipDashboardComponent() {
   // Real-time data from the actual portal APIs
   const { data: brands = [], isLoading: brandsLoading } = useQuery({
-    queryKey: ["/api/brands"],
+    queryKey: ['/api/brands'],
     refetchInterval: 10000,
   });
 
   const { data: sectors = [] } = useQuery({
-    queryKey: ["/api/sectors"],
+    queryKey: ['/api/sectors'],
     refetchInterval: 10000,
   });
 
   const { data: systemStatus = [] } = useQuery({
-    queryKey: ["/api/system-status"],
+    queryKey: ['/api/system-status'],
     refetchInterval: 5000,
   });
 
   const { data: dashboardStats = {} } = useQuery({
-    queryKey: ["/api/dashboard/stats"],
+    queryKey: ['/api/dashboard/stats'],
     refetchInterval: 30000,
   });
 
   const { data: legalDocuments = [] } = useQuery({
-    queryKey: ["/api/legal-documents"],
+    queryKey: ['/api/legal-documents'],
     refetchInterval: 15000,
   });
 
   // Dashboard metrics calculated from real data
-  const connectedServices = (systemStatus as any[]).filter((s: any) => s.status === 'connected' || s.status === 'active').length;
+  const connectedServices = (systemStatus as any[]).filter(
+    (s: any) => s.status === 'connected' || s.status === 'active'
+  ).length;
   const totalServices = (systemStatus as any[]).length;
   const connectionStatus = connectedServices === totalServices ? 'connected' : 'partial';
 
@@ -148,7 +290,9 @@ function VipDashboardComponent() {
           VIP Complete Dashboard Portal
         </h2>
         <p className="text-gray-600 dark:text-gray-300 max-w-4xl mx-auto">
-          Complete ecosystem with {(dashboardStats as any).totalElements || 3794} brands across {(sectors as any[]).length || 48} sectors connected to PostgreSQL database, SecureSign™ VIP, and deployment infrastructure.
+          Complete ecosystem with {(dashboardStats as any).totalElements || 3794} brands across{' '}
+          {(sectors as any[]).length || 48} sectors connected to PostgreSQL database, SecureSign™
+          VIP, and deployment infrastructure.
         </p>
       </div>
 
@@ -165,10 +309,12 @@ function VipDashboardComponent() {
                 <div className="flex items-center justify-center mb-2">
                   <Database className="w-8 h-8 text-blue-500" />
                 </div>
-                <div className="text-2xl font-bold">{(dashboardStats as any).totalElements || 0}</div>
+                <div className="text-2xl font-bold">
+                  {(dashboardStats as any).totalElements || 0}
+                </div>
                 <div className="text-sm text-gray-600 dark:text-gray-300">Total Brands</div>
               </div>
-              
+
               <div className="text-center">
                 <div className="flex items-center justify-center mb-2">
                   <Activity className="w-8 h-8 text-green-500" />
@@ -176,7 +322,7 @@ function VipDashboardComponent() {
                 <div className="text-2xl font-bold">{(sectors as any[]).length}</div>
                 <div className="text-sm text-gray-600 dark:text-gray-300">Active Sectors</div>
               </div>
-              
+
               <div className="text-center">
                 <div className="flex items-center justify-center mb-2">
                   <Shield className="w-8 h-8 text-purple-500" />
@@ -184,7 +330,7 @@ function VipDashboardComponent() {
                 <div className="text-2xl font-bold">{(legalDocuments as any[]).length}</div>
                 <div className="text-sm text-gray-600 dark:text-gray-300">Legal Documents</div>
               </div>
-              
+
               <div className="text-center">
                 <div className="flex items-center justify-center mb-2">
                   {connectionStatus === 'connected' ? (
@@ -193,7 +339,9 @@ function VipDashboardComponent() {
                     <AlertTriangle className="w-8 h-8 text-yellow-500" />
                   )}
                 </div>
-                <div className="text-2xl font-bold">{connectedServices}/{totalServices}</div>
+                <div className="text-2xl font-bold">
+                  {connectedServices}/{totalServices}
+                </div>
                 <div className="text-sm text-gray-600 dark:text-gray-300">Services Online</div>
               </div>
             </div>
@@ -203,7 +351,6 @@ function VipDashboardComponent() {
 
       {/* Dashboard Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
         {/* Database Integration Status */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -226,7 +373,7 @@ function VipDashboardComponent() {
                     <span className="text-sm">{(brands as any[]).length} records</span>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <span>Sectors Database</span>
                   <div className="flex items-center gap-2">
@@ -234,7 +381,7 @@ function VipDashboardComponent() {
                     <span className="text-sm">{(sectors as any[]).length} records</span>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <span>Legal Documents</span>
                   <div className="flex items-center gap-2">
@@ -242,7 +389,7 @@ function VipDashboardComponent() {
                     <span className="text-sm">{(legalDocuments as any[]).length} records</span>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <span>System Status</span>
                   <div className="flex items-center gap-2">
@@ -276,21 +423,21 @@ function VipDashboardComponent() {
                     <div className="text-xs">Analytics</div>
                   </div>
                 </Button>
-                
+
                 <Button variant="outline" size="sm" className="h-auto p-3">
                   <div className="text-center">
                     <Users className="w-5 h-5 mx-auto mb-1" />
                     <div className="text-xs">User Mgmt</div>
                   </div>
                 </Button>
-                
+
                 <Button variant="outline" size="sm" className="h-auto p-3">
                   <div className="text-center">
                     <FileText className="w-5 h-5 mx-auto mb-1" />
                     <div className="text-xs">Documents</div>
                   </div>
                 </Button>
-                
+
                 <Button variant="outline" size="sm" className="h-auto p-3">
                   <div className="text-center">
                     <Settings className="w-5 h-5 mx-auto mb-1" />
@@ -331,26 +478,35 @@ function VipDashboardComponent() {
             ) : (
               <div className="space-y-2 max-h-96 overflow-y-auto">
                 {(sectors as any[]).map((sector: any) => {
-                  const sectorBrands = (brands as any[]).filter((brand: any) => brand.sectorId === sector.id);
+                  const sectorBrands = (brands as any[]).filter(
+                    (brand: any) => brand.sectorId === sector.id
+                  );
                   const brandCount = sectorBrands.length;
                   return (
-                    <div key={sector.id} className="flex items-center justify-between py-2 px-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <div
+                      key={sector.id}
+                      className="flex items-center justify-between py-2 px-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    >
                       <div className="flex items-center gap-3">
                         <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                           {sector.name}
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge 
-                          variant={brandCount > 100 ? 'default' : brandCount > 50 ? 'secondary' : 'outline'}
+                        <Badge
+                          variant={
+                            brandCount > 100 ? 'default' : brandCount > 50 ? 'secondary' : 'outline'
+                          }
                           className="text-xs"
                         >
                           {brandCount} brands
                         </Badge>
                         <div className="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                          <div 
+                          <div
                             className="bg-blue-500 h-2 rounded-full transition-all duration-300"
-                            style={{ width: `${Math.min(100, (brandCount / Math.max(...(sectors as any[]).map((s: any) => (brands as any[]).filter((b: any) => b.sectorId === s.id).length))) * 100)}%` }}
+                            style={{
+                              width: `${Math.min(100, (brandCount / Math.max(...(sectors as any[]).map((s: any) => (brands as any[]).filter((b: any) => b.sectorId === s.id).length))) * 100)}%`,
+                            }}
                           />
                         </div>
                       </div>
@@ -396,16 +552,20 @@ function VipDashboardComponent() {
                   <div>Status</div>
                   <div>Integration</div>
                 </div>
-                
+
                 {(brands as any[]).slice(0, 8).map((brand: any, index: number) => (
-                  <div key={brand.id} className="grid grid-cols-4 gap-4 text-sm py-2 border-b border-gray-100 dark:border-gray-800">
+                  <div
+                    key={brand.id}
+                    className="grid grid-cols-4 gap-4 text-sm py-2 border-b border-gray-100 dark:border-gray-800"
+                  >
                     <div className="font-medium">{brand.name}</div>
                     <div className="text-gray-600 dark:text-gray-400">
-                      {(sectors as any[]).find((s: any) => s.id === brand.sectorId)?.name || 'Unknown'}
+                      {(sectors as any[]).find((s: any) => s.id === brand.sectorId)?.name ||
+                        'Unknown'}
                     </div>
                     <div>
-                      <Badge 
-                        variant={brand.status === 'active' ? 'default' : 'secondary'} 
+                      <Badge
+                        variant={brand.status === 'active' ? 'default' : 'secondary'}
                         className="text-xs"
                       >
                         {brand.status || 'active'}
@@ -414,7 +574,7 @@ function VipDashboardComponent() {
                     <div className="text-xs text-gray-500">{brand.integration || 'seedwave'}</div>
                   </div>
                 ))}
-                
+
                 {(brands as any[]).length > 8 && (
                   <div className="text-center pt-4">
                     <Button variant="outline" size="sm">
@@ -439,14 +599,17 @@ function VipDashboardComponent() {
             <div className="text-center mb-6">
               <h3 className="text-2xl font-bold mb-2">Complete Seedwave Portal Sync Active</h3>
               <p className="text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-                VIP Dashboard shows live data from the complete Seedwave Brand Management Portal. 
-                All {(brands as any[]).length} brands across {(sectors as any[]).length} sectors are synchronized in real-time.
+                VIP Dashboard shows live data from the complete Seedwave Brand Management Portal.
+                All {(brands as any[]).length} brands across {(sectors as any[]).length} sectors are
+                synchronized in real-time.
               </p>
             </div>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
               <div className="text-center">
-                <div className="text-3xl font-bold text-emerald-600">{(brands as any[]).length}</div>
+                <div className="text-3xl font-bold text-emerald-600">
+                  {(brands as any[]).length}
+                </div>
                 <div className="text-sm text-gray-500">Total Brands</div>
                 <div className="text-xs text-emerald-600 mt-1">✓ Live Data</div>
               </div>
@@ -461,7 +624,9 @@ function VipDashboardComponent() {
                 <div className="text-xs text-purple-600 mt-1">✓ Operational</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-orange-600">{(legalDocuments as any[]).length}</div>
+                <div className="text-3xl font-bold text-orange-600">
+                  {(legalDocuments as any[]).length}
+                </div>
                 <div className="text-sm text-gray-500">Legal Documents</div>
                 <div className="text-xs text-orange-600 mt-1">✓ Secure</div>
               </div>
@@ -481,7 +646,7 @@ function VipDashboardComponent() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
                 <div className="flex items-center justify-between">
                   <div>
@@ -494,12 +659,14 @@ function VipDashboardComponent() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="text-sm font-medium">Legal Documents</div>
-                    <div className="text-xs text-gray-500">{(legalDocuments as any[]).length} records</div>
+                    <div className="text-xs text-gray-500">
+                      {(legalDocuments as any[]).length} records
+                    </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
@@ -507,12 +674,14 @@ function VipDashboardComponent() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-orange-200 dark:border-orange-800">
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="text-sm font-medium">System Services</div>
-                    <div className="text-xs text-gray-500">{(systemStatus as any[]).length} services</div>
+                    <div className="text-xs text-gray-500">
+                      {(systemStatus as any[]).length} services
+                    </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-500" />
@@ -523,7 +692,10 @@ function VipDashboardComponent() {
             </div>
 
             <div className="text-center mt-6">
-              <Badge variant="outline" className="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800">
+              <Badge
+                variant="outline"
+                className="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800"
+              >
                 <CheckCircle className="w-3 h-3 mr-1" />
                 All Portal Features Active in SamFox VIP Dashboard
               </Badge>
@@ -537,22 +709,22 @@ function VipDashboardComponent() {
 
 export default function SamFoxCreativeStudio() {
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState("designs");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [activeTab, setActiveTab] = useState('designs');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedPaymentDesign, setSelectedPaymentDesign] = useState(null);
   const [newFamilyMember, setNewFamilyMember] = useState({
     name: '',
     relationship: '',
     birthDate: '',
-    location: ''
+    location: '',
   });
   const [newEvent, setNewEvent] = useState({
     title: '',
     date: '',
     description: '',
-    type: ''
+    type: '',
   });
-  
+
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -560,32 +732,35 @@ export default function SamFoxCreativeStudio() {
     {
       id: 'madiba-portrait',
       title: 'Madiba Portrait Collection',
-      description: 'Beautiful artistic interpretation featuring warm coral tones and intricate details',
+      description:
+        'Beautiful artistic interpretation featuring warm coral tones and intricate details',
       image: MadibaMockPath,
       category: 'Portrait Art',
       medium: 'Digital Illustration',
       dimensions: '841 x 1189 px',
       style: 'Contemporary Portrait',
-      colors: ['#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3']
+      colors: ['#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3'],
     },
     {
       id: 'ufc-champion',
       title: 'UFC World Champion - Sweet Victory',
-      description: 'Dynamic illustration celebrating championship success with bold typography and athletic power',
+      description:
+        'Dynamic illustration celebrating championship success with bold typography and athletic power',
       image: UFCChampionImage,
       category: 'Sports Art',
       medium: 'Digital Illustration',
       dimensions: '1200 x 900 px',
       style: 'Sports Victory Art',
-      colors: ['#2D5A5A', '#FFD700', '#FFFFFF', '#FF6B35']
-    }
+      colors: ['#2D5A5A', '#FFD700', '#FFFFFF', '#FF6B35'],
+    },
   ];
 
   const completeHtmlDesigns = [
     {
       id: 'looppay-portal',
       title: 'LoopPay™ Sovereign Payment & SSO Portal',
-      description: 'Complete payment processing system with multi-language support and currency conversion',
+      description:
+        'Complete payment processing system with multi-language support and currency conversion',
       htmlContent: `Complete HTML design with PayPal SDK integration, multi-language support (English, Afrikaans, isiZulu, isiXhosa), currency converter, AI assistant, theme switching, and comprehensive payment licensing system.`,
       features: [
         'PayPal SDK Integration',
@@ -597,20 +772,27 @@ export default function SamFoxCreativeStudio() {
         'LoopPay™ Pro Grid ($230/month)',
         'Decentralized Payout Mesh',
         'Immutable Scroll Contracts',
-        'Regional Compliance System'
+        'Regional Compliance System',
       ],
       category: 'Payment Portal',
       complexity: 'Enterprise',
-      technologies: ['PayPal API', 'Exchange Rate API', 'Gemini AI', 'TailwindCSS', 'Responsive Design'],
+      technologies: [
+        'PayPal API',
+        'Exchange Rate API',
+        'Gemini AI',
+        'TailwindCSS',
+        'Responsive Design',
+      ],
       pricing: {
         coreLicense: '$6,500 USD',
-        proGrid: '$230 USD/month'
-      }
+        proGrid: '$230 USD/month',
+      },
     },
     {
       id: 'faa-brand-control',
       title: 'FAA™ Brand Control Center',
-      description: 'Complete brand management dashboard with sidebar navigation and comprehensive brand deployment system',
+      description:
+        'Complete brand management dashboard with sidebar navigation and comprehensive brand deployment system',
       htmlContent: `Advanced dashboard with sidebar navigation, brand deployment tools, license management, GitHub integration, and comprehensive brand building capabilities.`,
       features: [
         'Sidebar Navigation Dashboard',
@@ -624,23 +806,24 @@ export default function SamFoxCreativeStudio() {
         'Real-time System Status',
         'Active Scrolls Monitoring (7,038 deployments)',
         'Client Engagement Analytics',
-        'Royalty & Yield Tracking (R50M+ payouts)'
+        'Royalty & Yield Tracking (R50M+ payouts)',
       ],
       category: 'Brand Management',
       complexity: 'Enterprise',
       technologies: ['Dashboard UI', 'GitHub Integration', 'File Upload', 'Real-time Monitoring'],
       brands: [
         'CodeNest™ ($3,200 license, 6% royalty)',
-        'PayLine™ ($4,100 license, 9% royalty)', 
+        'PayLine™ ($4,100 license, 9% royalty)',
         'HotStack™ ($3,600 license, 7% royalty)',
         'QuickClaim™ ($2,800 license, 6% royalty)',
-        'FirstMover™ ($5,900 license, 12% royalty)'
-      ]
+        'FirstMover™ ($5,900 license, 12% royalty)',
+      ],
     },
     {
       id: 'fruitful-sponsorship',
       title: 'Fruitful Crate Dance Showcase - Sponsorship Platform',
-      description: 'Advanced sponsorship management system with interactive charts, currency conversion and multi-tier sponsorship packages',
+      description:
+        'Advanced sponsorship management system with interactive charts, currency conversion and multi-tier sponsorship packages',
       htmlContent: `Comprehensive sponsorship platform with dynamic tier cards, Chart.js integration, Spotify embed, currency converter, and multi-language support.`,
       features: [
         'Dynamic Sponsorship Tiers',
@@ -654,18 +837,24 @@ export default function SamFoxCreativeStudio() {
         'Investment vs Meals Chart',
         'Real-time Exchange Rates',
         'Custom Badge System',
-        'Professional Footer Links'
+        'Professional Footer Links',
       ],
       category: 'Sponsorship Platform',
       complexity: 'Enterprise',
-      technologies: ['Chart.js', 'Spotify API', 'Currency API', 'PayPal Integration', 'Multi-language'],
+      technologies: [
+        'Chart.js',
+        'Spotify API',
+        'Currency API',
+        'PayPal Integration',
+        'Multi-language',
+      ],
       sponsorshipTiers: [
         'Community Champion',
-        'Rising Star Sponsor', 
+        'Rising Star Sponsor',
         'Cultural Ambassador',
-        'Platinum Partner'
-      ]
-    }
+        'Platinum Partner',
+      ],
+    },
   ];
 
   const dashboardTemplates = [
@@ -676,7 +865,7 @@ export default function SamFoxCreativeStudio() {
       preview: '/api/templates/samfox/south-africa-dashboard',
       features: ['ZAR Currency', 'SA Brand Management', 'Local Integration', 'RSA Flag Branding'],
       category: 'Regional Dashboard',
-      complexity: 'Advanced'
+      complexity: 'Advanced',
     },
     {
       id: 'global-dashboard',
@@ -685,7 +874,7 @@ export default function SamFoxCreativeStudio() {
       preview: '/api/templates/samfox/global-dashboard',
       features: ['Dark Theme', 'Multi-Canvas Layout', 'Real-time Analytics', 'Interactive Charts'],
       category: 'Dashboard',
-      complexity: 'Advanced'
+      complexity: 'Advanced',
     },
     {
       id: 'sector-index',
@@ -694,7 +883,7 @@ export default function SamFoxCreativeStudio() {
       preview: '/api/templates/samfox/sector-index',
       features: ['Sector Navigation', 'Clean Layout', 'Responsive Design', 'Professional Styling'],
       category: 'Navigation',
-      complexity: 'Intermediate'
+      complexity: 'Intermediate',
     },
     {
       id: 'payment-portal',
@@ -703,7 +892,7 @@ export default function SamFoxCreativeStudio() {
       preview: '/api/templates/samfox/payment-portal',
       features: ['PayPal Integration', 'Secure Processing', 'Clean UI', 'Mobile Responsive'],
       category: 'E-commerce',
-      complexity: 'Advanced'
+      complexity: 'Advanced',
     },
     {
       id: 'heritage-portal',
@@ -712,8 +901,8 @@ export default function SamFoxCreativeStudio() {
       preview: '/api/templates/samfox/heritage-portal',
       features: ['Heritage Theme', 'Genealogy Support', 'Cultural Elements', 'Family Trees'],
       category: 'Cultural',
-      complexity: 'Intermediate'
-    }
+      complexity: 'Intermediate',
+    },
   ];
 
   const designAssets = [
@@ -722,22 +911,22 @@ export default function SamFoxCreativeStudio() {
       title: 'SamFox Color Palettes',
       description: 'Curated color schemes with pastel and vibrant combinations',
       count: 15,
-      type: 'Color System'
+      type: 'Color System',
     },
     {
       id: 'component-library',
       title: 'UI Component Library',
       description: 'Reusable interface components with consistent styling',
       count: 28,
-      type: 'Components'
+      type: 'Components',
     },
     {
       id: 'layout-templates',
       title: 'Layout Templates',
       description: 'Professional page layouts for various use cases',
       count: 12,
-      type: 'Templates'
-    }
+      type: 'Templates',
+    },
   ];
 
   return (
@@ -754,11 +943,7 @@ export default function SamFoxCreativeStudio() {
               className="flex items-center justify-center gap-3 mb-6"
             >
               <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-lg">
-                <img 
-                  src={SamFoxLogo} 
-                  alt="Sam Fox Logo"
-                  className="w-full h-full object-cover"
-                />
+                <img src={SamFoxLogo} alt="Sam Fox Logo" className="w-full h-full object-cover" />
               </div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-rose-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                 SamFox Creative Studio
@@ -769,14 +954,16 @@ export default function SamFoxCreativeStudio() {
                 ))}
               </div>
             </motion.div>
-            
+
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto"
             >
-              Authentic Sam Fox creative work featuring beautiful artwork, sports celebration illustrations, elegant dashboard designs, and professional templates crafted with love and artistic vision
+              Authentic Sam Fox creative work featuring beautiful artwork, sports celebration
+              illustrations, elegant dashboard designs, and professional templates crafted with love
+              and artistic vision
             </motion.p>
 
             <motion.div
@@ -819,8 +1006,7 @@ export default function SamFoxCreativeStudio() {
               VIP Dashboard
             </TabsTrigger>
             <TabsTrigger value="south-africa" className="flex items-center gap-2">
-              🇿🇦
-              South Africa
+              🇿🇦 South Africa
             </TabsTrigger>
             <TabsTrigger value="templates" className="flex items-center gap-2">
               <Layout className="w-4 h-4" />
@@ -839,10 +1025,8 @@ export default function SamFoxCreativeStudio() {
               Design Gallery
             </TabsTrigger>
             <TabsTrigger value="heritage" className="flex items-center gap-2">
-              👤
-              AncestorTag™
+              👤 AncestorTag™
             </TabsTrigger>
-
           </TabsList>
 
           {/* Artwork Gallery */}
@@ -850,10 +1034,11 @@ export default function SamFoxCreativeStudio() {
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-4">Artwork Gallery</h2>
               <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                Featuring the beautiful Madiba portrait, UFC World Champion celebration artwork, and other artistic creations
+                Featuring the beautiful Madiba portrait, UFC World Champion celebration artwork, and
+                other artistic creations
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
               {artworkGallery.map((artwork, index) => (
                 <motion.div
@@ -864,8 +1049,8 @@ export default function SamFoxCreativeStudio() {
                 >
                   <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 group">
                     <div className="relative">
-                      <img 
-                        src={artwork.image} 
+                      <img
+                        src={artwork.image}
                         alt={artwork.title}
                         className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                       />
@@ -875,7 +1060,7 @@ export default function SamFoxCreativeStudio() {
                         <p className="text-sm text-gray-200">{artwork.medium}</p>
                       </div>
                     </div>
-                    
+
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-4">
                         <div>
@@ -886,23 +1071,23 @@ export default function SamFoxCreativeStudio() {
                         </div>
                         <Heart className="w-5 h-5 text-rose-500 fill-rose-500" />
                       </div>
-                      
+
                       <div className="space-y-3">
                         <div className="flex items-center gap-2">
                           <Badge variant="secondary">{artwork.category}</Badge>
                           <Badge variant="outline">{artwork.style}</Badge>
                         </div>
-                        
+
                         <div className="flex items-center gap-1">
                           {artwork.colors.map((color, i) => (
-                            <div 
+                            <div
                               key={i}
                               className="w-6 h-6 rounded-full border-2 border-white shadow-sm"
                               style={{ backgroundColor: color }}
                             />
                           ))}
                         </div>
-                        
+
                         <div className="flex gap-2">
                           <Button size="sm" className="flex-1">
                             <Eye className="w-4 h-4 mr-2" />
@@ -928,7 +1113,8 @@ export default function SamFoxCreativeStudio() {
                 Complete HTML Design Systems
               </h2>
               <p className="text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-                Three comprehensive HTML design systems featuring advanced functionality, complete styling, and enterprise-grade features
+                Three comprehensive HTML design systems featuring advanced functionality, complete
+                styling, and enterprise-grade features
               </p>
             </div>
 
@@ -954,12 +1140,15 @@ export default function SamFoxCreativeStudio() {
                             {design.description}
                           </CardDescription>
                         </div>
-                        <Badge variant="outline" className="bg-gradient-to-r from-emerald-500 to-blue-500 text-white border-none">
+                        <Badge
+                          variant="outline"
+                          className="bg-gradient-to-r from-emerald-500 to-blue-500 text-white border-none"
+                        >
                           {design.complexity}
                         </Badge>
                       </div>
                     </CardHeader>
-                    
+
                     <CardContent className="p-6">
                       <div className="mb-6">
                         <h4 className="font-semibold mb-3 text-lg">System Overview</h4>
@@ -1001,8 +1190,18 @@ export default function SamFoxCreativeStudio() {
                             <div className="mt-4">
                               <h5 className="font-medium mb-2">Pricing Structure</h5>
                               <div className="text-sm space-y-1">
-                                <div>Core License: <span className="font-mono text-emerald-600">{design.pricing.coreLicense}</span></div>
-                                <div>Pro Grid: <span className="font-mono text-blue-600">{design.pricing.proGrid}</span></div>
+                                <div>
+                                  Core License:{' '}
+                                  <span className="font-mono text-emerald-600">
+                                    {design.pricing.coreLicense}
+                                  </span>
+                                </div>
+                                <div>
+                                  Pro Grid:{' '}
+                                  <span className="font-mono text-blue-600">
+                                    {design.pricing.proGrid}
+                                  </span>
+                                </div>
                               </div>
                             </div>
                           )}
@@ -1012,9 +1211,13 @@ export default function SamFoxCreativeStudio() {
                               <h5 className="font-medium mb-2">Rapid Deploy Brands</h5>
                               <div className="text-sm space-y-1">
                                 {design.brands.slice(0, 3).map((brand, i) => (
-                                  <div key={i} className="text-xs">{brand}</div>
+                                  <div key={i} className="text-xs">
+                                    {brand}
+                                  </div>
                                 ))}
-                                <div className="text-xs text-gray-500">+{design.brands.length - 3} more brands</div>
+                                <div className="text-xs text-gray-500">
+                                  +{design.brands.length - 3} more brands
+                                </div>
                               </div>
                             </div>
                           )}
@@ -1024,7 +1227,9 @@ export default function SamFoxCreativeStudio() {
                               <h5 className="font-medium mb-2">Sponsorship Tiers</h5>
                               <div className="text-sm space-y-1">
                                 {design.sponsorshipTiers.map((tier, i) => (
-                                  <div key={i} className="text-xs">• {tier}</div>
+                                  <div key={i} className="text-xs">
+                                    • {tier}
+                                  </div>
                                 ))}
                               </div>
                             </div>
@@ -1065,9 +1270,9 @@ export default function SamFoxCreativeStudio() {
                                 </div>
                               ))}
                             </div>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
+                            <Button
+                              variant="ghost"
+                              size="sm"
                               className="mt-3"
                               onClick={() => setSelectedTemplate(null)}
                             >
@@ -1092,9 +1297,10 @@ export default function SamFoxCreativeStudio() {
                 <CardContent className="p-8 text-center">
                   <h3 className="text-2xl font-bold mb-4">Complete HTML Design System Portfolio</h3>
                   <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-3xl mx-auto">
-                    These three comprehensive HTML design systems demonstrate advanced functionality including 
-                    payment processing, brand management, sponsorship platforms, multi-language support, 
-                    currency conversion, AI integration, and enterprise-grade features.
+                    These three comprehensive HTML design systems demonstrate advanced functionality
+                    including payment processing, brand management, sponsorship platforms,
+                    multi-language support, currency conversion, AI integration, and
+                    enterprise-grade features.
                   </p>
                   <div className="flex items-center justify-center gap-8 text-sm">
                     <div className="text-center">
@@ -1127,7 +1333,8 @@ export default function SamFoxCreativeStudio() {
                 🇿🇦 South Africa Dashboard
               </h2>
               <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                Comprehensive South African brands and products management with ZAR integration and local market focus
+                Comprehensive South African brands and products management with ZAR integration and
+                local market focus
               </p>
             </div>
 
@@ -1141,7 +1348,7 @@ export default function SamFoxCreativeStudio() {
                   monthly: 'R92/month',
                   category: 'FinTech',
                   emoji: '💳',
-                  features: ['PulseTrade™', 'ClaimRoot™', 'DivLock™']
+                  features: ['PulseTrade™', 'ClaimRoot™', 'DivLock™'],
                 },
                 {
                   name: 'SteelFlow™',
@@ -1150,7 +1357,7 @@ export default function SamFoxCreativeStudio() {
                   monthly: 'R150/month',
                   category: 'Mining',
                   emoji: '⛏️',
-                  features: ['Mining Operations', 'Safety Protocols', 'Resource Tracking']
+                  features: ['Mining Operations', 'Safety Protocols', 'Resource Tracking'],
                 },
                 {
                   name: 'AgriLink™',
@@ -1159,7 +1366,7 @@ export default function SamFoxCreativeStudio() {
                   monthly: 'R125/month',
                   category: 'Agriculture',
                   emoji: '🌾',
-                  features: ['Farm Management', 'Supply Chain', 'Weather Integration']
+                  features: ['Farm Management', 'Supply Chain', 'Weather Integration'],
                 },
                 {
                   name: 'TaxiFlow™',
@@ -1168,7 +1375,7 @@ export default function SamFoxCreativeStudio() {
                   monthly: 'R75/month',
                   category: 'Transport',
                   emoji: '🚐',
-                  features: ['Route Optimization', 'Driver Management', 'Payment Processing']
+                  features: ['Route Optimization', 'Driver Management', 'Payment Processing'],
                 },
                 {
                   name: 'RetailZAR™',
@@ -1177,7 +1384,7 @@ export default function SamFoxCreativeStudio() {
                   monthly: 'R85/month',
                   category: 'Retail',
                   emoji: '🛒',
-                  features: ['POS System', 'Inventory', 'ZAR Processing']
+                  features: ['POS System', 'Inventory', 'ZAR Processing'],
                 },
                 {
                   name: 'EduSA™',
@@ -1186,8 +1393,8 @@ export default function SamFoxCreativeStudio() {
                   monthly: 'R110/month',
                   category: 'Education',
                   emoji: '🎓',
-                  features: ['Student Management', 'Curriculum', 'Parent Portal']
-                }
+                  features: ['Student Management', 'Curriculum', 'Parent Portal'],
+                },
               ].map((product, index) => (
                 <motion.div
                   key={product.name}
@@ -1213,11 +1420,11 @@ export default function SamFoxCreativeStudio() {
                           ZAR
                         </div>
                       </div>
-                      
+
                       <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
                         {product.description}
                       </p>
-                      
+
                       <div className="space-y-2 mb-4">
                         <div className="flex justify-between">
                           <span className="text-sm text-gray-500">Master License:</span>
@@ -1228,7 +1435,7 @@ export default function SamFoxCreativeStudio() {
                           <span className="font-semibold">{product.monthly}</span>
                         </div>
                       </div>
-                      
+
                       <div className="space-y-3">
                         <div className="flex flex-wrap gap-1">
                           {product.features.map((feature, i) => (
@@ -1237,7 +1444,7 @@ export default function SamFoxCreativeStudio() {
                             </Badge>
                           ))}
                         </div>
-                        
+
                         <div className="flex gap-2">
                           <Button size="sm" className="flex-1 bg-orange-600 hover:bg-orange-700">
                             <Eye className="w-4 h-4 mr-2" />
@@ -1270,7 +1477,7 @@ export default function SamFoxCreativeStudio() {
                       Specialized tools and integrations for the South African market
                     </p>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div className="text-center">
                       <div className="w-12 h-12 bg-orange-600 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -1281,7 +1488,7 @@ export default function SamFoxCreativeStudio() {
                         Native South African Rand support
                       </p>
                     </div>
-                    
+
                     <div className="text-center">
                       <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-3">
                         <span className="text-white text-xl">🏪</span>
@@ -1291,7 +1498,7 @@ export default function SamFoxCreativeStudio() {
                         Cape Town, Johannesburg, Durban
                       </p>
                     </div>
-                    
+
                     <div className="text-center">
                       <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
                         <span className="text-white text-xl">📊</span>
@@ -1301,7 +1508,7 @@ export default function SamFoxCreativeStudio() {
                         South African market insights
                       </p>
                     </div>
-                    
+
                     <div className="text-center">
                       <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
                         <span className="text-white text-xl">🤝</span>
@@ -1325,7 +1532,7 @@ export default function SamFoxCreativeStudio() {
                 Professional dashboard designs with elegant styling and sophisticated functionality
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {dashboardTemplates.map((template, index) => (
                 <motion.div
@@ -1343,12 +1550,14 @@ export default function SamFoxCreativeStudio() {
                             {template.description}
                           </CardDescription>
                         </div>
-                        <Badge variant={template.complexity === 'Advanced' ? 'default' : 'secondary'}>
+                        <Badge
+                          variant={template.complexity === 'Advanced' ? 'default' : 'secondary'}
+                        >
                           {template.complexity}
                         </Badge>
                       </div>
                     </CardHeader>
-                    
+
                     <CardContent>
                       <div className="space-y-4">
                         <div>
@@ -1361,10 +1570,10 @@ export default function SamFoxCreativeStudio() {
                             ))}
                           </div>
                         </div>
-                        
+
                         <div className="flex gap-3">
-                          <Button 
-                            size="sm" 
+                          <Button
+                            size="sm"
                             className="flex-1"
                             onClick={() => setSelectedTemplate(template.id)}
                           >
@@ -1395,7 +1604,7 @@ export default function SamFoxCreativeStudio() {
                 Reusable design components, color palettes, and styling resources
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {designAssets.map((asset, index) => (
                 <motion.div
@@ -1409,17 +1618,17 @@ export default function SamFoxCreativeStudio() {
                       <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
                         <Layers className="w-8 h-8 text-white" />
                       </div>
-                      
+
                       <h3 className="font-semibold text-lg mb-2">{asset.title}</h3>
                       <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
                         {asset.description}
                       </p>
-                      
+
                       <div className="flex items-center justify-center gap-4 mb-4">
                         <Badge variant="secondary">{asset.count} items</Badge>
                         <Badge variant="outline">{asset.type}</Badge>
                       </div>
-                      
+
                       <Button size="sm" className="w-full">
                         <Download className="w-4 h-4 mr-2" />
                         Download Pack
@@ -1436,7 +1645,8 @@ export default function SamFoxCreativeStudio() {
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-4">Creative Portfolio</h2>
               <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                A showcase of artistic vision, sports celebration artwork, technical expertise, and creative excellence
+                A showcase of artistic vision, sports celebration artwork, technical expertise, and
+                creative excellence
               </p>
 
               {/* Sam Fox Profile Header */}
@@ -1448,8 +1658,8 @@ export default function SamFoxCreativeStudio() {
               >
                 <Card className="overflow-hidden max-w-4xl mx-auto">
                   <div className="h-32 relative">
-                    <img 
-                      src={SamFoxLinkedInHeader} 
+                    <img
+                      src={SamFoxLinkedInHeader}
                       alt="Sam Fox LinkedIn Header"
                       className="w-full h-full object-cover"
                     />
@@ -1458,8 +1668,8 @@ export default function SamFoxCreativeStudio() {
                   <CardContent className="p-6 -mt-8 relative">
                     <div className="flex items-start gap-6">
                       <div className="w-24 h-24 rounded-2xl overflow-hidden border-4 border-white shadow-lg">
-                        <img 
-                          src={SamFoxLogo} 
+                        <img
+                          src={SamFoxLogo}
                           alt="Sam Fox Logo"
                           className="w-full h-full object-cover"
                         />
@@ -1467,12 +1677,19 @@ export default function SamFoxCreativeStudio() {
                       <div className="flex-1 pt-4">
                         <h3 className="text-2xl font-bold mb-2">Sam Fox</h3>
                         <p className="text-gray-600 dark:text-gray-300 mb-4">
-                          Creative Director & Digital Artist specializing in brand identity, illustration, and digital design
+                          Creative Director & Digital Artist specializing in brand identity,
+                          illustration, and digital design
                         </p>
                         <div className="flex items-center gap-2 flex-wrap">
-                          <Badge variant="secondary" className="bg-teal-100 text-teal-700">Creative Director</Badge>
-                          <Badge variant="secondary" className="bg-yellow-100 text-yellow-700">Digital Artist</Badge>
-                          <Badge variant="secondary" className="bg-purple-100 text-purple-700">Brand Designer</Badge>
+                          <Badge variant="secondary" className="bg-teal-100 text-teal-700">
+                            Creative Director
+                          </Badge>
+                          <Badge variant="secondary" className="bg-yellow-100 text-yellow-700">
+                            Digital Artist
+                          </Badge>
+                          <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+                            Brand Designer
+                          </Badge>
                         </div>
                       </div>
                     </div>
@@ -1492,7 +1709,7 @@ export default function SamFoxCreativeStudio() {
                 <CardContent className="p-0">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
                     <div className="relative">
-                      <img 
+                      <img
                         src={UFCChampionImage}
                         alt="UFC World Champion - Sweet Victory"
                         className="w-full h-full object-cover min-h-[400px]"
@@ -1507,9 +1724,10 @@ export default function SamFoxCreativeStudio() {
                         UFC World Champion - Sweet Victory
                       </h3>
                       <p className="text-gray-600 dark:text-gray-300 mb-6 text-lg leading-relaxed">
-                        A powerful celebration of athletic achievement featuring bold typography and dynamic design. 
-                        This artwork captures the essence of championship victory with striking visual elements including 
-                        "HULLE WEET NOU" and "WAT ONS WEET" proclamations, showcasing the triumph of a UFC World Champion.
+                        A powerful celebration of athletic achievement featuring bold typography and
+                        dynamic design. This artwork captures the essence of championship victory
+                        with striking visual elements including "HULLE WEET NOU" and "WAT ONS WEET"
+                        proclamations, showcasing the triumph of a UFC World Champion.
                       </p>
                       <div className="space-y-4">
                         <div className="flex items-center gap-4">
@@ -1533,7 +1751,7 @@ export default function SamFoxCreativeStudio() {
                 </CardContent>
               </Card>
             </motion.div>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
@@ -1544,17 +1762,19 @@ export default function SamFoxCreativeStudio() {
                 <Card className="p-6">
                   <h3 className="text-2xl font-bold mb-4">About SamFox Studio</h3>
                   <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
-                    SamFox Creative Studio represents the intersection of artistic vision and technical excellence. 
-                    Specializing in digital art, sports celebration artwork, user interface design, and comprehensive dashboard solutions, 
-                    the studio brings together creativity and functionality in every project.
+                    SamFox Creative Studio represents the intersection of artistic vision and
+                    technical excellence. Specializing in digital art, sports celebration artwork,
+                    user interface design, and comprehensive dashboard solutions, the studio brings
+                    together creativity and functionality in every project.
                   </p>
                   <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                    From the beautiful Madiba portrait showcasing artistic talent to the dynamic UFC Champion victory artwork 
-                    and sophisticated dashboard templates demonstrating technical prowess, each creation reflects a commitment to quality 
-                    and attention to detail.
+                    From the beautiful Madiba portrait showcasing artistic talent to the dynamic UFC
+                    Champion victory artwork and sophisticated dashboard templates demonstrating
+                    technical prowess, each creation reflects a commitment to quality and attention
+                    to detail.
                   </p>
                 </Card>
-                
+
                 <Card className="p-6">
                   <h4 className="text-lg font-semibold mb-3">Specializations</h4>
                   <div className="grid grid-cols-2 gap-3">
@@ -1577,7 +1797,7 @@ export default function SamFoxCreativeStudio() {
                   </div>
                 </Card>
               </motion.div>
-              
+
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -1585,15 +1805,17 @@ export default function SamFoxCreativeStudio() {
                 className="relative"
               >
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-                  <img 
-                    src={MadibaMockPath} 
+                  <img
+                    src={MadibaMockPath}
                     alt="Featured Artwork - Madiba Portrait"
                     className="w-full h-auto"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                   <div className="absolute bottom-6 left-6 text-white">
                     <h4 className="text-xl font-bold mb-2">Featured: Madiba Portrait</h4>
-                    <p className="text-sm text-gray-200">Digital illustration showcasing artistic mastery</p>
+                    <p className="text-sm text-gray-200">
+                      Digital illustration showcasing artistic mastery
+                    </p>
                   </div>
                 </div>
               </motion.div>
@@ -1608,7 +1830,8 @@ export default function SamFoxCreativeStudio() {
                 Sam Fox Design Gallery
               </h2>
               <p className="text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-                Premium downloadable prints featuring 20 unique Sam Fox designs. High-quality digital artwork perfect for personal use, gifts, or commercial projects.
+                Premium downloadable prints featuring 20 unique Sam Fox designs. High-quality
+                digital artwork perfect for personal use, gifts, or commercial projects.
               </p>
             </div>
 
@@ -1622,43 +1845,41 @@ export default function SamFoxCreativeStudio() {
                 >
                   <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 group">
                     <div className="relative">
-                      <img 
-                        src={design.image} 
+                      <img
+                        src={design.image}
                         alt={design.title}
                         className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       <div className="absolute top-2 right-2">
-                        <Badge className="bg-emerald-500 text-white">
-                          ${design.price}
-                        </Badge>
+                        <Badge className="bg-emerald-500 text-white">${design.price}</Badge>
                       </div>
                       <div className="absolute bottom-2 left-2 right-2 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <p className="text-xs">{design.category}</p>
                       </div>
                     </div>
-                    
+
                     <CardContent className="p-4">
                       <h3 className="font-semibold text-lg mb-2">{design.title}</h3>
                       <p className="text-gray-600 dark:text-gray-300 text-sm mb-3 h-10 overflow-hidden">
                         {design.description}
                       </p>
-                      
+
                       <div className="flex items-center justify-between mb-3">
                         <Badge variant="secondary">{design.category}</Badge>
                         <span className="font-bold text-lg text-emerald-600">${design.price}</span>
                       </div>
-                      
+
                       <div className="space-y-2">
                         <Button className="w-full" size="sm">
                           <CreditCard className="w-4 h-4 mr-2" />
                           Buy & Download
                         </Button>
                         <div className="w-full">
-                          <PayPalButton 
-                            amount={design.price.toString()} 
-                            currency="USD" 
-                            intent="CAPTURE" 
+                          <PayPalButton
+                            amount={design.price.toString()}
+                            currency="USD"
+                            intent="CAPTURE"
                           />
                         </div>
                       </div>
@@ -1704,11 +1925,9 @@ export default function SamFoxCreativeStudio() {
             </div>
           </TabsContent>
 
-
-
           {/* AncestorTag™ Heritage Portal - API Connected Component */}
           <TabsContent value="heritage" className="space-y-6">
-            <HeritagePortal 
+            <HeritagePortal
               newFamilyMember={newFamilyMember}
               setNewFamilyMember={setNewFamilyMember}
               newEvent={newEvent}
@@ -1717,7 +1936,6 @@ export default function SamFoxCreativeStudio() {
               queryClient={queryClient}
             />
           </TabsContent>
-
         </Tabs>
       </div>
     </div>

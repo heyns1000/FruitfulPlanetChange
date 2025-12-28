@@ -4,7 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { ShoppingCart, Search, Filter, Star, DollarSign } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { CurrencyConverter } from '@/components/ui/currency-converter';
@@ -25,20 +31,20 @@ export function RealPricingMarketplace() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSector, setSelectedSector] = useState<string>('all');
 
-  const { data: brands = [], isLoading } = useQuery<Brand[]>({ 
-    queryKey: ['/api/brands'] 
+  const { data: brands = [], isLoading } = useQuery<Brand[]>({
+    queryKey: ['/api/brands'],
   });
 
-  const { data: sectors = [] } = useQuery({ 
-    queryKey: ['/api/sectors'] 
+  const { data: sectors = [] } = useQuery({
+    queryKey: ['/api/sectors'],
   });
 
   // Filter brands with valid pricing
-  const productsWithPricing = brands.filter(brand => {
+  const productsWithPricing = brands.filter((brand) => {
     const matchesSearch = brand.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesSector = selectedSector === 'all' || brand.sectorId.toString() === selectedSector;
     const hasValidPricing = brand.metadata?.pricing?.monthly || brand.metadata?.displayPrice;
-    
+
     return matchesSearch && matchesSector && hasValidPricing;
   });
 
@@ -58,7 +64,7 @@ export function RealPricingMarketplace() {
         monthly: brand.metadata.pricing.monthly,
         annual: brand.metadata.pricing.annual,
         savings: brand.metadata.pricing.savings,
-        tier: brand.metadata.pricing.tier
+        tier: brand.metadata.pricing.tier,
       };
     }
     return null;
@@ -154,7 +160,7 @@ export function RealPricingMarketplace() {
                     )}
                   </div>
                 </CardHeader>
-                
+
                 <CardContent className="space-y-4">
                   <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-3">
                     {brand.description}
@@ -163,14 +169,20 @@ export function RealPricingMarketplace() {
                   {/* Real Pricing Display */}
                   <div className="space-y-2">
                     <div className="flex items-baseline gap-2">
-                      <CurrencyConverter usdAmount={parseFloat(displayPrice.replace('$', ''))} showConverter={false} />
+                      <CurrencyConverter
+                        usdAmount={parseFloat(displayPrice.replace('$', ''))}
+                        showConverter={false}
+                      />
                       <span className="text-sm text-gray-500">/month</span>
                     </div>
-                    
+
                     {pricing?.annual && (
                       <div className="text-sm text-green-600">
                         <span className="font-medium">
-                          <CurrencyConverter usdAmount={pricing.annual / 12} showConverter={false} />
+                          <CurrencyConverter
+                            usdAmount={pricing.annual / 12}
+                            showConverter={false}
+                          />
                           /month
                         </span>
                         <span className="ml-1 text-xs">when paid annually</span>
@@ -239,9 +251,7 @@ export function RealPricingMarketplace() {
         <div className="text-center py-12">
           <div className="text-6xl mb-4">🔍</div>
           <h3 className="text-xl font-semibold mb-2">No products found</h3>
-          <p className="text-gray-600 dark:text-gray-400">
-            Try adjusting your search criteria
-          </p>
+          <p className="text-gray-600 dark:text-gray-400">Try adjusting your search criteria</p>
         </div>
       )}
     </div>

@@ -21,7 +21,11 @@ interface Brand {
 }
 
 export function MineNestAuthenticBrands() {
-  const { data: miningBrands, isLoading, error } = useQuery({
+  const {
+    data: miningBrands,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['/api/mining-brands'],
   });
 
@@ -44,7 +48,7 @@ export function MineNestAuthenticBrands() {
   }
 
   const brandsArray = Array.isArray(miningBrands) ? miningBrands : [];
-  
+
   if (brandsArray.length === 0) {
     return (
       <div className="text-center p-8">
@@ -56,19 +60,27 @@ export function MineNestAuthenticBrands() {
 
   const getTierIcon = (tier: string) => {
     switch (tier) {
-      case 'A+': return <Trophy className="h-4 w-4 text-yellow-500" />;
-      case 'A': return <Star className="h-4 w-4 text-blue-500" />;
-      case 'B+': return <Shield className="h-4 w-4 text-green-500" />;
-      default: return <Zap className="h-4 w-4 text-gray-500" />;
+      case 'A+':
+        return <Trophy className="h-4 w-4 text-yellow-500" />;
+      case 'A':
+        return <Star className="h-4 w-4 text-blue-500" />;
+      case 'B+':
+        return <Shield className="h-4 w-4 text-green-500" />;
+      default:
+        return <Zap className="h-4 w-4 text-gray-500" />;
     }
   };
 
   const getTierColor = (tier: string) => {
     switch (tier) {
-      case 'A+': return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
-      case 'A': return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
-      case 'B+': return 'bg-green-500/10 text-green-500 border-green-500/20';
-      default: return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
+      case 'A+':
+        return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
+      case 'A':
+        return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
+      case 'B+':
+        return 'bg-green-500/10 text-green-500 border-green-500/20';
+      default:
+        return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
     }
   };
 
@@ -77,52 +89,54 @@ export function MineNestAuthenticBrands() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-white">MineNest™ Authentic Brands</h2>
-          <p className="text-gray-400">30 core mining & resources solutions with accurate pricing from HTML file</p>
+          <p className="text-gray-400">
+            30 core mining & resources solutions with accurate pricing from HTML file
+          </p>
         </div>
-        <Badge variant="secondary" className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20">
+        <Badge
+          variant="secondary"
+          className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
+        >
           {brandsArray.length} Brands Available
         </Badge>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {brandsArray.map((brand) => (
-          <Card key={brand.id} className="bg-gray-800/50 border-gray-700 hover:bg-gray-800/80 transition-colors">
+          <Card
+            key={brand.id}
+            className="bg-gray-800/50 border-gray-700 hover:bg-gray-800/80 transition-colors"
+          >
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
                   {getTierIcon(brand.metadata.tier)}
                   {brand.name}
                 </CardTitle>
-                <Badge className={getTierColor(brand.metadata.tier)}>
-                  {brand.metadata.tier}
-                </Badge>
+                <Badge className={getTierColor(brand.metadata.tier)}>{brand.metadata.tier}</Badge>
               </div>
               <div className="text-sm text-gray-400">
                 {brand.metadata.category} • {brand.metadata.license}
               </div>
             </CardHeader>
-            
+
             <CardContent className="space-y-4">
-              <p className="text-sm text-gray-300 line-clamp-2">
-                {brand.description}
-              </p>
-              
+              <p className="text-sm text-gray-300 line-clamp-2">{brand.description}</p>
+
               <div className="flex items-center justify-between">
                 <div className="text-xs text-gray-400">
                   Integration: <span className="text-blue-400">{brand.integration}</span>
                 </div>
-                <Badge 
-                  variant={brand.status === 'active' ? 'default' : 'secondary'} 
+                <Badge
+                  variant={brand.status === 'active' ? 'default' : 'secondary'}
                   className={brand.status === 'active' ? 'bg-green-500/10 text-green-500' : ''}
                 >
                   {brand.status}
                 </Badge>
               </div>
-              
+
               <div className="flex items-center justify-between pt-2 border-t border-gray-700">
-                <div className="text-xl font-bold text-yellow-500">
-                  {brand.metadata.price}
-                </div>
+                <div className="text-xl font-bold text-yellow-500">{brand.metadata.price}</div>
                 <Button size="sm" className="bg-yellow-600 hover:bg-yellow-700 text-black">
                   <ShoppingCart className="h-4 w-4 mr-1" />
                   Buy Now
@@ -135,7 +149,7 @@ export function MineNestAuthenticBrands() {
 
       <div className="text-center pt-6 border-t border-gray-700">
         <p className="text-sm text-gray-400">
-          🔐 All brands powered by <span className="text-blue-400">VaultMesh™</span> infrastructure 
+          🔐 All brands powered by <span className="text-blue-400">VaultMesh™</span> infrastructure
           with enterprise-grade security and real-time monitoring
         </p>
       </div>

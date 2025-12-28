@@ -1,6 +1,6 @@
 /**
  * Airshow Loyalty Protocol Page
- * 
+ *
  * Displays the complete Airshow Loyalty Protocol dashboard with
  * Beauty Banner (Batch 2) and overall metrics for all principles
  */
@@ -40,11 +40,7 @@ export default function AirshowLoyaltyProtocolPage() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <BeautyBanner 
-            flyerCount={400000} 
-            displayLimit={30}
-            showMetrics={true}
-          />
+          <BeautyBanner flyerCount={400000} displayLimit={30} showMetrics={true} />
         </motion.div>
 
         {/* Overall Metrics Dashboard */}
@@ -68,9 +64,7 @@ export default function AirshowLoyaltyProtocolPage() {
                 <Sparkles className="w-5 h-5 text-purple-500" />
                 Mission Philosophy
               </CardTitle>
-              <CardDescription>
-                The Three Principles of Digital Excellence
-              </CardDescription>
+              <CardDescription>The Three Principles of Digital Excellence</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid gap-6 md:grid-cols-3">
@@ -81,8 +75,8 @@ export default function AirshowLoyaltyProtocolPage() {
                     TRUTH
                   </h3>
                   <p className="text-sm text-gray-700 dark:text-gray-300">
-                    Foundation of authenticity and transparency. Every interaction 
-                    grounded in verifiable data and honest communication.
+                    Foundation of authenticity and transparency. Every interaction grounded in
+                    verifiable data and honest communication.
                   </p>
                 </div>
 
@@ -93,8 +87,8 @@ export default function AirshowLoyaltyProtocolPage() {
                     BEAUTY
                   </h3>
                   <p className="text-sm text-gray-700 dark:text-gray-300">
-                    Harmony beneath the surface. Elegant structure, graceful 
-                    interactions, and aesthetic integrity in every detail.
+                    Harmony beneath the surface. Elegant structure, graceful interactions, and
+                    aesthetic integrity in every detail.
                   </p>
                 </div>
 
@@ -105,8 +99,8 @@ export default function AirshowLoyaltyProtocolPage() {
                     CURIOSITY
                   </h3>
                   <p className="text-sm text-gray-700 dark:text-gray-300 italic">
-                    Coming soon... The drive to explore, discover, and innovate. 
-                    Continuous learning and fearless experimentation.
+                    Coming soon... The drive to explore, discover, and innovate. Continuous learning
+                    and fearless experimentation.
                   </p>
                 </div>
               </div>
@@ -132,9 +126,7 @@ export default function AirshowLoyaltyProtocolPage() {
                 <div className="flex items-center justify-between p-3 bg-gray-700/50 rounded-lg">
                   <div>
                     <h4 className="font-semibold">Fruitful Drive Scooter Engine</h4>
-                    <p className="text-sm text-gray-400">
-                      "The fox doesn't speak — it routes." 🦊
-                    </p>
+                    <p className="text-sm text-gray-400">"The fox doesn't speak — it routes." 🦊</p>
                   </div>
                   <div className="text-right">
                     <div className="text-2xl font-bold text-green-400">REFUEL STOP #2</div>
@@ -188,9 +180,7 @@ export default function AirshowLoyaltyProtocolPage() {
           <Card>
             <CardHeader>
               <CardTitle>Technical Specifications</CardTitle>
-              <CardDescription>
-                System parameters and performance metrics
-              </CardDescription>
+              <CardDescription>System parameters and performance metrics</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -204,30 +194,20 @@ export default function AirshowLoyaltyProtocolPage() {
                 </div>
 
                 <div className="p-3 bg-pink-50 dark:bg-pink-900/20 rounded-lg">
-                  <div className="text-2xl font-bold text-pink-600 dark:text-pink-400">
-                    800,000
-                  </div>
+                  <div className="text-2xl font-bold text-pink-600 dark:text-pink-400">800,000</div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
                     Total Flyers Deployed
                   </div>
                 </div>
 
                 <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                  <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-                    2/3
-                  </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
-                    Principles Active
-                  </div>
+                  <div className="text-2xl font-bold text-green-600 dark:text-green-400">2/3</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Principles Active</div>
                 </div>
 
                 <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                    99.8%
-                  </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
-                    System Uptime
-                  </div>
+                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">99.8%</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">System Uptime</div>
                 </div>
               </div>
 

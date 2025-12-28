@@ -1,16 +1,25 @@
-import { useState, useEffect } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { Shield, Globe, AlertTriangle, TrendingUp, Users, BarChart3, Zap, Leaf } from "lucide-react"
-import { motion } from "framer-motion"
+import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import {
+  Shield,
+  Globe,
+  AlertTriangle,
+  TrendingUp,
+  Users,
+  BarChart3,
+  Zap,
+  Leaf,
+} from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export function BaobabSecurityNetwork() {
-  const [activeView, setActiveView] = useState("overview")
-  const [selectedContinent, setSelectedContinent] = useState("All")
-  const [activeDashboard, setActiveDashboard] = useState<string | null>(null)
+  const [activeView, setActiveView] = useState('overview');
+  const [selectedContinent, setSelectedContinent] = useState('All');
+  const [activeDashboard, setActiveDashboard] = useState<string | null>(null);
 
   // Fetch real environmental data
   const { data: environmentalData, refetch: refetchEnvironmental } = useQuery<{
@@ -26,7 +35,7 @@ export function BaobabSecurityNetwork() {
   }>({
     queryKey: ['/api/baobab/environmental-metrics', selectedContinent],
     refetchInterval: 30000, // Refresh every 30 seconds
-  })
+  });
 
   // Fetch real Eskom data
   const { data: eskomData, refetch: refetchEskom } = useQuery<{
@@ -38,33 +47,77 @@ export function BaobabSecurityNetwork() {
   }>({
     queryKey: ['/api/baobab/eskom-status'],
     refetchInterval: 15000, // Refresh every 15 seconds
-  })
+  });
 
   // Fetch dashboard themes
-  const { data: dashboardThemes } = useQuery<Array<{
-    id: string;
-    name: string;
-    icon: string;
-    color: string;
-    status: string;
-  }>>({
+  const { data: dashboardThemes } = useQuery<
+    Array<{
+      id: string;
+      name: string;
+      icon: string;
+      color: string;
+      status: string;
+    }>
+  >({
     queryKey: ['/api/baobab/dashboard-themes'],
-  })
+  });
 
   // Default dashboard themes if API fails
   const defaultDashboardThemes = [
-    { id: "deforestation", name: "Deforestation Rates", icon: "🌳", color: "green", status: "Critical" },
-    { id: "ocean_plastic", name: "Ocean Plastic", icon: "🌊", color: "blue", status: "High" },
-    { id: "wildlife_protection", name: "Wildlife Protection", icon: "🦁", color: "yellow", status: "Active" },
-    { id: "energy_optimization", name: "Energy Optimization", icon: "⚡", color: "purple", status: "Optimizing" },
-    { id: "resource_management", name: "Resource Management", icon: "♻️", color: "cyan", status: "Monitoring" },
-    { id: "economic_empowerment", name: "Economic Empowerment", icon: "💰", color: "amber", status: "Growing" },
-    { id: "community_resilience", name: "Community Resilience", icon: "🛡️", color: "indigo", status: "Building" },
-    { id: "water_security", name: "Water Security", icon: "💧", color: "blue", status: "Securing" },
-    { id: "air_quality", name: "Air Quality", icon: "💨", color: "gray", status: "Monitoring" },
-    { id: "global_health", name: "Global Health", icon: "❤️", color: "red", status: "Tracking" },
-    { id: "land_degradation", name: "Land Degradation", icon: "🌱", color: "green", status: "Restoring" }
-  ]
+    {
+      id: 'deforestation',
+      name: 'Deforestation Rates',
+      icon: '🌳',
+      color: 'green',
+      status: 'Critical',
+    },
+    { id: 'ocean_plastic', name: 'Ocean Plastic', icon: '🌊', color: 'blue', status: 'High' },
+    {
+      id: 'wildlife_protection',
+      name: 'Wildlife Protection',
+      icon: '🦁',
+      color: 'yellow',
+      status: 'Active',
+    },
+    {
+      id: 'energy_optimization',
+      name: 'Energy Optimization',
+      icon: '⚡',
+      color: 'purple',
+      status: 'Optimizing',
+    },
+    {
+      id: 'resource_management',
+      name: 'Resource Management',
+      icon: '♻️',
+      color: 'cyan',
+      status: 'Monitoring',
+    },
+    {
+      id: 'economic_empowerment',
+      name: 'Economic Empowerment',
+      icon: '💰',
+      color: 'amber',
+      status: 'Growing',
+    },
+    {
+      id: 'community_resilience',
+      name: 'Community Resilience',
+      icon: '🛡️',
+      color: 'indigo',
+      status: 'Building',
+    },
+    { id: 'water_security', name: 'Water Security', icon: '💧', color: 'blue', status: 'Securing' },
+    { id: 'air_quality', name: 'Air Quality', icon: '💨', color: 'gray', status: 'Monitoring' },
+    { id: 'global_health', name: 'Global Health', icon: '❤️', color: 'red', status: 'Tracking' },
+    {
+      id: 'land_degradation',
+      name: 'Land Degradation',
+      icon: '🌱',
+      color: 'green',
+      status: 'Restoring',
+    },
+  ];
 
   // Get real metrics from API or use defaults
   const globalMetrics = environmentalData?.metrics || {
@@ -73,41 +126,45 @@ export function BaobabSecurityNetwork() {
     speciesProtected: 23847,
     renewableEnergy: 29.8,
     waterAccess: 74.3,
-    airQuality: 68.1
-  }
+    airQuality: 68.1,
+  };
 
   // Auto-refresh data
   useEffect(() => {
     const interval = setInterval(() => {
-      if (activeView === "overview") {
-        refetchEnvironmental()
-      } else if (activeView === "eskom") {
-        refetchEskom()
+      if (activeView === 'overview') {
+        refetchEnvironmental();
+      } else if (activeView === 'eskom') {
+        refetchEskom();
       }
-    }, 30000)
-    
-    return () => clearInterval(interval)
-  }, [activeView, refetchEnvironmental, refetchEskom])
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [activeView, refetchEnvironmental, refetchEskom]);
 
   // Individual dashboard components
   const renderIndividualDashboard = (dashboardId: string) => {
-    const theme = (dashboardThemes || defaultDashboardThemes).find(t => t.id === dashboardId)
-    if (!theme) return null
+    const theme = (dashboardThemes || defaultDashboardThemes).find((t) => t.id === dashboardId);
+    if (!theme) return null;
 
     return (
       <div className="space-y-6">
         {/* Dashboard Header */}
-        <div className={`bg-gradient-to-r from-${theme.color}-600 to-${theme.color}-700 rounded-lg p-6 text-white`}>
+        <div
+          className={`bg-gradient-to-r from-${theme.color}-600 to-${theme.color}-700 rounded-lg p-6 text-white`}
+        >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <span className="text-4xl">{theme.icon}</span>
               <div>
                 <h1 className="text-3xl font-bold">{theme.name} Dashboard</h1>
-                <p className="text-gray-100">Real-time monitoring and analytics for {theme.name.toLowerCase()}</p>
+                <p className="text-gray-100">
+                  Real-time monitoring and analytics for {theme.name.toLowerCase()}
+                </p>
               </div>
             </div>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="bg-white/10 border-white/20 text-white hover:bg-white/20"
               onClick={() => setActiveDashboard(null)}
             >
@@ -168,7 +225,9 @@ export function BaobabSecurityNetwork() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Trend Score</p>
-                  <p className="text-2xl font-bold">{Math.round((Math.random() * 30 + 70) * 10) / 10}%</p>
+                  <p className="text-2xl font-bold">
+                    {Math.round((Math.random() * 30 + 70) * 10) / 10}%
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -183,15 +242,22 @@ export function BaobabSecurityNetwork() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {["Africa", "Asia", "Europe", "North America", "South America", "Oceania"].map((region) => (
-                  <div key={region} className="flex justify-between items-center">
-                    <span className="font-medium">{region}</span>
-                    <div className="flex items-center gap-3">
-                      <Progress value={Math.round(Math.random() * 40 + 60)} className="w-24 h-2" />
-                      <span className="text-sm font-bold">{Math.round(Math.random() * 40 + 60)}%</span>
+                {['Africa', 'Asia', 'Europe', 'North America', 'South America', 'Oceania'].map(
+                  (region) => (
+                    <div key={region} className="flex justify-between items-center">
+                      <span className="font-medium">{region}</span>
+                      <div className="flex items-center gap-3">
+                        <Progress
+                          value={Math.round(Math.random() * 40 + 60)}
+                          className="w-24 h-2"
+                        />
+                        <span className="text-sm font-bold">
+                          {Math.round(Math.random() * 40 + 60)}%
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
             </CardContent>
           </Card>
@@ -203,17 +269,34 @@ export function BaobabSecurityNetwork() {
             <CardContent>
               <div className="space-y-3">
                 {[
-                  { time: "2 min ago", event: `New ${theme.name.toLowerCase()} alert in ${selectedContinent}`, severity: "warning" },
-                  { time: "5 min ago", event: `Data sync completed for ${theme.name}`, severity: "success" },
-                  { time: "12 min ago", event: `${theme.name} monitoring threshold updated`, severity: "info" },
-                  { time: "18 min ago", event: `Regional analysis completed`, severity: "success" },
-                  { time: "25 min ago", event: `System calibration in progress`, severity: "info" }
+                  {
+                    time: '2 min ago',
+                    event: `New ${theme.name.toLowerCase()} alert in ${selectedContinent}`,
+                    severity: 'warning',
+                  },
+                  {
+                    time: '5 min ago',
+                    event: `Data sync completed for ${theme.name}`,
+                    severity: 'success',
+                  },
+                  {
+                    time: '12 min ago',
+                    event: `${theme.name} monitoring threshold updated`,
+                    severity: 'info',
+                  },
+                  { time: '18 min ago', event: `Regional analysis completed`, severity: 'success' },
+                  { time: '25 min ago', event: `System calibration in progress`, severity: 'info' },
                 ].map((activity, idx) => (
                   <div key={idx} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                    <div className={`w-2 h-2 rounded-full ${
-                      activity.severity === 'warning' ? 'bg-orange-500' :
-                      activity.severity === 'success' ? 'bg-green-500' : 'bg-blue-500'
-                    }`} />
+                    <div
+                      className={`w-2 h-2 rounded-full ${
+                        activity.severity === 'warning'
+                          ? 'bg-orange-500'
+                          : activity.severity === 'success'
+                            ? 'bg-green-500'
+                            : 'bg-blue-500'
+                      }`}
+                    />
                     <div className="flex-1">
                       <p className="text-sm font-medium">{activity.event}</p>
                       <p className="text-xs text-gray-500">{activity.time}</p>
@@ -248,10 +331,18 @@ export function BaobabSecurityNetwork() {
           </CardContent>
         </Card>
       </div>
-    )
-  }
+    );
+  };
 
-  const continents = ["All", "Africa", "Asia", "Europe", "North America", "South America", "Oceania"]
+  const continents = [
+    'All',
+    'Africa',
+    'Asia',
+    'Europe',
+    'North America',
+    'South America',
+    'Oceania',
+  ];
 
   const renderOverview = () => (
     <div className="space-y-6">
@@ -261,12 +352,15 @@ export function BaobabSecurityNetwork() {
           <Leaf className="h-12 w-12" />
           <div>
             <h1 className="text-3xl font-bold">🌳 Baobab Security Network™</h1>
-            <p className="text-green-100">AI-Powered Interplanetary Security | "Sustain. Protect. Empower."</p>
+            <p className="text-green-100">
+              AI-Powered Interplanetary Security | "Sustain. Protect. Empower."
+            </p>
           </div>
         </div>
         <p className="text-lg">
-          Inspired by the resilience and interconnectedness of the Baobab tree, we envision a future where 
-          communities are empowered, ecosystems are protected, and resources are managed sustainably.
+          Inspired by the resilience and interconnectedness of the Baobab tree, we envision a future
+          where communities are empowered, ecosystems are protected, and resources are managed
+          sustainably.
         </p>
       </div>
 
@@ -279,7 +373,7 @@ export function BaobabSecurityNetwork() {
             <Progress value={globalMetrics.forestCover} className="mt-2 h-2" />
           </CardContent>
         </Card>
-        
+
         <Card className="bg-blue-50 border-blue-200">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-blue-600">{globalMetrics.oceanPlastic}M</div>
@@ -287,23 +381,27 @@ export function BaobabSecurityNetwork() {
             <Progress value={75} className="mt-2 h-2" />
           </CardContent>
         </Card>
-        
+
         <Card className="bg-yellow-50 border-yellow-200">
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-yellow-600">{globalMetrics.speciesProtected.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-yellow-600">
+              {globalMetrics.speciesProtected.toLocaleString()}
+            </div>
             <div className="text-sm text-yellow-700">Species Protected</div>
             <Progress value={68} className="mt-2 h-2" />
           </CardContent>
         </Card>
-        
+
         <Card className="bg-purple-50 border-purple-200">
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-purple-600">{globalMetrics.renewableEnergy}%</div>
+            <div className="text-2xl font-bold text-purple-600">
+              {globalMetrics.renewableEnergy}%
+            </div>
             <div className="text-sm text-purple-700">Renewable Energy</div>
             <Progress value={globalMetrics.renewableEnergy} className="mt-2 h-2" />
           </CardContent>
         </Card>
-        
+
         <Card className="bg-cyan-50 border-cyan-200">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-cyan-600">{globalMetrics.waterAccess}%</div>
@@ -311,7 +409,7 @@ export function BaobabSecurityNetwork() {
             <Progress value={globalMetrics.waterAccess} className="mt-2 h-2" />
           </CardContent>
         </Card>
-        
+
         <Card className="bg-gray-50 border-gray-200">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-gray-600">{globalMetrics.airQuality}%</div>
@@ -324,13 +422,15 @@ export function BaobabSecurityNetwork() {
       {/* Continent Filter */}
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900">Global Monitoring Dashboards</h2>
-        <select 
+        <select
           value={selectedContinent}
           onChange={(e) => setSelectedContinent(e.target.value)}
           className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
         >
-          {continents.map(continent => (
-            <option key={continent} value={continent}>{continent}</option>
+          {continents.map((continent) => (
+            <option key={continent} value={continent}>
+              {continent}
+            </option>
           ))}
         </select>
       </div>
@@ -351,13 +451,16 @@ export function BaobabSecurityNetwork() {
                     <span className="text-2xl">{theme.icon}</span>
                     <div>
                       <div className="font-bold">{theme.name}</div>
-                      <Badge variant="outline" className={`text-${theme.color}-600 border-${theme.color}-300`}>
+                      <Badge
+                        variant="outline"
+                        className={`text-${theme.color}-600 border-${theme.color}-300`}
+                      >
                         {theme.status}
                       </Badge>
                     </div>
                   </div>
-                  <Button 
-                    size="sm" 
+                  <Button
+                    size="sm"
                     className="bg-blue-600 hover:bg-blue-700"
                     onClick={() => setActiveDashboard(theme.id)}
                   >
@@ -367,7 +470,8 @@ export function BaobabSecurityNetwork() {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600 text-sm">
-                  Real-time monitoring and analytics for {theme.name.toLowerCase()} across {selectedContinent === "All" ? "all continents" : selectedContinent}.
+                  Real-time monitoring and analytics for {theme.name.toLowerCase()} across{' '}
+                  {selectedContinent === 'All' ? 'all continents' : selectedContinent}.
                 </p>
                 <div className="mt-4 flex justify-between items-center">
                   <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -385,7 +489,7 @@ export function BaobabSecurityNetwork() {
         ))}
       </div>
     </div>
-  )
+  );
 
   const renderEskomCrisis = () => (
     <div className="space-y-6">
@@ -406,11 +510,15 @@ export function BaobabSecurityNetwork() {
               <div className="text-sm">Current Load Shedding</div>
             </div>
             <div className="bg-white/10 rounded-lg p-4">
-              <div className="text-2xl font-bold">{eskomData?.energyAvailabilityFactor || 42.8}%</div>
+              <div className="text-2xl font-bold">
+                {eskomData?.energyAvailabilityFactor || 42.8}%
+              </div>
               <div className="text-sm">Energy Availability Factor</div>
             </div>
             <div className="bg-white/10 rounded-lg p-4">
-              <div className="text-2xl font-bold">{eskomData?.availableCapacity?.toLocaleString() || '26,780'} MW</div>
+              <div className="text-2xl font-bold">
+                {eskomData?.availableCapacity?.toLocaleString() || '26,780'} MW
+              </div>
               <div className="text-sm">Available Capacity</div>
             </div>
           </div>
@@ -441,19 +549,28 @@ export function BaobabSecurityNetwork() {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span>Installed Capacity</span>
-                <span className="font-bold">{eskomData?.installedCapacity?.toLocaleString() || '46,963'} MW</span>
+                <span className="font-bold">
+                  {eskomData?.installedCapacity?.toLocaleString() || '46,963'} MW
+                </span>
               </div>
               <Progress value={89} className="h-3" />
-              
+
               <div className="flex justify-between items-center">
                 <span>Available Capacity</span>
-                <span className="font-bold">{eskomData?.availableCapacity?.toLocaleString() || '26,780'} MW</span>
+                <span className="font-bold">
+                  {eskomData?.availableCapacity?.toLocaleString() || '26,780'} MW
+                </span>
               </div>
-              <Progress value={Math.min(eskomData?.energyAvailabilityFactor || 57, 100)} className="h-3" />
-              
+              <Progress
+                value={Math.min(eskomData?.energyAvailabilityFactor || 57, 100)}
+                className="h-3"
+              />
+
               <div className="flex justify-between items-center">
                 <span>Peak Demand</span>
-                <span className="font-bold">{eskomData?.peakDemand?.toLocaleString() || '32,000'} MW</span>
+                <span className="font-bold">
+                  {eskomData?.peakDemand?.toLocaleString() || '32,000'} MW
+                </span>
               </div>
               <Progress value={68} className="h-3" />
             </div>
@@ -461,7 +578,7 @@ export function BaobabSecurityNetwork() {
         </Card>
       </div>
     </div>
-  )
+  );
 
   const renderPricing = () => (
     <div className="space-y-6">
@@ -475,7 +592,9 @@ export function BaobabSecurityNetwork() {
           <CardHeader>
             <CardTitle className="text-center">
               <div className="text-2xl font-bold">Basic Plan</div>
-              <div className="text-3xl font-bold text-blue-600 mt-2">$299<span className="text-lg text-gray-500">/month</span></div>
+              <div className="text-3xl font-bold text-blue-600 mt-2">
+                $299<span className="text-lg text-gray-500">/month</span>
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -504,7 +623,9 @@ export function BaobabSecurityNetwork() {
           <CardHeader>
             <CardTitle className="text-center">
               <div className="text-2xl font-bold">Professional</div>
-              <div className="text-3xl font-bold text-green-600 mt-2">$599<span className="text-lg text-gray-500">/month</span></div>
+              <div className="text-3xl font-bold text-green-600 mt-2">
+                $599<span className="text-lg text-gray-500">/month</span>
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -561,7 +682,7 @@ export function BaobabSecurityNetwork() {
         </Card>
       </div>
     </div>
-  )
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -573,21 +694,21 @@ export function BaobabSecurityNetwork() {
             Baobab Security Network™
           </h1>
           <nav className="flex gap-4">
-            <Button 
-              variant={activeView === "overview" ? "default" : "ghost"}
-              onClick={() => setActiveView("overview")}
+            <Button
+              variant={activeView === 'overview' ? 'default' : 'ghost'}
+              onClick={() => setActiveView('overview')}
             >
               Global Dashboards 📊
             </Button>
-            <Button 
-              variant={activeView === "eskom" ? "default" : "ghost"}
-              onClick={() => setActiveView("eskom")}
+            <Button
+              variant={activeView === 'eskom' ? 'default' : 'ghost'}
+              onClick={() => setActiveView('eskom')}
             >
               Eskom Crisis 🔌
             </Button>
-            <Button 
-              variant={activeView === "pricing" ? "default" : "ghost"}
-              onClick={() => setActiveView("pricing")}
+            <Button
+              variant={activeView === 'pricing' ? 'default' : 'ghost'}
+              onClick={() => setActiveView('pricing')}
             >
               Pricing & Plans 💰
             </Button>
@@ -597,11 +718,13 @@ export function BaobabSecurityNetwork() {
 
       {/* Main Content */}
       <div className="p-6">
-        {activeDashboard ? renderIndividualDashboard(activeDashboard) : (
+        {activeDashboard ? (
+          renderIndividualDashboard(activeDashboard)
+        ) : (
           <>
-            {activeView === "overview" && renderOverview()}
-            {activeView === "eskom" && renderEskomCrisis()}
-            {activeView === "pricing" && renderPricing()}
+            {activeView === 'overview' && renderOverview()}
+            {activeView === 'eskom' && renderEskomCrisis()}
+            {activeView === 'pricing' && renderPricing()}
           </>
         )}
       </div>
@@ -611,9 +734,11 @@ export function BaobabSecurityNetwork() {
         <div className="text-center">
           <p>&copy; 2025 Baobab Security Network™. All rights reserved.</p>
           <p className="mt-2 text-gray-400">Contact: vault@faa.zone</p>
-          <p className="mt-1 text-gray-400">AI-Powered Interplanetary Security | "Sustain. Protect. Empower."</p>
+          <p className="mt-1 text-gray-400">
+            AI-Powered Interplanetary Security | "Sustain. Protect. Empower."
+          </p>
         </div>
       </footer>
     </div>
-  )
+  );
 }

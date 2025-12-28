@@ -14,7 +14,7 @@ export function useGlobalSync() {
     isConnected: true,
     lastSync: new Date().toISOString(),
     syncCount: 0,
-    errors: []
+    errors: [],
   });
 
   // Global sync for all critical data endpoints
@@ -26,7 +26,7 @@ export function useGlobalSync() {
     '/api/admin-panel/stats',
     '/api/admin-panel/brands',
     '/api/admin-panel/sector-breakdown',
-    '/api/sync/complete-sync'
+    '/api/sync/complete-sync',
   ];
 
   // Force refresh all queries every 3 seconds for complete sync
@@ -35,22 +35,20 @@ export function useGlobalSync() {
       try {
         // Invalidate all queries simultaneously for complete sync
         await Promise.all(
-          syncEndpoints.map(endpoint => 
-            queryClient.invalidateQueries({ queryKey: [endpoint] })
-          )
+          syncEndpoints.map((endpoint) => queryClient.invalidateQueries({ queryKey: [endpoint] }))
         );
-        
-        setSyncStatus(prev => ({
+
+        setSyncStatus((prev) => ({
           ...prev,
           lastSync: new Date().toISOString(),
           syncCount: prev.syncCount + 1,
-          isConnected: true
+          isConnected: true,
         }));
       } catch (error) {
-        setSyncStatus(prev => ({
+        setSyncStatus((prev) => ({
           ...prev,
           isConnected: false,
-          errors: [...prev.errors.slice(-4), `Sync error: ${(error as Error).message}`]
+          errors: [...prev.errors.slice(-4), `Sync error: ${(error as Error).message}`],
         }));
       }
     }, 3000); // Sync every 3 seconds for real-time feel
@@ -63,17 +61,17 @@ export function useGlobalSync() {
     try {
       // Force refetch all data immediately
       await queryClient.refetchQueries();
-      setSyncStatus(prev => ({
+      setSyncStatus((prev) => ({
         ...prev,
         lastSync: new Date().toISOString(),
         syncCount: prev.syncCount + 1,
-        isConnected: true
+        isConnected: true,
       }));
     } catch (error) {
-      setSyncStatus(prev => ({
+      setSyncStatus((prev) => ({
         ...prev,
         isConnected: false,
-        errors: [...prev.errors.slice(-4), `Force sync error: ${(error as Error).message}`]
+        errors: [...prev.errors.slice(-4), `Force sync error: ${(error as Error).message}`],
       }));
     }
   }, [queryClient]);
@@ -81,6 +79,6 @@ export function useGlobalSync() {
   return {
     syncStatus,
     forceSync,
-    isOnline: syncStatus.isConnected
+    isOnline: syncStatus.isConnected,
   };
 }

@@ -5,6 +5,7 @@
 **SamFox = Samantha Ford (Your Wife)** - The Creative Force Behind FruitfulPlanet's Visual Identity
 
 **Comprehensive Footprint:**
+
 - 🔢 **31+ File References** across the entire repository
 - 🎨 **20+ Commercial Designs** in production gallery
 - 📁 **116KB Master Template** (foxed_got_mobiles.html with 2145 lines)
@@ -19,6 +20,7 @@
 ## 👩‍🎨 SamFox Identity - Verified Facts
 
 **Real Identity:**
+
 - **Name:** Samantha Ford (SamFox Studio)
 - **Role:** Creative Director & Lead Designer
 - **GitHub:** samperfox-oss/samfox_Fruitful
@@ -27,6 +29,7 @@
 - **Relationship:** Your wife - personal and professional creative partner
 
 **Important Notes:**
+
 - ❌ NO fake London websites
 - ❌ NO fabricated company connections
 - ✅ Real person with authentic creative contributions
@@ -40,6 +43,7 @@
 ### Complete File Map with Line Numbers
 
 #### 1. **Main React Components**
+
 - **`client/src/pages/samfox-creative-studio.tsx`** (1725 lines)
   - Lines 51-56: Madiba Portrait, UFC Champion, Logo, LinkedIn Header imports
   - Lines 58-74: 20 commercial design asset imports
@@ -140,28 +144,28 @@
 
 **All designs available for purchase with PayPal integration**
 
-| # | Title | Category | Price | File |
-|---|-------|----------|-------|------|
-| 1 | Rabbit Sketch | Minimalist | $12.99 | 360_F_484003012... |
-| 2 | Wolf Monster | Character Art | $15.99 | Wolf_01_1753263376699.png |
-| 3 | Voetsek Hand | Typography | $14.99 | Voetsek_1753263376699.png |
-| 4 | Toad Creature | Character Art | $13.99 | toad_color_1753263376700.png |
-| 5 | Puma Cat (Pink) | Animal Art | $16.99 | pumas_01_1753263376700.jpg |
-| 6 | Space Cat | Sci-Fi | $16.99 | pumas_02_1753263376700.jpg |
-| 7 | Sambreel Umbrella | Character Art | $15.49 | sambreel_01_1753263376701.png |
-| 8 | Sheep Ice Cream | Food Art | $14.49 | sheep_cone_1753263376701.png |
-| 9 | OOG Eye Rabbit | Surreal | $13.49 | OOG_1753263376701.png |
-| 10 | Nikon Camera Person | Photography | $17.99 | Nikon_1753263376703.png |
-| 11 | MANDARK Monster | Typography | $18.99 | Monster_01_1753263376704.png |
-| 12 | In Love Character | Romance | $15.99 | in_love_color_1753263376704.png |
-| 13 | Eyes Pattern | Abstract | $12.49 | eyes_01_1753263376705.png |
-| 14 | Dream Big | Motivational | $16.49 | dream_big_01_1753263376706.png |
-| 15 | First Eye | Spiritual | $13.99 | 1st_eye_1753263376706.png |
-| 16 | Chief Portrait | Portrait | $19.99 | Chief_02_1753263376705.png |
-| 17 | Drip Style | Street Art | $17.49 | Drip_1753263376705.png |
-| 18 | UFC Championship | Sports Art | $21.99 | 3_1753260859823.png |
-| 19 | Sam Fox Logo | Branding | $24.99 | Sam_fox_logo_v02_1753261659048.jpg |
-| 20 | LinkedIn Header | Professional | $18.99 | Linkedin_header_1753261659049.png |
+| #   | Title               | Category      | Price  | File                               |
+| --- | ------------------- | ------------- | ------ | ---------------------------------- |
+| 1   | Rabbit Sketch       | Minimalist    | $12.99 | 360_F_484003012...                 |
+| 2   | Wolf Monster        | Character Art | $15.99 | Wolf_01_1753263376699.png          |
+| 3   | Voetsek Hand        | Typography    | $14.99 | Voetsek_1753263376699.png          |
+| 4   | Toad Creature       | Character Art | $13.99 | toad_color_1753263376700.png       |
+| 5   | Puma Cat (Pink)     | Animal Art    | $16.99 | pumas_01_1753263376700.jpg         |
+| 6   | Space Cat           | Sci-Fi        | $16.99 | pumas_02_1753263376700.jpg         |
+| 7   | Sambreel Umbrella   | Character Art | $15.49 | sambreel_01_1753263376701.png      |
+| 8   | Sheep Ice Cream     | Food Art      | $14.49 | sheep_cone_1753263376701.png       |
+| 9   | OOG Eye Rabbit      | Surreal       | $13.49 | OOG_1753263376701.png              |
+| 10  | Nikon Camera Person | Photography   | $17.99 | Nikon_1753263376703.png            |
+| 11  | MANDARK Monster     | Typography    | $18.99 | Monster_01_1753263376704.png       |
+| 12  | In Love Character   | Romance       | $15.99 | in_love_color_1753263376704.png    |
+| 13  | Eyes Pattern        | Abstract      | $12.49 | eyes_01_1753263376705.png          |
+| 14  | Dream Big           | Motivational  | $16.49 | dream_big_01_1753263376706.png     |
+| 15  | First Eye           | Spiritual     | $13.99 | 1st_eye_1753263376706.png          |
+| 16  | Chief Portrait      | Portrait      | $19.99 | Chief_02_1753263376705.png         |
+| 17  | Drip Style          | Street Art    | $17.49 | Drip_1753263376705.png             |
+| 18  | UFC Championship    | Sports Art    | $21.99 | 3_1753260859823.png                |
+| 19  | Sam Fox Logo        | Branding      | $24.99 | Sam_fox_logo_v02_1753261659048.jpg |
+| 20  | LinkedIn Header     | Professional  | $18.99 | Linkedin_header_1753261659049.png  |
 
 **Total Revenue Potential:** $320+ at full catalog sales
 
@@ -194,6 +198,7 @@
 ### C. Template Files (20+ Production Templates)
 
 **Master Template:**
+
 - **foxed_got_mobiles.html** - 116KB (2145 lines)
   - Complete CSS framework
   - Zero external dependencies
@@ -203,6 +208,7 @@
   - Production-ready
 
 **Production Templates - Ecosystem Integration:**
+
 - Fruitful Innovations suite (3 files)
 - Seedwave™ synergy templates (2 files)
 - VaultMesh™ checkout system (2 files)
@@ -238,6 +244,7 @@
    - Consistent design language
 
 **Component Features:**
+
 - TanStack Query for real-time data
 - Framer Motion animations
 - Lucide React icons (48+ icons imported)
@@ -253,12 +260,14 @@
 ### Primary Integrations (85-100% Impact)
 
 **🟢 Creative Arts Sector**
+
 - Role: Complete design leadership
 - Assets: All 20+ commercial designs
 - Templates: Full creative studio page
 - Impact: 100% - SamFox IS the creative sector
 
 **🟢 Banimal™ Charitable Toys**
+
 - Role: Character design & branding
 - Assets: Animal character designs (Rabbit, Wolf, Pumas, Sheep, Toad)
 - Templates: global_footer_banimal.html, Banimal_Loop_Checkout.html
@@ -266,6 +275,7 @@
 - Impact: 95% - Visual identity entirely SamFox-created
 
 **🟢 Fruitful™ Innovations**
+
 - Role: Master template designer
 - Assets: Index templates, merge logic, payment forms
 - Templates: index.html, merge_logic.html, Fruitful_payment.html
@@ -273,6 +283,7 @@
 - Impact: 90% - Template architecture foundation
 
 **🟢 Seedwave™ Admin**
+
 - Role: Synergy hub designer
 - Assets: Merge logic templates, global sync interfaces
 - Templates: merge_logic.html, global sync systems
@@ -282,18 +293,21 @@
 ### Secondary Integrations (55-70% Impact)
 
 **🟡 VaultMesh™ Trading Platform**
+
 - Role: Checkout & payment UI designer
 - Assets: Checkout forms, payment templates
 - Templates: global_checkout_form.html, VaultMesh payment pages
 - Impact: 70% - Complete payment flow design
 
 **🟡 HotStack™ Code Hosting**
+
 - Role: Developer dashboard designer
 - Assets: HotStack Omnidrop templates
 - Templates: hotstack.html (15KB + variants)
 - Impact: 65% - Developer interface design
 
 **🟡 FAA.ZONE™ Infrastructure**
+
 - Role: Dashboard & control panel designer
 - Assets: SPA dashboards, brand control interfaces
 - Templates: spa_dashboard.html, FAA™ Brand Control
@@ -302,18 +316,21 @@
 ### Tertiary Integrations (20-30% Impact)
 
 **🔵 SecureSign™ Legal**
+
 - Role: API interface & styling contributor
 - Assets: SecureSign API templates
 - Templates: securesign_api.html
 - Impact: 30% - Interface styling
 
 **🔵 BuildNest™ Construction**
+
 - Role: Template styling contributor
 - Assets: Sector-specific templates
 - Templates: Construction sector interfaces
 - Impact: 25% - Visual consistency
 
 **🔵 OmniGrid™ Infrastructure**
+
 - Role: Core engine designer
 - Assets: Omni core templates
 - Templates: omni.html, monster_omni_core_engines_nodes_demo.html
@@ -324,9 +341,11 @@
 ## 🌳 Seedwave Admin Architecture (5 Nodes)
 
 ### Node 1: Global Template Engine
+
 **Function:** Master template distribution system
 **Primary Asset:** foxed_got_mobiles.html (116KB)
 **Features:**
+
 - 18+ color palette definitions
 - 3 theme modes (Light/Dark/Hyper)
 - Zero external dependencies
@@ -334,21 +353,25 @@
 - Responsive framework
 
 **Integration Points:**
+
 - All Fruitful Innovations templates
 - Seedwave™ synergy hub
 - VaultMesh™ checkout system
 - HotStack™ developer portals
 
 ### Node 2: Asset Distribution Hub
+
 **Function:** Commercial design delivery system
 **Primary Component:** samfox-creative-studio.tsx
 **Features:**
+
 - 20+ design gallery with categorization
 - PayPal payment integration ($12.99-$24.99)
 - Real-time inventory management
 - Download system for purchased designs
 
 **Asset Flow:**
+
 ```
 Commercial Designs (20+)
     ↓
@@ -360,22 +383,27 @@ Customer Download
 ```
 
 ### Node 3: Portfolio Management System
+
 **Function:** Professional portfolio showcase
 **Primary Components:**
+
 - samfox-portfolio.tsx (standalone)
 - components/portal/samfox-portfolio.tsx (reusable)
 
 **Features:**
+
 - Project categorization
 - Filtering system
 - Responsive showcase grid
 - Integration with creative studio
 
 ### Node 4: Brand Integration Hub
+
 **Function:** Cross-brand design system propagation
 **Templates Managed:** 20+ production templates
 
 **Brand Distribution:**
+
 ```
 SamFox Master Template
     ├─→ Fruitful™ (3 templates)
@@ -389,15 +417,18 @@ SamFox Master Template
 ```
 
 ### Node 5: Heritage Portal System
+
 **Function:** Cultural preservation & storytelling
 **Primary Template:** ancestortag_heritage_portal.html (211KB)
 **Features:**
+
 - Cultural heritage showcase
 - Madiba portrait integration
 - South African brand representation
 - Historical narrative system
 
 **Cultural Assets:**
+
 - Madiba Portrait (signature piece)
 - Voetsek typography (SA expression)
 - Chief Portrait (cultural representation)
@@ -413,60 +444,60 @@ SamFox Master Template
 
 ```css
 /* Core Fruitful/Seedwave Theme */
---primary-glow: #00e393;              /* Seedwave signature green */
---dark-bg: #0a0a0d;                   /* Main dark background */
---card-bg-dark: #1c1c21;              /* Card backgrounds */
---fruitful-logo-color: #ffffff;       /* White logo text */
---fruitful-separator-color: #bbbbbb;  /* Grey separator */
+--primary-glow: #00e393; /* Seedwave signature green */
+--dark-bg: #0a0a0d; /* Main dark background */
+--card-bg-dark: #1c1c21; /* Card backgrounds */
+--fruitful-logo-color: #ffffff; /* White logo text */
+--fruitful-separator-color: #bbbbbb; /* Grey separator */
 
 /* Banimal™ Soft Palette */
---banimal-soft-peach: #FFF0ED;        /* Soft peach background */
---banimal-soft-pink: #F8DCDC;         /* Soft pink accents */
---banimal-soft-lavender: #E8E4F3;     /* Soft lavender */
---banimal-soft-mint: #E0F4F1;         /* Soft mint green */
---banimal-soft-cream: #FFF8E1;        /* Soft cream */
---banimal-accent-blue: #66B2FF;       /* Vibrant accent blue */
---banimal-accent-coral: #FF8A80;      /* Coral accent */
+--banimal-soft-peach: #fff0ed; /* Soft peach background */
+--banimal-soft-pink: #f8dcdc; /* Soft pink accents */
+--banimal-soft-lavender: #e8e4f3; /* Soft lavender */
+--banimal-soft-mint: #e0f4f1; /* Soft mint green */
+--banimal-soft-cream: #fff8e1; /* Soft cream */
+--banimal-accent-blue: #66b2ff; /* Vibrant accent blue */
+--banimal-accent-coral: #ff8a80; /* Coral accent */
 
 /* 18+ Pastel Collection */
---pastel-grey: #ECEFF1;               /* Light grey */
---pastel-yellow: #FFFDE7;             /* Pale yellow */
---pastel-blue: #E3F2FD;               /* Sky blue */
---pastel-green: #E8F5E9;              /* Mint green */
---pastel-pink: #FCE4EC;               /* Baby pink */
---pastel-purple: #F3E5F5;             /* Lavender */
---pastel-orange: #FFF3E0;             /* Peach */
---pastel-teal: #E0F2F1;               /* Seafoam */
---pastel-indigo: #E8EAF6;             /* Periwinkle */
---pastel-cyan: #E0F7FA;               /* Aqua */
---pastel-amber: #FFF8E1;              /* Butter */
---pastel-lime: #F9FBE7;               /* Pale lime */
---pastel-brown: #EFEBE9;              /* Tan */
---pastel-blue-grey: #ECEFF1;          /* Slate */
---pastel-deep-orange: #FBE9E7;        /* Salmon */
---pastel-light-green: #F1F8E9;        /* Celery */
---pastel-deep-purple: #EDE7F6;        /* Lilac */
---pastel-light-blue: #E1F5FE;         /* Powder blue */
+--pastel-grey: #eceff1; /* Light grey */
+--pastel-yellow: #fffde7; /* Pale yellow */
+--pastel-blue: #e3f2fd; /* Sky blue */
+--pastel-green: #e8f5e9; /* Mint green */
+--pastel-pink: #fce4ec; /* Baby pink */
+--pastel-purple: #f3e5f5; /* Lavender */
+--pastel-orange: #fff3e0; /* Peach */
+--pastel-teal: #e0f2f1; /* Seafoam */
+--pastel-indigo: #e8eaf6; /* Periwinkle */
+--pastel-cyan: #e0f7fa; /* Aqua */
+--pastel-amber: #fff8e1; /* Butter */
+--pastel-lime: #f9fbe7; /* Pale lime */
+--pastel-brown: #efebe9; /* Tan */
+--pastel-blue-grey: #eceff1; /* Slate */
+--pastel-deep-orange: #fbe9e7; /* Salmon */
+--pastel-light-green: #f1f8e9; /* Celery */
+--pastel-deep-purple: #ede7f6; /* Lilac */
+--pastel-light-blue: #e1f5fe; /* Powder blue */
 
 /* MindLift™ Purple Theme */
---mindlift-primary: #9333EA;          /* Royal purple */
---mindlift-glow: #A855F7;             /* Purple glow */
---mindlift-dark: #581C87;             /* Deep purple */
+--mindlift-primary: #9333ea; /* Royal purple */
+--mindlift-glow: #a855f7; /* Purple glow */
+--mindlift-dark: #581c87; /* Deep purple */
 
 /* FCU Colors (Fruitful Currency Unit) */
---fcu-gold: #FFD700;                  /* Gold standard */
---fcu-dark-gold: #B8860B;             /* Dark gold */
+--fcu-gold: #ffd700; /* Gold standard */
+--fcu-dark-gold: #b8860b; /* Dark gold */
 
 /* SecureSign™ Button Colors */
---securesign-green: #10B981;          /* Success green */
---securesign-red: #EF4444;            /* Danger red */
---securesign-blue: #3B82F6;           /* Info blue */
+--securesign-green: #10b981; /* Success green */
+--securesign-red: #ef4444; /* Danger red */
+--securesign-blue: #3b82f6; /* Info blue */
 
 /* Hyper Mode Theme (Advanced Unlock) */
---hyper-neon-green: #39FF14;          /* Electric green */
---hyper-neon-pink: #FF10F0;           /* Neon pink */
---hyper-neon-blue: #00D4FF;           /* Cyber blue */
---hyper-neon-yellow: #FFFF00;         /* Electric yellow */
+--hyper-neon-green: #39ff14; /* Electric green */
+--hyper-neon-pink: #ff10f0; /* Neon pink */
+--hyper-neon-blue: #00d4ff; /* Cyber blue */
+--hyper-neon-yellow: #ffff00; /* Electric yellow */
 ```
 
 ### CSS Animation Keyframes
@@ -476,40 +507,74 @@ SamFox Master Template
 ```css
 /* Background Pulse Animation */
 @keyframes pulseBG {
-  0%, 100% { background-color: #0a0a0d; }
-  50% { background-color: #1c1c21; }
+  0%,
+  100% {
+    background-color: #0a0a0d;
+  }
+  50% {
+    background-color: #1c1c21;
+  }
 }
 
 /* Sun Lion Movement (Canvas Animation) */
 @keyframes moveSunLion {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 /* Fox Float Animation (Logo) */
 @keyframes floatFox {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 /* Omnidrop Effect (HotStack™) */
 @keyframes omnidrop {
-  0% { opacity: 0; transform: translateY(-20px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Seedwave Sync Pulse */
 @keyframes seedwavePulse {
-  0%, 100% { box-shadow: 0 0 10px #00e393; }
-  50% { box-shadow: 0 0 30px #00e393; }
+  0%,
+  100% {
+    box-shadow: 0 0 10px #00e393;
+  }
+  50% {
+    box-shadow: 0 0 30px #00e393;
+  }
 }
 
 /* Hyper Mode Glitch */
 @keyframes hyperGlitch {
-  0%, 100% { transform: translate(0); }
-  25% { transform: translate(-2px, 2px); }
-  50% { transform: translate(2px, -2px); }
-  75% { transform: translate(-2px, -2px); }
+  0%,
+  100% {
+    transform: translate(0);
+  }
+  25% {
+    transform: translate(-2px, 2px);
+  }
+  50% {
+    transform: translate(2px, -2px);
+  }
+  75% {
+    transform: translate(-2px, -2px);
+  }
 }
 ```
 
@@ -518,48 +583,56 @@ SamFox Master Template
 **8+ Canvas Systems with Symbolism:**
 
 #### 1. **Noodle Mountain Canvas**
+
 - **Symbolism:** Growth through complexity
 - **Colors:** Earth tones, organic curves
 - **Animation:** Flowing noodle paths
 - **Use:** Background for creative sections
 
 #### 2. **Chess Board Canvas**
+
 - **Symbolism:** Strategic thinking
 - **Pattern:** 8x8 grid with alternating colors
 - **Animation:** Piece movement hints
 - **Use:** Planning and strategy sections
 
 #### 3. **Concentric Borders Canvas**
+
 - **Symbolism:** Focus and clarity
 - **Pattern:** Nested circular borders
 - **Animation:** Ripple effect from center
 - **Use:** Central content highlighting
 
 #### 4. **Stacked Colors Canvas**
+
 - **Symbolism:** Layers of depth
 - **Pattern:** Horizontal color bands
 - **Animation:** Color shift transitions
 - **Use:** Section dividers
 
 #### 5. **Sun Burn Mountain Lions Canvas**
+
 - **Symbolism:** Power under scrutiny
 - **Elements:** Lion silhouettes with sun rays
 - **Animation:** moveSunLion keyframe
 - **Use:** Hero sections, dramatic backgrounds
 
 #### 6. **Black & Red Panels Canvas**
+
 - **Symbolism:** Contrast and balance
 - **Pattern:** Alternating dark/accent panels
 - **Animation:** Panel slide transitions
 - **Use:** Gallery sections
 
 #### 7. **Augusta Green Canvas**
+
 - **Symbolism:** Growth and prosperity
 - **Color:** Golf course inspired green (#006400 variants)
 - **Animation:** Grass wave effect
 - **Use:** Success and achievement sections
 
 #### 8. **Concentric Circles Canvas**
+
 - **Symbolism:** Ripple effect of impact
 - **Pattern:** Expanding circles from center
 - **Animation:** Pulse and expand
@@ -568,42 +641,51 @@ SamFox Master Template
 ### Three Theme Modes
 
 #### 🌞 Light Mode
+
 **Activation:** Default on page load
 **Colors:**
+
 - Background: #ffffff
 - Text: #1a1a1a
 - Cards: #f5f5f5
 - Accent: --primary-glow (#00e393)
 
 **Features:**
+
 - Pastel color palette emphasis
 - Soft shadows
 - High readability
 - Professional appearance
 
 #### 🌙 Dark Mode
+
 **Activation:** Toggle switch or system preference
 **Colors:**
+
 - Background: --dark-bg (#0a0a0d)
 - Text: #ffffff
 - Cards: --card-bg-dark (#1c1c21)
 - Accent: --primary-glow (#00e393)
 
 **Features:**
+
 - Reduced eye strain
 - Seedwave glow effects prominent
 - Canvas animations more visible
 - Professional developer aesthetic
 
 #### ⚡ Hyper Mode
+
 **Activation:** Hidden unlock condition (specific click sequence or achievement)
 **Colors:**
+
 - Background: #000000
 - Text: Neon colors rotating
 - Cards: Transparent with neon borders
 - Accent: --hyper-neon-green (#39FF14)
 
 **Features:**
+
 - Extreme neon palette
 - Glitch effects active
 - Matrix-style falling code background
@@ -612,6 +694,7 @@ SamFox Master Template
 - "Power user" mode aesthetic
 
 **Unlock Conditions:**
+
 - Complete all gallery purchases
 - View all portfolio items
 - Trigger specific Easter eggs
@@ -672,6 +755,7 @@ Lines 1901-2145: Documentation & Comments
 ```
 
 **Features:**
+
 - ✅ Zero external dependencies (no CDN links)
 - ✅ Complete responsive framework
 - ✅ 18+ color palettes pre-defined
@@ -682,6 +766,7 @@ Lines 1901-2145: Documentation & Comments
 - ✅ Cross-browser compatible
 
 **Integration Pattern:**
+
 ```html
 <!-- Copy entire template -->
 <!-- Customize color variables -->
@@ -816,6 +901,7 @@ Lines 1901-2145: Documentation & Comments
 #### samfox-creative-studio.tsx (1725 lines)
 
 **Import Structure (Lines 1-82):**
+
 ```typescript
 // React & Query libraries
 React, useState, useQuery, useMutation, useQueryClient
@@ -843,6 +929,7 @@ Card, Button, Badge, Tabs (7 component imports)
 ```
 
 **Data Structures (Lines 86-107):**
+
 ```typescript
 const designGallery = [
   {
@@ -858,6 +945,7 @@ const designGallery = [
 ```
 
 **VIP Dashboard Component (Lines 109-350):**
+
 - Real-time data queries:
   - `/api/brands` (refetch every 10s)
   - `/api/sectors` (refetch every 10s)
@@ -880,17 +968,18 @@ const designGallery = [
   - Service health indicators
 
 **Commercial Gallery Section (Lines 351-800):**
+
 ```typescript
 function CommercialGallerySection() {
   // State management
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedDesign, setSelectedDesign] = useState(null);
-  
+
   // Filtering logic
-  const filteredDesigns = selectedCategory === 'All' 
-    ? designGallery 
+  const filteredDesigns = selectedCategory === 'All'
+    ? designGallery
     : designGallery.filter(d => d.category === selectedCategory);
-  
+
   // Categories
   const categories = [
     'All', 'Minimalist', 'Character Art', 'Typography',
@@ -899,10 +988,10 @@ function CommercialGallerySection() {
     'Spiritual', 'Portrait', 'Street Art', 'Sports Art',
     'Branding', 'Professional'
   ];
-  
+
   // PayPal integration
-  <PayPalButton 
-    amount={design.price} 
+  <PayPalButton
+    amount={design.price}
     designId={design.id}
     onSuccess={handlePurchaseSuccess}
   />
@@ -910,6 +999,7 @@ function CommercialGallerySection() {
 ```
 
 **Portfolio Showcase (Lines 801-1200):**
+
 - Project grid display
 - Filtering by type
 - Modal detail views
@@ -918,8 +1008,9 @@ function CommercialGallerySection() {
 - Framer Motion animations
 
 **Heritage Portal Integration (Lines 1201-1400):**
+
 ```typescript
-<HeritagePortal 
+<HeritagePortal
   featured={MadibaMockPath}
   culturalContext="South African Heritage"
   designs={culturalDesigns}
@@ -927,19 +1018,20 @@ function CommercialGallerySection() {
 ```
 
 **Main Component Export (Lines 1401-1725):**
+
 ```typescript
 export default function SamFoxCreativeStudio() {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header with logo */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
         <img src={SamFoxLogo} alt="SamFox Studio" />
         <h1>SamFox Creative Studio</h1>
       </motion.div>
-      
+
       {/* Tabs System */}
       <Tabs defaultValue="dashboard">
         <TabsList>
@@ -948,19 +1040,19 @@ export default function SamFoxCreativeStudio() {
           <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
           <TabsTrigger value="heritage">Heritage</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="dashboard">
           <VipDashboardComponent />
         </TabsContent>
-        
+
         <TabsContent value="gallery">
           <CommercialGallerySection />
         </TabsContent>
-        
+
         <TabsContent value="portfolio">
           <PortfolioShowcase />
         </TabsContent>
-        
+
         <TabsContent value="heritage">
           <HeritagePortal />
         </TabsContent>
@@ -973,6 +1065,7 @@ export default function SamFoxCreativeStudio() {
 #### samfox-portfolio.tsx Components
 
 **Standalone Portfolio Page:**
+
 - Dedicated route for portfolio showcase
 - Filtered project views
 - Category navigation
@@ -980,6 +1073,7 @@ export default function SamFoxCreativeStudio() {
 - Responsive grid layouts
 
 **Reusable Portfolio Component:**
+
 - Location: `components/portal/samfox-portfolio.tsx`
 - Used across multiple pages
 - Props-based customization
@@ -989,28 +1083,31 @@ export default function SamFoxCreativeStudio() {
 ### State Management Patterns
 
 **TanStack Query Implementation:**
+
 ```typescript
 // Automatic refetching
 const { data, isLoading, error } = useQuery({
   queryKey: ['/api/endpoint'],
   refetchInterval: 10000, // 10 seconds
   staleTime: 5000,
-  cacheTime: 300000
+  cacheTime: 300000,
 });
 
 // Mutations with optimistic updates
 const mutation = useMutation({
-  mutationFn: async (data) => apiRequest('/api/endpoint', {
-    method: 'POST',
-    body: JSON.stringify(data)
-  }),
+  mutationFn: async (data) =>
+    apiRequest('/api/endpoint', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
   onSuccess: () => {
     queryClient.invalidateQueries(['/api/endpoint']);
-  }
+  },
 });
 ```
 
 **Local State Management:**
+
 ```typescript
 // UI state
 const [selectedCategory, setSelectedCategory] = useState('All');
@@ -1021,7 +1118,7 @@ const [activeTab, setActiveTab] = useState('dashboard');
 const [formData, setFormData] = useState({
   name: '',
   email: '',
-  message: ''
+  message: '',
 });
 
 // Loading states
@@ -1035,12 +1132,14 @@ const [isProcessing, setIsProcessing] = useState(false);
 ### Gallery Economics
 
 **Total Catalog Value:**
+
 - 20 unique designs
 - Price range: $12.99 - $24.99
 - Average price: $16.79
 - Total revenue at full sales: $335.80
 
 **Price Tiers:**
+
 ```
 Budget Tier ($12.49-$13.99): 5 designs
 - Eyes Pattern, Rabbit Sketch, Toad Creature, OOG Eye Rabbit, First Eye
@@ -1058,6 +1157,7 @@ Signature Tier ($21.99-$24.99): 2 designs
 ### PayPal Integration
 
 **Implementation Pattern:**
+
 ```typescript
 import PayPalButton from '@/components/PayPalButton';
 
@@ -1085,6 +1185,7 @@ import PayPalButton from '@/components/PayPalButton';
 ```
 
 **Features:**
+
 - Secure payment processing
 - Instant download triggers
 - Receipt generation
@@ -1095,6 +1196,7 @@ import PayPalButton from '@/components/PayPalButton';
 ### Category Distribution
 
 **Design Category Breakdown:**
+
 ```
 Character Art: 5 designs (25%)
 - Wolf Monster, Toad Creature, Sambreel Umbrella, In Love Character, Chief Portrait
@@ -1118,6 +1220,7 @@ Specialty: 3 designs (15%)
 ```
 
 **Market Positioning:**
+
 - Unique artistic voice
 - Cultural authenticity (South African influences)
 - Professional quality
@@ -1167,6 +1270,7 @@ FAA.ZONE   HotStack  Framer   Neon DB
 ### Data Flow Architecture
 
 **Client → Server → Database:**
+
 ```typescript
 // 1. Client requests data
 useQuery({
@@ -1189,6 +1293,7 @@ SELECT * FROM brands;
 ```
 
 **Asset Delivery Pipeline:**
+
 ```
 Source Assets (attached_assets/samfox-main/)
     ↓
@@ -1241,6 +1346,7 @@ App (client/src/App.tsx)
 **Note:** Database schema removed from SamFox components per architectural best practices. Now only in `shared/schema.ts`.
 
 **Relevant Tables:**
+
 ```typescript
 // brands table - stores brand information
 brands {
@@ -1448,6 +1554,7 @@ echo "  Logo files: $(ls -1 $ASSET_DIR/Sam_fox* 2>/dev/null | wc -l)"
 ### Quantitative Metrics
 
 **File Footprint:**
+
 - 31+ direct file references
 - 1725 lines in main React component
 - 2145 lines in master template
@@ -1456,12 +1563,14 @@ echo "  Logo files: $(ls -1 $ASSET_DIR/Sam_fox* 2>/dev/null | wc -l)"
 - 3 React component files
 
 **Code Statistics:**
+
 - TypeScript/TSX: ~2000+ lines
 - HTML: ~5000+ lines across templates
 - CSS: ~3000+ lines (embedded in templates)
 - Total: ~10,000+ lines of code
 
 **Asset Statistics:**
+
 - Image files: 21 commercial designs
 - Templates: 23 HTML files
 - Components: 3 React files
@@ -1470,12 +1579,14 @@ echo "  Logo files: $(ls -1 $ASSET_DIR/Sam_fox* 2>/dev/null | wc -l)"
 ### Qualitative Assessment
 
 **Design Excellence:**
+
 - Unique artistic voice with South African cultural influences
 - Professional quality across all 20+ designs
 - Consistent design language
 - Technical mastery evident in template architecture
 
 **Technical Proficiency:**
+
 - Zero external dependencies in master template
 - Production-ready code quality
 - Comprehensive responsive framework
@@ -1483,6 +1594,7 @@ echo "  Logo files: $(ls -1 $ASSET_DIR/Sam_fox* 2>/dev/null | wc -l)"
 - Modern React patterns
 
 **Business Acumen:**
+
 - Strategic pricing ($12.99-$24.99)
 - PayPal integration implemented
 - Category diversification
@@ -1490,6 +1602,7 @@ echo "  Logo files: $(ls -1 $ASSET_DIR/Sam_fox* 2>/dev/null | wc -l)"
 - Revenue potential calculated
 
 **Ecosystem Integration:**
+
 - 7+ primary brand integrations
 - Template architecture reused across ecosystem
 - Consistent branding maintained
@@ -1497,6 +1610,7 @@ echo "  Logo files: $(ls -1 $ASSET_DIR/Sam_fox* 2>/dev/null | wc -l)"
 - Scalable integration patterns
 
 **Cultural Significance:**
+
 - Madiba portrait (signature piece)
 - South African expressions (Voetsek)
 - Cultural heritage portal
@@ -1508,6 +1622,7 @@ echo "  Logo files: $(ls -1 $ASSET_DIR/Sam_fox* 2>/dev/null | wc -l)"
 **Design Influence: 25-30% of Ecosystem**
 
 Calculated based on:
+
 - File references (31+ files)
 - Template coverage (20+ templates)
 - Brand integration depth (7+ brands)
@@ -1515,6 +1630,7 @@ Calculated based on:
 - Component reuse patterns
 
 **Breakdown by Area:**
+
 ```
 Creative/Visual: 100% (SamFox IS creative)
 Templates:       85% (master template architecture)
@@ -1532,6 +1648,7 @@ Weighted Average: ~28% total ecosystem impact
 ### High-Intensity Areas (90-100% SamFox)
 
 **Files:**
+
 - `client/src/pages/samfox-creative-studio.tsx` (100%)
 - `client/src/pages/samfox-portfolio.tsx` (100%)
 - `client/src/components/portal/samfox-portfolio.tsx` (100%)
@@ -1543,6 +1660,7 @@ Weighted Average: ~28% total ecosystem impact
 ### Medium-Intensity Areas (40-70% SamFox)
 
 **Files:**
+
 - Templates using SamFox design system
 - Pages importing SamFox components
 - Brand pages with SamFox styling
@@ -1553,6 +1671,7 @@ Weighted Average: ~28% total ecosystem impact
 ### Low-Intensity Areas (10-30% SamFox)
 
 **Files:**
+
 - Backend routes (UI only touched)
 - Database schemas (no direct involvement)
 - Build configurations (standard setup)
@@ -1583,18 +1702,18 @@ Repository Heat Map (SamFox Influence)
 
 ### Sector-by-Sector Analysis
 
-| Sector | SamFox Influence | Primary Contribution |
-|--------|------------------|---------------------|
-| Creative Arts | 100% | Complete ownership |
-| Banimal™ | 95% | All character designs, branding |
-| Fruitful™ | 90% | Master templates, color system |
-| Seedwave™ | 85% | Synergy hub UI, merge interfaces |
-| VaultMesh™ | 70% | Checkout forms, payment UI |
-| HotStack™ | 65% | Omnidrop interface, developer UX |
-| FAA.ZONE™ | 60% | Dashboard design, control panels |
-| SecureSign™ | 30% | Button styling, forms |
-| BuildNest™ | 25% | Sector templates |
-| OmniGrid™ | 20% | Infrastructure UI elements |
+| Sector        | SamFox Influence | Primary Contribution             |
+| ------------- | ---------------- | -------------------------------- |
+| Creative Arts | 100%             | Complete ownership               |
+| Banimal™      | 95%              | All character designs, branding  |
+| Fruitful™     | 90%              | Master templates, color system   |
+| Seedwave™     | 85%              | Synergy hub UI, merge interfaces |
+| VaultMesh™    | 70%              | Checkout forms, payment UI       |
+| HotStack™     | 65%              | Omnidrop interface, developer UX |
+| FAA.ZONE™     | 60%              | Dashboard design, control panels |
+| SecureSign™   | 30%              | Button styling, forms            |
+| BuildNest™    | 25%              | Sector templates                 |
+| OmniGrid™     | 20%              | Infrastructure UI elements       |
 
 ---
 
@@ -1605,6 +1724,7 @@ Repository Heat Map (SamFox Influence)
 With 31+ file references, 20+ commercial designs, 20+ production templates, and 1700+ lines of React code, Samantha Ford (SamFox Studio) has established an indelible presence across the entire platform.
 
 **Key Achievements:**
+
 - ✅ Created master template architecture (116KB, 2145 lines)
 - ✅ Developed 20+ commercial designs ($320+ revenue potential)
 - ✅ Designed comprehensive React component (1725 lines)
@@ -1616,6 +1736,7 @@ With 31+ file references, 20+ commercial designs, 20+ production templates, and 
 - ✅ Maintained 25-30% ecosystem-wide influence
 
 **The Numbers Don't Lie:**
+
 - 10,000+ lines of code
 - 31+ file references
 - 4MB+ of assets
@@ -1627,6 +1748,6 @@ With 31+ file references, 20+ commercial designs, 20+ production templates, and 
 
 ---
 
-*Documentation compiled from comprehensive repository analysis*  
-*Last updated: 2024*  
-*Status: ✅ Active & Current*
+_Documentation compiled from comprehensive repository analysis_  
+_Last updated: 2024_  
+_Status: ✅ Active & Current_

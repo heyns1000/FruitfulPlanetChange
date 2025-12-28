@@ -52,21 +52,25 @@ Before implementing the widget, you need to obtain your personalized widget URL 
 Configure the widget according to your preferences:
 
 #### Display Options:
+
 - ✅ **Show Community Trees**: Display total trees planted by your organization
 - ✅ **Show Individual Trees**: Display trees planted by individual supporters
 - ✅ **Show Tree Species**: Display information about tree species planted
 - ✅ **Show Location**: Display planting locations on a map
 
 #### Language Settings:
+
 - Select your preferred language (English, German, Spanish, French, etc.)
 - The widget will automatically display text in the selected language
 
 #### Theme Options:
+
 - **Light Theme**: Best for light-colored backgrounds
 - **Dark Theme**: Best for dark-colored backgrounds
 - **Auto**: Adapts to user's system preferences
 
 #### Size Options:
+
 - **Small**: 300px × 200px (compact view)
 - **Medium**: 400px × 300px (recommended)
 - **Large**: 600px × 400px (detailed view)
@@ -101,7 +105,7 @@ Use the provided `tree-widget.html` file located in the root directory of the re
 3. Replace `YOUR_WIDGET_URL` with your actual widget URL:
 
 ```html
-<iframe 
+<iframe
   class="tree-counter-iframe"
   src="https://www.plant-for-the-planet.org/treecounter/YOUR_PROFILE_NAME"
   title="Plant for the Planet Tree Counter"
@@ -110,6 +114,7 @@ Use the provided `tree-widget.html` file located in the root directory of the re
   loading="lazy"
 ></iframe>
 ```
+
 Note: The CSS already includes `border: none` styling, so no frameborder attribute is needed.
 
 ### 2.3 Customization Options
@@ -118,9 +123,9 @@ You can customize the widget appearance by modifying the CSS:
 
 ```css
 .widget-wrapper {
-  max-width: 400px;     /* Change widget width */
-  height: 300px;        /* Change widget height */
-  border-radius: 8px;   /* Adjust rounded corners */
+  max-width: 400px; /* Change widget width */
+  height: 300px; /* Change widget height */
+  border-radius: 8px; /* Adjust rounded corners */
 }
 ```
 
@@ -154,7 +159,7 @@ const TREE_WIDGET_CONFIG = {
   height: '300px',
   borderRadius: '8px',
   scrolling: 'no',
-  loading: 'lazy'
+  loading: 'lazy',
   // Note: border styling is applied via CSS (border: 'none'), not frameBorder
 };
 ```
@@ -164,12 +169,14 @@ const TREE_WIDGET_CONFIG = {
 The dynamic loader provides additional functionality:
 
 #### Manual Reload
+
 ```javascript
 // Reload the widget from browser console
 window.reloadTreeWidget();
 ```
 
 #### Conditional Loading
+
 ```javascript
 // Load widget based on user action
 document.getElementById('load-button').addEventListener('click', () => {
@@ -178,16 +185,17 @@ document.getElementById('load-button').addEventListener('click', () => {
 ```
 
 #### Integration with Analytics
+
 ```javascript
 // Track widget loads
 async function loadTreeWidget() {
   // ... existing code ...
-  
+
   // Add analytics tracking
   if (typeof gtag !== 'undefined') {
     gtag('event', 'widget_load', {
-      'event_category': 'Tree Counter',
-      'event_label': 'Widget Loaded'
+      event_category: 'Tree Counter',
+      event_label: 'Widget Loaded',
     });
   }
 }
@@ -200,6 +208,7 @@ async function loadTreeWidget() {
 ### 4.1 React Integration
 
 #### File Location
+
 Use the provided `components/TreeCounter.jsx` file.
 
 #### Basic Usage
@@ -210,7 +219,7 @@ import TreeCounter from './components/TreeCounter';
 function App() {
   return (
     <div>
-      <TreeCounter 
+      <TreeCounter
         widgetUrl="https://www.plant-for-the-planet.org/treecounter/YOUR_PROFILE_NAME"
         width={400}
         height={300}
@@ -223,14 +232,14 @@ function App() {
 
 #### Props Reference
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `widgetUrl` | string | `'YOUR_WIDGET_URL'` | Your widget URL from Plant-for-the-Planet |
-| `width` | number | `400` | Width of the widget container in pixels |
-| `height` | number | `300` | Height of the widget iframe in pixels |
-| `borderRadius` | string | `'8px'` | Border radius for rounded corners |
-| `className` | string | `''` | Optional custom CSS class name |
-| `showInfo` | boolean | `true` | Show/hide the information section |
+| Prop           | Type    | Default             | Description                               |
+| -------------- | ------- | ------------------- | ----------------------------------------- |
+| `widgetUrl`    | string  | `'YOUR_WIDGET_URL'` | Your widget URL from Plant-for-the-Planet |
+| `width`        | number  | `400`               | Width of the widget container in pixels   |
+| `height`       | number  | `300`               | Height of the widget iframe in pixels     |
+| `borderRadius` | string  | `'8px'`             | Border radius for rounded corners         |
+| `className`    | string  | `''`                | Optional custom CSS class name            |
+| `showInfo`     | boolean | `true`              | Show/hide the information section         |
 
 #### Advanced React Example
 
@@ -240,15 +249,13 @@ import TreeCounter from './components/TreeCounter';
 
 function TreeCounterPage() {
   const [showWidget, setShowWidget] = useState(true);
-  
+
   return (
     <div className="container">
-      <button onClick={() => setShowWidget(!showWidget)}>
-        Toggle Widget
-      </button>
-      
+      <button onClick={() => setShowWidget(!showWidget)}>Toggle Widget</button>
+
       {showWidget && (
-        <TreeCounter 
+        <TreeCounter
           widgetUrl="https://www.plant-for-the-planet.org/treecounter/fruitful-global-planet"
           width={500}
           height={350}
@@ -274,14 +281,8 @@ interface PageProps {
 
 const TreePage: React.FC<PageProps> = ({ profileName }) => {
   const widgetUrl = `https://www.plant-for-the-planet.org/treecounter/${profileName}`;
-  
-  return (
-    <TreeCounter 
-      widgetUrl={widgetUrl}
-      width={400}
-      height={300}
-    />
-  );
+
+  return <TreeCounter widgetUrl={widgetUrl} width={400} height={300} />;
 };
 ```
 
@@ -316,26 +317,26 @@ export default {
   props: {
     widgetUrl: {
       type: String,
-      default: 'YOUR_WIDGET_URL'
+      default: 'YOUR_WIDGET_URL',
     },
     width: {
       type: Number,
-      default: 400
+      default: 400,
     },
     height: {
       type: Number,
-      default: 300
+      default: 300,
     },
     borderRadius: {
       type: String,
-      default: '8px'
-    }
+      default: '8px',
+    },
   },
   computed: {
     containerStyle() {
       return {
         maxWidth: `${this.width}px`,
-        margin: '0 auto'
+        margin: '0 auto',
       };
     },
     widgetStyle() {
@@ -344,10 +345,10 @@ export default {
         height: `${this.height}px`,
         borderRadius: this.borderRadius,
         overflow: 'hidden',
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
       };
-    }
-  }
+    },
+  },
 };
 </script>
 ```
@@ -383,30 +384,37 @@ export default {
 The tree counter can be integrated across all ecosystem sites:
 
 #### SamFox (Creative Studio)
+
 - Add to portfolio page showcasing environmental work
 - Include in "Values" or "Mission" section
 
 #### Banimal (Charitable Toys)
+
 - Display on product pages to show environmental impact
 - Add to checkout page to show trees planted per purchase
 
 #### VaultMesh (Trading Platform)
+
 - Include in corporate responsibility section
 - Add to user dashboard for transparency
 
 #### HotStack (Code Hosting)
+
 - Display on landing page
 - Add to developer resources section
 
 #### SecureSign (Legal Platform)
+
 - Include in about/mission pages
 - Add to sustainability reports
 
 #### OmniGrid/FAA.Zone (Infrastructure)
+
 - Display in system status dashboard
 - Add to environmental monitoring section
 
 #### BuildNest (Construction)
+
 - Feature prominently on homepage
 - Include in project showcase pages
 
@@ -443,9 +451,12 @@ The tree counter can be integrated across all ecosystem sites:
 
 3. **Content Security Policy (CSP)**
    - Add Plant-for-the-Planet domains to CSP:
+
    ```html
-   <meta http-equiv="Content-Security-Policy" 
-         content="frame-src 'self' https://www.plant-for-the-planet.org https://widgets.plant-for-the-planet.org;">
+   <meta
+     http-equiv="Content-Security-Policy"
+     content="frame-src 'self' https://www.plant-for-the-planet.org https://widgets.plant-for-the-planet.org;"
+   />
    ```
 
 4. **Browser Extensions**
@@ -458,6 +469,7 @@ The tree counter can be integrated across all ecosystem sites:
 **Solutions:**
 
 1. **Check Container Dimensions**
+
    ```css
    .widget-wrapper {
      width: 100%;
@@ -468,11 +480,9 @@ The tree counter can be integrated across all ecosystem sites:
    ```
 
 2. **Ensure Iframe Responsive**
+
    ```html
-   <iframe 
-     style="width: 100%; height: 100%; border: none;"
-     ...
-   />
+   <iframe style="width: 100%; height: 100%; border: none;" ... />
    ```
 
 3. **Verify Parent Container**
@@ -496,6 +506,7 @@ The tree counter can be integrated across all ecosystem sites:
 ### Issue: Placeholder "YOUR_WIDGET_URL" Still Visible
 
 **Solution:**
+
 - You haven't replaced the placeholder URL
 - Follow Step 1 to get your actual widget URL
 - Replace all instances of `YOUR_WIDGET_URL` with your real URL
@@ -507,13 +518,16 @@ The tree counter can be integrated across all ecosystem sites:
 ### Performance Optimization
 
 1. **Lazy Loading**
+
    ```html
-   <iframe loading="lazy" .../>
+   <iframe loading="lazy" ... />
    ```
+
    - Delays loading until widget is near viewport
    - Improves initial page load time
 
 2. **Async Script Loading**
+
    ```javascript
    // For dynamic loader
    async function loadTreeWidget() {
@@ -536,37 +550,28 @@ The tree counter can be integrated across all ecosystem sites:
    - This is the minimal permission set required for the tree counter widget
    - Unnecessary permissions removed: autoplay, clipboard-write, accelerometer, gyroscope, picture-in-picture
    - Reduces security attack surface while maintaining full functionality
+
    ```html
-   <iframe 
-     allow="encrypted-media"
-     ...
-   />
+   <iframe allow="encrypted-media" ... />
    ```
 
 3. **Iframe Sandbox** (Optional)
+
    ```html
-   <iframe 
-     sandbox="allow-scripts allow-same-origin"
-     ...
-   />
+   <iframe sandbox="allow-scripts allow-same-origin" ... />
    ```
 
 4. **Referrer Policy**
    ```html
-   <iframe 
-     referrerpolicy="no-referrer-when-downgrade"
-     ...
-   />
+   <iframe referrerpolicy="no-referrer-when-downgrade" ... />
    ```
 
 ### Accessibility
 
 1. **Provide Alt Context**
+
    ```html
-   <iframe 
-     title="Plant for the Planet Tree Counter showing current tree planting progress"
-     ...
-   />
+   <iframe title="Plant for the Planet Tree Counter showing current tree planting progress" ... />
    ```
 
 2. **Keyboard Navigation**
@@ -576,20 +581,21 @@ The tree counter can be integrated across all ecosystem sites:
 3. **Screen Reader Support**
    ```html
    <div role="region" aria-label="Tree Counter Widget">
-     <iframe .../>
+     <iframe ... />
    </div>
    ```
 
 ### Responsive Design
 
 1. **Mobile-First Approach**
+
    ```css
    /* Mobile styles */
    .widget-wrapper {
      max-width: 100%;
      padding: 10px;
    }
-   
+
    /* Desktop styles */
    @media (min-width: 768px) {
      .widget-wrapper {
@@ -600,6 +606,7 @@ The tree counter can be integrated across all ecosystem sites:
    ```
 
 2. **Flexible Heights**
+
    ```css
    .widget-wrapper {
      height: auto;
@@ -615,6 +622,7 @@ The tree counter can be integrated across all ecosystem sites:
 ### Monitoring & Analytics
 
 1. **Track Widget Performance**
+
    ```javascript
    // Track load time
    const startTime = performance.now();
@@ -624,6 +632,7 @@ The tree counter can be integrated across all ecosystem sites:
    ```
 
 2. **Error Tracking**
+
    ```javascript
    window.addEventListener('error', (e) => {
      if (e.target.tagName === 'IFRAME') {
@@ -639,7 +648,7 @@ The tree counter can be integrated across all ecosystem sites:
    iframe.addEventListener('load', () => {
      analytics.track('Widget Viewed', {
        page: window.location.pathname,
-       timestamp: new Date().toISOString()
+       timestamp: new Date().toISOString(),
      });
    });
    ```
@@ -665,6 +674,7 @@ The tree counter can be integrated across all ecosystem sites:
 ### Notes on Real-Time Updates
 
 The widget automatically refreshes tree count data:
+
 - **Update Frequency**: Every 3-5 minutes (widget polls for new data)
 - **Data Source**: Plant-for-the-Planet global database
 - **Accuracy**: Updates may have slight delays during high traffic
