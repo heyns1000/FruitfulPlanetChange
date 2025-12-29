@@ -6,7 +6,7 @@ import { createInsertSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
 // Legal Documents Management
-export const legalDocuments = pgTable('legal_documents', {
+export const securesignLegalDocuments = pgTable('securesign_legal_documents', {
   id: serial('id').primaryKey(),
   documentType: text('document_type').notNull(), // NDA, Contract, Agreement, etc.
   documentTitle: text('document_title').notNull(),
@@ -25,7 +25,7 @@ export const ndaRecords = pgTable('nda_records', {
   participantEmail: text('participant_email').notNull(),
   participantCompany: text('participant_company'),
   participantRole: text('participant_role'),
-  documentId: integer('document_id').references(() => legalDocuments.id),
+  documentId: integer('document_id').references(() => securesignLegalDocuments.id),
   signatureData: text('signature_data'), // Base64 encoded signature
   ipAddress: text('ip_address'),
   userAgent: text('user_agent'),
@@ -75,8 +75,8 @@ export const auditTrail = pgTable('audit_trail', {
 });
 
 // Type definitions
-export type LegalDocument = typeof legalDocuments.$inferSelect;
-export type InsertLegalDocument = typeof legalDocuments.$inferInsert;
+export type SecureSignLegalDocument = typeof securesignLegalDocuments.$inferSelect;
+export type InsertSecureSignLegalDocument = typeof securesignLegalDocuments.$inferInsert;
 
 export type NDARecord = typeof ndaRecords.$inferSelect;
 export type InsertNDARecord = typeof ndaRecords.$inferInsert;
@@ -91,7 +91,7 @@ export type AuditTrailEntry = typeof auditTrail.$inferSelect;
 export type InsertAuditTrailEntry = typeof auditTrail.$inferInsert;
 
 // Zod schemas for validation
-export const insertLegalDocumentSchema = createInsertSchema(legalDocuments);
+export const insertSecureSignLegalDocumentSchema = createInsertSchema(securesignLegalDocuments);
 export const insertNDARecordSchema = createInsertSchema(ndaRecords);
 export const insertSecureSignApiKeySchema = createInsertSchema(secureSignApiKeys);
 export const insertDocumentTemplateSchema = createInsertSchema(documentTemplates);
