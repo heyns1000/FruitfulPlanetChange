@@ -1,6 +1,10 @@
 // Global API Configuration for Seedwave™ Portal powered by VaultMesh™
 // This file centralizes all API keys and configurations extracted from legal documentation
 
+import { createLogger } from '../server/middleware/logging';
+
+const logger = createLogger('api-config');
+
 export interface APIConfiguration {
   paypal: {
     clientId: string;
@@ -49,6 +53,19 @@ export const getAPIConfig = (): APIConfiguration => {
       clientId:
         process.env.PAYPAL_CLIENT_ID ||
         'BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q',
+  const isProduction = process.env.NODE_ENV === 'production'
+  
+  // Validate required environment variables
+  if (!process.env.PAYPAL_CLIENT_ID) {
+    logger.warn('PAYPAL_CLIENT_ID not configured');
+  }
+  if (!process.env.VITE_FIREBASE_API_KEY) {
+    logger.warn('VITE_FIREBASE_API_KEY not configured');
+  }
+  
+  return {
+    paypal: {
+      clientId: process.env.PAYPAL_CLIENT_ID || '',
       clientSecret: process.env.PAYPAL_CLIENT_SECRET || '',
       environment: isProduction ? 'production' : 'sandbox',
       currency: 'USD',
@@ -61,6 +78,13 @@ export const getAPIConfig = (): APIConfiguration => {
       messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '459816542686',
       appId: process.env.VITE_FIREBASE_APP_ID || '1:459816542686:web:7fc0596fb70e2e6b753d4f',
       measurementId: process.env.VITE_FIREBASE_MEASUREMENT_ID || 'G-S4ZB8QV782',
+      apiKey: process.env.VITE_FIREBASE_API_KEY || '',
+      authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN || '',
+      projectId: process.env.VITE_FIREBASE_PROJECT_ID || '',
+      storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET || '',
+      messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '',
+      appId: process.env.VITE_FIREBASE_APP_ID || '',
+      measurementId: process.env.VITE_FIREBASE_MEASUREMENT_ID || ''
     },
     spotify: {
       clientId: process.env.SPOTIFY_CLIENT_ID || '',
@@ -89,6 +113,10 @@ export const getAPIConfig = (): APIConfiguration => {
     },
   };
 };
+      secret: process.env.SESSION_SECRET || ''
+    }
+  }
+}
 
 // Client-side configuration (only public keys)
 export const getClientConfig = () => {

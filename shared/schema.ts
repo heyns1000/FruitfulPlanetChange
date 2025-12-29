@@ -18,6 +18,11 @@ import {
   FRUITFUL_CRATE_DANCE_ECOSYSTEM,
   FRUITFUL_CRATE_DANCE_SECTORS,
 } from './fruitful-crate-dance-ecosystem';
+import { pgTable, text, serial, integer, boolean, jsonb, varchar, timestamp, index, decimal, numeric, date } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
+import { FRUITFUL_CRATE_DANCE_ECOSYSTEM, FRUITFUL_CRATE_DANCE_SECTORS } from "./fruitful-crate-dance-ecosystem";
 
 // Session storage table for Replit Auth
 export const sessions = pgTable(
@@ -171,6 +176,93 @@ export const packageDownloads = pgTable('package_downloads', {
   userAgent: text('user_agent'),
   downloadTimestamp: timestamp('download_timestamp').defaultNow(),
   completed: boolean('completed').default(false),
+export const users = pgTable("users", {
+  id: varchar("id").primaryKey().notNull(),
+  email: varchar("email").unique(),
+  firstName: varchar("first_name"),
+  lastName: varchar("last_name"),
+  profileImageUrl: varchar("profile_image_url"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const sectors = pgTable("sectors", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  emoji: text("emoji").notNull(),
+  description: text("description"),
+  brandCount: integer("brand_count").default(0),
+  subnodeCount: integer("subnode_count").default(0),
+  price: text("price").default("29.99"), // USD pricing for sector access
+  currency: text("currency").default("USD"),
+  metadata: jsonb("metadata"),
+});
+
+export const brands = pgTable("brands", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+  sectorId: integer("sector_id").references(() => sectors.id),
+  integration: text("integration").notNull(), // VaultMesh™, HotStack, FAA.ZONE™
+  status: text("status").notNull().default("active"), // active, maintenance, offline
+  isCore: boolean("is_core").default(true),
+  parentId: integer("parent_id"), // for subnodes
+  metadata: jsonb("metadata"), // additional brand data
+  createdAt: text("created_at").default("now()"),
+});
+
+export const systemStatus = pgTable("system_status", {
+  id: serial("id").primaryKey(),
+  service: text("service").notNull().unique(),
+  status: text("status").notNull(), // online, maintenance, offline
+  lastChecked: text("last_checked").default("now()"),
+});
+
+export const legalDocuments = pgTable("legal_documents", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  url: text("url").notNull(),
+  icon: text("icon").default("📄"),
+  category: text("category").notNull().default("legal"),
+  tags: jsonb("tags").$type<string[]>().default(sql`'[]'::jsonb`),
+  createdAt: text("created_at").default("now()"),
+});
+
+export const repositories = pgTable("repositories", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  url: text("url").notNull(),
+  description: text("description"),
+  category: text("category").notNull().default("documentation"),
+  status: text("status").notNull().default("active"),
+  createdAt: text("created_at").default("now()"),
+});
+
+export const payments = pgTable("payments", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").references(() => users.id),
+  planName: text("plan_name").notNull(),
+  amount: text("amount").notNull(), // stored as string to avoid decimal precision issues
+  currency: text("currency").default("USD"),
+  paypalOrderId: text("paypal_order_id"),
+  status: text("status").notNull().default("pending"), // pending, completed, failed, cancelled
+  metadata: jsonb("metadata"), // additional payment data
+  createdAt: text("created_at").default("now()"),
+});
+
+// Admin Panel Brands - comprehensive sector brand data from interns.seedwave.faa.zone
+export const adminPanelBrands = pgTable("admin_panel_brands", {
+  id: serial("id").primaryKey(),
+  sectorKey: text("sector_key").notNull(), // banking, agriculture, creative, etc.
+  sectorName: text("sector_name").notNull(),
+  sectorEmoji: text("sector_emoji").notNull(),
+  brandName: text("brand_name").notNull(),
+  subNodes: jsonb("sub_nodes").$type<string[]>().default(sql`'[]'::jsonb`),
+  isCore: boolean("is_core").default(true),
+  status: text("status").notNull().default("active"),
+  metadata: jsonb("metadata"),
+  createdAt: text("created_at").default("now()"),
 });
 
 export const insertUserSchema = createInsertSchema(users).omit({
@@ -405,6 +497,41 @@ export const portfolioProjects = pgTable('portfolio_projects', {
   artistId: varchar('artist_id').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
+export const artworks = pgTable("artworks", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  imageUrl: text("image_url").notNull(),
+  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  category: text("category").notNull(), // "Character Art", "Typography", "Abstract", etc.
+  tags: jsonb("tags").$type<string[]>().default(sql`'[]'::jsonb`),
+  medium: text("medium"), // "Digital illustration", "Digital art", etc.
+  isAvailable: boolean("is_available").default(true),
+  salesCount: integer("sales_count").default(0),
+  featured: boolean("featured").default(false),
+  artistId: varchar("artist_id").references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// SamFox Portfolio Projects - Featured creative work
+export const portfolioProjects = pgTable("portfolio_projects", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  imageUrl: text("image_url").notNull(),
+  category: text("category").notNull(), // "Digital Art", "Brand Design", "Character Design"
+  tags: jsonb("tags").$type<string[]>().default(sql`'[]'::jsonb`),
+  medium: text("medium"),
+  style: text("style"),
+  theme: text("theme"),
+  clientName: text("client_name"), // For client work
+  projectYear: integer("project_year"),
+  featured: boolean("featured").default(false),
+  sortOrder: integer("sort_order").default(0),
+  artistId: varchar("artist_id").references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // SamFox Categories for organizing artwork
@@ -1438,6 +1565,59 @@ export const heritageMetrics = pgTable('heritage_metrics', {
   ritualsTagged: integer('rituals_tagged').default(0),
   artifactsPreserved: integer('artifacts_preserved').default(0),
   updatedAt: timestamp('updated_at').defaultNow(),
+export const familyMembers = pgTable("family_members", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  name: text("name").notNull(),
+  relationship: text("relationship"), // "father", "grandmother", etc.
+  dateOfBirth: date("date_of_birth"),
+  dateOfDeath: date("date_of_death"),
+  currentLocation: text("current_location"),
+  birthLocation: text("birth_location"),
+  metadata: jsonb("metadata"), // additional info like occupation, notes
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const heritageDocuments = pgTable("heritage_documents", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  familyMemberId: integer("family_member_id").references(() => familyMembers.id),
+  title: text("title").notNull(),
+  description: text("description"),
+  contentType: text("content_type").notNull(), // "Document", "Oral History", "Ritual Description", "Artifact", "Visual Record"
+  tags: jsonb("tags").$type<string[]>().default(sql`'[]'::jsonb`),
+  fileUrl: text("file_url"), // URL to stored file
+  ancestorName: text("ancestor_name"), // for filtering
+  dateRecorded: date("date_recorded"),
+  location: text("location"),
+  culturalSignificance: text("cultural_significance"),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const familyEvents = pgTable("family_events", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  eventName: text("event_name").notNull(),
+  eventDate: date("event_date").notNull(),
+  eventTime: text("event_time"),
+  description: text("description"),
+  participants: jsonb("participants").$type<string[]>().default(sql`'[]'::jsonb`), // family member IDs
+  isRecurring: boolean("is_recurring").default(false),
+  metadata: jsonb("metadata"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const heritageMetrics = pgTable("heritage_metrics", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  totalTags: integer("total_tags").default(0),
+  uniqueAncestors: integer("unique_ancestors").default(0),
+  documentsTagged: integer("documents_tagged").default(0),
+  oralHistories: integer("oral_histories").default(0),
+  ritualsTagged: integer("rituals_tagged").default(0),
+  artifactsPreserved: integer("artifacts_preserved").default(0),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Heritage Portal insert schemas
