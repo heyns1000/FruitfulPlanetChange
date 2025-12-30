@@ -1,114 +1,133 @@
-import { useState, useEffect } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { Shield, Lock, Globe, Zap, Database, Users, Activity, Cpu, Network, Cloud } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { motion } from "framer-motion"
-import { PulseIndicator, MorphingButton, SparkleEffect } from "@/components/ui/micro-interactions"
-import { VaultMeshGlobalCheckout } from "@/components/portal/vaultmesh-global-checkout"
-import { VaultMeshAbout } from "@/components/portal/vaultmesh-about"
-import { VaultMeshProducts } from "@/components/portal/vaultmesh-products"
-import { VaultMeshBrandPackages } from "@/components/portal/vaultmesh-brand-packages"
-import type { Brand, Sector } from "@shared/schema"
+import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import {
+  Shield,
+  Lock,
+  Globe,
+  Zap,
+  Database,
+  Users,
+  Activity,
+  Cpu,
+  Network,
+  Cloud,
+} from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { motion } from 'framer-motion';
+import { PulseIndicator, MorphingButton, SparkleEffect } from '@/components/ui/micro-interactions';
+import { VaultMeshGlobalCheckout } from '@/components/portal/vaultmesh-global-checkout';
+import { VaultMeshAbout } from '@/components/portal/vaultmesh-about';
+import { VaultMeshProducts } from '@/components/portal/vaultmesh-products';
+import { VaultMeshBrandPackages } from '@/components/portal/vaultmesh-brand-packages';
+import type { Brand, Sector } from '@shared/schema';
 
 interface VaultMeshMetrics {
-  totalConnections: number
-  activeNodes: number
-  dataIntegrity: number
-  uptime: number
-  securityLevel: string
-  protocolsSupported: number
+  totalConnections: number;
+  activeNodes: number;
+  dataIntegrity: number;
+  uptime: number;
+  securityLevel: string;
+  protocolsSupported: number;
 }
 
 export default function VaultMeshPage() {
-  const [selectedProtocol, setSelectedProtocol] = useState("core")
-  const [activeView, setActiveView] = useState("overview")
-  
+  const [selectedProtocol, setSelectedProtocol] = useState('core');
+  const [activeView, setActiveView] = useState('overview');
+
   // Get section from the activePage in the global state or default to dashboard
   const getInitialSection = () => {
     if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search)
-      const section = urlParams.get('section')
-      if (section) return section
+      const urlParams = new URLSearchParams(window.location.search);
+      const section = urlParams.get('section');
+      if (section) return section;
     }
-    return "dashboard"
-  }
-  
-  const [selectedSection, setSelectedSection] = useState(getInitialSection)
+    return 'dashboard';
+  };
+
+  const [selectedSection, setSelectedSection] = useState(getInitialSection);
   const [metrics, setMetrics] = useState<VaultMeshMetrics>({
     totalConnections: 15847,
     activeNodes: 892,
     dataIntegrity: 99.97,
     uptime: 99.99,
-    securityLevel: "Enterprise+",
-    protocolsSupported: 24
-  })
+    securityLevel: 'Enterprise+',
+    protocolsSupported: 24,
+  });
 
   const { data: brands = [] } = useQuery<Brand[]>({
-    queryKey: ["/api/brands"],
-  })
+    queryKey: ['/api/brands'],
+  });
 
   const { data: sectors = [] } = useQuery<Sector[]>({
-    queryKey: ["/api/sectors"],
-  })
+    queryKey: ['/api/sectors'],
+  });
 
   // Simulate real-time metrics updates
   useEffect(() => {
     const interval = setInterval(() => {
-      setMetrics(prev => ({
+      setMetrics((prev) => ({
         ...prev,
         totalConnections: prev.totalConnections + Math.floor(Math.random() * 10),
         activeNodes: prev.activeNodes + Math.floor(Math.random() * 3) - 1,
-        dataIntegrity: 99.95 + Math.random() * 0.04
-      }))
-    }, 5000)
+        dataIntegrity: 99.95 + Math.random() * 0.04,
+      }));
+    }, 5000);
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearInterval(interval);
+  }, []);
 
   const protocols = [
     {
-      id: "core",
-      name: "Core VaultMesh™ Protocols",
+      id: 'core',
+      name: 'Core VaultMesh™ Protocols',
       icon: Shield,
-      description: "Fundamental low-level communication and data integrity protocols",
-      features: ["Immutable data records", "Tamper-proof transactions", "Distributed authentication"],
-      status: "Active",
-      connections: 5234
+      description: 'Fundamental low-level communication and data integrity protocols',
+      features: [
+        'Immutable data records',
+        'Tamper-proof transactions',
+        'Distributed authentication',
+      ],
+      status: 'Active',
+      connections: 5234,
     },
     {
-      id: "network",
-      name: "Network Adapters",
+      id: 'network',
+      name: 'Network Adapters',
       icon: Network,
-      description: "Modules for connecting diverse data sources and legacy systems",
-      features: ["Legacy system bridging", "Real-time synchronization", "Cross-protocol compatibility"],
-      status: "Active", 
-      connections: 3421
+      description: 'Modules for connecting diverse data sources and legacy systems',
+      features: [
+        'Legacy system bridging',
+        'Real-time synchronization',
+        'Cross-protocol compatibility',
+      ],
+      status: 'Active',
+      connections: 3421,
     },
     {
-      id: "omnigrid",
-      name: "Omni Grid™",
+      id: 'omnigrid',
+      name: 'Omni Grid™',
       icon: Globe,
-      description: "Distributed network layer for real-time ecosystem synchronization",
-      features: ["Global distribution", "Real-time updates", "Load balancing"],
-      status: "Active",
-      connections: 7192
+      description: 'Distributed network layer for real-time ecosystem synchronization',
+      features: ['Global distribution', 'Real-time updates', 'Load balancing'],
+      status: 'Active',
+      connections: 7192,
     },
     {
-      id: "securesign",
-      name: "SecureSign™",
+      id: 'securesign',
+      name: 'SecureSign™',
       icon: Lock,
-      description: "Digital trust and verifiable identity solutions",
-      features: ["Digital signatures", "Identity verification", "Legal compliance"],
-      status: "Active",
-      connections: 2847
-    }
-  ]
+      description: 'Digital trust and verifiable identity solutions',
+      features: ['Digital signatures', 'Identity verification', 'Legal compliance'],
+      status: 'Active',
+      connections: 2847,
+    },
+  ];
 
-  if (activeView === "checkout") {
-    return <VaultMeshGlobalCheckout />
+  if (activeView === 'checkout') {
+    return <VaultMeshGlobalCheckout />;
   }
 
   return (
@@ -126,32 +145,32 @@ export default function VaultMeshPage() {
           </div>
           <div className="flex items-center gap-4">
             <div className="flex gap-2">
-              <Button 
-                variant={selectedSection === "dashboard" ? "default" : "outline"}
+              <Button
+                variant={selectedSection === 'dashboard' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setSelectedSection("dashboard")}
+                onClick={() => setSelectedSection('dashboard')}
                 className="bg-cyan-500 hover:bg-cyan-600 text-white"
               >
                 Dashboard
               </Button>
-              <Button 
-                variant={selectedSection === "about" ? "default" : "outline"}
+              <Button
+                variant={selectedSection === 'about' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setSelectedSection("about")}
+                onClick={() => setSelectedSection('about')}
               >
                 About
               </Button>
-              <Button 
-                variant={selectedSection === "products" ? "default" : "outline"}
+              <Button
+                variant={selectedSection === 'products' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setSelectedSection("products")}
+                onClick={() => setSelectedSection('products')}
               >
                 Products
               </Button>
-              <Button 
-                variant={selectedSection === "fruitful-brands" ? "default" : "outline"}
+              <Button
+                variant={selectedSection === 'fruitful-brands' ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setSelectedSection("fruitful-brands")}
+                onClick={() => setSelectedSection('fruitful-brands')}
               >
                 Brand Packages
               </Button>
@@ -171,26 +190,26 @@ export default function VaultMeshPage() {
       </header>
 
       {/* Section Content */}
-      {selectedSection === "about" && (
+      {selectedSection === 'about' && (
         <section className="p-6">
           <VaultMeshAbout />
         </section>
       )}
 
-      {selectedSection === "products" && (
+      {selectedSection === 'products' && (
         <section className="p-6">
           <VaultMeshProducts />
         </section>
       )}
 
-      {selectedSection === "fruitful-brands" && (
+      {selectedSection === 'fruitful-brands' && (
         <section className="p-6">
           <VaultMeshBrandPackages />
         </section>
       )}
 
       {/* Dashboard Content */}
-      {selectedSection === "dashboard" && (
+      {selectedSection === 'dashboard' && (
         <div>
           {/* Real-time Metrics Dashboard */}
           <section className="p-6">
@@ -209,11 +228,11 @@ export default function VaultMeshPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-cyan-100 text-sm">Total Connections</p>
-                        <motion.p 
+                        <motion.p
                           className="text-2xl font-bold"
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
-                          transition={{ delay: 0.3, type: "spring" }}
+                          transition={{ delay: 0.3, type: 'spring' }}
                         >
                           {metrics.totalConnections.toLocaleString()}
                         </motion.p>
@@ -243,11 +262,11 @@ export default function VaultMeshPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-green-100 text-sm">Active Nodes</p>
-                        <motion.p 
+                        <motion.p
                           className="text-2xl font-bold"
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
-                          transition={{ delay: 0.4, type: "spring" }}
+                          transition={{ delay: 0.4, type: 'spring' }}
                         >
                           {metrics.activeNodes.toLocaleString()}
                         </motion.p>
@@ -277,11 +296,11 @@ export default function VaultMeshPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-purple-100 text-sm">Data Integrity</p>
-                        <motion.p 
+                        <motion.p
                           className="text-2xl font-bold"
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
-                          transition={{ delay: 0.5, type: "spring" }}
+                          transition={{ delay: 0.5, type: 'spring' }}
                         >
                           {metrics.dataIntegrity.toFixed(2)}%
                         </motion.p>
@@ -311,11 +330,11 @@ export default function VaultMeshPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-orange-100 text-sm">Protocols</p>
-                        <motion.p 
+                        <motion.p
                           className="text-2xl font-bold"
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
-                          transition={{ delay: 0.6, type: "spring" }}
+                          transition={{ delay: 0.6, type: 'spring' }}
                         >
                           {metrics.protocolsSupported}
                         </motion.p>
@@ -354,7 +373,9 @@ export default function VaultMeshPage() {
                           <protocol.icon className="h-8 w-8 text-cyan-500" />
                           <div>
                             <CardTitle className="text-xl">{protocol.name}</CardTitle>
-                            <p className="text-gray-600 dark:text-gray-400">{protocol.description}</p>
+                            <p className="text-gray-600 dark:text-gray-400">
+                              {protocol.description}
+                            </p>
                           </div>
                         </div>
                         <div className="text-right">
@@ -402,7 +423,9 @@ export default function VaultMeshPage() {
                   </div>
                   <div className="text-center">
                     <div className="text-3xl font-bold text-green-500">{sectors.length}</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">Integrated Sectors</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                      Integrated Sectors
+                    </div>
                   </div>
                   <div className="text-center">
                     <div className="text-3xl font-bold text-purple-500">100%</div>
@@ -428,7 +451,7 @@ export default function VaultMeshPage() {
                     <Button
                       variant="secondary"
                       className="bg-white text-cyan-500 hover:bg-gray-100"
-                      onClick={() => setActiveView("checkout")}
+                      onClick={() => setActiveView('checkout')}
                     >
                       <Cloud className="w-4 h-4 mr-2" />
                       Get VaultMesh™
@@ -448,5 +471,5 @@ export default function VaultMeshPage() {
         </div>
       )}
     </div>
-  )
+  );
 }

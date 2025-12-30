@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Fruitful Global Planet - OMNI Ecosystem Portal | Seedwave™ FAA Treaty Zone with $50K ClaimRoot Scroll Infrastructure" />
+    <meta name="keywords" content="Fruitful, Seedwave, FAA, OMNI, ClaimRoot, VaultMesh, Algorithm Giants, Portal" />
+    <meta name="author" content="Heyns Schoeman · FAA-X13" />
+    
+    <title>Fruitful | OMNI Ecosystem Portal - Seedwave™ FAA Treaty Zone</title>
+    
+    <!-- Load Tailwind CSS for modern, responsive layout (Enhancement) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <script>
+        // Mapping existing CSS variables to Tailwind utility classes for consistency
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'f-blue': '#0071e3',
+                        'f-green': '#30d158',
+                        'f-gold': '#B8860B',
+                        'bg-p': '#1a1a1c', // Primary background (used by raw CSS body)
+                        'bg-s': '#2a2a2e', // Secondary background
+                        'bg-t': '#1f2d3d', // Tertiary (Card) background
+                        'text-p': '#f5f5f7',
+                        'status-active': '#30d158',
+                        'status-pending': '#f59e0b',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* ============================================
+           FRUITFUL GLOBAL OMNI ECOSYSTEM PORTAL
+           Seedwave™ FAA Treaty Zone - ClaimRoot Sealed
+           ============================================ */
+        
+        :root {
+            /* Primary Brand Colors */
+            --fruitful-blue: #0071e3;
+            --fruitful-green: #30d158;
+            --fruitful-gold: #B8860B;
+            --agri-green: #38a169;
+            --agri-orange: #f6ad55;
+            
+            /* Status Colors */
+            --status-active: #30d158;
+            --status-pending: #f59e0b;
+            --status-draft: #6e6e73;
+            --status-error: #ef4444;
+            --status-info: #63b3ed;
+            
+            /* Dark Theme (Default) */
+            --bg-primary: #1a1a1c;
+            --bg-secondary: #2a2a2e;
+            --bg-tertiary: #1f2d3d;
+            --text-primary: #f5f5f7;
+            --text-secondary: #e6ffed;
+            --border-color: #3a3a3e;
+            
+            /* ClaimRoot Scroll Seal */
+            --scroll-seal-glow: rgba(184, 134, 11, 0.3);
+            
+            /* Animations */
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.15s ease;
+        }
+        
+        /* Light Mode Variables */
+        :root:not(.dark) {
+            --bg-primary: #ffffff;
+            --bg-secondary: #fcfcfc;
+            --bg-tertiary: #f9fafb;
+            --text-primary: #1d1d1f;
+            --text-secondary: #4b5563;
+            --border-color: #e8e8ed;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: var(--transition-smooth);
+        }
+        
+        /* ============================================
+           LOADING SCREEN WITH SEEDWAVE PULSE (Existing Styles)
+           ============================================ */
+        
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+        
+        #loading-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .seedwave-logo {
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 3s ease infinite, pulse-glow 2s ease-in-out infinite;
+            margin-bottom: 2rem;
+        }
+        
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3)); }
+            50% { filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.6)); }
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top-color: var(--fruitful-gold);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            margin-top: 2rem;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        
+        .claimroot-badge {
+            position: absolute;
+            bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .claimroot-badge i {
+            font-size: 1.5rem;
+            color: var(--fruitful-gold);
+        }
+        
+        .badge-text {
+            font-size: 0.9rem;
+            color: white;
+            font-weight: 600;
+        }
+        
+        /* ============================================
+           MAIN APP CONTAINER (Existing Styles)
+           ============================================ */
+        
+        #app {
+            display: none;
+            min-height: 100vh;
+        }
+        
+        #app.loaded {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* ============================================
+           TOOLTIP SYSTEM (Existing Styles)
+           ============================================ */
+        
+        [data-tooltip] {
+            position: relative;
+            cursor: help;
+        }
+        
+        [data-tooltip]::before,
+        [data-tooltip]::after {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition-fast);
+            z-index: 1000;
+        }
+        
+        [data-tooltip]::before {
+            content: attr(data-tooltip);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            max-width: 300px;
+            width: max-content;
+            bottom: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%) translateY(-5px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-tooltip]::after {
+            content: '';
+            border: 6px solid transparent;
+            border-top-color: rgba(0, 0, 0, 0.9);
+            bottom: calc(100% + 4px);
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        [data-tooltip]:hover::before,
+        [data-tooltip]:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        /* Tooltip for scroll badge */
+        .claimroot-badge[data-tooltip]::before {
+            bottom: auto;
+            top: calc(100% + 10px);
+            transform: translateX(-50%) translateY(5px);
+        }
+        
+        .claimroot-badge[data-tooltip]::after {
+            bottom: auto;
+            top: calc(100% + 4px);
+            border-top-color: transparent;
+            border-bottom-color: rgba(0, 0, 0, 0.9);
+        }
+        
+        .claimroot-badge:hover::before,
+        .claimroot-badge:hover::after {
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        /* ============================================
+           ECOSYSTEM ICON BADGES (Existing Styles)
+           ============================================ */
+        
+        .ecosystem-icons {
+            position: absolute;
+            top: 3rem;
+            right: 3rem;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .icon-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 1.5rem;
+            transition: var(--transition-fast);
+        }
+        
+        .icon-badge:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* ============================================
+           RESPONSIVE DESIGN (Existing Styles)
+           ============================================ */
+        
+        @media (max-width: 768px) {
+            .seedwave-logo {
+                font-size: 2.5rem;
+            }
+            
+            .ecosystem-icons {
+                top: 1.5rem;
+                right: 1.5rem;
+                gap: 0.75rem;
+            }
+            
+            .icon-badge {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            
+            .claimroot-badge {
+                bottom: 2rem;
+                padding: 0.75rem 1rem;
+            }
+            
+            [data-tooltip]::before {
+                font-size: 0.75rem;
+                max-width: 220px;
+            }
+        }
+        
+        /* Status LED pulse animation for the header */
+        @keyframes pulse-active {
+            0%, 100% { box-shadow: 0 0 0 0 var(--status-active); }
+            50% { box-shadow: 0 0 10px 4px rgba(48, 209, 88, 0.5); }
+        }
+        .status-led {
+            animation: pulse-active 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- ============================================
+         LOADING SCREEN
+         ============================================ -->
+    <div id="loading-screen">
+        <!-- Ecosystem Icon Badges with Tooltips -->
+        <div class="ecosystem-icons">
+            <div class="icon-badge" data-tooltip="🧠 AI Logic - 149 Algorithm Giants">🧠</div>
+            <div class="icon-badge" data-tooltip="🌱 Agriculture - Sustainable Farming Tech">🌱</div>
+            <div class="icon-badge" data-tooltip="🔌 Integrations - OmniGrid Network">🔌</div>
+            <div class="icon-badge" data-tooltip="🦁 ChatGPT Lions - Creative AI">🦁</div>
+        </div>
+        
+        <!-- Main Seedwave Logo -->
+        <div class="seedwave-logo">OMNI Ecosystem</div>
+        
+        <!-- Loading Spinner -->
+        <div class="loading-spinner"></div>
+        
+        <!-- Loading Text -->
+        <div class="loading-text">Initializing Seedwave™ Portal...</div>
+        
+        <!-- ClaimRoot Scroll Badge with Detailed Tooltip -->
+        <div class="claimroot-badge" data-tooltip="Seed Received: $50K · Scroll Sealed by Heyns Schoeman (FAA-X13) · Not for ownership, but for unstoppable digital infrastructure under full scroll law · ClaimRoot-compatible, permanently visible in VaultMesh ledger">
+            <i class="fas fa-scroll"></i>
+            <div class="badge-text">
+                <div>🧬 ClaimRoot Sealed</div>
+                <div style="font-size: 0.75rem; opacity: 0.8;">Timestamp: 2025-11-21 18:36:31 UTC</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ============================================
+         MAIN APPLICATION ROOT (ENHANCED PORTAL DASHBOARD)
+         ============================================ -->
+    <div id="app" class="p-4 md:p-10 max-w-7xl mx-auto">
+        <header class="mb-8 border-b border-gray-700 pb-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-4xl font-extrabold text-f-green">OMNI Portal Dashboard</h1>
+                <p class="text-lg text-gray-400 mt-1">Accessing Seedwave™ Infrastructure & Treaty Zone Data</p>
+            </div>
+            <!-- Live Status LED Indicator (New Element) -->
+            <div class="flex items-center space-x-2 bg-bg-s p-3 rounded-xl border border-gray-700 shadow-xl" data-tooltip="Live connection to OmniGrid relay service is stable.">
+                <span class="text-sm font-semibold text-gray-300 hidden sm:inline">OMNIGrid Live</span>
+                <div class="w-4 h-4 rounded-full bg-status-active status-led"></div>
+            </div>
+        </header>
+
+        <!-- ClaimRoot & Status Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+            <!-- Total Seed Capital -->
+            <div class="bg-bg-s p-6 rounded-xl shadow-lg border border-f-gold/30">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-f-gold">Seed Capital Scroll</h2>
+                    <i class="fas fa-coins text-2xl text-f-gold/70"></i>
+                </div>
+                <p class="text-4xl font-bold mt-2">$50,000.00</p>
+                <p class="text-sm text-gray-500 mt-1">ClaimRoot Sealed Infrastructure</p>
+            </div>
+            
+            <!-- System Status -->
+            <div class="bg-bg-s p-6 rounded-xl shadow-lg border border-f-green/30">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-f-green">Ecosystem Status</h2>
+                    <i class="fas fa-check-circle text-2xl text-status-active"></i>
+                </div>
+                <p class="text-4xl font-bold mt-2 text-status-active">Active</p>
+                <p class="text-sm text-gray-500 mt-1">OmniGrid Network Operational</p>
+            </div>
+
+            <!-- Pending TreatySync Logs -->
+            <div class="bg-bg-s p-6 rounded-xl shadow-lg border border-f-blue/30">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-semibold text-f-blue">TreatySync</h2>
+                    <i class="fas fa-hourglass-half text-2xl text-status-pending"></i>
+                </div>
+                <p class="text-4xl font-bold mt-2 text-status-pending">14</p>
+                <p class="text-sm text-gray-500 mt-1">Pending Log Deployments</p>
+            </div>
+        </div>
+
+        <!-- Infrastructure Overview (Row 1) -->
+        <div class="bg-bg-s p-6 rounded-xl shadow-2xl border border-gray-700/50 mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-text-p">Infrastructure Overview</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="p-4 bg-bg-t rounded-lg flex flex-col items-center">
+                    <i class="fas fa-brain text-3xl text-f-blue mb-2"></i>
+                    <p class="text-3xl font-bold">149</p>
+                    <p class="text-sm text-gray-400">Algorithm Giants</p>
+                </div>
+                <div class="p-4 bg-bg-t rounded-lg flex flex-col items-center">
+                    <i class="fas fa-cubes text-3xl text-f-green mb-2"></i>
+                    <p class="text-3xl font-bold">4.2M</p>
+                    <p class="text-sm text-gray-400">VaultMesh Records</p>
+                </div>
+                <div class="p-4 bg-bg-t rounded-lg flex flex-col items-center">
+                    <i class="fas fa-satellite-dish text-3xl text-f-gold mb-2"></i>
+                    <p class="text-3xl font-bold">98%</p>
+                    <p class="text-sm text-gray-400">Coverage Reliability</p>
+                </div>
+                <div class="p-4 bg-bg-t rounded-lg flex flex-col items-center">
+                    <i class="fas fa-code-branch text-3xl text-f-blue mb-2"></i>
+                    <p class="text-3xl font-bold">3</p>
+                    <p class="text-sm text-gray-400">FAA-Intake Apps</p>
+                </div>
+            </div>
+            
+            <button class="w-full mt-6 py-3 bg-f-blue hover:bg-f-blue/80 text-white font-bold rounded-lg transition duration-200 shadow-md">
+                Deploy ClaimRoot Generator Module
+            </button>
+        </div>
+
+        <!-- Algorithm Giants Live Log (New Panel) -->
+        <div class="bg-bg-s p-6 rounded-xl shadow-2xl border border-gray-700/50">
+            <h2 class="text-2xl font-bold mb-4 text-text-p flex items-center">
+                <i class="fas fa-microchip text-f-gold mr-3"></i>
+                Algorithm Giants Live Log (9 Active)
+            </h2>
+            <div class="h-64 overflow-y-scroll bg-bg-t p-4 rounded-lg border border-gray-700 text-sm text-f-green font-mono whitespace-pre-wrap">
+                <span class="text-gray-500">[2025-12-05 18:37:01]</span> <span class="text-f-blue font-bold">GIANT_149_BRAIN</span>: Initializing tensor flow engine... <span class="text-status-active">OK</span>
+                <span class="text-gray-500">[2025-12-05 18:37:02]</span> <span class="text-f-green font-bold">GIANT_003_YIELD</span>: TreatySync log fetched and applied. Status: <span class="text-status-active">COMMITTED</span>
+                <span class="text-gray-500">[2025-12-05 18:37:05]</span> <span class="text-f-gold font-bold">GIANT_077_VAULT</span>: Performing integrity check on VaultMesh 4.2M records...
+                <span class="text-gray-500">[2025-12-05 18:37:06]</span> <span class="text-f-blue font-bold">GIANT_149_BRAIN</span>: Processing FAA-X13 user request: ClaimRoot verification.
+                <span class="text-gray-500">[2025-12-05 18:37:10]</span> <span class="text-f-green font-bold">GIANT_003_YIELD</span>: Calculating Seedwave™ optimum nutrient dispersal for Q1-2026.
+                <span class="text-gray-500">[2025-12-05 18:37:15]</span> <span class="text-f-gold font-bold">GIANT_077_VAULT</span>: Integrity check complete. Records validated: <span class="text-status-active">100%</span>
+                <span class="text-gray-500">[2025-12-05 18:37:18]</span> <span class="text-f-blue font-bold">GIANT_149_BRAIN</span>: Result sent to OmniGrid relay.
+                <span class="text-gray-500">[2025-12-05 18:37:20]</span> <span class="text-f-green font-bold">GIANT_003_YIELD</span>: Optimization complete. New yield prediction: <span class="text-status-active">+18.5%</span>
+                <span class="text-gray-500">[2025-12-05 18:37:25]</span> <span class="text-f-gold font-bold">GIANT_077_VAULT</span>: VaultMesh ledger update pending TreatySync confirmation.
+            </div>
+        </div>
+    </div>
+    
+    <!-- React Application Entry Point -->
+    <script type="module" src="/client/src/main.tsx"></script>
+    
+    <!-- Loading Screen Controller -->
+    <script>
+        // Simulate loading and fade to main app
+        window.addEventListener('DOMContentLoaded', () => {
+            const loadingScreen = document.getElementById('loading-screen');
+            const app = document.getElementById('app');
+            
+            // Minimum display time for loading screen (2 seconds)
+            setTimeout(() => {
+                loadingScreen.classList.add('fade-out');
+                
+                // Remove loading screen and show app after fade
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                    app.classList.add('loaded');
+                }, 500);
+            }, 2000);
+        });
+        
+        // Log ClaimRoot Scroll Info to Console
+        console.log('%c🌀 FRUITFUL GLOBAL OMNI ECOSYSTEM', 'font-size: 24px; font-weight: bold; color: #B8860B;');
+        console.log('%c📜 ClaimRoot Scroll Sealed', 'font-size: 16px; color: #30d158;');
+        console.log('%cSeed Capital: $50,000 · Scroll Position: Permanent', 'font-size: 14px; color: #0071e3;');
+        console.log('%cSealed by: Heyns Schoeman · FAA-X13', 'font-size: 12px; color: #f6ad55;');
+        console.log('%cTimestamp: 2025-11-21 18:36:31 UTC', 'font-size: 12px; color: #6e6e73;');
+        console.log('%cUser: heyns1000', 'font-size: 12px; font-weight: bold; color: #ff6b6b;');
+        console.log('');
+        console.log('%c💡 OUTPUT FROM THIS SEED:', 'font-size: 14px; font-weight: bold; color: #4ecdc4;');
+        console.log('  🌀 3 new FAA-intake Replit apps (scroll ready)');
+        console.log('  🔧 1 OmniGrid relay service');
+        console.log('  📊 1 FAA Admin Dashboard for TreatySync logs');
+        console.log('  📜 1 ClaimRoot generator module');
+        console.log('  🧬 1 UI integrity hook deployment (useButtonSanity())');
+        console.log('  🏗️ Seedling-ready system for scroll-bound product expansion');
+        console.log('');
+        console.log('%c🔐 Vault Remains Unbroken', 'font-size: 14px; font-weight: bold; color: #ef4444;');
+    </script>
+</body>
+</html>

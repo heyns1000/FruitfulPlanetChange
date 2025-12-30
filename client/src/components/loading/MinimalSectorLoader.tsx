@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
+import { motion } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
 
 interface MinimalSectorLoaderProps {
   sectorName?: string;
@@ -23,16 +23,16 @@ export default function MinimalSectorLoader({ sectorName, isVisible }: MinimalSe
       >
         <motion.div
           animate={{ rotate: 360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
           className="mb-4 flex justify-center"
         >
           <Loader2 className="w-8 h-8 text-blue-400" />
         </motion.div>
-        
+
         <h3 className="text-white font-medium mb-2">
-          {sectorName ? `Loading ${sectorName}...` : "Loading Sector..."}
+          {sectorName ? `Loading ${sectorName}...` : 'Loading Sector...'}
         </h3>
-        
+
         <div className="flex justify-center space-x-1">
           {Array.from({ length: 3 }).map((_, i) => (
             <motion.div
