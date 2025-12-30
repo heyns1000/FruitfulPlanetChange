@@ -14,7 +14,7 @@ const TEMP_DIR = '/tmp/fruitful-packages';
 
 async function generateAllPackages() {
   console.log('🌟 Starting bulk package generation for Global App Store...\n');
-  
+
   const generator = new PackageGenerator();
   let successCount = 0;
   let failureCount = 0;
@@ -30,8 +30,8 @@ async function generateAllPackages() {
     // Fetch all active brands from database
     console.log('📊 Fetching brands from database...');
     const brands = await storage.getAllBrands();
-    const activeBrands = brands.filter(brand => brand.status === 'active');
-    
+    const activeBrands = brands.filter((brand) => brand.status === 'active');
+
     console.log(`\n✅ Found ${activeBrands.length} active brands to package`);
     console.log(`📦 Total brands in database: ${brands.length}\n`);
     console.log('─'.repeat(60));
@@ -39,22 +39,24 @@ async function generateAllPackages() {
     // Process each brand
     for (let i = 0; i < activeBrands.length; i++) {
       const brand = activeBrands[i];
-      
+
       try {
         // Progress logging every 100 brands
         if ((i + 1) % 100 === 0) {
-          console.log(`\n📈 Progress: ${i + 1}/${activeBrands.length} brands processed (${Math.round((i + 1) / activeBrands.length * 100)}%)`);
+          console.log(
+            `\n📈 Progress: ${i + 1}/${activeBrands.length} brands processed (${Math.round(((i + 1) / activeBrands.length) * 100)}%)`
+          );
           console.log(`✅ Success: ${successCount} | ❌ Failures: ${failureCount}`);
           console.log('─'.repeat(60));
         }
 
         // Generate package ZIP
         const zipBuffer = await generator.generatePackage(brand);
-        
+
         // Determine tier for theme configuration
         const tier = determineTier(brand);
         const themeConfig = getThemeConfig(tier);
-        
+
         // Save ZIP file to temp directory
         const sanitizedName = brand.name
           .toLowerCase()
@@ -63,15 +65,16 @@ async function generateAllPackages() {
           .replace(/^-|-$/g, '');
         const fileName = `${sanitizedName}-v1.0.0.zip`;
         const filePath = path.join(TEMP_DIR, fileName);
-        
+
         fs.writeFileSync(filePath, zipBuffer);
-        
+
         // Create database record
         const packageRecord = await storage.createMarketplacePackage({
           brandId: brand.id,
           packageName: `@fruitfulplanet/${sanitizedName}`,
           version: '1.0.0',
-          description: brand.description || `${brand.name} - Powered by FruitfulPlanet Global Marketplace`,
+          description:
+            brand.description || `${brand.name} - Powered by FruitfulPlanet Global Marketplace`,
           downloadUrl: `/api/marketplace/packages/${brand.id}/download`,
           fileSize: zipBuffer.length,
           filePath,
@@ -101,12 +104,11 @@ async function generateAllPackages() {
         });
 
         successCount++;
-        
+
         // Log occasional success details
         if ((i + 1) % 500 === 0 || i < 10) {
           console.log(`✓ Generated: ${brand.name} (ID: ${brand.id}) - Tier: ${tier}`);
         }
-
       } catch (error) {
         failureCount++;
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -131,13 +133,14 @@ async function generateAllPackages() {
     if (failures.length > 0) {
       console.log(`\n⚠️  Failures (${failures.length}):`);
       failures.forEach((failure, idx) => {
-        console.log(`   ${idx + 1}. ${failure.brandName} (ID: ${failure.brandId}): ${failure.error}`);
+        console.log(
+          `   ${idx + 1}. ${failure.brandName} (ID: ${failure.brandId}): ${failure.error}`
+        );
       });
     }
 
     console.log('\n🎉 All packages are ready for global app store distribution!');
     console.log('🌐 Compatible with: Apple Store, Google Play, Microsoft Store, PWA\n');
-
   } catch (error) {
     console.error('\n❌ CRITICAL ERROR during bulk generation:', error);
     process.exit(1);
@@ -199,13 +202,13 @@ function getThemeConfig(tier: string): any {
  */
 function calculateDiskUsage(dirPath: string): string {
   let totalSize = 0;
-  
+
   if (!fs.existsSync(dirPath)) {
     return '0 MB';
   }
 
   const files = fs.readdirSync(dirPath);
-  files.forEach(file => {
+  files.forEach((file) => {
     const filePath = path.join(dirPath, file);
     const stats = fs.statSync(filePath);
     totalSize += stats.size;

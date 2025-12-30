@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
-import { 
-  Zap, 
+import {
+  Zap,
   Atom,
   Rocket,
   Brain,
@@ -21,7 +21,7 @@ import {
   Download,
   Play,
   Settings,
-  CheckCircle
+  CheckCircle,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { SparkleEffect, PulseIndicator, RippleButton } from '@/components/ui/micro-interactions';
@@ -37,7 +37,7 @@ export default function FAAQuantumNexus() {
       description: 'Ultra-precise economic calculations with quantum computing power',
       icon: <Atom className="w-8 h-8" />,
       status: 'active',
-      metrics: { efficiency: 99.7, uptime: 100, processing: '2.4 EXA' }
+      metrics: { efficiency: 99.7, uptime: 100, processing: '2.4 EXA' },
     },
     {
       id: 'blockchain-security',
@@ -45,7 +45,7 @@ export default function FAAQuantumNexus() {
       description: 'Immutable trade security and smart contract automation',
       icon: <Shield className="w-8 h-8" />,
       status: 'active',
-      metrics: { security: 100, transactions: '1.2M', integrity: 99.9 }
+      metrics: { security: 100, transactions: '1.2M', integrity: 99.9 },
     },
     {
       id: 'autonomous-scaling',
@@ -53,7 +53,7 @@ export default function FAAQuantumNexus() {
       description: 'Real-time AI-driven entity generation and scaling',
       icon: <Rocket className="w-8 h-8" />,
       status: 'active',
-      metrics: { brands: '1000+', growth: '340%', automation: 98.5 }
+      metrics: { brands: '1000+', growth: '340%', automation: 98.5 },
     },
     {
       id: 'interstellar-ready',
@@ -61,8 +61,8 @@ export default function FAAQuantumNexus() {
       description: 'Space-based trade simulation and cosmic market analysis',
       icon: <Globe className="w-8 h-8" />,
       status: 'preparing',
-      metrics: { coverage: 'Global', expansion: 'Interstellar', readiness: 87.2 }
-    }
+      metrics: { coverage: 'Global', expansion: 'Interstellar', readiness: 87.2 },
+    },
   ];
 
   const expansionPhases = [
@@ -72,7 +72,7 @@ export default function FAAQuantumNexus() {
       description: 'AI-driven brand creation with market trend analysis',
       status: 'completed',
       progress: 100,
-      duration: '24-48 hours'
+      duration: '24-48 hours',
     },
     {
       phase: 2,
@@ -80,7 +80,7 @@ export default function FAAQuantumNexus() {
       description: 'Market segmentation and sub-brand generation',
       status: 'active',
       progress: 78,
-      duration: '2-4 weeks'
+      duration: '2-4 weeks',
     },
     {
       phase: 3,
@@ -88,7 +88,7 @@ export default function FAAQuantumNexus() {
       description: 'Financial modeling and smart contract integration',
       status: 'in-progress',
       progress: 45,
-      duration: '3-6 months'
+      duration: '3-6 months',
     },
     {
       phase: 4,
@@ -96,7 +96,7 @@ export default function FAAQuantumNexus() {
       description: 'Blockchain-backed patent security and compliance',
       status: 'pending',
       progress: 12,
-      duration: '6-12 months'
+      duration: '6-12 months',
     },
     {
       phase: 5,
@@ -104,8 +104,8 @@ export default function FAAQuantumNexus() {
       description: 'Space market data collection and viability analysis',
       status: 'future',
       progress: 0,
-      duration: '1-2 years'
-    }
+      duration: '1-2 years',
+    },
   ];
 
   const quantumMetrics = [
@@ -114,13 +114,13 @@ export default function FAAQuantumNexus() {
     { label: 'Processing Power', value: 2.4, unit: 'EXA', color: 'text-purple-500' },
     { label: 'Blockchain Integrity', value: 100, unit: '%', color: 'text-cyan-500' },
     { label: 'Economic Growth Rate', value: 340, unit: '%', color: 'text-orange-500' },
-    { label: 'Dimensional Stability', value: 87.2, unit: '%', color: 'text-rose-500' }
+    { label: 'Dimensional Stability', value: 87.2, unit: '%', color: 'text-rose-500' },
   ];
 
   const handleActivation = () => {
     setActivationProgress(0);
     const interval = setInterval(() => {
-      setActivationProgress(prev => {
+      setActivationProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           setIsActivated(true);
@@ -151,18 +151,21 @@ export default function FAAQuantumNexus() {
                 <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
                   FAA Quantum Nexus™
                 </h1>
-                <p className="text-xl text-gray-300 mt-2">Water the Seed 24/7 AI Economic Expansion Model</p>
+                <p className="text-xl text-gray-300 mt-2">
+                  Water the Seed 24/7 AI Economic Expansion Model
+                </p>
               </div>
             </motion.div>
-            
+
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-lg text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed"
             >
-              The world's first algorithmic system capable of autonomously scaling businesses from inception to IPO readiness 
-              and beyond, powered by Quantum AI and blockchain technology with atom-level precision and interstellar capabilities.
+              The world's first algorithmic system capable of autonomously scaling businesses from
+              inception to IPO readiness and beyond, powered by Quantum AI and blockchain technology
+              with atom-level precision and interstellar capabilities.
             </motion.p>
 
             <motion.div
@@ -217,7 +220,7 @@ export default function FAAQuantumNexus() {
                   )}
                 </RippleButton>
               </SparkleEffect>
-              
+
               {activationProgress > 0 && activationProgress < 100 && (
                 <div className="mt-4 max-w-md mx-auto">
                   <Progress value={activationProgress} className="h-3" />
@@ -248,7 +251,10 @@ export default function FAAQuantumNexus() {
               <BarChart3 className="w-4 h-4 mr-2" />
               Quantum Metrics
             </TabsTrigger>
-            <TabsTrigger value="documentation" className="text-slate-300 data-[state=active]:text-white">
+            <TabsTrigger
+              value="documentation"
+              className="text-slate-300 data-[state=active]:text-white"
+            >
               <Download className="w-4 h-4 mr-2" />
               Documentation
             </TabsTrigger>
@@ -257,13 +263,16 @@ export default function FAAQuantumNexus() {
           {/* Overview */}
           <TabsContent value="overview" className="space-y-6">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-white mb-4">Revolutionary AI Economic Expansion</h2>
+              <h2 className="text-3xl font-bold text-white mb-4">
+                Revolutionary AI Economic Expansion
+              </h2>
               <p className="text-gray-300 max-w-3xl mx-auto">
-                The FAA Quantum Nexus™ represents a paradigm shift in autonomous business growth, 
-                combining quantum computing, AI, and blockchain for unprecedented economic expansion capabilities.
+                The FAA Quantum Nexus™ represents a paradigm shift in autonomous business growth,
+                combining quantum computing, AI, and blockchain for unprecedented economic expansion
+                capabilities.
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <Card className="bg-slate-800/50 border-slate-700">
                 <CardHeader>
@@ -274,8 +283,9 @@ export default function FAAQuantumNexus() {
                 </CardHeader>
                 <CardContent className="text-gray-300">
                   <p className="mb-4">
-                    Ultra-precise economic calculations powered by quantum computing algorithms that operate 
-                    with atom-level precision for unmatched accuracy in market analysis and prediction.
+                    Ultra-precise economic calculations powered by quantum computing algorithms that
+                    operate with atom-level precision for unmatched accuracy in market analysis and
+                    prediction.
                   </p>
                   <div className="space-y-2">
                     <div className="flex justify-between">
@@ -299,7 +309,7 @@ export default function FAAQuantumNexus() {
                 </CardHeader>
                 <CardContent className="text-gray-300">
                   <p className="mb-4">
-                    Immutable smart contracts ensure trade security, IP protection, and compliance 
+                    Immutable smart contracts ensure trade security, IP protection, and compliance
                     across all economic transactions with zero-tolerance security protocols.
                   </p>
                   <div className="space-y-2">
@@ -324,7 +334,7 @@ export default function FAAQuantumNexus() {
                 </CardHeader>
                 <CardContent className="text-gray-300">
                   <p className="mb-4">
-                    Real-time AI-driven brand creation and scaling from single entities to 1,000+ 
+                    Real-time AI-driven brand creation and scaling from single entities to 1,000+
                     brands with automated market positioning and financial structuring.
                   </p>
                   <div className="space-y-2">
@@ -349,7 +359,7 @@ export default function FAAQuantumNexus() {
                 </CardHeader>
                 <CardContent className="text-gray-300">
                   <p className="mb-4">
-                    Space-based trade simulation and cosmic market analysis preparing for the next 
+                    Space-based trade simulation and cosmic market analysis preparing for the next
                     frontier of economic expansion beyond terrestrial boundaries.
                   </p>
                   <div className="space-y-2">
@@ -375,7 +385,7 @@ export default function FAAQuantumNexus() {
                 Advanced capabilities powered by quantum AI and blockchain technology
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {coreFeatures.map((feature, index) => (
                 <motion.div
@@ -398,9 +408,9 @@ export default function FAAQuantumNexus() {
                             </CardDescription>
                           </div>
                         </div>
-                        <PulseIndicator 
-                          active={feature.status === 'active'} 
-                          color={feature.status === 'active' ? 'green' : 'yellow'} 
+                        <PulseIndicator
+                          active={feature.status === 'active'}
+                          color={feature.status === 'active' ? 'green' : 'yellow'}
                         />
                       </div>
                     </CardHeader>
@@ -428,7 +438,7 @@ export default function FAAQuantumNexus() {
                 Systematic progression from brand initialization to interstellar commerce
               </p>
             </div>
-            
+
             <div className="space-y-6">
               {expansionPhases.map((phase, index) => (
                 <motion.div
@@ -441,13 +451,20 @@ export default function FAAQuantumNexus() {
                     <CardContent className="p-6">
                       <div className="flex items-center gap-6">
                         <div className="flex-shrink-0">
-                          <div className={`
+                          <div
+                            className={`
                             w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold
-                            ${phase.status === 'completed' ? 'bg-green-500 text-white' :
-                              phase.status === 'active' ? 'bg-blue-500 text-white' :
-                              phase.status === 'in-progress' ? 'bg-orange-500 text-white' :
-                              'bg-slate-600 text-gray-300'}
-                          `}>
+                            ${
+                              phase.status === 'completed'
+                                ? 'bg-green-500 text-white'
+                                : phase.status === 'active'
+                                  ? 'bg-blue-500 text-white'
+                                  : phase.status === 'in-progress'
+                                    ? 'bg-orange-500 text-white'
+                                    : 'bg-slate-600 text-gray-300'
+                            }
+                          `}
+                          >
                             {phase.phase}
                           </div>
                         </div>
@@ -482,7 +499,7 @@ export default function FAAQuantumNexus() {
                 Live performance indicators across all quantum processing systems
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {quantumMetrics.map((metric, index) => (
                 <motion.div
@@ -499,7 +516,10 @@ export default function FAAQuantumNexus() {
                       </div>
                       <p className="text-gray-300 text-sm">{metric.label}</p>
                       <div className="mt-4">
-                        <Progress value={typeof metric.value === 'number' ? metric.value : 50} className="h-2" />
+                        <Progress
+                          value={typeof metric.value === 'number' ? metric.value : 50}
+                          className="h-2"
+                        />
                       </div>
                     </CardContent>
                   </Card>
@@ -516,7 +536,7 @@ export default function FAAQuantumNexus() {
                 Complete documentation and implementation guides for the FAA Quantum Nexus™ system
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card className="bg-slate-800/50 border-slate-700">
                 <CardHeader>
@@ -529,9 +549,11 @@ export default function FAAQuantumNexus() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button 
+                  <Button
                     className="w-full bg-blue-600 hover:bg-blue-700"
-                    onClick={() => window.open('/legal-docs/FAA Quantum Nexus_1753063073243.pdf', '_blank')}
+                    onClick={() =>
+                      window.open('/legal-docs/FAA Quantum Nexus_1753063073243.pdf', '_blank')
+                    }
                   >
                     <Download className="w-4 h-4 mr-2" />
                     Download Full Thesis (PDF)
@@ -550,8 +572,8 @@ export default function FAAQuantumNexus() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="w-full border-purple-600 text-purple-400 hover:bg-purple-600 hover:text-white"
                   >
                     <Settings className="w-4 h-4 mr-2" />
@@ -568,7 +590,8 @@ export default function FAAQuantumNexus() {
                   "Activate FAA™ Quantum Nexus™: context, precision, integrity."
                 </div>
                 <p className="text-gray-300 mt-4">
-                  Use this command to initialize the complete quantum AI economic expansion system with full precision and integrity protocols.
+                  Use this command to initialize the complete quantum AI economic expansion system
+                  with full precision and integrity protocols.
                 </p>
               </CardContent>
             </Card>

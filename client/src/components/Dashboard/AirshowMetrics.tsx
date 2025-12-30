@@ -1,6 +1,6 @@
 /**
  * AirshowMetrics Component - Loyalty Protocol Dashboard
- * 
+ *
  * Displays status of all three principles in the Airshow Loyalty Protocol
  * Shows TRUTH (Batch 1), BEAUTY (Batch 2), and CURIOSITY (Batch 3) status
  */
@@ -67,7 +67,7 @@ interface AirshowMetricsProps {
 }
 
 export function AirshowMetrics({ className = '', showDetails = true }: AirshowMetricsProps) {
-  const activePrinciples = principles.filter(p => p.status === 'active').length;
+  const activePrinciples = principles.filter((p) => p.status === 'active').length;
   const totalPrinciples = principles.length;
   const totalFlyers = principles.reduce((sum, p) => sum + p.flyerCount, 0);
 
@@ -94,7 +94,7 @@ export function AirshowMetrics({ className = '', showDetails = true }: AirshowMe
           Three Principles of Digital Excellence - FAAC Architect 4.5.1
         </CardDescription>
       </CardHeader>
-      
+
       <CardContent>
         {/* Overall Status */}
         <motion.div
@@ -140,10 +140,14 @@ export function AirshowMetrics({ className = '', showDetails = true }: AirshowMe
               <div className="flex items-center justify-between mb-3">
                 <motion.div
                   className="text-3xl"
-                  animate={principle.status === 'active' ? {
-                    rotate: [0, 5, -5, 0],
-                    scale: [1, 1.1, 1],
-                  } : {}}
+                  animate={
+                    principle.status === 'active'
+                      ? {
+                          rotate: [0, 5, -5, 0],
+                          scale: [1, 1.1, 1],
+                        }
+                      : {}
+                  }
                   transition={{
                     duration: 2,
                     repeat: Infinity,
@@ -152,7 +156,7 @@ export function AirshowMetrics({ className = '', showDetails = true }: AirshowMe
                 >
                   {principle.icon}
                 </motion.div>
-                
+
                 {principle.status === 'active' ? (
                   <CheckCircle className="w-5 h-5 text-green-500" />
                 ) : principle.status === 'pending' ? (
@@ -162,9 +166,7 @@ export function AirshowMetrics({ className = '', showDetails = true }: AirshowMe
                 )}
               </div>
 
-              <h4 className={`text-xl font-bold ${principle.color} mb-1`}>
-                {principle.name}
-              </h4>
+              <h4 className={`text-xl font-bold ${principle.color} mb-1`}>{principle.name}</h4>
               <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
                 Batch {principle.batch}
               </p>
@@ -174,15 +176,19 @@ export function AirshowMetrics({ className = '', showDetails = true }: AirshowMe
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-600 dark:text-gray-400">Status:</span>
-                      <span className={`font-semibold ${
-                        principle.status === 'active' ? 'text-green-600 dark:text-green-400' :
-                        principle.status === 'pending' ? 'text-orange-600 dark:text-orange-400' :
-                        'text-gray-600 dark:text-gray-400'
-                      }`}>
+                      <span
+                        className={`font-semibold ${
+                          principle.status === 'active'
+                            ? 'text-green-600 dark:text-green-400'
+                            : principle.status === 'pending'
+                              ? 'text-orange-600 dark:text-orange-400'
+                              : 'text-gray-600 dark:text-gray-400'
+                        }`}
+                      >
                         {principle.status.toUpperCase()}
                       </span>
                     </div>
-                    
+
                     <div className="flex justify-between">
                       <span className="text-gray-600 dark:text-gray-400">Flyers:</span>
                       <span className={`font-semibold ${principle.color}`}>
@@ -204,11 +210,13 @@ export function AirshowMetrics({ className = '', showDetails = true }: AirshowMe
                       variants={pulseVariants}
                       animate="pulse"
                     >
-                      <div 
+                      <div
                         className={
-                          principle.name === 'TRUTH' ? 'w-2 h-2 rounded-full bg-yellow-600 dark:bg-yellow-400' :
-                          principle.name === 'BEAUTY' ? 'w-2 h-2 rounded-full bg-pink-600 dark:bg-pink-400' :
-                          'w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-400'
+                          principle.name === 'TRUTH'
+                            ? 'w-2 h-2 rounded-full bg-yellow-600 dark:bg-yellow-400'
+                            : principle.name === 'BEAUTY'
+                              ? 'w-2 h-2 rounded-full bg-pink-600 dark:bg-pink-400'
+                              : 'w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-400'
                         }
                       />
                       <span className="text-xs text-gray-600 dark:text-gray-400">
@@ -265,9 +273,7 @@ export function AirshowMetrics({ className = '', showDetails = true }: AirshowMe
               <div className="text-2xl">🦊</div>
               <div>
                 <h4 className="font-semibold">Fruitful Drive Scooter Engine</h4>
-                <p className="text-xs text-gray-300 mt-1">
-                  "The fox doesn't speak — it routes."
-                </p>
+                <p className="text-xs text-gray-300 mt-1">"The fox doesn't speak — it routes."</p>
               </div>
             </div>
             <div className="text-right">

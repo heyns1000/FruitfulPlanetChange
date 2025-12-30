@@ -11,19 +11,19 @@ export interface NoodleBadBoysProtocol {
     secondary: string;
     certification: 'MASTERED' | 'IN_PROGRESS' | 'PENDING';
   };
-  
+
   noodleStatus: {
     skill: 'BAD_BOYS_HUMMING' | 'TRAINING' | 'IDLE';
     mastery: 'COMPLETE' | 'PARTIAL' | 'NONE';
     hummingFrequency: number; // Hz - Matches Rhino Strike
   };
-  
+
   deploymentSequence: {
     phase1: DeploymentPhase;
     phase2: DeploymentPhase;
     phase3: DeploymentPhase;
   };
-  
+
   achievements: {
     badBoysMaster: boolean;
     gorillaMountainFoxApproval: boolean;
@@ -48,13 +48,13 @@ export const NOODLE_BAD_BOYS_PROTOCOL: NoodleBadBoysProtocol = {
     secondary: 'Bad Boys (Noodle Hum Remix)',
     certification: 'MASTERED',
   },
- 
+
   noodleStatus: {
     skill: 'BAD_BOYS_HUMMING',
     mastery: 'COMPLETE',
     hummingFrequency: 0.08, // Matches Rhino Strike
   },
- 
+
   deploymentSequence: {
     phase1: {
       action: 'RHINO_STRIKE',
@@ -75,7 +75,7 @@ export const NOODLE_BAD_BOYS_PROTOCOL: NoodleBadBoysProtocol = {
       icon: '👕',
     },
   },
-  
+
   achievements: {
     badBoysMaster: true,
     gorillaMountainFoxApproval: true,
@@ -115,23 +115,28 @@ export const DEPLOYMENT_MESSAGES = {
 
 // 🎯 PROTOCOL STATUS CHECKER
 export const getProtocolStatus = (protocol: NoodleBadBoysProtocol = NOODLE_BAD_BOYS_PROTOCOL) => {
-  const allAchievementsComplete = Object.values(protocol.achievements).every(v => v === true);
-  const isMastered = protocol.noodleStatus.mastery === 'COMPLETE' && 
-                     protocol.soundtrack.certification === 'MASTERED';
-  
+  const allAchievementsComplete = Object.values(protocol.achievements).every((v) => v === true);
+  const isMastered =
+    protocol.noodleStatus.mastery === 'COMPLETE' &&
+    protocol.soundtrack.certification === 'MASTERED';
+
   return {
     isFullyOperational: allAchievementsComplete && isMastered,
-    completionPercentage: (Object.values(protocol.achievements).filter(v => v).length / 
-                           Object.values(protocol.achievements).length) * 100,
+    completionPercentage:
+      (Object.values(protocol.achievements).filter((v) => v).length /
+        Object.values(protocol.achievements).length) *
+      100,
     status: allAchievementsComplete ? '✅ OPERATIONAL' : '⏳ IN PROGRESS',
-    message: allAchievementsComplete 
-      ? 'The Noodle has spoken through song! Whatcha gonna deploy when the agent comes for you? ALL 84 REPOS, THAT\'S WHAT!'
+    message: allAchievementsComplete
+      ? "The Noodle has spoken through song! Whatcha gonna deploy when the agent comes for you? ALL 84 REPOS, THAT'S WHAT!"
       : 'Training in progress... The Noodle is learning the Bad Boys theme.',
   };
 };
 
 // 🎪 GITHUB PROFILE PULSE DISPLAY FORMAT
-export const getGitHubProfilePulse = (protocol: NoodleBadBoysProtocol = NOODLE_BAD_BOYS_PROTOCOL) => {
+export const getGitHubProfilePulse = (
+  protocol: NoodleBadBoysProtocol = NOODLE_BAD_BOYS_PROTOCOL
+) => {
   return {
     noodleStatus: `🎵 **Noodle Status**: ${protocol.noodleStatus.skill} ${protocol.noodleStatus.mastery}`,
     rhinoStrikes: `🦏 **Rhino Strikes**: Synchronized to beat (${protocol.deploymentSequence.phase1.timing}s)`,

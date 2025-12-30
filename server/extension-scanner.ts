@@ -22,9 +22,10 @@ export class ExtensionScanner {
 
   constructor() {
     // Common paths where Replit extensions might be stored
-    this.extensionsPath = process.env.REPLIT_EXTENSIONS_PATH || 
-                         path.join(process.cwd(), '.replit', 'extensions') ||
-                         path.join(process.env.HOME || '', '.replit', 'extensions');
+    this.extensionsPath =
+      process.env.REPLIT_EXTENSIONS_PATH ||
+      path.join(process.cwd(), '.replit', 'extensions') ||
+      path.join(process.env.HOME || '', '.replit', 'extensions');
   }
 
   async scanInstalledExtensions(): Promise<ReplitExtension[]> {
@@ -56,15 +57,15 @@ export class ExtensionScanner {
 
   private async scanDirectory(directory: string): Promise<ReplitExtension[]> {
     const extensions: ReplitExtension[] = [];
-    
+
     try {
       const extensionFolders = await fs.readdir(directory);
-      
+
       for (const folder of extensionFolders) {
         try {
           const extensionPath = path.join(directory, folder);
           const stats = await fs.stat(extensionPath);
-          
+
           if (stats.isDirectory()) {
             const extension = await this.parseExtension(extensionPath, folder);
             if (extension) {
@@ -84,13 +85,18 @@ export class ExtensionScanner {
 
   private async scanGlobalPackages(): Promise<ReplitExtension[]> {
     const extensions: ReplitExtension[] = [];
-    
+
     try {
       // Check global npm packages that might be Replit extensions
-      const globalNodeModules = path.join(process.env.HOME || '', '.npm-global', 'lib', 'node_modules');
+      const globalNodeModules = path.join(
+        process.env.HOME || '',
+        '.npm-global',
+        'lib',
+        'node_modules'
+      );
       if (await this.directoryExists(globalNodeModules)) {
         const packages = await fs.readdir(globalNodeModules);
-        
+
         for (const pkg of packages) {
           if (pkg.includes('replit') || pkg.includes('extension')) {
             try {
@@ -115,23 +121,25 @@ export class ExtensionScanner {
 
   private async scanVSCodeExtensions(): Promise<ReplitExtension[]> {
     const extensions: ReplitExtension[] = [];
-    
+
     try {
       // Check for VS Code extensions that might be compatible with Replit
       const vscodeExtensionsDir = path.join(process.env.HOME || '', '.vscode', 'extensions');
       if (await this.directoryExists(vscodeExtensionsDir)) {
         const vscodeExts = await fs.readdir(vscodeExtensionsDir);
-        
+
         // Only include extensions that are likely Replit-compatible
-        const compatibleExtensions = vscodeExts.filter(ext => 
-          ext.includes('csv') || 
-          ext.includes('data') || 
-          ext.includes('table') ||
-          ext.includes('workbench') ||
-          ext.includes('terminal')
+        const compatibleExtensions = vscodeExts.filter(
+          (ext) =>
+            ext.includes('csv') ||
+            ext.includes('data') ||
+            ext.includes('table') ||
+            ext.includes('workbench') ||
+            ext.includes('terminal')
         );
 
-        for (const ext of compatibleExtensions.slice(0, 5)) { // Limit to prevent overwhelming
+        for (const ext of compatibleExtensions.slice(0, 5)) {
+          // Limit to prevent overwhelming
           try {
             const extPath = path.join(vscodeExtensionsDir, ext);
             const extension = await this.parseExtension(extPath, ext);
@@ -186,7 +194,10 @@ export class ExtensionScanner {
     return null;
   }
 
-  private async parseExtension(extensionPath: string, folderId: string): Promise<ReplitExtension | null> {
+  private async parseExtension(
+    extensionPath: string,
+    folderId: string
+  ): Promise<ReplitExtension | null> {
     try {
       // Try to find package.json or manifest.json
       const manifestPaths = [
@@ -229,10 +240,15 @@ export class ExtensionScanner {
       // Parse the manifest data
       const extension: ReplitExtension = {
         id: manifestData.name || folderId,
-        name: manifestData.displayName || manifestData.title || manifestData.name || this.formatName(folderId),
+        name:
+          manifestData.displayName ||
+          manifestData.title ||
+          manifestData.name ||
+          this.formatName(folderId),
         description: manifestData.description || `Extension: ${manifestData.name || folderId}`,
         version: manifestData.version || '1.0.0',
-        author: manifestData.author?.name || manifestData.author || manifestData.publisher || 'Unknown',
+        author:
+          manifestData.author?.name || manifestData.author || manifestData.publisher || 'Unknown',
         main: manifestData.main,
         scripts: manifestData.scripts,
         keywords: manifestData.keywords || manifestData.tags || [],
@@ -253,7 +269,7 @@ export class ExtensionScanner {
   private formatName(folderId: string): string {
     return folderId
       .split(/[-_\s]+/)
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(' ');
   }
 
@@ -262,19 +278,29 @@ export class ExtensionScanner {
     const description = (manifest.description || '').toLowerCase();
     const keywords = (manifest.keywords || []).join(' ').toLowerCase();
     const categories = (manifest.categories || []).join(' ').toLowerCase();
-    
+
     const content = `${name} ${description} ${keywords} ${categories}`;
 
-    if (content.includes('csv') || content.includes('data') || content.includes('table')) return 'data';
-    if (content.includes('git') || content.includes('version') || content.includes('commit')) return 'version-control';
-    if (content.includes('test') || content.includes('debug') || content.includes('lint')) return 'development';
-    if (content.includes('theme') || content.includes('color') || content.includes('ui')) return 'ui';
-    if (content.includes('format') || content.includes('prettier') || content.includes('style')) return 'formatting';
-    if (content.includes('terminal') || content.includes('shell') || content.includes('command')) return 'terminal';
-    if (content.includes('database') || content.includes('sql') || content.includes('db')) return 'database';
-    if (content.includes('api') || content.includes('rest') || content.includes('http')) return 'api';
-    if (content.includes('deploy') || content.includes('build') || content.includes('ci')) return 'deployment';
-    if (content.includes('doc') || content.includes('readme') || content.includes('markdown')) return 'documentation';
+    if (content.includes('csv') || content.includes('data') || content.includes('table'))
+      return 'data';
+    if (content.includes('git') || content.includes('version') || content.includes('commit'))
+      return 'version-control';
+    if (content.includes('test') || content.includes('debug') || content.includes('lint'))
+      return 'development';
+    if (content.includes('theme') || content.includes('color') || content.includes('ui'))
+      return 'ui';
+    if (content.includes('format') || content.includes('prettier') || content.includes('style'))
+      return 'formatting';
+    if (content.includes('terminal') || content.includes('shell') || content.includes('command'))
+      return 'terminal';
+    if (content.includes('database') || content.includes('sql') || content.includes('db'))
+      return 'database';
+    if (content.includes('api') || content.includes('rest') || content.includes('http'))
+      return 'api';
+    if (content.includes('deploy') || content.includes('build') || content.includes('ci'))
+      return 'deployment';
+    if (content.includes('doc') || content.includes('readme') || content.includes('markdown'))
+      return 'documentation';
 
     return 'utility';
   }
@@ -320,7 +346,7 @@ export class ExtensionScanner {
       {
         id: 'root-workbench',
         name: 'Root Workbench',
-        description: 'A Replit Extension for working with Root insurance platform\'s Workbench.',
+        description: "A Replit Extension for working with Root insurance platform's Workbench.",
         version: '2.1.0',
         author: 'LouwHopley',
         category: 'development',
@@ -372,7 +398,8 @@ export class ExtensionScanner {
       {
         id: 'gpt-replit',
         name: 'GPT-Replit - ChatGPT in your Repl',
-        description: 'A little ChatGPT in your Replit editor that can view your files (if you want).',
+        description:
+          'A little ChatGPT in your Replit editor that can view your files (if you want).',
         version: '3.1.2',
         author: 'Raadsel',
         category: 'ai',
@@ -420,7 +447,7 @@ export class ExtensionScanner {
         status: 'active',
         downloads: 6393,
         installDate: new Date().toISOString(),
-      }
+      },
     ];
   }
 
@@ -431,16 +458,18 @@ export class ExtensionScanner {
     recentInstalls: ReplitExtension[];
   }> {
     const extensions = await this.scanInstalledExtensions();
-    const activeExtensions = extensions.filter(ext => ext.status === 'active');
-    
+    const activeExtensions = extensions.filter((ext) => ext.status === 'active');
+
     const categories: Record<string, number> = {};
-    extensions.forEach(ext => {
+    extensions.forEach((ext) => {
       const category = ext.category || 'unknown';
       categories[category] = (categories[category] || 0) + 1;
     });
 
     const recentInstalls = extensions
-      .sort((a, b) => new Date(b.installDate || 0).getTime() - new Date(a.installDate || 0).getTime())
+      .sort(
+        (a, b) => new Date(b.installDate || 0).getTime() - new Date(a.installDate || 0).getTime()
+      )
       .slice(0, 5);
 
     return {

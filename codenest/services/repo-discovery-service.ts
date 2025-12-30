@@ -1,6 +1,6 @@
 /**
  * 🔍 Repository Discovery Service
- * 
+ *
  * Multi-repository discovery system for the 84-repository integration
  * Part of the Gorilla Mountain Fox Protocol
  */
@@ -46,11 +46,11 @@ export class RepoDiscoveryService {
 
     // Note: In production, this would use @octokit/rest to fetch real repositories
     // For now, we'll create a mock structure that represents the 84-repository system
-    
+
     const knownRepos = this.getKnownRepositories(username);
-    
+
     const repos = knownRepos
-      .filter(repo => {
+      .filter((repo) => {
         if (filterByLanguage && repo.language !== filterByLanguage) {
           return false;
         }
@@ -74,18 +74,66 @@ export class RepoDiscoveryService {
   private getKnownRepositories(username: string): Omit<Repository, 'antLatticeNode'>[] {
     // Core repositories in the Gorilla Mountain Fox ecosystem
     const coreRepos = [
-      { name: 'codenest', owner: username, url: `https://github.com/${username}/codenest`, language: 'TypeScript', description: '🦍 Central orchestration hub' },
-      { name: 'LicenseVault', owner: username, url: `https://github.com/${username}/LicenseVault`, language: 'TypeScript', description: 'License management system' },
-      { name: 'hotstack', owner: username, url: `https://github.com/${username}/hotstack`, language: 'JavaScript', description: '🔥 HotStack deployment platform' },
-      { name: 'Fruitful-global-deployment', owner: username, url: `https://github.com/${username}/Fruitful-global-deployment`, language: 'TypeScript', description: 'Global deployment system' },
-      { name: 'buildnest-engines', owner: username, url: `https://github.com/${username}/buildnest-engines`, language: 'TypeScript', description: '🏔️ BuildNest foundation engines' },
+      {
+        name: 'codenest',
+        owner: username,
+        url: `https://github.com/${username}/codenest`,
+        language: 'TypeScript',
+        description: '🦍 Central orchestration hub',
+      },
+      {
+        name: 'LicenseVault',
+        owner: username,
+        url: `https://github.com/${username}/LicenseVault`,
+        language: 'TypeScript',
+        description: 'License management system',
+      },
+      {
+        name: 'hotstack',
+        owner: username,
+        url: `https://github.com/${username}/hotstack`,
+        language: 'JavaScript',
+        description: '🔥 HotStack deployment platform',
+      },
+      {
+        name: 'Fruitful-global-deployment',
+        owner: username,
+        url: `https://github.com/${username}/Fruitful-global-deployment`,
+        language: 'TypeScript',
+        description: 'Global deployment system',
+      },
+      {
+        name: 'buildnest-engines',
+        owner: username,
+        url: `https://github.com/${username}/buildnest-engines`,
+        language: 'TypeScript',
+        description: '🏔️ BuildNest foundation engines',
+      },
     ];
 
     // Fruitful ecosystem repositories
     const fruitfulRepos = [
-      { name: 'FruitfulPlanetChange', owner: 'Fruitful-Global-Planet', url: 'https://github.com/Fruitful-Global-Planet/FruitfulPlanetChange', language: 'TypeScript', description: 'Main Fruitful platform' },
-      { name: 'SeedwaveProtocol', owner: 'Fruitful-Global-Planet', url: 'https://github.com/Fruitful-Global-Planet/SeedwaveProtocol', language: 'TypeScript', description: 'Seedwave synchronization' },
-      { name: 'BanimalCharity', owner: 'Fruitful-Global-Planet', url: 'https://github.com/Fruitful-Global-Planet/BanimalCharity', language: 'TypeScript', description: '🐻 Banimal charitable toys' },
+      {
+        name: 'FruitfulPlanetChange',
+        owner: 'Fruitful-Global-Planet',
+        url: 'https://github.com/Fruitful-Global-Planet/FruitfulPlanetChange',
+        language: 'TypeScript',
+        description: 'Main Fruitful platform',
+      },
+      {
+        name: 'SeedwaveProtocol',
+        owner: 'Fruitful-Global-Planet',
+        url: 'https://github.com/Fruitful-Global-Planet/SeedwaveProtocol',
+        language: 'TypeScript',
+        description: 'Seedwave synchronization',
+      },
+      {
+        name: 'BanimalCharity',
+        owner: 'Fruitful-Global-Planet',
+        url: 'https://github.com/Fruitful-Global-Planet/BanimalCharity',
+        language: 'TypeScript',
+        description: '🐻 Banimal charitable toys',
+      },
     ];
 
     return [...coreRepos, ...fruitfulRepos];
@@ -100,10 +148,8 @@ export class RepoDiscoveryService {
    */
   getRepositoriesByCoordinates(x: number, y: number, z: number): Repository[] {
     return this.repositories.filter(
-      repo => 
-        repo.antLatticeNode.x === x && 
-        repo.antLatticeNode.y === y && 
-        repo.antLatticeNode.z === z
+      (repo) =>
+        repo.antLatticeNode.x === x && repo.antLatticeNode.y === y && repo.antLatticeNode.z === z
     );
   }
 
@@ -121,12 +167,12 @@ export class RepoDiscoveryService {
    */
   getRepositoryCountByLanguage(): Map<string, number> {
     const counts = new Map<string, number>();
-    
+
     for (const repo of this.repositories) {
       const lang = repo.language || 'Unknown';
       counts.set(lang, (counts.get(lang) || 0) + 1);
     }
-    
+
     return counts;
   }
 
@@ -145,13 +191,17 @@ export class RepoDiscoveryService {
    * @returns JSON representation of the omnicube
    */
   exportOmnicubeStructure(): string {
-    return JSON.stringify({
-      totalRepositories: this.repositories.length,
-      dimensions: [84, 84, 84],
-      fillPercentage: this.getOmnicubeFillPercentage(),
-      repositories: this.repositories,
-      languageDistribution: Object.fromEntries(this.getRepositoryCountByLanguage()),
-    }, null, 2);
+    return JSON.stringify(
+      {
+        totalRepositories: this.repositories.length,
+        dimensions: [84, 84, 84],
+        fillPercentage: this.getOmnicubeFillPercentage(),
+        repositories: this.repositories,
+        languageDistribution: Object.fromEntries(this.getRepositoryCountByLanguage()),
+      },
+      null,
+      2
+    );
   }
 }
 

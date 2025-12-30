@@ -5,15 +5,15 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
-  Database, 
-  Activity, 
-  BarChart3, 
-  Zap, 
+import {
+  Database,
+  Activity,
+  BarChart3,
+  Zap,
   RefreshCw,
   CheckCircle,
   AlertTriangle,
-  TrendingUp
+  TrendingUp,
 } from 'lucide-react';
 
 interface EnhancedSidepanelProps {
@@ -23,9 +23,13 @@ interface EnhancedSidepanelProps {
 
 export function EnhancedSidepanel({ isVisible, onToggle }: EnhancedSidepanelProps) {
   const [syncTime, setSyncTime] = useState<string>('');
-  
+
   // Enhanced stats with complete database mirroring
-  const { data: enhancedStats, refetch: refetchStats, isLoading: isLoadingStats } = useQuery({
+  const {
+    data: enhancedStats,
+    refetch: refetchStats,
+    isLoading: isLoadingStats,
+  } = useQuery({
     queryKey: ['/api/admin-panel/stats'],
     staleTime: 0,
     gcTime: 0,
@@ -76,10 +80,10 @@ export function EnhancedSidepanel({ isVisible, onToggle }: EnhancedSidepanelProp
     databaseRecords: {
       sectors: (deepSectorData as any[])?.length || 0,
       brands: (enhancedStats as any)?.totalBrands || 0,
-      systemStatus: 5
-    }
+      systemStatus: 5,
+    },
   };
-  
+
   const sectorAnalysis = (syncStatus as any[]) || [];
   const dbRecords = globalStats?.databaseRecords;
 
@@ -91,21 +95,17 @@ export function EnhancedSidepanel({ isVisible, onToggle }: EnhancedSidepanelProp
           <h3 className="font-semibold text-white">Database Sync Panel</h3>
         </div>
         <div className="flex items-center gap-2">
-          <Button 
-            size="sm" 
-            variant="outline" 
-            onClick={handleRefreshAll}
-            disabled={isLoadingStats}
-          >
+          <Button size="sm" variant="outline" onClick={handleRefreshAll} disabled={isLoadingStats}>
             <RefreshCw className={`w-4 h-4 ${isLoadingStats ? 'animate-spin' : ''}`} />
           </Button>
-          <Button size="sm" variant="ghost" onClick={onToggle}>×</Button>
+          <Button size="sm" variant="ghost" onClick={onToggle}>
+            ×
+          </Button>
         </div>
       </div>
 
       <ScrollArea className="h-[calc(100vh-80px)]">
         <div className="p-4 space-y-4">
-          
           {/* Sync Status */}
           <Card className="bg-gray-800 border-gray-700">
             <CardHeader className="pb-2">
@@ -118,7 +118,11 @@ export function EnhancedSidepanel({ isVisible, onToggle }: EnhancedSidepanelProp
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-300">Status</span>
-                  <Badge variant={(syncStatus as any)?.status === 'synchronized' ? 'default' : 'destructive'}>
+                  <Badge
+                    variant={
+                      (syncStatus as any)?.status === 'synchronized' ? 'default' : 'destructive'
+                    }
+                  >
                     {(syncStatus as any)?.status || 'unknown'}
                   </Badge>
                 </div>
@@ -227,10 +231,15 @@ export function EnhancedSidepanel({ isVisible, onToggle }: EnhancedSidepanelProp
             <CardContent>
               <div className="space-y-2">
                 {sectorAnalysis
-                  .sort((a: any, b: any) => ((b as any).monthlyFee || 0) - ((a as any).monthlyFee || 0))
+                  .sort(
+                    (a: any, b: any) => ((b as any).monthlyFee || 0) - ((a as any).monthlyFee || 0)
+                  )
                   .slice(0, 5)
                   .map((sector: any, index: number) => (
-                    <div key={sector.sectorId} className="flex items-center justify-between p-2 rounded bg-gray-700/50">
+                    <div
+                      key={sector.sectorId}
+                      className="flex items-center justify-between p-2 rounded bg-gray-700/50"
+                    >
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-gray-400">#{index + 1}</span>
                         <span className="text-sm">{sector.emoji}</span>
@@ -242,10 +251,16 @@ export function EnhancedSidepanel({ isVisible, onToggle }: EnhancedSidepanelProp
                         <Badge variant="outline" className="text-xs">
                           ${sector.monthlyFee || 79}
                         </Badge>
-                        <Badge variant={
-                          sector.tier === 'A++' ? 'default' :
-                          sector.tier === 'A+' ? 'secondary' : 'outline'
-                        } className="text-xs">
+                        <Badge
+                          variant={
+                            sector.tier === 'A++'
+                              ? 'default'
+                              : sector.tier === 'A+'
+                                ? 'secondary'
+                                : 'outline'
+                          }
+                          className="text-xs"
+                        >
                           {sector.tier}
                         </Badge>
                       </div>
@@ -269,11 +284,12 @@ export function EnhancedSidepanel({ isVisible, onToggle }: EnhancedSidepanelProp
                 <div>✓ Brand data: {globalStats?.totalBrands || 0} synced</div>
                 <div>✓ Pricing data: Updated</div>
                 <div>✓ Performance metrics: Live</div>
-                <div className="text-cyan-400">⚡ Next refresh in {Math.ceil((5000 - ((Date.now() / 1000) % 5)) % 5)}s</div>
+                <div className="text-cyan-400">
+                  ⚡ Next refresh in {Math.ceil((5000 - ((Date.now() / 1000) % 5)) % 5)}s
+                </div>
               </div>
             </CardContent>
           </Card>
-
         </div>
       </ScrollArea>
     </div>

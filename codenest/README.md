@@ -30,6 +30,7 @@ The protocol operates through three fundamental principles:
 ### Core Components
 
 #### 1. Collapse Protocol Configuration
+
 **File**: `codenest/config/collapse-protocol-1984.ts`
 
 Defines the fundamental parameters of the 1984 collapse:
@@ -48,6 +49,7 @@ console.log(COLLAPSE_PROTOCOL_1984.tShirtTransformation.duration); // 9.0
 ```
 
 #### 2. Repository Discovery Service
+
 **File**: `codenest/services/repo-discovery-service.ts`
 
 Discovers and catalogs all repositories in the 84³ omnicube structure:
@@ -56,9 +58,9 @@ Discovers and catalogs all repositories in the 84³ omnicube structure:
 import { repoDiscoveryService } from './codenest/services/repo-discovery-service';
 
 // Discover all repositories
-const repos = await repoDiscoveryService.discoverAllRepos({ 
+const repos = await repoDiscoveryService.discoverAllRepos({
   username: 'heyns1000',
-  maxRepos: 84 
+  maxRepos: 84,
 });
 
 // Get repository at specific omnicube coordinates
@@ -69,6 +71,7 @@ const structure = repoDiscoveryService.exportOmnicubeStructure();
 ```
 
 #### 3. Rhino Strike Monitor
+
 **File**: `codenest/monitors/rhino-strike-monitor.ts`
 
 Monitors for Rhino Strike events at precise 0.08-second intervals:
@@ -90,6 +93,7 @@ rhinoStrikeMonitor.stopMonitoring();
 ```
 
 #### 4. Master Integration Hub
+
 **File**: `codenest/hub/master-integration.ts`
 
 Orchestrates the integration of all 84 repositories:
@@ -282,10 +286,10 @@ masterIntegrationHub.reset();
 Generate live deployment status for GitHub profiles:
 
 ```typescript
-import { 
-  generateProfilePulse, 
-  generateCompactPulse, 
-  generateJSONPulse 
+import {
+  generateProfilePulse,
+  generateCompactPulse,
+  generateJSONPulse,
 } from './scripts/generate-profile-pulse';
 
 // Full profile README

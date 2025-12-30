@@ -1,6 +1,6 @@
 /**
  * 🦍🏔️🦊 Master Integration Hub
- * 
+ *
  * Central orchestration system for the 84-repository integration
  * Implements the Gorilla Mountain Fox trinity:
  * - 🦍 Gorilla: Strength in central orchestration
@@ -65,9 +65,9 @@ export class MasterIntegrationHub {
     try {
       // Discover all repositories
       console.log('🔍 Discovering repositories...');
-      const repos = await repoDiscoveryService.discoverAllRepos({ 
+      const repos = await repoDiscoveryService.discoverAllRepos({
         username,
-        maxRepos: 84 
+        maxRepos: 84,
       });
 
       console.log(`📊 Discovered ${repos.length} repositories`);
@@ -85,7 +85,6 @@ export class MasterIntegrationHub {
       console.log(`🦍 Gorilla: Central orchestration successful`);
       console.log(`🏔️ Mountain: Foundation stable`);
       console.log(`🦊 Fox: Distribution strategy deployed`);
-
     } catch (error) {
       console.error('❌ Integration failed:', error);
       throw error;
@@ -102,22 +101,23 @@ export class MasterIntegrationHub {
    */
   private async integrateRepository(repo: Repository): Promise<void> {
     const repoId = `${repo.owner}/${repo.name}`;
-    
+
     try {
       console.log(`🔧 Integrating ${repoId}...`);
-      
+
       // Setup webhook
       await this.setupWebhook(repo);
-      
+
       // Configure build pipeline
       await this.configureBuildPipeline(repo);
-      
+
       // Assign ant lattice position
       await this.assignAntLatticePosition(repo);
-      
+
       this.integratedRepos.add(repoId);
-      console.log(`✅ ${repoId} integrated (${repo.antLatticeNode.x},${repo.antLatticeNode.y},${repo.antLatticeNode.z})`);
-      
+      console.log(
+        `✅ ${repoId} integrated (${repo.antLatticeNode.x},${repo.antLatticeNode.y},${repo.antLatticeNode.z})`
+      );
     } catch (error) {
       console.error(`❌ Failed to integrate ${repoId}:`, error);
       this.failedRepos.add(repoId);
@@ -180,7 +180,7 @@ export class MasterIntegrationHub {
    */
   getTrinityStatus(): TrinityStatus {
     const trinity = COLLAPSE_PROTOCOL_1984.gorillatrinity;
-    
+
     return {
       gorilla: {
         operational: this.integratedRepos.size > 0,
@@ -240,7 +240,7 @@ export class MasterIntegrationHub {
    * @param ms Milliseconds to delay
    */
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
 
