@@ -24,6 +24,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "user": {
@@ -55,6 +56,7 @@ GET /api/health/liveness
 ```
 
 **Response:**
+
 ```json
 {
   "status": "ok",
@@ -70,6 +72,7 @@ GET /api/health/readiness
 ```
 
 **Response:**
+
 ```json
 {
   "status": "ok",
@@ -144,6 +147,7 @@ GET /api/resources?page=1&limit=20
 ```
 
 **Response:**
+
 ```json
 {
   "data": [...],
@@ -173,5 +177,6 @@ Currently on version 1. Future versions will be accessible via:
 ## More Documentation
 
 For detailed endpoint documentation, see:
+
 - [OpenAPI Specification](./openapi.yaml)
 - [Postman Collection](./postman_collection.json)

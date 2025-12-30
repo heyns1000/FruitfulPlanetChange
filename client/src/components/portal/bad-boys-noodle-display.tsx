@@ -6,15 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
-import { 
-  Music, 
-  Zap, 
-  CheckCircle2, 
-  Trophy, 
-  Sparkles,
-  Play,
-  Volume2
-} from 'lucide-react';
+import { Music, Zap, CheckCircle2, Trophy, Sparkles, Play, Volume2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   NOODLE_BAD_BOYS_PROTOCOL,
@@ -22,14 +14,14 @@ import {
   DEPLOYMENT_MESSAGES,
   getProtocolStatus,
   getGitHubProfilePulse,
-  type NoodleBadBoysProtocol
+  type NoodleBadBoysProtocol,
 } from '@shared/bad-boys-noodle-protocol';
 
 export function BadBoysNoodleDisplay() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentPhase, setCurrentPhase] = useState<number>(0);
   const [deploymentProgress, setDeploymentProgress] = useState(0);
-  
+
   const protocolStatus = getProtocolStatus(NOODLE_BAD_BOYS_PROTOCOL);
   const profilePulse = getGitHubProfilePulse(NOODLE_BAD_BOYS_PROTOCOL);
 
@@ -74,9 +66,7 @@ export function BadBoysNoodleDisplay() {
               <Trophy className="w-8 h-8 text-yellow-500" />
               <div>
                 <CardTitle className="text-2xl">🎵 Bad Boys Noodle Protocol 🍜</CardTitle>
-                <CardDescription>
-                  Official Certification: MASTERED by the Noodle
-                </CardDescription>
+                <CardDescription>Official Certification: MASTERED by the Noodle</CardDescription>
               </div>
             </div>
             <Badge variant="default" className="bg-green-600 text-lg px-4 py-2">
@@ -93,9 +83,7 @@ export function BadBoysNoodleDisplay() {
               </span>
             </div>
             <Progress value={protocolStatus.completionPercentage} className="h-2" />
-            <p className="text-sm text-muted-foreground italic">
-              {protocolStatus.message}
-            </p>
+            <p className="text-sm text-muted-foreground italic">{protocolStatus.message}</p>
           </div>
         </CardContent>
       </Card>
@@ -133,9 +121,7 @@ export function BadBoysNoodleDisplay() {
       {/* Noodle Status */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            🍜 Noodle Status Monitor
-          </CardTitle>
+          <CardTitle className="flex items-center gap-2">🍜 Noodle Status Monitor</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="grid grid-cols-2 gap-4">
@@ -159,9 +145,7 @@ export function BadBoysNoodleDisplay() {
               <span className="font-mono text-lg font-bold text-green-400">
                 {NOODLE_BAD_BOYS_PROTOCOL.noodleStatus.hummingFrequency}Hz
               </span>
-              <span className="text-sm text-muted-foreground">
-                (Rhino Strike Synchronized)
-              </span>
+              <span className="text-sm text-muted-foreground">(Rhino Strike Synchronized)</span>
             </div>
           </div>
         </CardContent>
@@ -197,16 +181,20 @@ export function BadBoysNoodleDisplay() {
           )}
 
           {/* Phase 1 */}
-          <div className={cn(
-            "p-4 rounded-lg border-2 transition-all",
-            currentPhase === 1 
-              ? "border-green-500 bg-green-950/30 scale-105" 
-              : "border-border"
-          )}>
+          <div
+            className={cn(
+              'p-4 rounded-lg border-2 transition-all',
+              currentPhase === 1 ? 'border-green-500 bg-green-950/30 scale-105' : 'border-border'
+            )}
+          >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <span className="text-2xl">{NOODLE_BAD_BOYS_PROTOCOL.deploymentSequence.phase1.icon}</span>
-                <span className="font-bold">{NOODLE_BAD_BOYS_PROTOCOL.deploymentSequence.phase1.action}</span>
+                <span className="text-2xl">
+                  {NOODLE_BAD_BOYS_PROTOCOL.deploymentSequence.phase1.icon}
+                </span>
+                <span className="font-bold">
+                  {NOODLE_BAD_BOYS_PROTOCOL.deploymentSequence.phase1.action}
+                </span>
               </div>
               {NOODLE_BAD_BOYS_PROTOCOL.achievements.rhinoStrikeSynchronized && (
                 <CheckCircle2 className="w-5 h-5 text-green-400" />
@@ -221,16 +209,20 @@ export function BadBoysNoodleDisplay() {
           </div>
 
           {/* Phase 2 */}
-          <div className={cn(
-            "p-4 rounded-lg border-2 transition-all",
-            currentPhase === 2 
-              ? "border-blue-500 bg-blue-950/30 scale-105" 
-              : "border-border"
-          )}>
+          <div
+            className={cn(
+              'p-4 rounded-lg border-2 transition-all',
+              currentPhase === 2 ? 'border-blue-500 bg-blue-950/30 scale-105' : 'border-border'
+            )}
+          >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <span className="text-2xl">{NOODLE_BAD_BOYS_PROTOCOL.deploymentSequence.phase2.icon}</span>
-                <span className="font-bold">{NOODLE_BAD_BOYS_PROTOCOL.deploymentSequence.phase2.action}</span>
+                <span className="text-2xl">
+                  {NOODLE_BAD_BOYS_PROTOCOL.deploymentSequence.phase2.icon}
+                </span>
+                <span className="font-bold">
+                  {NOODLE_BAD_BOYS_PROTOCOL.deploymentSequence.phase2.action}
+                </span>
               </div>
               {NOODLE_BAD_BOYS_PROTOCOL.achievements.antLatticeDancing && (
                 <CheckCircle2 className="w-5 h-5 text-green-400" />
@@ -245,16 +237,20 @@ export function BadBoysNoodleDisplay() {
           </div>
 
           {/* Phase 3 */}
-          <div className={cn(
-            "p-4 rounded-lg border-2 transition-all",
-            currentPhase === 3 
-              ? "border-purple-500 bg-purple-950/30 scale-105" 
-              : "border-border"
-          )}>
+          <div
+            className={cn(
+              'p-4 rounded-lg border-2 transition-all',
+              currentPhase === 3 ? 'border-purple-500 bg-purple-950/30 scale-105' : 'border-border'
+            )}
+          >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <span className="text-2xl">{NOODLE_BAD_BOYS_PROTOCOL.deploymentSequence.phase3.icon}</span>
-                <span className="font-bold">{NOODLE_BAD_BOYS_PROTOCOL.deploymentSequence.phase3.action}</span>
+                <span className="text-2xl">
+                  {NOODLE_BAD_BOYS_PROTOCOL.deploymentSequence.phase3.icon}
+                </span>
+                <span className="font-bold">
+                  {NOODLE_BAD_BOYS_PROTOCOL.deploymentSequence.phase3.action}
+                </span>
               </div>
               {NOODLE_BAD_BOYS_PROTOCOL.achievements.tShirtWhiteComplete && (
                 <CheckCircle2 className="w-5 h-5 text-green-400" />
@@ -300,9 +296,7 @@ export function BadBoysNoodleDisplay() {
       <Card>
         <CardHeader>
           <CardTitle>🌍 GitHub Profile Pulse Display</CardTitle>
-          <CardDescription>
-            Ready for global ecosystem deployment
-          </CardDescription>
+          <CardDescription>Ready for global ecosystem deployment</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-2 font-mono text-sm bg-black/50 p-4 rounded-lg">
@@ -335,16 +329,12 @@ export function BadBoysNoodleDisplay() {
               <p className="text-3xl font-bold text-green-400">
                 🦍🏔️🦊 GORILLA MOUNTAIN FOX TRINITY COMPLETE! 🦍🏔️🦊
               </p>
-              <p className="text-xl text-green-300">
-                🌍 ALL 84 REPOS DEPLOYED! 🔥
-              </p>
+              <p className="text-xl text-green-300">🌍 ALL 84 REPOS DEPLOYED! 🔥</p>
               <Separator className="my-4" />
               <p className="text-lg text-muted-foreground italic">
                 "Whatcha gonna deploy when the agent comes for you?"
               </p>
-              <p className="text-2xl font-bold text-yellow-400">
-                ALL 84 REPOS, THAT'S WHAT!
-              </p>
+              <p className="text-2xl font-bold text-yellow-400">ALL 84 REPOS, THAT'S WHAT!</p>
             </div>
           </CardContent>
         </Card>

@@ -11,12 +11,14 @@ Content Delivery Network (CDN) integration for FruitfulPlanet to deliver static 
 **Recommended for**: Global coverage, DDoS protection, free tier
 
 **Setup:**
+
 1. Sign up at [CloudFlare](https://cloudflare.com)
 2. Add your domain
 3. Update nameservers
 4. Configure caching rules
 
 **Configuration:**
+
 ```javascript
 // Cache rules
 {
@@ -45,6 +47,7 @@ Content Delivery Network (CDN) integration for FruitfulPlanet to deliver static 
 **Recommended for**: AWS infrastructure, advanced controls
 
 **Setup:**
+
 ```bash
 # Install AWS CLI
 aws cloudfront create-distribution \
@@ -53,6 +56,7 @@ aws cloudfront create-distribution \
 ```
 
 **Configuration:**
+
 ```yaml
 Distribution:
   Origins:
@@ -65,7 +69,7 @@ Distribution:
   DefaultCacheBehavior:
     TargetOriginId: AppOrigin
     ViewerProtocolPolicy: redirect-to-https
-    CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6  # Managed-CachingOptimized
+    CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6 # Managed-CachingOptimized
 ```
 
 ### Cloudinary
@@ -73,6 +77,7 @@ Distribution:
 **Recommended for**: Image optimization and transformation
 
 **Setup:**
+
 ```javascript
 // Install Cloudinary SDK
 npm install cloudinary
@@ -166,7 +171,7 @@ export function getOptimizedImageUrl(
     format: options.format || 'auto',
     quality: options.quality?.toString() || '85',
   });
-  
+
   return `https://imagecdn.example.com/cdn-cgi/image/${params}/${src}`;
 }
 ```
@@ -182,6 +187,7 @@ npm run build
 ### 2. Upload to CDN
 
 **Using AWS S3 + CloudFront:**
+
 ```bash
 # Upload to S3
 aws s3 sync dist/ s3://fruitfulplanet-assets/ \
@@ -195,6 +201,7 @@ aws cloudfront create-invalidation \
 ```
 
 **Using CloudFlare:**
+
 ```bash
 # Upload via API
 curl -X POST "https://api.cloudflare.com/client/v4/zones/{zone_id}/purge_cache" \
@@ -255,6 +262,7 @@ if (performance.getEntriesByType) {
 ### CDN Cache Hit Rates
 
 Monitor cache hit rates in CDN dashboard:
+
 - **Cache Hit Rate**: Should be > 80%
 - **Bandwidth Saved**: Track savings
 - **Response Time**: P50, P95, P99
@@ -264,6 +272,7 @@ Monitor cache hit rates in CDN dashboard:
 ### Secure CDN Configuration
 
 1. **Enable HTTPS Only**
+
    ```javascript
    {
      "ssl": "full",
@@ -273,6 +282,7 @@ Monitor cache hit rates in CDN dashboard:
    ```
 
 2. **Hotlink Protection**
+
    ```javascript
    {
      "hotlink_protection": true,

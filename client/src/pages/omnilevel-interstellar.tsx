@@ -1,30 +1,35 @@
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
-import { Slider } from "@/components/ui/slider"
-import { useToast } from "@/hooks/use-toast"
-import { apiRequest } from "@/lib/queryClient"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { 
-  Rocket, 
-  Globe, 
-  Brain, 
-  Cpu, 
-  Zap, 
-  Settings, 
-  Orbit, 
-  Satellite, 
-  StarIcon, 
- 
-  Infinity, 
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Slider } from '@/components/ui/slider';
+import { useToast } from '@/hooks/use-toast';
+import { apiRequest } from '@/lib/queryClient';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  Rocket,
+  Globe,
+  Brain,
+  Cpu,
+  Zap,
+  Settings,
+  Orbit,
+  Satellite,
+  StarIcon,
+  Infinity,
   Network,
   Database,
   Shield,
@@ -36,49 +41,49 @@ import {
   Radio,
   Wifi,
   BarChart3,
-  Command
-} from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
+  Command,
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface InterstellarNode {
-  id: string
-  name: string
-  type: 'quantum' | 'neural' | 'cosmic' | 'dimensional'
-  status: 'active' | 'dormant' | 'processing' | 'synchronizing'
-  coordinates: { x: number, y: number, z: number }
-  connections: number
-  processing_power: number
-  data_volume: string
-  last_sync: string
+  id: string;
+  name: string;
+  type: 'quantum' | 'neural' | 'cosmic' | 'dimensional';
+  status: 'active' | 'dormant' | 'processing' | 'synchronizing';
+  coordinates: { x: number; y: number; z: number };
+  connections: number;
+  processing_power: number;
+  data_volume: string;
+  last_sync: string;
 }
 
 interface GlobalLogicConfig {
-  omnilevel_mode: 'standard' | 'advanced' | 'quantum' | 'interstellar'
-  neural_network_depth: number
-  quantum_entanglement: boolean
-  cosmic_alignment: boolean
-  dimensional_bridging: boolean
-  processing_clusters: number
-  data_compression_ratio: number
-  security_protocols: string[]
-  sync_frequency: number
-  autonomous_learning: boolean
+  omnilevel_mode: 'standard' | 'advanced' | 'quantum' | 'interstellar';
+  neural_network_depth: number;
+  quantum_entanglement: boolean;
+  cosmic_alignment: boolean;
+  dimensional_bridging: boolean;
+  processing_clusters: number;
+  data_compression_ratio: number;
+  security_protocols: string[];
+  sync_frequency: number;
+  autonomous_learning: boolean;
 }
 
 interface CosmicMetrics {
-  total_nodes: number
-  active_connections: number
-  processing_capacity: string
-  quantum_coherence: number
-  neural_efficiency: number
-  dimensional_stability: number
-  cosmic_synchronization: number
+  total_nodes: number;
+  active_connections: number;
+  processing_capacity: string;
+  quantum_coherence: number;
+  neural_efficiency: number;
+  dimensional_stability: number;
+  cosmic_synchronization: number;
 }
 
 export default function OmnilevelInterstellar() {
-  const { toast } = useToast()
-  const queryClient = useQueryClient()
-  const [selectedNode, setSelectedNode] = useState<InterstellarNode | null>(null)
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [selectedNode, setSelectedNode] = useState<InterstellarNode | null>(null);
   const [globalConfig, setGlobalConfig] = useState<GlobalLogicConfig>({
     omnilevel_mode: 'advanced',
     neural_network_depth: 7,
@@ -89,89 +94,98 @@ export default function OmnilevelInterstellar() {
     data_compression_ratio: 85,
     security_protocols: ['quantum_encryption', 'neural_firewall', 'cosmic_shielding'],
     sync_frequency: 2.5,
-    autonomous_learning: true
-  })
+    autonomous_learning: true,
+  });
 
   // Fetch interstellar nodes
   const { data: nodes = [], isLoading: nodesLoading } = useQuery<InterstellarNode[]>({
     queryKey: ['/api/omnilevel/interstellar/nodes'],
     retry: false,
-  })
+  });
 
   // Fetch cosmic metrics
   const { data: metrics, isLoading: metricsLoading } = useQuery<CosmicMetrics>({
     queryKey: ['/api/omnilevel/cosmic/metrics'],
     retry: false,
-  })
+  });
 
   // Global configuration mutation
   const updateConfigMutation = useMutation({
     mutationFn: async (config: GlobalLogicConfig) => {
-      return await apiRequest('POST', '/api/omnilevel/config/update', config)
+      return await apiRequest('POST', '/api/omnilevel/config/update', config);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/omnilevel/cosmic/metrics'] })
+      queryClient.invalidateQueries({ queryKey: ['/api/omnilevel/cosmic/metrics'] });
       toast({
-        title: "Configuration Updated",
-        description: "Global logic configuration has been synchronized across all dimensions.",
-      })
+        title: 'Configuration Updated',
+        description: 'Global logic configuration has been synchronized across all dimensions.',
+      });
     },
     onError: (error) => {
       toast({
-        title: "Configuration Failed",
+        title: 'Configuration Failed',
         description: error.message,
-        variant: "destructive",
-      })
+        variant: 'destructive',
+      });
     },
-  })
+  });
 
   // Node synchronization mutation
   const synchronizeNodeMutation = useMutation({
     mutationFn: async (nodeId: string) => {
-      return await apiRequest('POST', `/api/omnilevel/nodes/${nodeId}/synchronize`)
+      return await apiRequest('POST', `/api/omnilevel/nodes/${nodeId}/synchronize`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/omnilevel/interstellar/nodes'] })
+      queryClient.invalidateQueries({ queryKey: ['/api/omnilevel/interstellar/nodes'] });
       toast({
-        title: "Node Synchronized",
-        description: "Interstellar node has been synchronized with the cosmic network.",
-      })
+        title: 'Node Synchronized',
+        description: 'Interstellar node has been synchronized with the cosmic network.',
+      });
     },
     onError: (error) => {
       toast({
-        title: "Synchronization Failed",
+        title: 'Synchronization Failed',
         description: error.message,
-        variant: "destructive",
-      })
+        variant: 'destructive',
+      });
     },
-  })
+  });
 
   const getNodeTypeIcon = (type: string) => {
     switch (type) {
-      case 'quantum': return <Cpu className="h-5 w-5" />
-      case 'neural': return <Brain className="h-5 w-5" />
-      case 'cosmic': return <StarIcon className="h-5 w-5" />
-      case 'dimensional': return <Infinity className="h-5 w-5" />
-      default: return <Network className="h-5 w-5" />
+      case 'quantum':
+        return <Cpu className="h-5 w-5" />;
+      case 'neural':
+        return <Brain className="h-5 w-5" />;
+      case 'cosmic':
+        return <StarIcon className="h-5 w-5" />;
+      case 'dimensional':
+        return <Infinity className="h-5 w-5" />;
+      default:
+        return <Network className="h-5 w-5" />;
     }
-  }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-500'
-      case 'processing': return 'bg-blue-500'
-      case 'synchronizing': return 'bg-purple-500'
-      default: return 'bg-gray-500'
+      case 'active':
+        return 'bg-green-500';
+      case 'processing':
+        return 'bg-blue-500';
+      case 'synchronizing':
+        return 'bg-purple-500';
+      default:
+        return 'bg-gray-500';
     }
-  }
+  };
 
   const handleConfigUpdate = () => {
-    updateConfigMutation.mutate(globalConfig)
-  }
+    updateConfigMutation.mutate(globalConfig);
+  };
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="flex items-center justify-between"
@@ -180,7 +194,9 @@ export default function OmnilevelInterstellar() {
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
             Omnilevel Interstellar Command Center
           </h1>
-          <p className="text-muted-foreground mt-2">Advanced neural networks with cosmic-scale dimensional processing</p>
+          <p className="text-muted-foreground mt-2">
+            Advanced neural networks with cosmic-scale dimensional processing
+          </p>
         </div>
         <div className="flex items-center space-x-3">
           <Badge variant="outline" className="bg-purple-500/10 text-purple-500 border-purple-500">
@@ -210,10 +226,30 @@ export default function OmnilevelInterstellar() {
         <TabsContent value="cosmic-overview" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {[
-              { title: 'Total Nodes', value: metrics?.total_nodes || '∞', icon: Satellite, color: 'text-blue-500' },
-              { title: 'Active Connections', value: metrics?.active_connections || '∞', icon: Network, color: 'text-green-500' },
-              { title: 'Processing Capacity', value: metrics?.processing_capacity || '∞ EXA', icon: Cpu, color: 'text-purple-500' },
-              { title: 'Quantum Coherence', value: `${metrics?.quantum_coherence || 99.7}%`, icon: Zap, color: 'text-yellow-500' }
+              {
+                title: 'Total Nodes',
+                value: metrics?.total_nodes || '∞',
+                icon: Satellite,
+                color: 'text-blue-500',
+              },
+              {
+                title: 'Active Connections',
+                value: metrics?.active_connections || '∞',
+                icon: Network,
+                color: 'text-green-500',
+              },
+              {
+                title: 'Processing Capacity',
+                value: metrics?.processing_capacity || '∞ EXA',
+                icon: Cpu,
+                color: 'text-purple-500',
+              },
+              {
+                title: 'Quantum Coherence',
+                value: `${metrics?.quantum_coherence || 99.7}%`,
+                icon: Zap,
+                color: 'text-yellow-500',
+              },
             ].map(({ title, value, icon: Icon, color }) => (
               <motion.div
                 key={title}
@@ -314,7 +350,10 @@ export default function OmnilevelInterstellar() {
                   whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <Card className="cursor-pointer hover:shadow-lg transition-all" onClick={() => setSelectedNode(node)}>
+                  <Card
+                    className="cursor-pointer hover:shadow-lg transition-all"
+                    onClick={() => setSelectedNode(node)}
+                  >
                     <CardHeader className="pb-3">
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-lg flex items-center gap-2">
@@ -324,7 +363,8 @@ export default function OmnilevelInterstellar() {
                         <Badge className={getStatusColor(node.status)}>{node.status}</Badge>
                       </div>
                       <CardDescription>
-                        Coordinates: ({node.coordinates.x}, {node.coordinates.y}, {node.coordinates.z})
+                        Coordinates: ({node.coordinates.x}, {node.coordinates.y},{' '}
+                        {node.coordinates.z})
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-3">
@@ -347,13 +387,13 @@ export default function OmnilevelInterstellar() {
                         </div>
                       </div>
                       <Progress value={node.processing_power} className="h-2" />
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
+                      <Button
+                        variant="outline"
+                        size="sm"
                         className="w-full"
                         onClick={(e) => {
-                          e.stopPropagation()
-                          synchronizeNodeMutation.mutate(node.id)
+                          e.stopPropagation();
+                          synchronizeNodeMutation.mutate(node.id);
                         }}
                         disabled={synchronizeNodeMutation.isPending}
                       >
@@ -368,7 +408,9 @@ export default function OmnilevelInterstellar() {
               <div className="col-span-full text-center py-12">
                 <Satellite className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                 <h3 className="text-lg font-semibold mb-2">No Interstellar Nodes</h3>
-                <p className="text-muted-foreground mb-4">Initialize cosmic network to deploy nodes across dimensions</p>
+                <p className="text-muted-foreground mb-4">
+                  Initialize cosmic network to deploy nodes across dimensions
+                </p>
                 <Button>
                   <Rocket className="h-4 w-4 mr-2" />
                   Initialize Cosmic Network
@@ -385,16 +427,20 @@ export default function OmnilevelInterstellar() {
                 <Settings className="h-5 w-5" />
                 Global Logic Configuration
               </CardTitle>
-              <CardDescription>Configure omnilevel processing parameters and cosmic alignment</CardDescription>
+              <CardDescription>
+                Configure omnilevel processing parameters and cosmic alignment
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="space-y-4">
                   <div>
                     <Label htmlFor="omnilevel-mode">Omnilevel Processing Mode</Label>
-                    <Select 
-                      value={globalConfig.omnilevel_mode} 
-                      onValueChange={(value: any) => setGlobalConfig({...globalConfig, omnilevel_mode: value})}
+                    <Select
+                      value={globalConfig.omnilevel_mode}
+                      onValueChange={(value: any) =>
+                        setGlobalConfig({ ...globalConfig, omnilevel_mode: value })
+                      }
                     >
                       <SelectTrigger className="mt-2">
                         <SelectValue />
@@ -412,7 +458,9 @@ export default function OmnilevelInterstellar() {
                     <Label>Neural Network Depth: {globalConfig.neural_network_depth}</Label>
                     <Slider
                       value={[globalConfig.neural_network_depth]}
-                      onValueChange={([value]) => setGlobalConfig({...globalConfig, neural_network_depth: value})}
+                      onValueChange={([value]) =>
+                        setGlobalConfig({ ...globalConfig, neural_network_depth: value })
+                      }
                       max={20}
                       min={1}
                       step={1}
@@ -424,7 +472,9 @@ export default function OmnilevelInterstellar() {
                     <Label>Processing Clusters: {globalConfig.processing_clusters}</Label>
                     <Slider
                       value={[globalConfig.processing_clusters]}
-                      onValueChange={([value]) => setGlobalConfig({...globalConfig, processing_clusters: value})}
+                      onValueChange={([value]) =>
+                        setGlobalConfig({ ...globalConfig, processing_clusters: value })
+                      }
                       max={50}
                       min={1}
                       step={1}
@@ -436,7 +486,9 @@ export default function OmnilevelInterstellar() {
                     <Label>Data Compression Ratio: {globalConfig.data_compression_ratio}%</Label>
                     <Slider
                       value={[globalConfig.data_compression_ratio]}
-                      onValueChange={([value]) => setGlobalConfig({...globalConfig, data_compression_ratio: value})}
+                      onValueChange={([value]) =>
+                        setGlobalConfig({ ...globalConfig, data_compression_ratio: value })
+                      }
                       max={99}
                       min={10}
                       step={1}
@@ -451,7 +503,9 @@ export default function OmnilevelInterstellar() {
                     <Switch
                       id="quantum-entanglement"
                       checked={globalConfig.quantum_entanglement}
-                      onCheckedChange={(checked) => setGlobalConfig({...globalConfig, quantum_entanglement: checked})}
+                      onCheckedChange={(checked) =>
+                        setGlobalConfig({ ...globalConfig, quantum_entanglement: checked })
+                      }
                     />
                   </div>
 
@@ -460,7 +514,9 @@ export default function OmnilevelInterstellar() {
                     <Switch
                       id="cosmic-alignment"
                       checked={globalConfig.cosmic_alignment}
-                      onCheckedChange={(checked) => setGlobalConfig({...globalConfig, cosmic_alignment: checked})}
+                      onCheckedChange={(checked) =>
+                        setGlobalConfig({ ...globalConfig, cosmic_alignment: checked })
+                      }
                     />
                   </div>
 
@@ -469,7 +525,9 @@ export default function OmnilevelInterstellar() {
                     <Switch
                       id="dimensional-bridging"
                       checked={globalConfig.dimensional_bridging}
-                      onCheckedChange={(checked) => setGlobalConfig({...globalConfig, dimensional_bridging: checked})}
+                      onCheckedChange={(checked) =>
+                        setGlobalConfig({ ...globalConfig, dimensional_bridging: checked })
+                      }
                     />
                   </div>
 
@@ -478,7 +536,9 @@ export default function OmnilevelInterstellar() {
                     <Switch
                       id="autonomous-learning"
                       checked={globalConfig.autonomous_learning}
-                      onCheckedChange={(checked) => setGlobalConfig({...globalConfig, autonomous_learning: checked})}
+                      onCheckedChange={(checked) =>
+                        setGlobalConfig({ ...globalConfig, autonomous_learning: checked })
+                      }
                     />
                   </div>
 
@@ -486,7 +546,9 @@ export default function OmnilevelInterstellar() {
                     <Label>Sync Frequency: {globalConfig.sync_frequency} Hz</Label>
                     <Slider
                       value={[globalConfig.sync_frequency]}
-                      onValueChange={([value]) => setGlobalConfig({...globalConfig, sync_frequency: value})}
+                      onValueChange={([value]) =>
+                        setGlobalConfig({ ...globalConfig, sync_frequency: value })
+                      }
                       max={10}
                       min={0.1}
                       step={0.1}
@@ -497,14 +559,16 @@ export default function OmnilevelInterstellar() {
               </div>
 
               <div className="pt-4 border-t">
-                <Button 
-                  onClick={handleConfigUpdate} 
+                <Button
+                  onClick={handleConfigUpdate}
                   disabled={updateConfigMutation.isPending}
                   className="w-full"
                   size="lg"
                 >
                   <Command className="h-4 w-4 mr-2" />
-                  {updateConfigMutation.isPending ? 'Synchronizing Configuration...' : 'Apply Global Configuration'}
+                  {updateConfigMutation.isPending
+                    ? 'Synchronizing Configuration...'
+                    : 'Apply Global Configuration'}
                 </Button>
               </div>
             </CardContent>
@@ -518,17 +582,25 @@ export default function OmnilevelInterstellar() {
                 <Infinity className="h-5 w-5" />
                 Dimensional Bridge Control
               </CardTitle>
-              <CardDescription>Manage cross-dimensional data streams and quantum tunneling</CardDescription>
+              <CardDescription>
+                Manage cross-dimensional data streams and quantum tunneling
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="text-center py-12">
                 <Globe className="h-16 w-16 mx-auto text-purple-500 mb-4" />
                 <h3 className="text-xl font-semibold mb-2">Dimensional Bridge Initializing</h3>
-                <p className="text-muted-foreground mb-4">Advanced dimensional control requires quantum certification</p>
-                <Badge variant="outline" className="mb-4">Coming Soon - Quantum Bridge Protocol</Badge>
+                <p className="text-muted-foreground mb-4">
+                  Advanced dimensional control requires quantum certification
+                </p>
+                <Badge variant="outline" className="mb-4">
+                  Coming Soon - Quantum Bridge Protocol
+                </Badge>
                 <div className="max-w-md mx-auto space-y-2">
                   <Progress value={67} className="h-3" />
-                  <p className="text-sm text-muted-foreground">Quantum entanglement stability: 67%</p>
+                  <p className="text-sm text-muted-foreground">
+                    Quantum entanglement stability: 67%
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -550,9 +622,12 @@ export default function OmnilevelInterstellar() {
                   { name: 'Quantum Encryption', status: 'active', level: 'AES-2048Q' },
                   { name: 'Neural Firewall', status: 'active', level: 'Level 9' },
                   { name: 'Cosmic Shielding', status: 'active', level: 'Interstellar' },
-                  { name: 'Dimensional Lock', status: 'standby', level: 'Quantum' }
+                  { name: 'Dimensional Lock', status: 'standby', level: 'Quantum' },
                 ].map((protocol) => (
-                  <div key={protocol.name} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div
+                    key={protocol.name}
+                    className="flex items-center justify-between p-3 border rounded-lg"
+                  >
                     <div>
                       <p className="font-medium">{protocol.name}</p>
                       <p className="text-sm text-muted-foreground">{protocol.level}</p>
@@ -578,7 +653,7 @@ export default function OmnilevelInterstellar() {
                   { operation: 'Quantum State Collapse', progress: 84, eta: '2.3s' },
                   { operation: 'Neural Pattern Recognition', progress: 92, eta: '1.1s' },
                   { operation: 'Cosmic Data Alignment', progress: 76, eta: '4.7s' },
-                  { operation: 'Dimensional Synchronization', progress: 45, eta: '8.2s' }
+                  { operation: 'Dimensional Synchronization', progress: 45, eta: '8.2s' },
                 ].map((op) => (
                   <div key={op.operation} className="space-y-2">
                     <div className="flex justify-between text-sm">
@@ -596,21 +671,26 @@ export default function OmnilevelInterstellar() {
 
       {/* Node Detail Modal */}
       {selectedNode && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={() => setSelectedNode(null)}>
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+          onClick={() => setSelectedNode(null)}
+        >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             className="bg-background rounded-lg max-w-2xl w-full p-6"
-            onClick={e => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xl font-bold flex items-center gap-2">
                 {getNodeTypeIcon(selectedNode.type)}
                 {selectedNode.name}
               </h3>
-              <Button variant="ghost" size="sm" onClick={() => setSelectedNode(null)}>×</Button>
+              <Button variant="ghost" size="sm" onClick={() => setSelectedNode(null)}>
+                ×
+              </Button>
             </div>
-            
+
             <div className="grid gap-4 md:grid-cols-2">
               <div>
                 <Label>Node Type</Label>
@@ -622,7 +702,10 @@ export default function OmnilevelInterstellar() {
               </div>
               <div>
                 <Label>Coordinates</Label>
-                <p className="font-mono">({selectedNode.coordinates.x}, {selectedNode.coordinates.y}, {selectedNode.coordinates.z})</p>
+                <p className="font-mono">
+                  ({selectedNode.coordinates.x}, {selectedNode.coordinates.y},{' '}
+                  {selectedNode.coordinates.z})
+                </p>
               </div>
               <div>
                 <Label>Connections</Label>
@@ -639,7 +722,7 @@ export default function OmnilevelInterstellar() {
             </div>
 
             <div className="flex gap-2 mt-6">
-              <Button 
+              <Button
                 onClick={() => synchronizeNodeMutation.mutate(selectedNode.id)}
                 disabled={synchronizeNodeMutation.isPending}
               >
@@ -655,5 +738,5 @@ export default function OmnilevelInterstellar() {
         </div>
       )}
     </div>
-  )
+  );
 }

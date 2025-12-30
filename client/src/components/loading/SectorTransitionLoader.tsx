@@ -1,6 +1,6 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
-import { Loader2, Zap, Database, Globe2, Shield, Cpu } from "lucide-react";
+import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { Loader2, Zap, Database, Globe2, Shield, Cpu } from 'lucide-react';
 
 interface SectorTransitionLoaderProps {
   isVisible: boolean;
@@ -11,29 +11,53 @@ interface SectorTransitionLoaderProps {
 }
 
 const sectorIcons = {
-  "agriculture": "🌱", "fsf": "🥦", "banking": "🏦", "creative": "🖋️", "logistics": "📦",
-  "education-ip": "📚", "fashion": "✂", "gaming": "🎮", "health": "🧠", "housing": "🏗️",
-  "justice": "⚖", "knowledge": "📖", "micromesh": "☰", "media": "🎬", "nutrition": "✿",
-  "ai-logic": "🧠", "packaging": "📦", "quantum": "✴️", "ritual": "☯", "saas": "🔑",
-  "trade": "🧺", "utilities": "🔋", "voice": "🎙️", "webless": "📡", "nft": "🔁",
-  "education-youth": "🎓", "zerowaste": "♻️", "professional": "🧾", "payroll-mining": "🪙", "mining": "⛏️",
-  "wildlife": "🦁"
+  agriculture: '🌱',
+  fsf: '🥦',
+  banking: '🏦',
+  creative: '🖋️',
+  logistics: '📦',
+  'education-ip': '📚',
+  fashion: '✂',
+  gaming: '🎮',
+  health: '🧠',
+  housing: '🏗️',
+  justice: '⚖',
+  knowledge: '📖',
+  micromesh: '☰',
+  media: '🎬',
+  nutrition: '✿',
+  'ai-logic': '🧠',
+  packaging: '📦',
+  quantum: '✴️',
+  ritual: '☯',
+  saas: '🔑',
+  trade: '🧺',
+  utilities: '🔋',
+  voice: '🎙️',
+  webless: '📡',
+  nft: '🔁',
+  'education-youth': '🎓',
+  zerowaste: '♻️',
+  professional: '🧾',
+  'payroll-mining': '🪙',
+  mining: '⛏️',
+  wildlife: '🦁',
 };
 
 const loadingStages = [
-  { text: "Initializing Sector Protocols...", icon: Database, duration: 800 },
-  { text: "Establishing VaultMesh™ Connection...", icon: Shield, duration: 600 },
-  { text: "Loading Brand Ecosystem...", icon: Globe2, duration: 700 },
-  { text: "Synchronizing OmniGrid™...", icon: Cpu, duration: 500 },
-  { text: "Transition Complete", icon: Zap, duration: 300 }
+  { text: 'Initializing Sector Protocols...', icon: Database, duration: 800 },
+  { text: 'Establishing VaultMesh™ Connection...', icon: Shield, duration: 600 },
+  { text: 'Loading Brand Ecosystem...', icon: Globe2, duration: 700 },
+  { text: 'Synchronizing OmniGrid™...', icon: Cpu, duration: 500 },
+  { text: 'Transition Complete', icon: Zap, duration: 300 },
 ];
 
-export default function SectorTransitionLoader({ 
-  isVisible, 
-  currentSector, 
-  targetSector, 
+export default function SectorTransitionLoader({
+  isVisible,
+  currentSector,
+  targetSector,
   progress = 0,
-  onComplete 
+  onComplete,
 }: SectorTransitionLoaderProps) {
   const [currentStage, setCurrentStage] = useState(0);
   const [stageProgress, setStageProgress] = useState(0);
@@ -53,14 +77,14 @@ export default function SectorTransitionLoader({
       setStageProgress(0);
 
       const progressInterval = setInterval(() => {
-        setStageProgress(prev => {
+        setStageProgress((prev) => {
           if (prev >= 100) {
             clearInterval(progressInterval);
             stageIndex++;
             setTimeout(animateStages, 100);
             return 100;
           }
-          return prev + (100 / (stage.duration / 50));
+          return prev + 100 / (stage.duration / 50);
         });
       }, 50);
     };
@@ -102,7 +126,7 @@ export default function SectorTransitionLoader({
               transition={{
                 duration: 3 + Math.random() * 2,
                 repeat: Infinity,
-                ease: "easeInOut",
+                ease: 'easeInOut',
               }}
             />
           ))}
@@ -146,13 +170,13 @@ export default function SectorTransitionLoader({
 
           {/* Loading Icon */}
           <motion.div
-            animate={{ 
+            animate={{
               rotate: currentStage === 4 ? 0 : 360,
-              scale: [1, 1.1, 1]
+              scale: [1, 1.1, 1],
             }}
-            transition={{ 
-              rotate: { duration: 2, repeat: Infinity, ease: "linear" },
-              scale: { duration: 0.8, repeat: Infinity }
+            transition={{
+              rotate: { duration: 2, repeat: Infinity, ease: 'linear' },
+              scale: { duration: 0.8, repeat: Infinity },
             }}
             className="mb-6 flex justify-center"
           >
@@ -174,7 +198,7 @@ export default function SectorTransitionLoader({
             exit={{ y: -20, opacity: 0 }}
             className="text-xl font-semibold text-white mb-4"
           >
-            {currentStageData?.text || "Loading..."}
+            {currentStageData?.text || 'Loading...'}
           </motion.h2>
 
           {/* Progress Bar */}
@@ -182,9 +206,9 @@ export default function SectorTransitionLoader({
             <div className="w-full bg-gray-700 rounded-full h-2 overflow-hidden">
               <motion.div
                 className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
-                initial={{ width: "0%" }}
+                initial={{ width: '0%' }}
                 animate={{ width: `${stageProgress}%` }}
-                transition={{ duration: 0.1, ease: "easeOut" }}
+                transition={{ duration: 0.1, ease: 'easeOut' }}
               />
             </div>
             <div className="mt-2 text-sm text-gray-400">
@@ -200,13 +224,11 @@ export default function SectorTransitionLoader({
           >
             {currentSector && targetSector ? (
               <div>
-                Transitioning from <span className="text-blue-300">{currentSector}</span> to{" "}
+                Transitioning from <span className="text-blue-300">{currentSector}</span> to{' '}
                 <span className="text-purple-300">{targetSector}</span>
               </div>
             ) : (
-              <div>
-                Preparing sector ecosystem...
-              </div>
+              <div>Preparing sector ecosystem...</div>
             )}
           </motion.div>
 

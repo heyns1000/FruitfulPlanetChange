@@ -53,11 +53,11 @@ const QuantifiedSidebarMenu = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        
+
         // Fetch sidebar items and frontend summary in parallel
         const [sidebarRes, summaryRes] = await Promise.all([
           fetch('/api/sidebar/items'),
-          fetch('/api/frontend/summary')
+          fetch('/api/frontend/summary'),
         ]);
 
         if (!sidebarRes.ok || !summaryRes.ok) {
@@ -79,7 +79,7 @@ const QuantifiedSidebarMenu = () => {
     };
 
     fetchData();
-    
+
     // Auto-refresh every 5 seconds for live data
     const interval = setInterval(fetchData, 5000);
     return () => clearInterval(interval);
@@ -87,7 +87,7 @@ const QuantifiedSidebarMenu = () => {
 
   const getEnhancedMetadata = (item: SidebarItem): string => {
     if (!summary) return item.metadata || '...';
-    
+
     // Map sidebar items to canonical frontend summary data
     switch (item.id) {
       case 'home':
@@ -125,7 +125,7 @@ const QuantifiedSidebarMenu = () => {
       ecosystem: '🌍',
       onboarding: '📋',
       monitoring: '🔍',
-      legal: '📄'
+      legal: '📄',
     };
     return icons[category] || '🔹';
   };
@@ -162,13 +162,16 @@ const QuantifiedSidebarMenu = () => {
   }
 
   // Group items by category
-  const itemsByCategory = sidebarData.items.reduce((acc, item) => {
-    if (!acc[item.category]) {
-      acc[item.category] = [];
-    }
-    acc[item.category].push(item);
-    return acc;
-  }, {} as Record<string, SidebarItem[]>);
+  const itemsByCategory = sidebarData.items.reduce(
+    (acc, item) => {
+      if (!acc[item.category]) {
+        acc[item.category] = [];
+      }
+      acc[item.category].push(item);
+      return acc;
+    },
+    {} as Record<string, SidebarItem[]>
+  );
 
   return (
     <div className="p-6 bg-white shadow-lg rounded-xl border border-gray-200 mb-4">
@@ -182,7 +185,8 @@ const QuantifiedSidebarMenu = () => {
       {/* Sector Reconciliation Alert */}
       <div className="mb-3 p-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
         <p className="text-xs text-blue-700 dark:text-blue-300 font-medium">
-          🔍 <strong>Sector Sync Reconciliation:</strong> 48 Canonical (database) vs 45 Displayable (UI filtered)
+          🔍 <strong>Sector Sync Reconciliation:</strong> 48 Canonical (database) vs 45 Displayable
+          (UI filtered)
         </p>
       </div>
 
@@ -191,10 +195,18 @@ const QuantifiedSidebarMenu = () => {
         <div className="mb-4 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
           <div className="text-xs font-semibold text-blue-700 mb-1">🌍 Global System Overview</div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-            <div><strong>Elements:</strong> {summary.canonicalValues.totalElementsDisplay}</div>
-            <div><strong>Sectors:</strong> {summary.canonicalValues.sectorsDisplay} Total</div>
-            <div><strong>Brands:</strong> {summary.canonicalValues.brandsDisplay}</div>
-            <div><strong>Core:</strong> {summary.canonicalValues.coreElementsDisplay}</div>
+            <div>
+              <strong>Elements:</strong> {summary.canonicalValues.totalElementsDisplay}
+            </div>
+            <div>
+              <strong>Sectors:</strong> {summary.canonicalValues.sectorsDisplay} Total
+            </div>
+            <div>
+              <strong>Brands:</strong> {summary.canonicalValues.brandsDisplay}
+            </div>
+            <div>
+              <strong>Core:</strong> {summary.canonicalValues.coreElementsDisplay}
+            </div>
           </div>
         </div>
       )}
@@ -207,22 +219,20 @@ const QuantifiedSidebarMenu = () => {
               {getCategoryIcon(category)} {category} ({items.length})
             </h3>
             <ul className="space-y-2">
-              {items.map(item => (
+              {items.map((item) => (
                 <li key={item.id} className="flex justify-between items-start py-1">
                   <div className="flex-1 min-w-0">
-                    <a 
-                      href={item.route} 
+                    <a
+                      href={item.route}
                       className="text-blue-600 hover:text-blue-800 hover:underline font-medium text-sm transition-colors duration-200 flex items-center gap-1"
                       data-testid={`sidebar-link-${item.id}`}
                     >
                       <span className="text-xs">{item.icon}</span>
                       {item.label}
                     </a>
-                    <div className="text-xs text-gray-500 mt-0.5 truncate">
-                      {item.description}
-                    </div>
+                    <div className="text-xs text-gray-500 mt-0.5 truncate">{item.description}</div>
                   </div>
-                  <span 
+                  <span
                     className="text-xs font-semibold text-gray-800 bg-gray-100 px-2 py-1 rounded-full ml-2 whitespace-nowrap"
                     data-testid={`sidebar-metadata-${item.id}`}
                   >
@@ -239,7 +249,9 @@ const QuantifiedSidebarMenu = () => {
       {summary && (
         <div className="mt-4 pt-3 border-t border-gray-100 text-xs text-gray-500">
           <div className="flex justify-between items-center">
-            <span>Last updated: {new Date(summary.renderingInfo.lastQueried).toLocaleTimeString()}</span>
+            <span>
+              Last updated: {new Date(summary.renderingInfo.lastQueried).toLocaleTimeString()}
+            </span>
             <span>Response: {summary.renderingInfo.responseTime}</span>
           </div>
         </div>

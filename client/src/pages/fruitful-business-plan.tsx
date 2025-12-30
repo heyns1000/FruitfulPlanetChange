@@ -18,16 +18,36 @@ import {
   Sparkles,
   Handshake,
   Trophy,
-  Heart
+  Heart,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function FruitfulBusinessPlan() {
   const keyMetrics = [
-    { label: 'Projected Revenue', value: 'R391M', icon: <DollarSign className="w-6 h-6" />, color: 'text-green-500' },
-    { label: 'Target Markets', value: '35+', icon: <Globe className="w-6 h-6" />, color: 'text-blue-500' },
-    { label: 'Youth Demographic', value: '16-35', icon: <Users className="w-6 h-6" />, color: 'text-purple-500' },
-    { label: 'Market Value', value: '$3B', icon: <TrendingUp className="w-6 h-6" />, color: 'text-orange-500' }
+    {
+      label: 'Projected Revenue',
+      value: 'R391M',
+      icon: <DollarSign className="w-6 h-6" />,
+      color: 'text-green-500',
+    },
+    {
+      label: 'Target Markets',
+      value: '35+',
+      icon: <Globe className="w-6 h-6" />,
+      color: 'text-blue-500',
+    },
+    {
+      label: 'Youth Demographic',
+      value: '16-35',
+      icon: <Users className="w-6 h-6" />,
+      color: 'text-purple-500',
+    },
+    {
+      label: 'Market Value',
+      value: '$3B',
+      icon: <TrendingUp className="w-6 h-6" />,
+      color: 'text-orange-500',
+    },
   ];
 
   const businessPillars = [
@@ -36,29 +56,29 @@ export default function FruitfulBusinessPlan() {
       description: 'Premier global youth culture platform celebrating street dance and creativity',
       icon: <Trophy className="w-8 h-8" />,
       metrics: { events: '50+', cities: '25', participants: '10K+' },
-      color: 'from-orange-500 to-red-500'
+      color: 'from-orange-500 to-red-500',
     },
     {
       title: 'Sponsorship Ecosystem',
       description: 'Multi-layered partnerships with global brands like Red Bull, Nike, Coca-Cola',
       icon: <Handshake className="w-8 h-8" />,
       metrics: { sponsors: '15+', tiers: '3', roi: '340%' },
-      color: 'from-blue-500 to-purple-500'
+      color: 'from-blue-500 to-purple-500',
     },
     {
       title: 'Community Impact',
       description: 'Empowering local economies and fostering talent development worldwide',
       icon: <Heart className="w-8 h-8" />,
       metrics: { communities: '100+', jobs: '2.5K', impact: 'High' },
-      color: 'from-pink-500 to-purple-500'
+      color: 'from-pink-500 to-purple-500',
     },
     {
       title: 'Franchise Model',
       description: 'Scalable operations enabling global expansion and local partnerships',
       icon: <Globe className="w-8 h-8" />,
       metrics: { regions: '12', licenses: '50+', growth: '200%' },
-      color: 'from-green-500 to-teal-500'
-    }
+      color: 'from-green-500 to-teal-500',
+    },
   ];
 
   const revenueStreams = [
@@ -66,7 +86,7 @@ export default function FruitfulBusinessPlan() {
     { name: 'Ticket Sales', value: 25, amount: 'R97.75M' },
     { name: 'Merchandising', value: 15, amount: 'R58.65M' },
     { name: 'Franchise Licensing', value: 10, amount: 'R39.1M' },
-    { name: 'Digital Content', value: 5, amount: 'R19.55M' }
+    { name: 'Digital Content', value: 5, amount: 'R19.55M' },
   ];
 
   const implementationPhases = [
@@ -76,7 +96,7 @@ export default function FruitfulBusinessPlan() {
       timeline: 'Q1-Q2 2025',
       progress: 75,
       status: 'In Progress',
-      objectives: ['Secure initial sponsorships', 'Establish core team', 'Launch pilot events']
+      objectives: ['Secure initial sponsorships', 'Establish core team', 'Launch pilot events'],
     },
     {
       phase: 'Phase 2',
@@ -84,7 +104,7 @@ export default function FruitfulBusinessPlan() {
       timeline: 'Q3-Q4 2025',
       progress: 30,
       status: 'Planning',
-      objectives: ['Scale to 5 major cities', 'Develop franchise model', 'Digital platform launch']
+      objectives: ['Scale to 5 major cities', 'Develop franchise model', 'Digital platform launch'],
     },
     {
       phase: 'Phase 3',
@@ -92,8 +112,8 @@ export default function FruitfulBusinessPlan() {
       timeline: 'Q1-Q2 2026',
       progress: 10,
       status: 'Roadmap',
-      objectives: ['International expansion', 'Strategic partnerships', 'Technology integration']
-    }
+      objectives: ['International expansion', 'Strategic partnerships', 'Technology integration'],
+    },
   ];
 
   return (
@@ -116,18 +136,21 @@ export default function FruitfulBusinessPlan() {
                 <h1 className="text-5xl font-bold bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 bg-clip-text text-transparent">
                   Fruitful Holdings
                 </h1>
-                <p className="text-xl text-gray-600 dark:text-gray-300 mt-2">Crate Dance Showcase Business Plan</p>
+                <p className="text-xl text-gray-600 dark:text-gray-300 mt-2">
+                  Crate Dance Showcase Business Plan
+                </p>
               </div>
             </motion.div>
-            
+
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed"
             >
-              A comprehensive strategy for establishing the Crate Dance Showcase as a premier global youth culture platform 
-              with projected R391 million revenue through innovative sponsorship models and community-driven initiatives.
+              A comprehensive strategy for establishing the Crate Dance Showcase as a premier global
+              youth culture platform with projected R391 million revenue through innovative
+              sponsorship models and community-driven initiatives.
             </motion.p>
 
             <motion.div
@@ -155,7 +178,7 @@ export default function FruitfulBusinessPlan() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <Button 
+              <Button
                 size="lg"
                 className="px-8 py-4 bg-gradient-to-r from-orange-500 to-red-600 text-white text-xl font-bold rounded-2xl shadow-2xl hover:shadow-orange-500/25 transition-all duration-300"
                 onClick={() => window.open('/legal-docs/Change_1753063971221.docx', '_blank')}
@@ -206,7 +229,9 @@ export default function FruitfulBusinessPlan() {
                 >
                   <Card className="text-center hover:shadow-lg transition-all duration-300">
                     <CardContent className="pt-6">
-                      <div className={`inline-flex p-3 rounded-full bg-gray-100 dark:bg-gray-800 mb-4 ${metric.color}`}>
+                      <div
+                        className={`inline-flex p-3 rounded-full bg-gray-100 dark:bg-gray-800 mb-4 ${metric.color}`}
+                      >
                         {metric.icon}
                       </div>
                       <h3 className="text-2xl font-bold mb-2">{metric.value}</h3>
@@ -229,12 +254,16 @@ export default function FruitfulBusinessPlan() {
                     <div className={`h-2 bg-gradient-to-r ${pillar.color}`} />
                     <CardHeader>
                       <div className="flex items-center gap-4">
-                        <div className={`p-3 rounded-lg bg-gradient-to-r ${pillar.color} text-white`}>
+                        <div
+                          className={`p-3 rounded-lg bg-gradient-to-r ${pillar.color} text-white`}
+                        >
                           {pillar.icon}
                         </div>
                         <div>
                           <CardTitle className="text-xl">{pillar.title}</CardTitle>
-                          <p className="text-gray-600 dark:text-gray-300 mt-2">{pillar.description}</p>
+                          <p className="text-gray-600 dark:text-gray-300 mt-2">
+                            {pillar.description}
+                          </p>
                         </div>
                       </div>
                     </CardHeader>
@@ -259,7 +288,8 @@ export default function FruitfulBusinessPlan() {
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-4">Strategic Framework</h2>
               <p className="text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-                Our comprehensive approach to establishing the Crate Dance Showcase as the premier global youth culture platform
+                Our comprehensive approach to establishing the Crate Dance Showcase as the premier
+                global youth culture platform
               </p>
             </div>
 
@@ -275,15 +305,17 @@ export default function FruitfulBusinessPlan() {
                   <div>
                     <h4 className="font-semibold mb-2">Vision</h4>
                     <p className="text-gray-600 dark:text-gray-300">
-                      To establish the Crate Dance Showcase as a world-renowned platform that celebrates the vibrancy 
-                      of youth culture, promotes creative expression, and empowers communities through dance, music, and innovation.
+                      To establish the Crate Dance Showcase as a world-renowned platform that
+                      celebrates the vibrancy of youth culture, promotes creative expression, and
+                      empowers communities through dance, music, and innovation.
                     </p>
                   </div>
                   <div>
                     <h4 className="font-semibold mb-2">Mission</h4>
                     <p className="text-gray-600 dark:text-gray-300">
-                      Transforming the landscape of youth culture by providing opportunities, fostering partnerships, 
-                      promoting sustainability, and driving innovation across global communities.
+                      Transforming the landscape of youth culture by providing opportunities,
+                      fostering partnerships, promoting sustainability, and driving innovation
+                      across global communities.
                     </p>
                   </div>
                 </CardContent>
@@ -323,7 +355,8 @@ export default function FruitfulBusinessPlan() {
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-4">Revenue Breakdown</h2>
               <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                Diversified revenue streams targeting R391 million through strategic partnerships and operations
+                Diversified revenue streams targeting R391 million through strategic partnerships
+                and operations
               </p>
             </div>
 
@@ -355,7 +388,7 @@ export default function FruitfulBusinessPlan() {
                     <div className="text-4xl font-bold text-orange-600 mb-2">R391M</div>
                     <div className="text-gray-600 dark:text-gray-300">Projected Total Revenue</div>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4 text-center">
                     <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
                       <div className="text-2xl font-bold text-orange-600">340%</div>
@@ -387,7 +420,8 @@ export default function FruitfulBusinessPlan() {
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-4">Implementation Roadmap</h2>
               <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                Structured approach to scaling the Crate Dance Showcase from local to global presence
+                Structured approach to scaling the Crate Dance Showcase from local to global
+                presence
               </p>
             </div>
 
@@ -403,12 +437,18 @@ export default function FruitfulBusinessPlan() {
                     <CardContent className="p-6">
                       <div className="flex items-center gap-6">
                         <div className="flex-shrink-0">
-                          <div className={`
+                          <div
+                            className={`
                             w-16 h-16 rounded-full flex items-center justify-center text-lg font-bold
-                            ${phase.status === 'In Progress' ? 'bg-orange-500 text-white' :
-                              phase.status === 'Planning' ? 'bg-blue-500 text-white' :
-                              'bg-gray-500 text-white'}
-                          `}>
+                            ${
+                              phase.status === 'In Progress'
+                                ? 'bg-orange-500 text-white'
+                                : phase.status === 'Planning'
+                                  ? 'bg-blue-500 text-white'
+                                  : 'bg-gray-500 text-white'
+                            }
+                          `}
+                          >
                             {index + 1}
                           </div>
                         </div>
@@ -449,7 +489,8 @@ export default function FruitfulBusinessPlan() {
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-4">Community Impact & Sustainability</h2>
               <p className="text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-                Creating lasting positive change through youth empowerment, economic development, and cultural celebration
+                Creating lasting positive change through youth empowerment, economic development,
+                and cultural celebration
               </p>
             </div>
 
@@ -461,7 +502,8 @@ export default function FruitfulBusinessPlan() {
                   </div>
                   <h3 className="text-xl font-bold mb-2">Community Empowerment</h3>
                   <p className="text-gray-600 dark:text-gray-300 mb-4">
-                    Providing platforms for talent development and creative expression across diverse communities
+                    Providing platforms for talent development and creative expression across
+                    diverse communities
                   </p>
                   <div className="space-y-2">
                     <div className="flex justify-between">
@@ -483,7 +525,8 @@ export default function FruitfulBusinessPlan() {
                   </div>
                   <h3 className="text-xl font-bold mb-2">Economic Development</h3>
                   <p className="text-gray-600 dark:text-gray-300 mb-4">
-                    Stimulating local economies through job creation, vendor partnerships, and tourism
+                    Stimulating local economies through job creation, vendor partnerships, and
+                    tourism
                   </p>
                   <div className="space-y-2">
                     <div className="flex justify-between">
@@ -505,7 +548,8 @@ export default function FruitfulBusinessPlan() {
                   </div>
                   <h3 className="text-xl font-bold mb-2">Cultural Innovation</h3>
                   <p className="text-gray-600 dark:text-gray-300 mb-4">
-                    Celebrating diversity and fostering cross-cultural collaboration through artistic expression
+                    Celebrating diversity and fostering cross-cultural collaboration through
+                    artistic expression
                   </p>
                   <div className="space-y-2">
                     <div className="flex justify-between">
@@ -525,8 +569,9 @@ export default function FruitfulBusinessPlan() {
               <CardContent className="p-8 text-center">
                 <h3 className="text-2xl font-bold mb-4">Sustainability Commitment</h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-3xl mx-auto">
-                  The Crate Dance Showcase is committed to environmental responsibility and social sustainability, 
-                  implementing eco-friendly practices and supporting long-term community development initiatives.
+                  The Crate Dance Showcase is committed to environmental responsibility and social
+                  sustainability, implementing eco-friendly practices and supporting long-term
+                  community development initiatives.
                 </p>
                 <div className="flex justify-center gap-6 flex-wrap">
                   <div className="text-center">

@@ -1,9 +1,9 @@
 /**
  * 🦍🏔️🦊 GORILLA MOUNTAIN FOX PROTOCOL
- * 
+ *
  * Configuration for the 1984 Noodle Juice Gorilla Comb Collapse
  * Resurrection System through CodeNest Integration
- * 
+ *
  * Historical Event Timeline:
  * T+0.00s: System operational
  * T+0.08s: 🦏 RHINO STRIKES trigger cascade
@@ -80,7 +80,7 @@ export const COLLAPSE_PROTOCOL_1984: CollapseProtocol1984 = {
     triggerEvent: 'repository_push',
     responseTime: '80ms',
   },
-  
+
   // Ant Lattice Omnicube Structure
   antLattice: {
     collapseDuration: 0.08, // seconds
@@ -88,7 +88,7 @@ export const COLLAPSE_PROTOCOL_1984: CollapseProtocol1984 = {
     nodeType: 'REPOSITORY',
     latticePattern: 'HEXAGONAL',
   },
-  
+
   // T-Shirt Transformation Cycle
   tShirtTransformation: {
     duration: 9.0, // seconds
@@ -97,7 +97,7 @@ export const COLLAPSE_PROTOCOL_1984: CollapseProtocol1984 = {
     significance: 'RESET_STATE',
     cycleType: 'CONTINUOUS',
   },
-  
+
   // Gorilla Mountain Fox Trinity
   gorillatrinity: {
     gorilla: {
@@ -116,7 +116,7 @@ export const COLLAPSE_PROTOCOL_1984: CollapseProtocol1984 = {
       strategy: 'SMART_DEPLOY',
     },
   },
-  
+
   // Original Collapse Data
   historicalEvent: {
     year: 1984,
@@ -146,7 +146,7 @@ export function calculateOmnicubePosition(repoIndex: number): { x: number; y: nu
  * @returns Next strike timestamp
  */
 export function getNextRhinoStrike(lastStrike: number): number {
-  return lastStrike + (COLLAPSE_PROTOCOL_1984.rhinoStrike.interval * 1000);
+  return lastStrike + COLLAPSE_PROTOCOL_1984.rhinoStrike.interval * 1000;
 }
 
 /**
@@ -165,9 +165,11 @@ export function getTShirtTransformationProgress(elapsedSeconds: number): number 
  */
 export function isProtocolAuthorized(): boolean {
   const trinity = COLLAPSE_PROTOCOL_1984.gorillatrinity;
-  return !!(trinity.gorilla.strength === 'MAXIMUM' && 
-           trinity.mountain.stability === 'SOLID' && 
-           trinity.fox.cunning === 'OPTIMAL');
+  return !!(
+    trinity.gorilla.strength === 'MAXIMUM' &&
+    trinity.mountain.stability === 'SOLID' &&
+    trinity.fox.cunning === 'OPTIMAL'
+  );
 }
 
 /**
