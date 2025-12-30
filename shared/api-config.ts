@@ -1,6 +1,10 @@
 // Global API Configuration for Seedwave™ Portal powered by VaultMesh™
 // This file centralizes all API keys and configurations extracted from legal documentation
 
+import { createLogger } from '../server/middleware/logging';
+
+const logger = createLogger('api-config');
+
 export interface APIConfiguration {
   paypal: {
     clientId: string;
@@ -44,11 +48,17 @@ export interface APIConfiguration {
 export const getAPIConfig = (): APIConfiguration => {
   const isProduction = process.env.NODE_ENV === 'production';
 
+  // Validate required environment variables
+  if (!process.env.PAYPAL_CLIENT_ID) {
+    logger.warn('PAYPAL_CLIENT_ID not configured');
+  }
+  if (!process.env.VITE_FIREBASE_API_KEY) {
+    logger.warn('VITE_FIREBASE_API_KEY not configured');
+  }
+  
   return {
     paypal: {
-      clientId:
-        process.env.PAYPAL_CLIENT_ID ||
-        'BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q',
+      clientId: process.env.PAYPAL_CLIENT_ID || '',
       clientSecret: process.env.PAYPAL_CLIENT_SECRET || '',
       environment: isProduction ? 'production' : 'sandbox',
       currency: 'USD',
