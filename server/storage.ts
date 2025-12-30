@@ -1,10 +1,10 @@
-import { 
-  users, 
-  sectors, 
-  brands, 
-  systemStatus, 
-  legalDocuments, 
-  repositories, 
+import {
+  users,
+  sectors,
+  brands,
+  systemStatus,
+  legalDocuments,
+  repositories,
   payments,
   adminPanelBrands,
   familyMembers,
@@ -28,13 +28,22 @@ import {
   // Sector Mapping System Tables
   sectorRelationships,
   sectorMappingCache,
-  type User, 
-  type InsertUser, 
-  type Sector, 
-  type InsertSector, 
-  type Brand, 
-  type InsertBrand, 
-  type SystemStatus, 
+  // Ecosystem Pulse Tables
+  ecosystemPulses,
+  pulseHistory,
+  codeNestRepositories,
+  vaultTraceNetwork,
+  // Marketplace Packages Tables
+  marketplacePackages,
+  packageVersions,
+  packageDownloads,
+  type User,
+  type InsertUser,
+  type Sector,
+  type InsertSector,
+  type Brand,
+  type InsertBrand,
+  type SystemStatus,
   type InsertSystemStatus,
   type LegalDocument,
   type InsertLegalDocument,
@@ -84,33 +93,49 @@ import {
   type InsertSectorRelationship,
   type SectorMappingCache,
   type InsertSectorMappingCache,
-  COMPREHENSIVE_BRAND_DATA
-} from "@shared/schema";
-import { db } from "./db";
-import { eq, or, ilike, sql, count } from "drizzle-orm";
-import { FRUITFUL_CRATE_DANCE_SECTORS } from "@shared/fruitful-crate-dance-ecosystem";
-import { 
-  SECURESIGN_API_KEYS, 
+  // Ecosystem Pulse Types
+  type EcosystemPulse,
+  type InsertEcosystemPulse,
+  type PulseHistory,
+  type InsertPulseHistory,
+  type CodeNestRepository,
+  type InsertCodeNestRepository,
+  type VaultTraceNetwork,
+  type InsertVaultTraceNetwork,
+  // Marketplace Packages Types
+  type MarketplacePackage,
+  type InsertMarketplacePackage,
+  type PackageVersion,
+  type InsertPackageVersion,
+  type PackageDownload,
+  type InsertPackageDownload,
+  COMPREHENSIVE_BRAND_DATA,
+} from '@shared/schema';
+import { db } from './db';
+import { eq, or, ilike, sql, count } from 'drizzle-orm';
+import { FRUITFUL_CRATE_DANCE_SECTORS } from '@shared/fruitful-crate-dance-ecosystem';
+import {
+  SECURESIGN_API_KEYS,
   DOCUMENT_TEMPLATES,
   type NDARecord,
   type InsertNDARecord,
   type SecureSignApiKey,
   type InsertSecureSignApiKey,
   type DocumentTemplate,
-  type InsertDocumentTemplate
-} from "@shared/securesign-schema";
-import { desc } from "drizzle-orm";
+  type InsertDocumentTemplate,
+} from '@shared/securesign-schema';
+import { desc } from 'drizzle-orm';
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   upsertUser(user: InsertUser): Promise<User>;
-  
+
   // Sectors
   getAllSectors(): Promise<Sector[]>;
   getSector(id: number): Promise<Sector | undefined>;
   createSector(sector: InsertSector): Promise<Sector>;
   updateSector(id: number, updates: Partial<InsertSector>): Promise<Sector>;
-  
+
   // Brands
   getAllBrands(): Promise<Brand[]>;
   getBrandsBySearch(query: string): Promise<Brand[]>;
@@ -118,23 +143,23 @@ export interface IStorage {
   getBrand(id: number): Promise<Brand | undefined>;
   createBrand(brand: InsertBrand): Promise<Brand>;
   updateBrand(id: number, updates: Partial<InsertBrand>): Promise<Brand>;
-  
+
   // System Status
   getAllSystemStatus(): Promise<SystemStatus[]>;
   getSystemStatus(service: string): Promise<SystemStatus | undefined>;
   updateSystemStatus(service: string, status: string): Promise<SystemStatus>;
-  
+
   // Legal Documents
   getLegalDocuments(): Promise<LegalDocument[]>;
   createLegalDocument(doc: InsertLegalDocument): Promise<LegalDocument>;
-  
+
   // Repositories
   getAllRepositories(): Promise<Repository[]>;
   getRepositories(): Promise<Repository[]>;
   getRepositoriesBySearch(query: string): Promise<Repository[]>;
   getRepositoriesByCategory(category: string): Promise<Repository[]>;
   createRepository(repo: InsertRepository): Promise<Repository>;
-  
+
   // Payments
   getAllPayments(): Promise<Payment[]>;
   getPayments(): Promise<Payment[]>;
@@ -163,7 +188,12 @@ export interface IStorage {
   }>;
 
   // Brands (Paginated)
-  getBrandsPaginated(offset: number, limit: number, search?: string, sectorId?: number): Promise<{
+  getBrandsPaginated(
+    offset: number,
+    limit: number,
+    search?: string,
+    sectorId?: number
+  ): Promise<{
     brands: Brand[];
     total: number;
   }>;
@@ -172,60 +202,68 @@ export interface IStorage {
   getAdminPanelBrands(): Promise<AdminPanelBrand[]>;
   getAdminPanelBrandsBySector(sectorKey: string): Promise<AdminPanelBrand[]>;
   createAdminPanelBrand(brandData: InsertAdminPanelBrand): Promise<AdminPanelBrand>;
-  seedAdminPanelBrands(): Promise<{ success: boolean, message: string }>;
+  seedAdminPanelBrands(): Promise<{ success: boolean; message: string }>;
 
   // Banimal Integration
   createBanimalTransaction(transaction: InsertBanimalTransaction): Promise<BanimalTransaction>;
   getBanimalTransactions(): Promise<BanimalTransaction[]>;
   updateBanimalTransactionStatus(id: number, status: string): Promise<void>;
-  
-  createCharitableDistribution(distribution: InsertCharitableDistribution): Promise<CharitableDistribution>;
+
+  createCharitableDistribution(
+    distribution: InsertCharitableDistribution
+  ): Promise<CharitableDistribution>;
   getCharitableDistributions(): Promise<CharitableDistribution[]>;
-  
+
   getSonicGridConnections(): Promise<SonicGridConnection[]>;
   updateSonicGridConnection(id: number, data: Partial<SonicGridConnection>): Promise<void>;
-  
+
   createVaultAction(action: InsertVaultAction): Promise<VaultAction>;
   getVaultActions(): Promise<VaultAction[]>;
 
   // Motion, Media & Sonic Studio operations
   getMediaProjects(): Promise<MediaProject[]>;
   createMediaProject(project: InsertMediaProject): Promise<MediaProject>;
-  processMediaProject(projectId: string, settings: any): Promise<{ success: boolean, message: string }>;
+  processMediaProject(
+    projectId: string,
+    settings: any
+  ): Promise<{ success: boolean; message: string }>;
   getProcessingEngines(): Promise<ProcessingEngine[]>;
   seedMediaData(): Promise<void>;
 
   // Omnilevel Interstellar operations
   getInterstellarNodes(): Promise<InterstellarNode[]>;
   createInterstellarNode(node: InsertInterstellarNode): Promise<InterstellarNode>;
-  synchronizeNode(nodeId: string): Promise<{ success: boolean, message: string }>;
+  synchronizeNode(nodeId: string): Promise<{ success: boolean; message: string }>;
   getGlobalLogicConfig(): Promise<GlobalLogicConfig | undefined>;
   updateGlobalLogicConfig(config: InsertGlobalLogicConfig): Promise<GlobalLogicConfig>;
   getCosmicMetrics(): Promise<any>;
   seedInterstellarData(): Promise<void>;
-  
+
   // Heritage Portal - Family Members
   getAllFamilyMembers(userId: string): Promise<FamilyMember[]>;
   getFamilyMember(id: number): Promise<FamilyMember | undefined>;
   createFamilyMember(member: InsertFamilyMember): Promise<FamilyMember>;
   updateFamilyMember(id: number, updates: Partial<InsertFamilyMember>): Promise<FamilyMember>;
   deleteFamilyMember(id: number): Promise<void>;
-  
+
   // Heritage Portal - Heritage Documents
   getAllHeritageDocuments(userId: string): Promise<HeritageDocument[]>;
   getHeritageDocument(id: number): Promise<HeritageDocument | undefined>;
   createHeritageDocument(document: InsertHeritageDocument): Promise<HeritageDocument>;
-  updateHeritageDocument(id: number, updates: Partial<InsertHeritageDocument>): Promise<HeritageDocument>;
+  updateHeritageDocument(
+    id: number,
+    updates: Partial<InsertHeritageDocument>
+  ): Promise<HeritageDocument>;
   deleteHeritageDocument(id: number): Promise<void>;
   searchHeritageDocuments(userId: string, query: string): Promise<HeritageDocument[]>;
-  
+
   // Heritage Portal - Family Events
   getAllFamilyEvents(userId: string): Promise<FamilyEvent[]>;
   getFamilyEvent(id: number): Promise<FamilyEvent | undefined>;
   createFamilyEvent(event: InsertFamilyEvent): Promise<FamilyEvent>;
   updateFamilyEvent(id: number, updates: Partial<InsertFamilyEvent>): Promise<FamilyEvent>;
   deleteFamilyEvent(id: number): Promise<void>;
-  
+
   // Heritage Portal - Heritage Metrics
   getHeritageMetrics(userId: string): Promise<HeritageMetrics | undefined>;
   updateHeritageMetrics(userId: string, metrics: InsertHeritageMetrics): Promise<HeritageMetrics>;
@@ -236,7 +274,7 @@ export interface IStorage {
   // =================================================================
   // SAMFOX STUDIO STANDALONE METHODS
   // =================================================================
-  
+
   // Artwork Gallery Management
   getAllArtworks(): Promise<Artwork[]>;
   getArtwork(id: number): Promise<Artwork | undefined>;
@@ -247,24 +285,30 @@ export interface IStorage {
   updateArtwork(id: number, updates: Partial<InsertArtwork>): Promise<Artwork>;
   deleteArtwork(id: number): Promise<void>;
   searchArtworks(query: string): Promise<Artwork[]>;
-  
+
   // Portfolio Management
   getAllPortfolioProjects(): Promise<PortfolioProject[]>;
   getPortfolioProject(id: number): Promise<PortfolioProject | undefined>;
   getFeaturedPortfolioProjects(): Promise<PortfolioProject[]>;
   getPortfolioProjectsByCategory(category: string): Promise<PortfolioProject[]>;
   createPortfolioProject(project: InsertPortfolioProject): Promise<PortfolioProject>;
-  updatePortfolioProject(id: number, updates: Partial<InsertPortfolioProject>): Promise<PortfolioProject>;
+  updatePortfolioProject(
+    id: number,
+    updates: Partial<InsertPortfolioProject>
+  ): Promise<PortfolioProject>;
   deletePortfolioProject(id: number): Promise<void>;
-  
+
   // Category Management
   getAllArtworkCategories(): Promise<ArtworkCategory[]>;
   getArtworkCategory(id: number): Promise<ArtworkCategory | undefined>;
   getActiveArtworkCategories(): Promise<ArtworkCategory[]>;
   createArtworkCategory(category: InsertArtworkCategory): Promise<ArtworkCategory>;
-  updateArtworkCategory(id: number, updates: Partial<InsertArtworkCategory>): Promise<ArtworkCategory>;
+  updateArtworkCategory(
+    id: number,
+    updates: Partial<InsertArtworkCategory>
+  ): Promise<ArtworkCategory>;
   deleteArtworkCategory(id: number): Promise<void>;
-  
+
   // Order Management
   getAllArtworkOrders(): Promise<ArtworkOrder[]>;
   getArtworkOrder(id: number): Promise<ArtworkOrder | undefined>;
@@ -273,11 +317,11 @@ export interface IStorage {
   createArtworkOrder(order: InsertArtworkOrder): Promise<ArtworkOrder>;
   updateArtworkOrder(id: number, updates: Partial<InsertArtworkOrder>): Promise<ArtworkOrder>;
   updateOrderStatus(orderId: string, status: string): Promise<ArtworkOrder>;
-  
+
   // Studio Settings
   getStudioSettings(): Promise<StudioSettings | undefined>;
   updateStudioSettings(settings: InsertStudioSettings): Promise<StudioSettings>;
-  
+
   // Analytics & Stats
   getSamFoxDashboardStats(): Promise<{
     totalArtworks: number;
@@ -289,15 +333,34 @@ export interface IStorage {
     pendingOrders: number;
     popularCategory: string;
   }>;
-  
+
   // Seed SamFox Data
   seedSamFoxData(): Promise<void>;
+
+  // Marketplace Packages
+  getAllMarketplacePackages(): Promise<MarketplacePackage[]>;
+  getMarketplacePackage(id: number): Promise<MarketplacePackage | undefined>;
+  getMarketplacePackagesByBrand(brandId: number): Promise<MarketplacePackage[]>;
+  getMarketplacePackagesByTier(tier: string): Promise<MarketplacePackage[]>;
+  createMarketplacePackage(pkg: InsertMarketplacePackage): Promise<MarketplacePackage>;
+  updateMarketplacePackage(
+    id: number,
+    updates: Partial<InsertMarketplacePackage>
+  ): Promise<MarketplacePackage>;
+  incrementPackageDownloadCount(id: number): Promise<void>;
+
+  // Package Versions
+  getPackageVersions(packageId: number): Promise<PackageVersion[]>;
+  createPackageVersion(version: InsertPackageVersion): Promise<PackageVersion>;
+
+  // Package Downloads
+  createPackageDownload(download: InsertPackageDownload): Promise<PackageDownload>;
+  updatePackageDownloadCompleted(id: number, completed: boolean): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
-  
   // Add missing interface methods for complete Seedwave portal integration
-  
+
   // Heritage Portal - Family Members
   async getAllFamilyMembers(userId: string): Promise<FamilyMember[]> {
     return await db.select().from(familyMembers).where(eq(familyMembers.userId, userId));
@@ -313,7 +376,10 @@ export class DatabaseStorage implements IStorage {
     return result;
   }
 
-  async updateFamilyMember(id: number, updates: Partial<InsertFamilyMember>): Promise<FamilyMember> {
+  async updateFamilyMember(
+    id: number,
+    updates: Partial<InsertFamilyMember>
+  ): Promise<FamilyMember> {
     const [result] = await db
       .update(familyMembers)
       .set(updates)
@@ -332,7 +398,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getHeritageDocument(id: number): Promise<HeritageDocument | undefined> {
-    const [document] = await db.select().from(heritageDocuments).where(eq(heritageDocuments.id, id));
+    const [document] = await db
+      .select()
+      .from(heritageDocuments)
+      .where(eq(heritageDocuments.id, id));
     return document;
   }
 
@@ -341,7 +410,10 @@ export class DatabaseStorage implements IStorage {
     return result;
   }
 
-  async updateHeritageDocument(id: number, updates: Partial<InsertHeritageDocument>): Promise<HeritageDocument> {
+  async updateHeritageDocument(
+    id: number,
+    updates: Partial<InsertHeritageDocument>
+  ): Promise<HeritageDocument> {
     const [result] = await db
       .update(heritageDocuments)
       .set(updates)
@@ -355,10 +427,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async searchHeritageDocuments(userId: string, query: string): Promise<HeritageDocument[]> {
-    return await db
-      .select()
-      .from(heritageDocuments)
-      .where(eq(heritageDocuments.userId, userId));
+    return await db.select().from(heritageDocuments).where(eq(heritageDocuments.userId, userId));
   }
 
   // Heritage Portal - Family Events
@@ -391,17 +460,23 @@ export class DatabaseStorage implements IStorage {
 
   // Heritage Portal - Heritage Metrics
   async getHeritageMetrics(userId: string): Promise<HeritageMetrics | undefined> {
-    const [metrics] = await db.select().from(heritageMetrics).where(eq(heritageMetrics.userId, userId));
+    const [metrics] = await db
+      .select()
+      .from(heritageMetrics)
+      .where(eq(heritageMetrics.userId, userId));
     return metrics;
   }
 
-  async updateHeritageMetrics(userId: string, metrics: InsertHeritageMetrics): Promise<HeritageMetrics> {
+  async updateHeritageMetrics(
+    userId: string,
+    metrics: InsertHeritageMetrics
+  ): Promise<HeritageMetrics> {
     const [result] = await db
       .insert(heritageMetrics)
       .values({ ...metrics, userId })
       .onConflictDoUpdate({
         target: heritageMetrics.userId,
-        set: metrics
+        set: metrics,
       })
       .returning();
     return result;
@@ -410,10 +485,10 @@ export class DatabaseStorage implements IStorage {
     return {
       totalNodes: 15847,
       activeConnections: 9234,
-      dataProcessed: "2.4 PB",
-      uptime: "99.97%",
-      lastUpdate: new Date().toISOString()
-    }
+      dataProcessed: '2.4 PB',
+      uptime: '99.97%',
+      lastUpdate: new Date().toISOString(),
+    };
   }
 
   // Admin Panel Brands operations
@@ -422,26 +497,27 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAdminPanelBrandsBySector(sectorKey: string): Promise<AdminPanelBrand[]> {
-    return await db.select().from(adminPanelBrands).where(eq(adminPanelBrands.sectorKey, sectorKey));
+    return await db
+      .select()
+      .from(adminPanelBrands)
+      .where(eq(adminPanelBrands.sectorKey, sectorKey));
   }
 
   async createAdminPanelBrand(brandData: InsertAdminPanelBrand): Promise<AdminPanelBrand> {
-    const [brand] = await db
-      .insert(adminPanelBrands)
-      .values([brandData])
-      .returning();
+    const [brand] = await db.insert(adminPanelBrands).values([brandData]).returning();
     return brand;
   }
 
-  async seedAdminPanelBrands(): Promise<{ success: boolean, message: string }> {
+  async seedAdminPanelBrands(): Promise<{ success: boolean; message: string }> {
     try {
       // Check if already seeded
       const existingBrands = await db.select().from(adminPanelBrands).limit(1);
       if (existingBrands.length > 0) {
-        return { success: true, message: "Admin panel brands already seeded" };
+        return { success: true, message: 'Admin panel brands already seeded' };
       }
 
-      const { ADMIN_PANEL_SECTOR_DATA, SECTOR_MAPPING } = await import('./seed-admin-panel-data.js');
+      const { ADMIN_PANEL_SECTOR_DATA, SECTOR_MAPPING } =
+        await import('./seed-admin-panel-data.js');
       let totalInserted = 0;
 
       // Insert all admin panel brands from comprehensive arrays
@@ -455,7 +531,7 @@ export class DatabaseStorage implements IStorage {
         for (let i = 0; i < brands.length; i++) {
           const brand = brands[i];
           const subNode = subNodes[i] ? [subNodes[i]] : [];
-          
+
           await this.createAdminPanelBrand({
             sectorKey,
             sectorName: sectorInfo.name,
@@ -463,24 +539,24 @@ export class DatabaseStorage implements IStorage {
             brandName: brand,
             subNodes: subNode,
             isCore: true,
-            status: "active",
+            status: 'active',
             metadata: {
               sectorId: sectorInfo.id,
               arrayIndex: i,
-              importedFrom: "interns.seedwave.faa.zone",
-              originalSource: "admin_panel_full_arrays.html"
-            }
+              importedFrom: 'interns.seedwave.faa.zone',
+              originalSource: 'admin_panel_full_arrays.html',
+            },
           });
           totalInserted++;
         }
       }
 
-      return { 
-        success: true, 
-        message: `Successfully seeded ${totalInserted} admin panel brands from ${Object.keys(ADMIN_PANEL_SECTOR_DATA).length} sectors` 
+      return {
+        success: true,
+        message: `Successfully seeded ${totalInserted} admin panel brands from ${Object.keys(ADMIN_PANEL_SECTOR_DATA).length} sectors`,
       };
     } catch (error) {
-      console.error("Error seeding admin panel brands:", error);
+      console.error('Error seeding admin panel brands:', error);
       return { success: false, message: `Failed to seed: ${(error as Error).message}` };
     }
   }
@@ -510,17 +586,17 @@ export class DatabaseStorage implements IStorage {
       // PERFORMANCE: Cache sectors and limit if needed
       return await db.select().from(sectors).limit(100);
     } catch (error) {
-      console.warn("Database unavailable for sectors, using comprehensive fallback data:", error);
-      
+      console.warn('Database unavailable for sectors, using comprehensive fallback data:', error);
+
       // FALLBACK: Generate sectors from comprehensive data
       const { COMPREHENSIVE_BRAND_DATA } = await import('../shared/schema');
       const fallbackSectors: Sector[] = [];
-      
+
       let sectorId = 1;
       Object.entries(COMPREHENSIVE_BRAND_DATA).forEach(([sectorKey, sectorData]: [string, any]) => {
         const coreBrands = sectorData.brands?.length || 0;
         const subNodes = sectorData.nodes?.length || 0;
-        
+
         fallbackSectors.push({
           id: sectorId++,
           name: sectorData.name,
@@ -528,16 +604,16 @@ export class DatabaseStorage implements IStorage {
           description: `${sectorData.name.replace(/[🔥🌱🏭🧠⚡🏦💊🎨🛡️🌐🏢🚗🎓📱🧪🔬⚖️🏠🌍🍎🌿📊🎯🛒📦🧮💼🔌⚙️🌊💡🎮🔒]/g, '').trim()} solutions and infrastructure`,
           brandCount: coreBrands,
           subnodeCount: subNodes,
-          price: "79.99",
-          currency: "USD",
+          price: '79.99',
+          currency: 'USD',
           metadata: {
             sectorKey,
             totalElements: coreBrands + subNodes,
-            planVersions: sectorData.planVersions || ["V9"]
-          }
+            planVersions: sectorData.planVersions || ['V9'],
+          },
         });
       });
-      
+
       return fallbackSectors;
     }
   }
@@ -548,10 +624,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createSector(insertSector: InsertSector): Promise<Sector> {
-    const [sector] = await db
-      .insert(sectors)
-      .values(insertSector)
-      .returning();
+    const [sector] = await db.insert(sectors).values(insertSector).returning();
     return sector;
   }
 
@@ -561,19 +634,19 @@ export class DatabaseStorage implements IStorage {
       // PERFORMANCE: Limit to prevent massive data transfers
       return await db.select().from(brands).limit(500);
     } catch (error) {
-      console.warn("Database unavailable for brands, using comprehensive fallback data:", error);
-      
+      console.warn('Database unavailable for brands, using comprehensive fallback data:', error);
+
       // FALLBACK: Generate brands from comprehensive data
       const { COMPREHENSIVE_BRAND_DATA } = await import('../shared/schema');
       const fallbackBrands: Brand[] = [];
-      
+
       let brandId = 1;
       let sectorId = 1;
-      
+
       Object.entries(COMPREHENSIVE_BRAND_DATA).forEach(([sectorKey, sectorData]: [string, any]) => {
         const brands = sectorData.brands || [];
         const nodes = sectorData.nodes || [];
-        
+
         // Add core brands
         brands.forEach((brandName: string, index: number) => {
           fallbackBrands.push({
@@ -581,19 +654,19 @@ export class DatabaseStorage implements IStorage {
             name: brandName,
             description: `Professional ${sectorData.name.replace(/[🔥🌱🏭🧠⚡🏦💊🎨🛡️🌐🏢🚗🎓📱🧪🔬⚖️🏠🌍🍎🌿📊🎯🛒📦🧮💼🔌⚙️🌊💡🎮🔒]/g, '').trim()} solution`,
             sectorId,
-            integration: ["VaultMesh™", "HotStack", "FAA.ZONE™"][index % 3],
-            status: "active",
+            integration: ['VaultMesh™', 'HotStack', 'FAA.ZONE™'][index % 3],
+            status: 'active',
             isCore: true,
             parentId: null,
             metadata: {
               sectorKey,
               brandIndex: index,
-              type: "core"
+              type: 'core',
             },
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
           });
         });
-        
+
         // Add sub-nodes
         nodes.forEach((nodeName: string, index: number) => {
           const parentBrandId = brandId - brands.length + (index % brands.length);
@@ -602,22 +675,22 @@ export class DatabaseStorage implements IStorage {
             name: nodeName,
             description: `${nodeName} sub-node for enhanced ${sectorData.name.replace(/[🔥🌱🏭🧠⚡🏦💊🎨🛡️🌐🏢🚗🎓📱🧪🔬⚖️🏠🌍🍎🌿📊🎯🛒📦🧮💼🔌⚙️🌊💡🎮🔒]/g, '').trim()} functionality`,
             sectorId,
-            integration: ["VaultMesh™", "HotStack", "FAA.ZONE™"][index % 3],
-            status: "active",
+            integration: ['VaultMesh™', 'HotStack', 'FAA.ZONE™'][index % 3],
+            status: 'active',
             isCore: false,
             parentId: parentBrandId,
             metadata: {
               sectorKey,
               nodeIndex: index,
-              type: "subnode"
+              type: 'subnode',
             },
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
           });
         });
-        
+
         sectorId++;
       });
-      
+
       return fallbackBrands.slice(0, 500); // Limit to 500 as per original logic
     }
   }
@@ -626,13 +699,11 @@ export class DatabaseStorage implements IStorage {
     if (!query) {
       return await db.select().from(brands);
     }
-    
-    return await db.select().from(brands).where(
-      or(
-        ilike(brands.name, `%${query}%`),
-        ilike(brands.description, `%${query}%`)
-      )
-    );
+
+    return await db
+      .select()
+      .from(brands)
+      .where(or(ilike(brands.name, `%${query}%`), ilike(brands.description, `%${query}%`)));
   }
 
   async getBrandsBySector(sectorId: number): Promise<Brand[]> {
@@ -645,10 +716,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createBrand(insertBrand: InsertBrand): Promise<Brand> {
-    const [brand] = await db
-      .insert(brands)
-      .values(insertBrand)
-      .returning();
+    const [brand] = await db.insert(brands).values(insertBrand).returning();
     return brand;
   }
 
@@ -675,36 +743,38 @@ export class DatabaseStorage implements IStorage {
       // OPTIMIZED: Single consolidated query instead of 13 separate calls
       const [brandsStats, tableStats, revenueStats] = await Promise.all([
         // Single brands query with all aggregations
-        db.select({
-          totalBrands: count(),
-          coreBrands: sql<number>`COUNT(CASE WHEN is_core = true THEN 1 END)`,
-          subNodes: sql<number>`COUNT(CASE WHEN parent_id IS NOT NULL THEN 1 END)`,
-          activeBrands: sql<number>`COUNT(CASE WHEN status = 'active' THEN 1 END)`,
-          tier1: sql<number>`COUNT(CASE WHEN integration = 'VaultMesh™' THEN 1 END)`,
-          tier2: sql<number>`COUNT(CASE WHEN integration = 'HotStack' THEN 1 END)`,
-          tier3: sql<number>`COUNT(CASE WHEN integration = 'FAA.ZONE™' THEN 1 END)`
-        }).from(brands),
-        
+        db
+          .select({
+            totalBrands: count(),
+            coreBrands: sql<number>`COUNT(CASE WHEN is_core = true THEN 1 END)`,
+            subNodes: sql<number>`COUNT(CASE WHEN parent_id IS NOT NULL THEN 1 END)`,
+            activeBrands: sql<number>`COUNT(CASE WHEN status = 'active' THEN 1 END)`,
+            tier1: sql<number>`COUNT(CASE WHEN integration = 'VaultMesh™' THEN 1 END)`,
+            tier2: sql<number>`COUNT(CASE WHEN integration = 'HotStack' THEN 1 END)`,
+            tier3: sql<number>`COUNT(CASE WHEN integration = 'FAA.ZONE™' THEN 1 END)`,
+          })
+          .from(brands),
+
         // Parallel table counts
         Promise.all([
           db.select({ count: count() }).from(sectors),
           db.select({ count: count() }).from(legalDocuments),
           db.select({ count: count() }).from(repositories),
-          db.select({ count: count() }).from(payments)
+          db.select({ count: count() }).from(payments),
         ]),
-        
+
         // Revenue calculation
-        db.select({ sum: sql<number>`COALESCE(SUM(CAST(amount AS NUMERIC)), 0)` }).from(payments)
+        db.select({ sum: sql<number>`COALESCE(SUM(CAST(amount AS NUMERIC)), 0)` }).from(payments),
       ]);
 
       const brandData = brandsStats[0];
       const [sectorsCount, documentsCount, reposCount, paymentsCount] = tableStats;
       const revenueData = revenueStats[0];
-      
+
       const totalElements = Number(brandData?.totalBrands || 0);
       const activeBrands = Number(brandData?.activeBrands || 0);
       const marketPenetration = totalElements > 0 ? (activeBrands / totalElements) * 100 : 0;
-      
+
       return {
         totalElements,
         coreBrands: Number(brandData?.coreBrands || 0),
@@ -716,31 +786,35 @@ export class DatabaseStorage implements IStorage {
         integrationTiers: {
           tier1: Number(brandData?.tier1 || 0),
           tier2: Number(brandData?.tier2 || 0),
-          tier3: Number(brandData?.tier3 || 0)
+          tier3: Number(brandData?.tier3 || 0),
         },
         globalRevenue: Math.floor(Number(revenueData?.sum || 0)).toString(),
         activeBrands,
         marketPenetration: Math.round(marketPenetration * 10) / 10,
-        revenueGrowth: Number(paymentsCount[0]?.count || 0) > 0 ? Math.round((Number(paymentsCount[0]?.count || 0) / 30) * 100) / 100 : 0
+        revenueGrowth:
+          Number(paymentsCount[0]?.count || 0) > 0
+            ? Math.round((Number(paymentsCount[0]?.count || 0) / 30) * 100) / 100
+            : 0,
       };
     } catch (error) {
-      console.warn("Database unavailable, using comprehensive ecosystem fallback data:", error);
-      
+      console.warn('Database unavailable, using comprehensive ecosystem fallback data:', error);
+
       // FALLBACK: Use comprehensive ecosystem data from schema
-      const { COMPREHENSIVE_BRAND_DATA, GLOBAL_ECOSYSTEM_METRICS } = await import('../shared/schema');
-      
+      const { COMPREHENSIVE_BRAND_DATA, GLOBAL_ECOSYSTEM_METRICS } =
+        await import('../shared/schema');
+
       // Calculate totals from comprehensive data
       let totalCoreBrands = 0;
       let totalSubNodes = 0;
       let totalSectors = Object.keys(COMPREHENSIVE_BRAND_DATA).length;
-      
+
       Object.values(COMPREHENSIVE_BRAND_DATA).forEach((sectorData: any) => {
         totalCoreBrands += sectorData.brands?.length || 0;
         totalSubNodes += sectorData.nodes?.length || 0;
       });
-      
+
       const totalElements = totalCoreBrands + totalSubNodes;
-      
+
       return {
         totalElements,
         coreBrands: totalCoreBrands,
@@ -752,24 +826,29 @@ export class DatabaseStorage implements IStorage {
         integrationTiers: {
           tier1: Math.floor(totalCoreBrands * 0.4), // 40% VaultMesh™
           tier2: Math.floor(totalCoreBrands * 0.35), // 35% HotStack
-          tier3: Math.floor(totalCoreBrands * 0.25)  // 25% FAA.ZONE™
+          tier3: Math.floor(totalCoreBrands * 0.25), // 25% FAA.ZONE™
         },
-        globalRevenue: "2847562",
+        globalRevenue: '2847562',
         activeBrands: Math.floor(totalCoreBrands * 0.85), // 85% active
         marketPenetration: 87.4,
-        revenueGrowth: 23.6
+        revenueGrowth: 23.6,
       };
     }
   }
 
   // PAGINATED BRANDS - Only fetch what's needed for display
-  async getBrandsPaginated(offset: number, limit: number, search?: string, sectorId?: number): Promise<{
+  async getBrandsPaginated(
+    offset: number,
+    limit: number,
+    search?: string,
+    sectorId?: number
+  ): Promise<{
     brands: Brand[];
     total: number;
   }> {
     let query = db.select().from(brands);
     let countQuery = db.select({ count: count() }).from(brands);
-    
+
     // Apply filters to both data and count queries
     if (search) {
       const searchCondition = or(
@@ -779,21 +858,21 @@ export class DatabaseStorage implements IStorage {
       query = query.where(searchCondition);
       countQuery = countQuery.where(searchCondition);
     }
-    
+
     if (sectorId) {
       query = query.where(eq(brands.sectorId, sectorId));
       countQuery = countQuery.where(eq(brands.sectorId, sectorId));
     }
-    
+
     // Get total count and paginated results
     const [totalResult, brandsResult] = await Promise.all([
       countQuery,
-      query.limit(limit).offset(offset)
+      query.limit(limit).offset(offset),
     ]);
-    
+
     return {
       brands: brandsResult,
-      total: Number(totalResult[0]?.count || 0)
+      total: Number(totalResult[0]?.count || 0),
     };
   }
 
@@ -819,10 +898,7 @@ export class DatabaseStorage implements IStorage {
       return updated;
     } else {
       // Create new if doesn't exist
-      const [created] = await db
-        .insert(systemStatus)
-        .values({ service, status })
-        .returning();
+      const [created] = await db.insert(systemStatus).values({ service, status }).returning();
       return created;
     }
   }
@@ -835,12 +911,9 @@ export class DatabaseStorage implements IStorage {
   async createLegalDocument(insertDoc: InsertLegalDocument): Promise<LegalDocument> {
     const docToInsert = {
       ...insertDoc,
-      tags: Array.isArray(insertDoc.tags) ? [...insertDoc.tags] : []
+      tags: Array.isArray(insertDoc.tags) ? [...insertDoc.tags] : [],
     };
-    const [doc] = await db
-      .insert(legalDocuments)
-      .values([docToInsert])
-      .returning();
+    const [doc] = await db.insert(legalDocuments).values([docToInsert]).returning();
     return doc;
   }
 
@@ -857,13 +930,13 @@ export class DatabaseStorage implements IStorage {
     if (!query) {
       return await db.select().from(repositories);
     }
-    
-    return await db.select().from(repositories).where(
-      or(
-        ilike(repositories.name, `%${query}%`),
-        ilike(repositories.description, `%${query}%`)
-      )
-    );
+
+    return await db
+      .select()
+      .from(repositories)
+      .where(
+        or(ilike(repositories.name, `%${query}%`), ilike(repositories.description, `%${query}%`))
+      );
   }
 
   async getRepositoriesByCategory(category: string): Promise<Repository[]> {
@@ -871,10 +944,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createRepository(insertRepo: InsertRepository): Promise<Repository> {
-    const [repo] = await db
-      .insert(repositories)
-      .values(insertRepo)
-      .returning();
+    const [repo] = await db.insert(repositories).values(insertRepo).returning();
     return repo;
   }
 
@@ -888,10 +958,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createPayment(insertPayment: InsertPayment): Promise<Payment> {
-    const [payment] = await db
-      .insert(payments)
-      .values(insertPayment)
-      .returning();
+    const [payment] = await db.insert(payments).values(insertPayment).returning();
     return payment;
   }
 
@@ -901,20 +968,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updatePayment(id: number, updates: Partial<InsertPayment>): Promise<Payment> {
-    const [payment] = await db
-      .update(payments)
-      .set(updates)
-      .where(eq(payments.id, id))
-      .returning();
+    const [payment] = await db.update(payments).set(updates).where(eq(payments.id, id)).returning();
     return payment;
   }
 
   // Banimal Integration Methods
-  async createBanimalTransaction(transaction: InsertBanimalTransaction): Promise<BanimalTransaction> {
-    const [result] = await db
-      .insert(banimalTransactions)
-      .values(transaction)
-      .returning();
+  async createBanimalTransaction(
+    transaction: InsertBanimalTransaction
+  ): Promise<BanimalTransaction> {
+    const [result] = await db.insert(banimalTransactions).values(transaction).returning();
     return result;
   }
 
@@ -929,11 +991,10 @@ export class DatabaseStorage implements IStorage {
       .where(eq(banimalTransactions.id, id));
   }
 
-  async createCharitableDistribution(distribution: InsertCharitableDistribution): Promise<CharitableDistribution> {
-    const [result] = await db
-      .insert(charitableDistributions)
-      .values(distribution)
-      .returning();
+  async createCharitableDistribution(
+    distribution: InsertCharitableDistribution
+  ): Promise<CharitableDistribution> {
+    const [result] = await db.insert(charitableDistributions).values(distribution).returning();
     return result;
   }
 
@@ -953,10 +1014,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createVaultAction(action: InsertVaultAction): Promise<VaultAction> {
-    const [result] = await db
-      .insert(vaultActions)
-      .values(action)
-      .returning();
+    const [result] = await db.insert(vaultActions).values(action).returning();
     return result;
   }
 
@@ -979,19 +1037,25 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getArtworksByCategory(category: string): Promise<Artwork[]> {
-    return await db.select().from(artworks)
+    return await db
+      .select()
+      .from(artworks)
       .where(eq(artworks.category, category))
       .orderBy(desc(artworks.createdAt));
   }
 
   async getFeaturedArtworks(): Promise<Artwork[]> {
-    return await db.select().from(artworks)
+    return await db
+      .select()
+      .from(artworks)
       .where(eq(artworks.featured, true))
       .orderBy(desc(artworks.createdAt));
   }
 
   async getAvailableArtworks(): Promise<Artwork[]> {
-    return await db.select().from(artworks)
+    return await db
+      .select()
+      .from(artworks)
       .where(eq(artworks.isAvailable, true))
       .orderBy(desc(artworks.createdAt));
   }
@@ -1015,7 +1079,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async searchArtworks(query: string): Promise<Artwork[]> {
-    return await db.select().from(artworks)
+    return await db
+      .select()
+      .from(artworks)
       .where(
         or(
           ilike(artworks.title, `%${query}%`),
@@ -1028,7 +1094,9 @@ export class DatabaseStorage implements IStorage {
 
   // Portfolio Management
   async getAllPortfolioProjects(): Promise<PortfolioProject[]> {
-    return await db.select().from(portfolioProjects)
+    return await db
+      .select()
+      .from(portfolioProjects)
       .orderBy(portfolioProjects.sortOrder, desc(portfolioProjects.createdAt));
   }
 
@@ -1038,13 +1106,17 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getFeaturedPortfolioProjects(): Promise<PortfolioProject[]> {
-    return await db.select().from(portfolioProjects)
+    return await db
+      .select()
+      .from(portfolioProjects)
       .where(eq(portfolioProjects.featured, true))
       .orderBy(portfolioProjects.sortOrder, desc(portfolioProjects.createdAt));
   }
 
   async getPortfolioProjectsByCategory(category: string): Promise<PortfolioProject[]> {
-    return await db.select().from(portfolioProjects)
+    return await db
+      .select()
+      .from(portfolioProjects)
       .where(eq(portfolioProjects.category, category))
       .orderBy(portfolioProjects.sortOrder, desc(portfolioProjects.createdAt));
   }
@@ -1054,7 +1126,10 @@ export class DatabaseStorage implements IStorage {
     return result;
   }
 
-  async updatePortfolioProject(id: number, updates: Partial<InsertPortfolioProject>): Promise<PortfolioProject> {
+  async updatePortfolioProject(
+    id: number,
+    updates: Partial<InsertPortfolioProject>
+  ): Promise<PortfolioProject> {
     const [result] = await db
       .update(portfolioProjects)
       .set({ ...updates, updatedAt: new Date() })
@@ -1069,17 +1144,24 @@ export class DatabaseStorage implements IStorage {
 
   // Category Management
   async getAllArtworkCategories(): Promise<ArtworkCategory[]> {
-    return await db.select().from(artworkCategories)
+    return await db
+      .select()
+      .from(artworkCategories)
       .orderBy(artworkCategories.sortOrder, artworkCategories.name);
   }
 
   async getArtworkCategory(id: number): Promise<ArtworkCategory | undefined> {
-    const [category] = await db.select().from(artworkCategories).where(eq(artworkCategories.id, id));
+    const [category] = await db
+      .select()
+      .from(artworkCategories)
+      .where(eq(artworkCategories.id, id));
     return category;
   }
 
   async getActiveArtworkCategories(): Promise<ArtworkCategory[]> {
-    return await db.select().from(artworkCategories)
+    return await db
+      .select()
+      .from(artworkCategories)
       .where(eq(artworkCategories.isActive, true))
       .orderBy(artworkCategories.sortOrder, artworkCategories.name);
   }
@@ -1089,7 +1171,10 @@ export class DatabaseStorage implements IStorage {
     return result;
   }
 
-  async updateArtworkCategory(id: number, updates: Partial<InsertArtworkCategory>): Promise<ArtworkCategory> {
+  async updateArtworkCategory(
+    id: number,
+    updates: Partial<InsertArtworkCategory>
+  ): Promise<ArtworkCategory> {
     const [result] = await db
       .update(artworkCategories)
       .set(updates)
@@ -1118,7 +1203,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getOrdersByArtwork(artworkId: number): Promise<ArtworkOrder[]> {
-    return await db.select().from(artworkOrders)
+    return await db
+      .select()
+      .from(artworkOrders)
       .where(eq(artworkOrders.artworkId, artworkId))
       .orderBy(desc(artworkOrders.createdAt));
   }
@@ -1128,7 +1215,10 @@ export class DatabaseStorage implements IStorage {
     return result;
   }
 
-  async updateArtworkOrder(id: number, updates: Partial<InsertArtworkOrder>): Promise<ArtworkOrder> {
+  async updateArtworkOrder(
+    id: number,
+    updates: Partial<InsertArtworkOrder>
+  ): Promise<ArtworkOrder> {
     const [result] = await db
       .update(artworkOrders)
       .set({ ...updates, updatedAt: new Date() })
@@ -1155,7 +1245,7 @@ export class DatabaseStorage implements IStorage {
   async updateStudioSettings(settings: InsertStudioSettings): Promise<StudioSettings> {
     // Check if settings exist
     const existing = await this.getStudioSettings();
-    
+
     if (existing) {
       const [result] = await db
         .update(studioSettings)
@@ -1182,34 +1272,39 @@ export class DatabaseStorage implements IStorage {
   }> {
     const [artworkStats, orderStats, categoryStats, portfolioStats] = await Promise.all([
       // Artwork statistics
-      db.select({
-        totalArtworks: count(),
-        featuredArtworks: sql<number>`COUNT(CASE WHEN featured = true THEN 1 END)`
-      }).from(artworks),
-      
+      db
+        .select({
+          totalArtworks: count(),
+          featuredArtworks: sql<number>`COUNT(CASE WHEN featured = true THEN 1 END)`,
+        })
+        .from(artworks),
+
       // Order statistics
-      db.select({
-        totalSales: sql<number>`COUNT(CASE WHEN status = 'completed' THEN 1 END)`,
-        pendingOrders: sql<number>`COUNT(CASE WHEN status = 'pending' THEN 1 END)`,
-        totalRevenue: sql<number>`COALESCE(SUM(CASE WHEN status = 'completed' THEN CAST(amount AS NUMERIC) END), 0)`
-      }).from(artworkOrders),
-      
+      db
+        .select({
+          totalSales: sql<number>`COUNT(CASE WHEN status = 'completed' THEN 1 END)`,
+          pendingOrders: sql<number>`COUNT(CASE WHEN status = 'pending' THEN 1 END)`,
+          totalRevenue: sql<number>`COALESCE(SUM(CASE WHEN status = 'completed' THEN CAST(amount AS NUMERIC) END), 0)`,
+        })
+        .from(artworkOrders),
+
       // Category count
       db.select({ categories: count() }).from(artworkCategories),
-      
+
       // Portfolio count
-      db.select({ portfolioProjects: count() }).from(portfolioProjects)
+      db.select({ portfolioProjects: count() }).from(portfolioProjects),
     ]);
 
     // Get most popular category
-    const [popularCategoryResult] = await db.select({
-      category: artworks.category,
-      count: count()
-    })
-    .from(artworks)
-    .groupBy(artworks.category)
-    .orderBy(desc(count()))
-    .limit(1);
+    const [popularCategoryResult] = await db
+      .select({
+        category: artworks.category,
+        count: count(),
+      })
+      .from(artworks)
+      .groupBy(artworks.category)
+      .orderBy(desc(count()))
+      .limit(1);
 
     return {
       totalArtworks: Number(artworkStats[0]?.totalArtworks || 0),
@@ -1219,7 +1314,7 @@ export class DatabaseStorage implements IStorage {
       portfolioProjects: Number(portfolioStats[0]?.portfolioProjects || 0),
       categories: Number(categoryStats[0]?.categories || 0),
       pendingOrders: Number(orderStats[0]?.pendingOrders || 0),
-      popularCategory: popularCategoryResult?.category || 'Character Art'
+      popularCategory: popularCategoryResult?.category || 'Character Art',
     };
   }
 
@@ -1234,16 +1329,24 @@ export class DatabaseStorage implements IStorage {
       }
 
       console.log('🎨 Seeding SamFox Studio with artwork gallery...');
-      
+
       // Seed categories first
       const categories = [
-        { name: 'Character Art', emoji: '🎭', description: 'Original character designs and illustrations' },
+        {
+          name: 'Character Art',
+          emoji: '🎭',
+          description: 'Original character designs and illustrations',
+        },
         { name: 'Digital Art', emoji: '🎨', description: 'Digital paintings and artwork' },
-        { name: 'Brand Design', emoji: '🏷️', description: 'Brand identity and marketing materials' },
+        {
+          name: 'Brand Design',
+          emoji: '🏷️',
+          description: 'Brand identity and marketing materials',
+        },
         { name: 'Typography', emoji: '✍️', description: 'Text-based artistic designs' },
         { name: 'Abstract', emoji: '🌀', description: 'Abstract and experimental art' },
         { name: 'Portrait', emoji: '👤', description: 'Portrait and people artwork' },
-        { name: 'Cultural Art', emoji: '🌍', description: 'Cultural tribute and heritage art' }
+        { name: 'Cultural Art', emoji: '🌍', description: 'Cultural tribute and heritage art' },
       ];
 
       for (const category of categories) {
@@ -1263,22 +1366,22 @@ export class DatabaseStorage implements IStorage {
           theme: 'Mama & Tata - celebrating South African heritage',
           featured: true,
           sortOrder: 1,
-          artistId: '45291790' // Default user
+          artistId: '45291790', // Default user
         },
         {
           title: 'Banimal Collection',
-          description: 'Animal-themed children\'s clothing and soft toy brand',
+          description: "Animal-themed children's clothing and soft toy brand",
           imageUrl: '/assets/Banimal_1753055992604.png',
           category: 'Brand Design',
-          tags: ['Character Design', 'Children\'s Brand', 'Product Design'],
+          tags: ['Character Design', "Children's Brand", 'Product Design'],
           medium: 'Brand development',
-          style: 'Children\'s product design',
+          style: "Children's product design",
           theme: 'Animal characters for kids',
           clientName: 'Banimal Soft Toys',
           featured: true,
           sortOrder: 2,
-          artistId: '45291790'
-        }
+          artistId: '45291790',
+        },
       ];
 
       for (const project of portfolioProjects) {
@@ -1290,12 +1393,13 @@ export class DatabaseStorage implements IStorage {
         studioName: 'SamFox Creative Studio',
         studioDescription: 'Digital art portfolio and commercial gallery platform',
         artistName: 'SamFox',
-        artistBio: 'Digital artist specializing in character design, cultural art, and brand development',
+        artistBio:
+          'Digital artist specializing in character design, cultural art, and brand development',
         contactEmail: 'hello@samfox.studio',
         socialLinks: {
           linkedin: 'https://linkedin.com/in/samfox',
-          portfolio: 'https://samfox.studio'
-        }
+          portfolio: 'https://samfox.studio',
+        },
       });
 
       console.log('✅ SamFox Studio seeding completed!');
@@ -1314,20 +1418,20 @@ export class DatabaseStorage implements IStorage {
       // Seed SonicGrid connections
       const sonicConnections = [
         {
-          connectionName: "Affirmative Media Processor",
-          connectionType: "media_processing",
-          status: "active" as const,
+          connectionName: 'Affirmative Media Processor',
+          connectionType: 'media_processing',
+          status: 'active' as const,
           documentsProcessed: 1247,
           configuration: {
-            mediaTypes: ["video", "audio", "images"],
-            processingRules: ["affirmative_filter", "child_safety", "content_verification"],
-            outputFormats: ["mp4", "mp3", "webp"]
-          }
+            mediaTypes: ['video', 'audio', 'images'],
+            processingRules: ['affirmative_filter', 'child_safety', 'content_verification'],
+            outputFormats: ['mp4', 'mp3', 'webp'],
+          },
         },
         {
-          connectionName: "Charitable Distribution Hub",
-          connectionType: "payment_distribution",
-          status: "active" as const,
+          connectionName: 'Charitable Distribution Hub',
+          connectionType: 'payment_distribution',
+          status: 'active' as const,
           documentsProcessed: 856,
           configuration: {
             distributionRules: {
@@ -1335,10 +1439,10 @@ export class DatabaseStorage implements IStorage {
               developer: 25,
               operations: 20,
               sonicGrid: 10,
-              vault: 10
-            }
-          }
-        }
+              vault: 10,
+            },
+          },
+        },
       ];
 
       for (const connection of sonicConnections) {
@@ -1348,18 +1452,18 @@ export class DatabaseStorage implements IStorage {
       // Seed sample transactions and distributions
       const sampleTransaction = await this.createBanimalTransaction({
         transactionId: `BAN-${Date.now()}`,
-        productName: "Banimal Soft Toy - Bear",
-        amount: "49.99",
-        userId: "demo-user",
+        productName: 'Banimal Soft Toy - Bear',
+        amount: '49.99',
+        userId: 'demo-user',
         childBeneficiary: "Children's Hospital Trust",
         distributionRules: {
           charity: 35,
           developer: 25,
           operations: 20,
           sonicGrid: 10,
-          vault: 10
+          vault: 10,
         },
-        status: "completed"
+        status: 'completed',
       });
 
       // Create distributions for the sample transaction
@@ -1368,19 +1472,19 @@ export class DatabaseStorage implements IStorage {
         developer: 25,
         operations: 20,
         sonicGrid: 10,
-        vault: 10
+        vault: 10,
       };
-      
+
       const amount = 49.99;
       for (const [type, percentage] of Object.entries(distributionRules)) {
         const distributionAmount = (amount * percentage) / 100;
         await this.createCharitableDistribution({
           transactionId: sampleTransaction.transactionId,
           beneficiaryType: type,
-          beneficiaryName: type === "charity" ? "Children's Hospital Trust" : `${type} beneficiary`,
+          beneficiaryName: type === 'charity' ? "Children's Hospital Trust" : `${type} beneficiary`,
           amount: distributionAmount.toString(),
           percentage,
-          status: "completed"
+          status: 'completed',
         });
       }
 
@@ -1388,20 +1492,20 @@ export class DatabaseStorage implements IStorage {
       await this.createVaultAction({
         vaultSignature: `VS-${Date.now()}`,
         actionId: `VA-${Date.now()}`,
-        actionType: "charitable_distribution",
+        actionType: 'charitable_distribution',
         beneficiary: "Children's Hospital Trust",
         transactionId: sampleTransaction.transactionId,
-        amount: "17.50",
-        status: "completed",
+        amount: '17.50',
+        status: 'completed',
         metadata: {
-          ecosystem: "fruitful_crate_dance",
-          integration: "banimal_giving_loop"
-        }
+          ecosystem: 'fruitful_crate_dance',
+          integration: 'banimal_giving_loop',
+        },
       });
 
-      console.log("✅ Banimal ecosystem data seeded successfully");
+      console.log('✅ Banimal ecosystem data seeded successfully');
     } catch (error) {
-      console.error("❌ Error seeding Banimal data:", error);
+      console.error('❌ Error seeding Banimal data:', error);
     }
   }
 
@@ -1419,24 +1523,27 @@ export class DatabaseStorage implements IStorage {
     return project;
   }
 
-  async processMediaProject(projectId: string, settings: any): Promise<{ success: boolean, message: string }> {
+  async processMediaProject(
+    projectId: string,
+    settings: any
+  ): Promise<{ success: boolean; message: string }> {
     await db
       .update(mediaProjects)
-      .set({ 
-        status: 'processing', 
+      .set({
+        status: 'processing',
         processingSettings: settings,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
       .where(eq(mediaProjects.projectId, projectId));
-    
+
     // Simulate processing progress
     setTimeout(async () => {
       await db
         .update(mediaProjects)
-        .set({ 
-          status: 'completed', 
+        .set({
+          status: 'completed',
           progress: 100,
-          updatedAt: new Date()
+          updatedAt: new Date(),
         })
         .where(eq(mediaProjects.projectId, projectId));
     }, 5000);
@@ -1450,18 +1557,18 @@ export class DatabaseStorage implements IStorage {
 
   async seedInterstellarData(): Promise<void> {
     // Implementation for interstellar data seeding
-    console.log("Interstellar data seeding completed");
+    console.log('Interstellar data seeding completed');
   }
 
   async seedMediaData(): Promise<void> {
     // Check if engines already exist
     const existingEngines = await this.getProcessingEngines();
     if (existingEngines.length > 0) {
-      console.log("✅ Media engines already seeded, skipping...");
+      console.log('✅ Media engines already seeded, skipping...');
       return;
     }
 
-    console.log("🎬 Seeding Media processing engines...");
+    console.log('🎬 Seeding Media processing engines...');
 
     // Seed processing engines
     const engines = [
@@ -1474,13 +1581,13 @@ export class DatabaseStorage implements IStorage {
         configuration: {
           maxConcurrentJobs: 50,
           supportedFormats: ['mp3', 'wav', 'flac', 'aac'],
-          features: ['noise_reduction', 'eq', 'compression', 'reverb']
+          features: ['noise_reduction', 'eq', 'compression', 'reverb'],
         },
         capabilities: {
           realtime: true,
           batch: true,
-          aiEnhanced: true
-        }
+          aiEnhanced: true,
+        },
       },
       {
         engineId: 'MOTION-FLOW-001',
@@ -1491,13 +1598,13 @@ export class DatabaseStorage implements IStorage {
         configuration: {
           maxConcurrentJobs: 25,
           supportedFormats: ['mp4', 'avi', 'mov', 'webm'],
-          features: ['color_grading', 'transitions', 'effects', 'encoding']
+          features: ['color_grading', 'transitions', 'effects', 'encoding'],
         },
         capabilities: {
           realtime: true,
           batch: true,
-          aiEnhanced: true
-        }
+          aiEnhanced: true,
+        },
       },
       {
         engineId: 'MEDIA-SYNC-001',
@@ -1508,21 +1615,21 @@ export class DatabaseStorage implements IStorage {
         configuration: {
           maxConcurrentJobs: 30,
           supportedFormats: ['all'],
-          features: ['sync', 'merge', 'split', 'convert']
+          features: ['sync', 'merge', 'split', 'convert'],
         },
         capabilities: {
           realtime: false,
           batch: true,
-          aiEnhanced: true
-        }
-      }
+          aiEnhanced: true,
+        },
+      },
     ];
 
     for (const engine of engines) {
       await db.insert(processingEngines).values(engine);
     }
 
-    console.log("✅ Media processing engines seeded successfully");
+    console.log('✅ Media processing engines seeded successfully');
   }
 
   // Omnilevel Interstellar operations implementation
@@ -1531,22 +1638,19 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createInterstellarNode(nodeData: InsertInterstellarNode): Promise<InterstellarNode> {
-    const [node] = await db
-      .insert(interstellarNodes)
-      .values(nodeData)
-      .returning();
+    const [node] = await db.insert(interstellarNodes).values(nodeData).returning();
     return node;
   }
 
-  async synchronizeNode(nodeId: string): Promise<{ success: boolean, message: string }> {
+  async synchronizeNode(nodeId: string): Promise<{ success: boolean; message: string }> {
     await db
       .update(interstellarNodes)
-      .set({ 
+      .set({
         status: 'synchronizing',
-        lastSync: new Date()
+        lastSync: new Date(),
       })
       .where(eq(interstellarNodes.nodeId, nodeId));
-    
+
     // Simulate sync operation
     setTimeout(async () => {
       await db
@@ -1559,7 +1663,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getGlobalLogicConfig(): Promise<GlobalLogicConfig | undefined> {
-    const [config] = await db.select()
+    const [config] = await db
+      .select()
       .from(globalLogicConfigs)
       .where(eq(globalLogicConfigs.isActive, true))
       .orderBy(desc(globalLogicConfigs.updatedAt));
@@ -1568,37 +1673,104 @@ export class DatabaseStorage implements IStorage {
 
   async updateGlobalLogicConfig(config: InsertGlobalLogicConfig): Promise<GlobalLogicConfig> {
     // Deactivate existing configs
-    await db.update(globalLogicConfigs)
+    await db
+      .update(globalLogicConfigs)
       .set({ isActive: false })
       .where(eq(globalLogicConfigs.isActive, true));
 
     // Insert new config
-    const [newConfig] = await db.insert(globalLogicConfigs).values([{
-      ...config,
-      configId: `CONFIG-${Date.now()}`,
-      isActive: true,
-      updatedAt: new Date()
-    }]).returning();
+    const [newConfig] = await db
+      .insert(globalLogicConfigs)
+      .values([
+        {
+          ...config,
+          configId: `CONFIG-${Date.now()}`,
+          isActive: true,
+          updatedAt: new Date(),
+        },
+      ])
+      .returning();
 
     return newConfig;
   }
 
   async updateSector(id: number, updates: Partial<InsertSector>): Promise<Sector> {
-    const [sector] = await db
-      .update(sectors)
-      .set(updates)
-      .where(eq(sectors.id, id))
-      .returning();
+    const [sector] = await db.update(sectors).set(updates).where(eq(sectors.id, id)).returning();
     return sector;
   }
 
   async updateBrand(id: number, updates: Partial<InsertBrand>): Promise<Brand> {
-    const [brand] = await db
-      .update(brands)
-      .set(updates)
-      .where(eq(brands.id, id))
-      .returning();
+    const [brand] = await db.update(brands).set(updates).where(eq(brands.id, id)).returning();
     return brand;
+  }
+
+  // ================================================================
+  // MARKETPLACE PACKAGES METHODS
+  // ================================================================
+
+  async getAllMarketplacePackages(): Promise<MarketplacePackage[]> {
+    return await db.select().from(marketplacePackages).where(eq(marketplacePackages.active, true));
+  }
+
+  async getMarketplacePackage(id: number): Promise<MarketplacePackage | undefined> {
+    const [pkg] = await db.select().from(marketplacePackages).where(eq(marketplacePackages.id, id));
+    return pkg;
+  }
+
+  async getMarketplacePackagesByBrand(brandId: number): Promise<MarketplacePackage[]> {
+    return await db
+      .select()
+      .from(marketplacePackages)
+      .where(eq(marketplacePackages.brandId, brandId));
+  }
+
+  async getMarketplacePackagesByTier(tier: string): Promise<MarketplacePackage[]> {
+    return await db
+      .select()
+      .from(marketplacePackages)
+      .where(eq(marketplacePackages.themeTier, tier));
+  }
+
+  async createMarketplacePackage(pkg: InsertMarketplacePackage): Promise<MarketplacePackage> {
+    const [newPackage] = await db.insert(marketplacePackages).values(pkg).returning();
+    return newPackage;
+  }
+
+  async updateMarketplacePackage(
+    id: number,
+    updates: Partial<InsertMarketplacePackage>
+  ): Promise<MarketplacePackage> {
+    const [updatedPackage] = await db
+      .update(marketplacePackages)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(marketplacePackages.id, id))
+      .returning();
+    return updatedPackage;
+  }
+
+  async incrementPackageDownloadCount(id: number): Promise<void> {
+    await db
+      .update(marketplacePackages)
+      .set({ downloadCount: sql`${marketplacePackages.downloadCount} + 1` })
+      .where(eq(marketplacePackages.id, id));
+  }
+
+  async getPackageVersions(packageId: number): Promise<PackageVersion[]> {
+    return await db.select().from(packageVersions).where(eq(packageVersions.packageId, packageId));
+  }
+
+  async createPackageVersion(version: InsertPackageVersion): Promise<PackageVersion> {
+    const [newVersion] = await db.insert(packageVersions).values(version).returning();
+    return newVersion;
+  }
+
+  async createPackageDownload(download: InsertPackageDownload): Promise<PackageDownload> {
+    const [newDownload] = await db.insert(packageDownloads).values(download).returning();
+    return newDownload;
+  }
+
+  async updatePackageDownloadCompleted(id: number, completed: boolean): Promise<void> {
+    await db.update(packageDownloads).set({ completed }).where(eq(packageDownloads.id, id));
   }
 }
 
@@ -1625,13 +1797,13 @@ export class MemStorage implements IStorage {
     this.legalDocuments = new Map();
     this.repositories = new Map();
     this.payments = new Map();
-    this.currentUserId = "1";
+    this.currentUserId = '1';
     this.currentSectorId = 1;
     this.currentBrandId = 1;
     this.currentDocId = 1;
     this.currentRepoId = 1;
     this.currentPaymentId = 1;
-    
+
     // Initialize with sample data based on the provided brand counts
     this.initializeSampleData();
   }
@@ -1639,24 +1811,83 @@ export class MemStorage implements IStorage {
   private initializeSampleData() {
     // Initialize sectors from comprehensive data
     const sectorMappings = [
-      { key: "agriculture", name: "Agriculture & Biotech", emoji: "🌱", description: "Advanced biotech solutions for sustainable farming" },
-      { key: "food", name: "Food, Soil & Farming", emoji: "🥦", description: "Food production and soil management systems" },
-      { key: "banking", name: "Banking & Finance", emoji: "🏦", description: "Secure financial services and banking infrastructure" },
-      { key: "creative", name: "Creative Tech", emoji: "🖋️", description: "Creative technology and digital art solutions" },
-      { key: "packaging", name: "Logistics & Packaging", emoji: "📦", description: "Supply chain and packaging innovations" },
-      { key: "education", name: "Education & IP", emoji: "📚", description: "Educational technology and intellectual property" },
-      { key: "fashion", name: "Fashion & Identity", emoji: "✂", description: "Fashion technology and identity solutions" },
-      { key: "gaming", name: "Gaming & Simulation", emoji: "🎮", description: "Interactive gaming and simulation platforms" },
-      { key: "health", name: "Health & Hygiene", emoji: "🧠", description: "Healthcare and hygiene management systems" },
-      { key: "housing", name: "Housing & Infrastructure", emoji: "🏗️", description: "Smart housing and infrastructure solutions" },
-      { key: "ai-logic", name: "AI, Logic & Grid", emoji: "🧠", description: "Artificial intelligence and logic systems" },
+      {
+        key: 'agriculture',
+        name: 'Agriculture & Biotech',
+        emoji: '🌱',
+        description: 'Advanced biotech solutions for sustainable farming',
+      },
+      {
+        key: 'food',
+        name: 'Food, Soil & Farming',
+        emoji: '🥦',
+        description: 'Food production and soil management systems',
+      },
+      {
+        key: 'banking',
+        name: 'Banking & Finance',
+        emoji: '🏦',
+        description: 'Secure financial services and banking infrastructure',
+      },
+      {
+        key: 'creative',
+        name: 'Creative Tech',
+        emoji: '🖋️',
+        description: 'Creative technology and digital art solutions',
+      },
+      {
+        key: 'packaging',
+        name: 'Logistics & Packaging',
+        emoji: '📦',
+        description: 'Supply chain and packaging innovations',
+      },
+      {
+        key: 'education',
+        name: 'Education & IP',
+        emoji: '📚',
+        description: 'Educational technology and intellectual property',
+      },
+      {
+        key: 'fashion',
+        name: 'Fashion & Identity',
+        emoji: '✂',
+        description: 'Fashion technology and identity solutions',
+      },
+      {
+        key: 'gaming',
+        name: 'Gaming & Simulation',
+        emoji: '🎮',
+        description: 'Interactive gaming and simulation platforms',
+      },
+      {
+        key: 'health',
+        name: 'Health & Hygiene',
+        emoji: '🧠',
+        description: 'Healthcare and hygiene management systems',
+      },
+      {
+        key: 'housing',
+        name: 'Housing & Infrastructure',
+        emoji: '🏗️',
+        description: 'Smart housing and infrastructure solutions',
+      },
+      {
+        key: 'ai-logic',
+        name: 'AI, Logic & Grid',
+        emoji: '🧠',
+        description: 'Artificial intelligence and logic systems',
+      },
     ];
 
     // Create sectors based on actual comprehensive data
     Object.entries(COMPREHENSIVE_BRAND_DATA).forEach(([sectorKey, sectorData]) => {
-      const mapping = sectorMappings.find(m => sectorKey.includes(m.key)) || 
-                     { key: sectorKey, name: sectorData.name, emoji: "🔧", description: `${sectorData.name} solutions` };
-      
+      const mapping = sectorMappings.find((m) => sectorKey.includes(m.key)) || {
+        key: sectorKey,
+        name: sectorData.name,
+        emoji: '🔧',
+        description: `${sectorData.name} solutions`,
+      };
+
       const newSector: Sector = {
         id: this.currentSectorId++,
         name: mapping.name,
@@ -1664,12 +1895,11 @@ export class MemStorage implements IStorage {
         description: mapping.description || null,
         brandCount: sectorData.brands.length,
         subnodeCount: sectorData.nodes.length,
-        price: "29.99",
-        currency: "USD",
-        metadata: null
+        price: '29.99',
+        currency: 'USD',
+        metadata: null,
       };
       this.sectors.set(newSector.id, newSector);
-
     });
 
     // Add Fruitful Crate Dance sectors - comprehensive 6,005+ brand ecosystem
@@ -1681,25 +1911,25 @@ export class MemStorage implements IStorage {
         description: sectorData.description,
         brandCount: sectorData.brands.length,
         subnodeCount: Math.floor(sectorData.brands.length * 0.3), // 30% subnodes per sector
-        price: "49.99",
-        currency: "USD",
-        metadata: null
+        price: '49.99',
+        currency: 'USD',
+        metadata: null,
       };
       this.sectors.set(newSector.id, newSector);
     });
 
     // Initialize system status
     const statusData = [
-      { service: "VaultMesh™", status: "online" },
-      { service: "HotStack", status: "maintenance" },
-      { service: "FAA.ZONE™", status: "online" },
+      { service: 'VaultMesh™', status: 'online' },
+      { service: 'HotStack', status: 'maintenance' },
+      { service: 'FAA.ZONE™', status: 'online' },
     ];
 
-    statusData.forEach(status => {
+    statusData.forEach((status) => {
       const newStatus: SystemStatus = {
         id: this.currentBrandId++,
         ...status,
-        lastChecked: new Date().toISOString()
+        lastChecked: new Date().toISOString(),
       };
       this.systemStatuses.set(status.service, newStatus);
     });
@@ -1708,11 +1938,17 @@ export class MemStorage implements IStorage {
     let brandId = 1;
     Object.entries(COMPREHENSIVE_BRAND_DATA).forEach(([sectorKey, sectorData]) => {
       // Find the matching sector
-      const sector = Array.from(this.sectors.values()).find(s => 
-        s.name.toLowerCase().includes(sectorKey.toLowerCase()) || 
-        s.name.toLowerCase().includes(sectorData.name.toLowerCase().replace(/[🔥🌱🏭🧠⚡🏦💊🎨🛡️🌐🏢🚗🎓📱🧪🔬⚖️🏠🌍🍎🌿📊🎯🛒📦🧮💼🔌⚙️🌊💡🎮🔒]/g, '').trim())
+      const sector = Array.from(this.sectors.values()).find(
+        (s) =>
+          s.name.toLowerCase().includes(sectorKey.toLowerCase()) ||
+          s.name.toLowerCase().includes(
+            sectorData.name
+              .toLowerCase()
+              .replace(/[🔥🌱🏭🧠⚡🏦💊🎨🛡️🌐🏢🚗🎓📱🧪🔬⚖️🏠🌍🍎🌿📊🎯🛒📦🧮💼🔌⚙️🌊💡🎮🔒]/g, '')
+              .trim()
+          )
       );
-      
+
       if (sector) {
         // Create brands using authentic names
         sectorData.brands.forEach((brandName, index) => {
@@ -1721,16 +1957,16 @@ export class MemStorage implements IStorage {
             name: brandName, // Using authentic brand names
             description: `Professional ${sectorData.name.replace(/[🔥🌱🏭🧠⚡🏦💊🎨🛡️🌐🏢🚗🎓📱🧪🔬⚖️🏠🌍🍎🌿📊🎯🛒📦🧮💼🔌⚙️🌊💡🎮🔒]/g, '').trim()} solution powered by ${brandName}`,
             sectorId: sector.id,
-            integration: ["VaultMesh™", "HotStack", "FAA.ZONE™"][index % 3],
-            status: ["active", "maintenance", "active"][index % 3],
+            integration: ['VaultMesh™', 'HotStack', 'FAA.ZONE™'][index % 3],
+            status: ['active', 'maintenance', 'active'][index % 3],
             isCore: true,
             parentId: null,
-            metadata: { 
+            metadata: {
               featured: index < 3,
               sector: sectorKey,
-              planVersions: sectorData.planVersions
+              planVersions: sectorData.planVersions,
             },
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
           };
           this.brands.set(brand.id, brand);
         });
@@ -1767,15 +2003,15 @@ export class MemStorage implements IStorage {
 
   async createSector(insertSector: InsertSector): Promise<Sector> {
     const id = this.currentSectorId++;
-    const sector: Sector = { 
-      ...insertSector, 
+    const sector: Sector = {
+      ...insertSector,
       id,
       description: insertSector.description || null,
       brandCount: insertSector.brandCount || null,
       subnodeCount: insertSector.subnodeCount || null,
-      price: insertSector.price || "29.99",
-      currency: insertSector.currency || "USD",
-      metadata: insertSector.metadata || null
+      price: insertSector.price || '29.99',
+      currency: insertSector.currency || 'USD',
+      metadata: insertSector.metadata || null,
     };
     this.sectors.set(id, sector);
     return sector;
@@ -1788,16 +2024,17 @@ export class MemStorage implements IStorage {
   async getBrandsBySearch(query: string): Promise<Brand[]> {
     const brands = Array.from(this.brands.values());
     if (!query) return brands;
-    
+
     const lowercaseQuery = query.toLowerCase();
-    return brands.filter(brand => 
-      brand.name.toLowerCase().includes(lowercaseQuery) ||
-      brand.description?.toLowerCase().includes(lowercaseQuery)
+    return brands.filter(
+      (brand) =>
+        brand.name.toLowerCase().includes(lowercaseQuery) ||
+        brand.description?.toLowerCase().includes(lowercaseQuery)
     );
   }
 
   async getBrandsBySector(sectorId: number): Promise<Brand[]> {
-    return Array.from(this.brands.values()).filter(brand => brand.sectorId === sectorId);
+    return Array.from(this.brands.values()).filter((brand) => brand.sectorId === sectorId);
   }
 
   async getBrand(id: number): Promise<Brand | undefined> {
@@ -1806,16 +2043,16 @@ export class MemStorage implements IStorage {
 
   async createBrand(insertBrand: InsertBrand): Promise<Brand> {
     const id = this.currentBrandId++;
-    const brand: Brand = { 
-      ...insertBrand, 
+    const brand: Brand = {
+      ...insertBrand,
       id,
       createdAt: new Date().toISOString(),
       description: insertBrand.description || null,
       sectorId: insertBrand.sectorId || null,
-      status: insertBrand.status || "active",
+      status: insertBrand.status || 'active',
       isCore: insertBrand.isCore || null,
       parentId: insertBrand.parentId || null,
-      metadata: insertBrand.metadata || null
+      metadata: insertBrand.metadata || null,
     };
     this.brands.set(id, brand);
     return brand;
@@ -1835,7 +2072,7 @@ export class MemStorage implements IStorage {
       id: existing?.id || this.currentBrandId++,
       service,
       status,
-      lastChecked: new Date().toISOString()
+      lastChecked: new Date().toISOString(),
     };
     this.systemStatuses.set(service, updated);
     return updated;
@@ -1852,9 +2089,9 @@ export class MemStorage implements IStorage {
       ...insertDoc,
       id,
       createdAt: new Date().toISOString(),
-      icon: insertDoc.icon || "📄",
-      category: insertDoc.category || "legal",
-      tags: Array.isArray(insertDoc.tags) ? [...insertDoc.tags] : []
+      icon: insertDoc.icon || '📄',
+      category: insertDoc.category || 'legal',
+      tags: Array.isArray(insertDoc.tags) ? [...insertDoc.tags] : [],
     };
     this.legalDocuments.set(id.toString(), doc);
     return doc;
@@ -1872,8 +2109,8 @@ export class MemStorage implements IStorage {
       id,
       createdAt: new Date().toISOString(),
       description: insertRepo.description || null,
-      category: insertRepo.category || "documentation",
-      status: insertRepo.status || "active"
+      category: insertRepo.category || 'documentation',
+      status: insertRepo.status || 'active',
     };
     this.repositories.set(id.toString(), repo);
     return repo;
@@ -1891,18 +2128,14 @@ export class MemStorage implements IStorage {
       id,
       createdAt: new Date().toISOString(),
       metadata: insertPayment.metadata || null,
-      status: insertPayment.status || "pending",
+      status: insertPayment.status || 'pending',
       currency: insertPayment.currency || null,
       userId: insertPayment.userId || null,
-      paypalOrderId: insertPayment.paypalOrderId || null
+      paypalOrderId: insertPayment.paypalOrderId || null,
     };
     this.payments.set(id.toString(), payment);
     return payment;
   }
-
-
-
-
 
   // Omnilevel Interstellar operations implementation
   async getInterstellarNodes(): Promise<InterstellarNode[]> {
@@ -1910,29 +2143,26 @@ export class MemStorage implements IStorage {
   }
 
   async createInterstellarNode(nodeData: InsertInterstellarNode): Promise<InterstellarNode> {
-    const [node] = await db
-      .insert(interstellarNodes)
-      .values(nodeData)
-      .returning();
+    const [node] = await db.insert(interstellarNodes).values(nodeData).returning();
     return node;
   }
 
-  async synchronizeNode(nodeId: string): Promise<{ success: boolean, message: string }> {
+  async synchronizeNode(nodeId: string): Promise<{ success: boolean; message: string }> {
     await db
       .update(interstellarNodes)
-      .set({ 
+      .set({
         status: 'synchronizing',
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
       .where(eq(interstellarNodes.nodeId, nodeId));
-    
+
     // Simulate sync operation
     setTimeout(async () => {
       await db
         .update(interstellarNodes)
-        .set({ 
+        .set({
           status: 'active',
-          updatedAt: new Date()
+          updatedAt: new Date(),
         })
         .where(eq(interstellarNodes.nodeId, nodeId));
     }, 3000);
@@ -1941,7 +2171,8 @@ export class MemStorage implements IStorage {
   }
 
   async getGlobalLogicConfig(): Promise<GlobalLogicConfig | undefined> {
-    const [config] = await db.select()
+    const [config] = await db
+      .select()
       .from(globalLogicConfigs)
       .where(eq(globalLogicConfigs.isActive, true))
       .orderBy(desc(globalLogicConfigs.updatedAt));
@@ -1950,16 +2181,20 @@ export class MemStorage implements IStorage {
 
   async updateGlobalLogicConfig(config: InsertGlobalLogicConfig): Promise<GlobalLogicConfig> {
     // Deactivate existing configs
-    await db.update(globalLogicConfigs)
+    await db
+      .update(globalLogicConfigs)
       .set({ isActive: false })
       .where(eq(globalLogicConfigs.isActive, true));
 
     // Insert new config
-    const [newConfig] = await db.insert(globalLogicConfigs).values({
-      ...config,
-      configId: `CONFIG-${Date.now()}`,
-      isActive: true
-    }).returning();
+    const [newConfig] = await db
+      .insert(globalLogicConfigs)
+      .values({
+        ...config,
+        configId: `CONFIG-${Date.now()}`,
+        isActive: true,
+      })
+      .returning();
 
     return newConfig;
   }
@@ -1967,9 +2202,11 @@ export class MemStorage implements IStorage {
   async getCosmicMetrics(): Promise<any> {
     try {
       const nodes = await db.select().from(interstellarNodes);
-      const activeNodes = nodes.filter(node => node.status === 'active');
+      const activeNodes = nodes.filter((node) => node.status === 'active');
       const totalConnections = activeNodes.reduce((sum, node) => sum + (node.connections || 0), 0);
-      const avgProcessingPower = activeNodes.reduce((sum, node) => sum + (node.processingPower || 0), 0) / activeNodes.length || 0;
+      const avgProcessingPower =
+        activeNodes.reduce((sum, node) => sum + (node.processingPower || 0), 0) /
+          activeNodes.length || 0;
 
       return {
         totalNodes: nodes.length,
@@ -1977,7 +2214,7 @@ export class MemStorage implements IStorage {
         totalConnections,
         avgProcessingPower: Math.round(avgProcessingPower),
         systemStatus: activeNodes.length > 0 ? 'operational' : 'offline',
-        lastSync: new Date().toISOString()
+        lastSync: new Date().toISOString(),
       };
     } catch (error) {
       console.error('Error getting cosmic metrics:', error);
@@ -1987,7 +2224,7 @@ export class MemStorage implements IStorage {
         totalConnections: 0,
         avgProcessingPower: 0,
         systemStatus: 'error',
-        lastSync: new Date().toISOString()
+        lastSync: new Date().toISOString(),
       };
     }
   }
@@ -2013,8 +2250,8 @@ export class MemStorage implements IStorage {
           configuration: JSON.stringify({
             quantum_cores: 16,
             entanglement_pairs: 8,
-            coherence_time: '150ms'
-          })
+            coherence_time: '150ms',
+          }),
         },
         {
           nodeId: 'NEURAL-BETA-002',
@@ -2028,8 +2265,8 @@ export class MemStorage implements IStorage {
           configuration: JSON.stringify({
             neural_layers: 24,
             learning_rate: 0.001,
-            batch_size: 512
-          })
+            batch_size: 512,
+          }),
         },
         {
           nodeId: 'COSMIC-GAMMA-003',
@@ -2043,8 +2280,8 @@ export class MemStorage implements IStorage {
           configuration: JSON.stringify({
             stellar_alignment: true,
             cosmic_frequency: '2.5 GHz',
-            signal_strength: 98.2
-          })
+            signal_strength: 98.2,
+          }),
         },
         {
           nodeId: 'DIMENSIONAL-DELTA-004',
@@ -2058,8 +2295,8 @@ export class MemStorage implements IStorage {
           configuration: JSON.stringify({
             dimension_count: 11,
             bridge_stability: 87.3,
-            quantum_tunneling: true
-          })
+            quantum_tunneling: true,
+          }),
         },
         {
           nodeId: 'QUANTUM-EPSILON-005',
@@ -2073,8 +2310,8 @@ export class MemStorage implements IStorage {
           configuration: JSON.stringify({
             quantum_cores: 32,
             entanglement_pairs: 16,
-            coherence_time: '200ms'
-          })
+            coherence_time: '200ms',
+          }),
         },
         {
           nodeId: 'NEURAL-ZETA-006',
@@ -2088,13 +2325,13 @@ export class MemStorage implements IStorage {
           configuration: JSON.stringify({
             neural_layers: 48,
             learning_rate: 0.0005,
-            batch_size: 1024
-          })
-        }
+            batch_size: 1024,
+          }),
+        },
       ];
 
       await db.insert(interstellarNodes).values(defaultNodes);
-      
+
       // Create default global logic config
       const defaultConfig = {
         configId: 'GLOBAL-CONFIG-001',
@@ -2105,14 +2342,18 @@ export class MemStorage implements IStorage {
         dimensionalBridging: false,
         processingClusters: 18,
         dataCompressionRatio: 92,
-        securityProtocols: JSON.stringify(['quantum_encryption', 'neural_firewall', 'cosmic_shielding']),
-        syncFrequency: "3.2",
+        securityProtocols: JSON.stringify([
+          'quantum_encryption',
+          'neural_firewall',
+          'cosmic_shielding',
+        ]),
+        syncFrequency: '3.2',
         autonomousLearning: true,
-        isActive: true
+        isActive: true,
       };
 
       await db.insert(globalLogicConfigs).values([defaultConfig]);
-      
+
       console.log('✅ Interstellar nodes and global config seeded successfully');
     } catch (error) {
       console.error('❌ Failed to seed interstellar data:', error);
@@ -2134,8 +2375,15 @@ export class MemStorage implements IStorage {
     return newMember;
   }
 
-  async updateFamilyMember(id: number, updates: Partial<InsertFamilyMember>): Promise<FamilyMember> {
-    const [updated] = await db.update(familyMembers).set(updates).where(eq(familyMembers.id, id)).returning();
+  async updateFamilyMember(
+    id: number,
+    updates: Partial<InsertFamilyMember>
+  ): Promise<FamilyMember> {
+    const [updated] = await db
+      .update(familyMembers)
+      .set(updates)
+      .where(eq(familyMembers.id, id))
+      .returning();
     return updated;
   }
 
@@ -2149,7 +2397,10 @@ export class MemStorage implements IStorage {
   }
 
   async getHeritageDocument(id: number): Promise<HeritageDocument | undefined> {
-    const [document] = await db.select().from(heritageDocuments).where(eq(heritageDocuments.id, id));
+    const [document] = await db
+      .select()
+      .from(heritageDocuments)
+      .where(eq(heritageDocuments.id, id));
     return document;
   }
 
@@ -2158,12 +2409,19 @@ export class MemStorage implements IStorage {
     return newDocument;
   }
 
-  async updateHeritageDocument(id: number, updates: Partial<InsertHeritageDocument>): Promise<HeritageDocument> {
+  async updateHeritageDocument(
+    id: number,
+    updates: Partial<InsertHeritageDocument>
+  ): Promise<HeritageDocument> {
     const updateData: any = { ...updates };
     if (updateData.tags && Array.isArray(updateData.tags)) {
       updateData.tags = updateData.tags;
     }
-    const [updated] = await db.update(heritageDocuments).set(updateData).where(eq(heritageDocuments.id, id)).returning();
+    const [updated] = await db
+      .update(heritageDocuments)
+      .set(updateData)
+      .where(eq(heritageDocuments.id, id))
+      .returning();
     return updated;
   }
 
@@ -2172,7 +2430,9 @@ export class MemStorage implements IStorage {
   }
 
   async searchHeritageDocuments(userId: string, query: string): Promise<HeritageDocument[]> {
-    return await db.select().from(heritageDocuments)
+    return await db
+      .select()
+      .from(heritageDocuments)
       .where(eq(heritageDocuments.userId, userId))
       .where(
         or(
@@ -2203,7 +2463,11 @@ export class MemStorage implements IStorage {
     if (updateData.participants && Array.isArray(updateData.participants)) {
       updateData.participants = updateData.participants;
     }
-    const [updated] = await db.update(familyEvents).set(updateData).where(eq(familyEvents.id, id)).returning();
+    const [updated] = await db
+      .update(familyEvents)
+      .set(updateData)
+      .where(eq(familyEvents.id, id))
+      .returning();
     return updated;
   }
 
@@ -2213,21 +2477,29 @@ export class MemStorage implements IStorage {
 
   // Heritage Portal - Heritage Metrics
   async getHeritageMetrics(userId: string): Promise<HeritageMetrics | undefined> {
-    const [metrics] = await db.select().from(heritageMetrics).where(eq(heritageMetrics.userId, userId));
+    const [metrics] = await db
+      .select()
+      .from(heritageMetrics)
+      .where(eq(heritageMetrics.userId, userId));
     return metrics;
   }
 
-  async updateHeritageMetrics(userId: string, metricsData: InsertHeritageMetrics): Promise<HeritageMetrics> {
+  async updateHeritageMetrics(
+    userId: string,
+    metricsData: InsertHeritageMetrics
+  ): Promise<HeritageMetrics> {
     const existing = await this.getHeritageMetrics(userId);
-    
+
     if (existing) {
-      const [updated] = await db.update(heritageMetrics)
+      const [updated] = await db
+        .update(heritageMetrics)
         .set({ ...metricsData, updatedAt: new Date() })
         .where(eq(heritageMetrics.userId, userId))
         .returning();
       return updated;
     } else {
-      const [created] = await db.insert(heritageMetrics)
+      const [created] = await db
+        .insert(heritageMetrics)
         .values({ ...metricsData, userId })
         .returning();
       return created;
@@ -2237,19 +2509,31 @@ export class MemStorage implements IStorage {
   // ========================================
   // INTERACTIVE SECTOR MAPPING SYSTEM
   // ========================================
-  
+
   // Sector Relationships
   async getSectorRelationships(): Promise<SectorRelationship[]> {
     return await db.select().from(sectorRelationships);
   }
 
-  async createSectorRelationship(relationship: InsertSectorRelationship): Promise<SectorRelationship> {
-    const [newRelationship] = await db.insert(sectorRelationships).values([relationship]).returning();
+  async createSectorRelationship(
+    relationship: InsertSectorRelationship
+  ): Promise<SectorRelationship> {
+    const [newRelationship] = await db
+      .insert(sectorRelationships)
+      .values([relationship])
+      .returning();
     return newRelationship;
   }
 
-  async updateSectorRelationship(id: number, updates: Partial<InsertSectorRelationship>): Promise<SectorRelationship> {
-    const [updated] = await db.update(sectorRelationships).set(updates).where(eq(sectorRelationships.id, id)).returning();
+  async updateSectorRelationship(
+    id: number,
+    updates: Partial<InsertSectorRelationship>
+  ): Promise<SectorRelationship> {
+    const [updated] = await db
+      .update(sectorRelationships)
+      .set(updates)
+      .where(eq(sectorRelationships.id, id))
+      .returning();
     return updated;
   }
 
@@ -2261,7 +2545,7 @@ export class MemStorage implements IStorage {
   async getNetworkStatistics(): Promise<any> {
     const [relationshipCount] = await db.select({ count: count() }).from(sectorRelationships);
     const [sectorCount] = await db.select({ count: count() }).from(sectors);
-    
+
     const avgConnections = relationshipCount.count / Math.max(sectorCount.count, 1);
     const maxPossibleConnections = (sectorCount.count * (sectorCount.count - 1)) / 2;
     const networkDensity = (relationshipCount.count / Math.max(maxPossibleConnections, 1)) * 100;
@@ -2271,12 +2555,13 @@ export class MemStorage implements IStorage {
       totalSectors: sectorCount.count,
       avgConnections: Math.round(avgConnections * 10) / 10,
       networkDensity: Math.round(networkDensity),
-      lastCalculated: new Date().toISOString()
+      lastCalculated: new Date().toISOString(),
     };
   }
 
   async getCriticalPaths(limit: number = 10): Promise<any[]> {
-    const relationships = await db.select()
+    const relationships = await db
+      .select()
       .from(sectorRelationships)
       .orderBy(desc(sectorRelationships.strength))
       .limit(limit);
@@ -2285,13 +2570,13 @@ export class MemStorage implements IStorage {
     for (const rel of relationships) {
       const [sourceNode] = await db.select().from(sectors).where(eq(sectors.id, rel.sourceId));
       const [targetNode] = await db.select().from(sectors).where(eq(sectors.id, rel.targetId));
-      
+
       if (sourceNode && targetNode) {
         criticalPaths.push({
           path: `${sourceNode.name} → ${targetNode.name}`,
           strength: rel.strength,
           type: rel.relationshipType,
-          bidirectional: rel.bidirectional
+          bidirectional: rel.bidirectional,
         });
       }
     }
@@ -2301,12 +2586,14 @@ export class MemStorage implements IStorage {
 
   async getInfluenceMap(): Promise<any> {
     const relationships = await this.getSectorRelationships();
-    const influenceMap: { [sectorId: string]: { inbound: number, outbound: number, totalInfluence: number } } = {};
+    const influenceMap: {
+      [sectorId: string]: { inbound: number; outbound: number; totalInfluence: number };
+    } = {};
 
-    relationships.forEach(rel => {
+    relationships.forEach((rel) => {
       const sourceId = rel.sourceId.toString();
       const targetId = rel.targetId.toString();
-      
+
       if (!influenceMap[sourceId]) {
         influenceMap[sourceId] = { inbound: 0, outbound: 0, totalInfluence: 0 };
       }
@@ -2320,7 +2607,7 @@ export class MemStorage implements IStorage {
     });
 
     // Calculate total influence scores
-    Object.keys(influenceMap).forEach(sectorId => {
+    Object.keys(influenceMap).forEach((sectorId) => {
       const data = influenceMap[sectorId];
       data.totalInfluence = (data.inbound + data.outbound) / 2;
     });
@@ -2332,114 +2619,129 @@ export class MemStorage implements IStorage {
   async exportMatrixData(format: string = 'json'): Promise<string> {
     const relationships = await this.getSectorRelationships();
     const allSectors = await this.getAllSectors();
-    
+
     if (format === 'csv') {
       const csvLines = ['Source,Target,Strength,Type,Bidirectional'];
-      
+
       for (const rel of relationships) {
-        const source = allSectors.find(s => s.id === rel.sourceId);
-        const target = allSectors.find(s => s.id === rel.targetId);
-        
+        const source = allSectors.find((s) => s.id === rel.sourceId);
+        const target = allSectors.find((s) => s.id === rel.targetId);
+
         if (source && target) {
-          csvLines.push([
-            source.name.replace(/,/g, ';'),
-            target.name.replace(/,/g, ';'),
-            rel.strength,
-            rel.relationshipType,
-            rel.bidirectional ? 'true' : 'false'
-          ].join(','));
+          csvLines.push(
+            [
+              source.name.replace(/,/g, ';'),
+              target.name.replace(/,/g, ';'),
+              rel.strength,
+              rel.relationshipType,
+              rel.bidirectional ? 'true' : 'false',
+            ].join(',')
+          );
         }
       }
-      
+
       return csvLines.join('\n');
     }
 
-    return JSON.stringify({
-      sectors: allSectors,
-      relationships,
-      exportDate: new Date().toISOString()
-    }, null, 2);
+    return JSON.stringify(
+      {
+        sectors: allSectors,
+        relationships,
+        exportDate: new Date().toISOString(),
+      },
+      null,
+      2
+    );
   }
 
   async exportHierarchyData(): Promise<string> {
     const allSectors = await this.getAllSectors();
     const hierarchy: { [tier: string]: Sector[] } = {};
-    
-    allSectors.forEach(sector => {
+
+    allSectors.forEach((sector) => {
       const pricing = sector.metadata?.pricing?.monthly || 79.99;
       let tier = 'Standard';
-      
+
       if (pricing >= 300) tier = 'Enterprise';
       else if (pricing >= 150) tier = 'Infrastructure';
       else if (pricing >= 100) tier = 'Professional';
-      
+
       if (!hierarchy[tier]) hierarchy[tier] = [];
       hierarchy[tier].push(sector);
     });
 
-    return JSON.stringify({
-      hierarchy,
-      tierCounts: Object.keys(hierarchy).reduce((acc, tier) => {
-        acc[tier] = hierarchy[tier].length;
-        return acc;
-      }, {} as { [tier: string]: number }),
-      exportDate: new Date().toISOString()
-    }, null, 2);
+    return JSON.stringify(
+      {
+        hierarchy,
+        tierCounts: Object.keys(hierarchy).reduce(
+          (acc, tier) => {
+            acc[tier] = hierarchy[tier].length;
+            return acc;
+          },
+          {} as { [tier: string]: number }
+        ),
+        exportDate: new Date().toISOString(),
+      },
+      null,
+      2
+    );
   }
 
   async exportNetworkData(format: string = 'json'): Promise<string> {
     const relationships = await this.getSectorRelationships();
     const allSectors = await this.getAllSectors();
     const networkStats = await this.getNetworkStatistics();
-    
+
     if (format === 'csv') {
       const csvLines = ['NodeId,NodeName,Emoji,Tier,Connections'];
-      
+
       for (const sector of allSectors) {
-        const connections = relationships.filter(rel => 
-          rel.sourceId === sector.id || rel.targetId === sector.id
+        const connections = relationships.filter(
+          (rel) => rel.sourceId === sector.id || rel.targetId === sector.id
         ).length;
-        
+
         const pricing = sector.metadata?.pricing?.monthly || 79.99;
         let tier = 'Standard';
         if (pricing >= 300) tier = 'Enterprise';
         else if (pricing >= 150) tier = 'Infrastructure';
         else if (pricing >= 100) tier = 'Professional';
-        
-        csvLines.push([
-          sector.id,
-          sector.name.replace(/,/g, ';'),
-          sector.emoji,
-          tier,
-          connections
-        ].join(','));
+
+        csvLines.push(
+          [sector.id, sector.name.replace(/,/g, ';'), sector.emoji, tier, connections].join(',')
+        );
       }
-      
+
       return csvLines.join('\n');
     }
 
-    return JSON.stringify({
-      nodes: allSectors,
-      relationships,
-      networkStats,
-      exportDate: new Date().toISOString()
-    }, null, 2);
+    return JSON.stringify(
+      {
+        nodes: allSectors,
+        relationships,
+        networkStats,
+        exportDate: new Date().toISOString(),
+      },
+      null,
+      2
+    );
   }
 
   // Sector Node Operations
   async updateSectorNode(sectorId: number, updates: any): Promise<Sector> {
-    const [updated] = await db.update(sectors).set(updates).where(eq(sectors.id, sectorId)).returning();
+    const [updated] = await db
+      .update(sectors)
+      .set(updates)
+      .where(eq(sectors.id, sectorId))
+      .returning();
     return updated;
   }
 
   async getSectorDependencies(sectorId: number): Promise<any> {
-    const relationships = await db.select()
+    const relationships = await db
+      .select()
       .from(sectorRelationships)
       .where(
-        or(
-          eq(sectorRelationships.sourceId, sectorId),
-          eq(sectorRelationships.targetId, sectorId)
-        )
+        or(eq(sectorRelationships.sourceId, sectorId), eq(sectorRelationships.targetId, sectorId))
       );
 
     const dependencies = [];

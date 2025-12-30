@@ -2,7 +2,15 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Download, FileText, ExternalLink, Calendar, User, AlertCircle, CheckCircle } from 'lucide-react';
+import {
+  Download,
+  FileText,
+  ExternalLink,
+  Calendar,
+  User,
+  AlertCircle,
+  CheckCircle,
+} from 'lucide-react';
 
 interface Document {
   id: string;
@@ -36,7 +44,7 @@ export function DocumentViewer({ document, onClose }: DocumentViewerProps) {
       '7': 'DOCX',
       '8': 'PDF',
       '9': 'DOCX',
-      '10': 'PDF'
+      '10': 'PDF',
     };
     return typeMap[id] || 'PDF';
   };
@@ -52,7 +60,7 @@ export function DocumentViewer({ document, onClose }: DocumentViewerProps) {
       '7': 'Active',
       '8': 'Active',
       '9': 'Draft',
-      '10': 'Active'
+      '10': 'Active',
     };
     return statusMap[id] || 'Active';
   };
@@ -68,7 +76,7 @@ export function DocumentViewer({ document, onClose }: DocumentViewerProps) {
       '7': 'Medium',
       '8': 'High',
       '9': 'Low',
-      '10': 'Medium'
+      '10': 'Medium',
     };
     return priorityMap[id] || 'Medium';
   };
@@ -84,7 +92,7 @@ export function DocumentViewer({ document, onClose }: DocumentViewerProps) {
       '7': '2.7 MB',
       '8': '3.8 MB',
       '9': '1.2 MB',
-      '10': '2.9 MB'
+      '10': '2.9 MB',
     };
     return sizeMap[id] || '1.5 MB';
   };
@@ -100,7 +108,7 @@ export function DocumentViewer({ document, onClose }: DocumentViewerProps) {
       '7': 'Legal Team',
       '8': 'VaultMesh™ Admin',
       '9': 'Project Manager',
-      '10': 'Legal Team'
+      '10': 'Legal Team',
     };
     return authorMap[id] || 'Legal Team';
   };
@@ -152,24 +160,37 @@ export function DocumentViewer({ document, onClose }: DocumentViewerProps) {
 
   const getPriorityColor = (priority: string) => {
     switch (priority.toLowerCase()) {
-      case 'high': return 'destructive';
-      case 'medium': return 'default';
-      case 'low': return 'secondary';
-      default: return 'default';
+      case 'high':
+        return 'destructive';
+      case 'medium':
+        return 'default';
+      case 'low':
+        return 'secondary';
+      default:
+        return 'default';
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'active': return <CheckCircle className="w-4 h-4" />;
-      case 'under review': return <AlertCircle className="w-4 h-4" />;
-      default: return <FileText className="w-4 h-4" />;
+      case 'active':
+        return <CheckCircle className="w-4 h-4" />;
+      case 'under review':
+        return <AlertCircle className="w-4 h-4" />;
+      default:
+        return <FileText className="w-4 h-4" />;
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={onClose}>
-      <div className="bg-white dark:bg-gray-900 w-full max-w-4xl h-[90vh] rounded-lg shadow-xl flex flex-col" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white dark:bg-gray-900 w-full max-w-4xl h-[90vh] rounded-lg shadow-xl flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center space-x-3">
@@ -178,9 +199,7 @@ export function DocumentViewer({ document, onClose }: DocumentViewerProps) {
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                 {document.title}
               </h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {document.description}
-              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{document.description}</p>
             </div>
           </div>
           <Button variant="outline" onClick={onClose}>
@@ -194,9 +213,7 @@ export function DocumentViewer({ document, onClose }: DocumentViewerProps) {
             <div className="flex items-center space-x-6">
               <div className="flex items-center space-x-2">
                 {getStatusIcon(getDocumentStatus(document.id))}
-                <span className="text-sm font-medium">
-                  {getDocumentStatus(document.id)}
-                </span>
+                <span className="text-sm font-medium">{getDocumentStatus(document.id)}</span>
               </div>
               <Badge variant={getPriorityColor(getDocumentPriority(document.id))}>
                 {getDocumentPriority(document.id)} Priority
@@ -221,9 +238,9 @@ export function DocumentViewer({ document, onClose }: DocumentViewerProps) {
                 <Download className="w-4 h-4" />
                 <span>{isLoading ? 'Downloading...' : 'Download'}</span>
               </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={handleOpenInSecureSign}
                 className="flex items-center space-x-2"
               >
@@ -244,7 +261,7 @@ export function DocumentViewer({ document, onClose }: DocumentViewerProps) {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div 
+              <div
                 className="prose prose-sm max-w-none dark:prose-invert"
                 dangerouslySetInnerHTML={{ __html: getDocumentContent() }}
               />

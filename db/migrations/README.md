@@ -80,21 +80,21 @@ pnpm run db:rollback -- --to=YYYY-MM-DD-HH-MM-SS
 ### Adding a Column
 
 ```sql
-ALTER TABLE table_name 
+ALTER TABLE table_name
 ADD COLUMN column_name VARCHAR(255);
 ```
 
 ### Removing a Column
 
 ```sql
-ALTER TABLE table_name 
+ALTER TABLE table_name
 DROP COLUMN column_name;
 ```
 
 ### Creating an Index
 
 ```sql
-CREATE INDEX idx_table_column 
+CREATE INDEX idx_table_column
 ON table_name(column_name);
 ```
 

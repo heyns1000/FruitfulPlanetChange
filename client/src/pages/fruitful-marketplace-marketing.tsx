@@ -35,20 +35,68 @@ import {
   Shirt,
   Home,
   Coffee,
-  Dumbbell
+  Dumbbell,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 // Marketplace Categories
 const categories = [
-  { id: 'electronics', name: 'Electronics', icon: <Smartphone className="w-6 h-6" />, count: 1247, color: 'from-blue-500 to-cyan-500' },
-  { id: 'fashion', name: 'Fashion & Apparel', icon: <Shirt className="w-6 h-6" />, count: 892, color: 'from-pink-500 to-purple-500' },
-  { id: 'home', name: 'Home & Living', icon: <Home className="w-6 h-6" />, count: 634, color: 'from-green-500 to-teal-500' },
-  { id: 'sports', name: 'Sports & Fitness', icon: <Dumbbell className="w-6 h-6" />, count: 456, color: 'from-orange-500 to-red-500' },
-  { id: 'gaming', name: 'Gaming', icon: <Gamepad2 className="w-6 h-6" />, count: 378, color: 'from-purple-500 to-indigo-500' },
-  { id: 'accessories', name: 'Accessories', icon: <Watch className="w-6 h-6" />, count: 521, color: 'from-yellow-500 to-orange-500' },
-  { id: 'audio', name: 'Audio & Tech', icon: <Headphones className="w-6 h-6" />, count: 287, color: 'from-indigo-500 to-blue-500' },
-  { id: 'lifestyle', name: 'Lifestyle', icon: <Coffee className="w-6 h-6" />, count: 195, color: 'from-teal-500 to-green-500' }
+  {
+    id: 'electronics',
+    name: 'Electronics',
+    icon: <Smartphone className="w-6 h-6" />,
+    count: 1247,
+    color: 'from-blue-500 to-cyan-500',
+  },
+  {
+    id: 'fashion',
+    name: 'Fashion & Apparel',
+    icon: <Shirt className="w-6 h-6" />,
+    count: 892,
+    color: 'from-pink-500 to-purple-500',
+  },
+  {
+    id: 'home',
+    name: 'Home & Living',
+    icon: <Home className="w-6 h-6" />,
+    count: 634,
+    color: 'from-green-500 to-teal-500',
+  },
+  {
+    id: 'sports',
+    name: 'Sports & Fitness',
+    icon: <Dumbbell className="w-6 h-6" />,
+    count: 456,
+    color: 'from-orange-500 to-red-500',
+  },
+  {
+    id: 'gaming',
+    name: 'Gaming',
+    icon: <Gamepad2 className="w-6 h-6" />,
+    count: 378,
+    color: 'from-purple-500 to-indigo-500',
+  },
+  {
+    id: 'accessories',
+    name: 'Accessories',
+    icon: <Watch className="w-6 h-6" />,
+    count: 521,
+    color: 'from-yellow-500 to-orange-500',
+  },
+  {
+    id: 'audio',
+    name: 'Audio & Tech',
+    icon: <Headphones className="w-6 h-6" />,
+    count: 287,
+    color: 'from-indigo-500 to-blue-500',
+  },
+  {
+    id: 'lifestyle',
+    name: 'Lifestyle',
+    icon: <Coffee className="w-6 h-6" />,
+    count: 195,
+    color: 'from-teal-500 to-green-500',
+  },
 ];
 
 // Featured Products
@@ -63,7 +111,7 @@ const featuredProducts = [
     reviews: 1247,
     category: 'Sports & Fitness',
     badge: 'Best Seller',
-    discount: '22% OFF'
+    discount: '22% OFF',
   },
   {
     id: 2,
@@ -75,7 +123,7 @@ const featuredProducts = [
     reviews: 832,
     category: 'Gaming',
     badge: 'New Arrival',
-    discount: '21% OFF'
+    discount: '21% OFF',
   },
   {
     id: 3,
@@ -86,8 +134,8 @@ const featuredProducts = [
     rating: 4.7,
     reviews: 456,
     category: 'Home & Living',
-    badge: 'Editor\'s Choice',
-    discount: '23% OFF'
+    badge: "Editor's Choice",
+    discount: '23% OFF',
   },
   {
     id: 4,
@@ -99,24 +147,55 @@ const featuredProducts = [
     reviews: 623,
     category: 'Electronics',
     badge: 'Trending',
-    discount: '25% OFF'
-  }
+    discount: '25% OFF',
+  },
 ];
 
 // Marketing Stats
 const marketingStats = [
-  { label: 'Active Products', value: '6,005', growth: '+23%', icon: <Package className="w-6 h-6" /> },
+  {
+    label: 'Active Products',
+    value: '6,005',
+    growth: '+23%',
+    icon: <Package className="w-6 h-6" />,
+  },
   { label: 'Monthly Visitors', value: '2.3M', growth: '+45%', icon: <Users className="w-6 h-6" /> },
-  { label: 'Conversion Rate', value: '8.7%', growth: '+12%', icon: <TrendingUp className="w-6 h-6" /> },
-  { label: 'Customer Satisfaction', value: '96%', growth: '+3%', icon: <Star className="w-6 h-6" /> }
+  {
+    label: 'Conversion Rate',
+    value: '8.7%',
+    growth: '+12%',
+    icon: <TrendingUp className="w-6 h-6" />,
+  },
+  {
+    label: 'Customer Satisfaction',
+    value: '96%',
+    growth: '+3%',
+    icon: <Star className="w-6 h-6" />,
+  },
 ];
 
 // Live URL Integration Features
 const liveFeatures = [
-  { title: 'Real-time Inventory', description: 'Live stock tracking across all 6,005 products', icon: <Globe className="w-5 h-5" /> },
-  { title: 'Dynamic Pricing', description: 'AI-powered pricing optimization', icon: <TrendingUp className="w-5 h-5" /> },
-  { title: 'Live Chat Support', description: '24/7 customer support integration', icon: <MessageCircle className="w-5 h-5" /> },
-  { title: 'Secure Payments', description: 'Multiple payment gateways', icon: <Shield className="w-5 h-5" /> }
+  {
+    title: 'Real-time Inventory',
+    description: 'Live stock tracking across all 6,005 products',
+    icon: <Globe className="w-5 h-5" />,
+  },
+  {
+    title: 'Dynamic Pricing',
+    description: 'AI-powered pricing optimization',
+    icon: <TrendingUp className="w-5 h-5" />,
+  },
+  {
+    title: 'Live Chat Support',
+    description: '24/7 customer support integration',
+    icon: <MessageCircle className="w-5 h-5" />,
+  },
+  {
+    title: 'Secure Payments',
+    description: 'Multiple payment gateways',
+    icon: <Shield className="w-5 h-5" />,
+  },
 ];
 
 export default function FruitfulMarketplaceMarketing() {
@@ -150,18 +229,21 @@ export default function FruitfulMarketplaceMarketing() {
                   <h1 className="text-6xl font-bold bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 bg-clip-text text-transparent">
                     Fruitful Marketplace
                   </h1>
-                  <p className="text-xl text-gray-600 dark:text-gray-300 mt-2">Your Premium Shopping Destination</p>
+                  <p className="text-xl text-gray-600 dark:text-gray-300 mt-2">
+                    Your Premium Shopping Destination
+                  </p>
                 </div>
               </div>
-              
+
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
                 className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed"
               >
-                Discover over 6,005 premium products across 8 categories with real-time inventory, 
-                AI-powered recommendations, and seamless shopping experiences powered by advanced technology.
+                Discover over 6,005 premium products across 8 categories with real-time inventory,
+                AI-powered recommendations, and seamless shopping experiences powered by advanced
+                technology.
               </motion.p>
 
               <motion.div
@@ -190,7 +272,7 @@ export default function FruitfulMarketplaceMarketing() {
                 transition={{ duration: 0.6, delay: 0.3 }}
                 className="flex items-center justify-center gap-4 flex-wrap"
               >
-                <Button 
+                <Button
                   size="lg"
                   className="px-8 py-4 bg-gradient-to-r from-orange-500 to-red-600 text-white text-xl font-bold rounded-2xl shadow-2xl hover:shadow-orange-500/25 transition-all duration-300"
                   onClick={() => window.open('https://www.fruitfulcratedance.com', '_blank')}
@@ -198,8 +280,8 @@ export default function FruitfulMarketplaceMarketing() {
                   <ExternalLink className="w-6 h-6 mr-3" />
                   Visit Live Store
                 </Button>
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   variant="outline"
                   className="px-8 py-4 border-2 border-orange-500 text-orange-600 hover:bg-orange-50 text-xl font-bold rounded-2xl"
                 >
@@ -308,10 +390,18 @@ export default function FruitfulMarketplaceMarketing() {
                       </div>
                       <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
                         <div className="flex gap-2">
-                          <Button size="sm" variant="outline" className="bg-white/90 hover:bg-white">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="bg-white/90 hover:bg-white"
+                          >
                             <Heart className="w-4 h-4" />
                           </Button>
-                          <Button size="sm" variant="outline" className="bg-white/90 hover:bg-white">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="bg-white/90 hover:bg-white"
+                          >
                             <Eye className="w-4 h-4" />
                           </Button>
                         </div>
@@ -337,8 +427,12 @@ export default function FruitfulMarketplaceMarketing() {
                       </div>
                       <div className="flex items-center justify-between mb-4">
                         <div>
-                          <span className="text-2xl font-bold text-orange-600">{product.price}</span>
-                          <span className="text-sm text-gray-500 line-through ml-2">{product.originalPrice}</span>
+                          <span className="text-2xl font-bold text-orange-600">
+                            {product.price}
+                          </span>
+                          <span className="text-sm text-gray-500 line-through ml-2">
+                            {product.originalPrice}
+                          </span>
                         </div>
                       </div>
                       <Button className="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700">
@@ -371,11 +465,15 @@ export default function FruitfulMarketplaceMarketing() {
                 >
                   <Card className="cursor-pointer hover:shadow-xl transition-all duration-300 group">
                     <CardContent className="p-6 text-center">
-                      <div className={`inline-flex p-4 rounded-full bg-gradient-to-r ${category.color} text-white mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                      <div
+                        className={`inline-flex p-4 rounded-full bg-gradient-to-r ${category.color} text-white mb-4 group-hover:scale-110 transition-transform duration-300`}
+                      >
                         {category.icon}
                       </div>
                       <h3 className="font-bold text-lg mb-2">{category.name}</h3>
-                      <p className="text-gray-600 dark:text-gray-300 mb-4">{category.count} products</p>
+                      <p className="text-gray-600 dark:text-gray-300 mb-4">
+                        {category.count} products
+                      </p>
                       <Progress value={(category.count / 1500) * 100} className="h-2" />
                     </CardContent>
                   </Card>
@@ -437,11 +535,15 @@ export default function FruitfulMarketplaceMarketing() {
                   <div className="grid grid-cols-2 gap-4 text-center">
                     <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
                       <div className="text-2xl font-bold text-orange-600">2.3M</div>
-                      <div className="text-sm text-gray-600 dark:text-gray-300">Monthly Visitors</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-300">
+                        Monthly Visitors
+                      </div>
                     </div>
                     <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                       <div className="text-2xl font-bold text-blue-600">4.2</div>
-                      <div className="text-sm text-gray-600 dark:text-gray-300">Pages per Session</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-300">
+                        Pages per Session
+                      </div>
                     </div>
                     <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
                       <div className="text-2xl font-bold text-green-600">3m 45s</div>
@@ -462,7 +564,8 @@ export default function FruitfulMarketplaceMarketing() {
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-4">Live Integration Features</h2>
               <p className="text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-                Real-time marketplace features powered by advanced technology and live data integration
+                Real-time marketplace features powered by advanced technology and live data
+                integration
               </p>
             </div>
 
@@ -495,8 +598,9 @@ export default function FruitfulMarketplaceMarketing() {
               <CardContent className="p-8 text-center">
                 <h3 className="text-2xl font-bold mb-4">Live URL Integration</h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-3xl mx-auto">
-                  The Fruitful Marketplace is fully integrated with live URL functionality, providing real-time 
-                  product updates, inventory management, and seamless e-commerce operations.
+                  The Fruitful Marketplace is fully integrated with live URL functionality,
+                  providing real-time product updates, inventory management, and seamless e-commerce
+                  operations.
                 </p>
                 <div className="flex items-center justify-center gap-4 mb-6">
                   <Badge className="px-4 py-2 bg-green-500/20 text-green-600 border-green-500/30">
@@ -508,7 +612,7 @@ export default function FruitfulMarketplaceMarketing() {
                   </Badge>
                 </div>
                 <div className="flex justify-center gap-4">
-                  <Button 
+                  <Button
                     size="lg"
                     className="bg-gradient-to-r from-orange-500 to-red-600 text-white"
                     onClick={() => window.open('https://www.fruitfulcratedance.com', '_blank')}

@@ -1,5 +1,5 @@
 // Live Audit System for DOM vs Backend Truth Validation
-import { storage } from "./storage";
+import { storage } from './storage';
 
 interface DomAuditResult {
   isSync: boolean;
@@ -27,26 +27,26 @@ export class LiveAuditSystem {
     lastValidation: new Date().toISOString(),
     dataConsistency: true,
     syncDirection: 'backend-to-frontend',
-    truthAuthority: 'backend'
+    truthAuthority: 'backend',
   };
 
   // Activate canonical source of display truth
   async activateCanonicalSource(): Promise<CanonicalSourceState> {
     console.log('🔒 Activating Canonical Source of Display Truth...');
-    
+
     try {
       // Validate backend data integrity
       const dataCheck = await this.validateBackendDataIntegrity();
-      
+
       if (dataCheck.isValid) {
         this.canonicalSourceState = {
           activated: true,
           lastValidation: new Date().toISOString(),
           dataConsistency: true,
           syncDirection: 'backend-to-frontend',
-          truthAuthority: 'backend'
+          truthAuthority: 'backend',
         };
-        
+
         console.log('✅ Canonical Source ACTIVATED - Backend is truth authority');
       } else {
         console.log('❌ Canonical Source activation FAILED - Data integrity issues');
@@ -56,36 +56,36 @@ export class LiveAuditSystem {
       console.error('Error activating canonical source:', error);
       this.canonicalSourceState.activated = false;
     }
-    
+
     return this.canonicalSourceState;
   }
 
   // Validate backend data integrity
   async validateBackendDataIntegrity(): Promise<{ isValid: boolean; issues: string[] }> {
     const issues: string[] = [];
-    
+
     try {
       const [sectors, brands, systemStatus] = await Promise.all([
         storage.getAllSectors(),
         storage.getAllBrands(),
-        storage.getAllSystemStatus()
+        storage.getAllSystemStatus(),
       ]);
 
       // Check for basic data presence
       if (sectors.length === 0) {
         issues.push('No sectors found in database');
       }
-      
+
       if (brands.length === 0) {
         issues.push('No brands found in database');
       }
-      
+
       if (systemStatus.length === 0) {
         issues.push('No system status records found');
       }
 
       // Check for data consistency
-      const coreElements = brands.filter(b => !b.name.includes('Subnode')).length;
+      const coreElements = brands.filter((b) => !b.name.includes('Subnode')).length;
       if (coreElements === 0 && brands.length > 0) {
         issues.push('All brands appear to be subnodes - no core elements');
       }
@@ -94,13 +94,13 @@ export class LiveAuditSystem {
       if (sectors.length > 100) {
         issues.push('Unusually high sector count - possible data duplication');
       }
-      
+
       if (brands.length > 50000) {
         issues.push('Unusually high brand count - possible data corruption');
       }
 
       const isValid = issues.length === 0;
-      
+
       console.log(`📊 Backend Data Integrity: ${isValid ? 'VALID' : 'ISSUES FOUND'}`);
       if (issues.length > 0) {
         console.log('⚠️ Issues:', issues);
@@ -115,24 +115,27 @@ export class LiveAuditSystem {
   }
 
   // Perform live audit of DOM vs backend truth
-  async performLiveAudit(domCounts: Record<string, number>, pageName: string): Promise<DomAuditResult> {
+  async performLiveAudit(
+    domCounts: Record<string, number>,
+    pageName: string
+  ): Promise<DomAuditResult> {
     console.log(`🔍 Performing live audit for page: ${pageName}`);
-    
+
     try {
       // Get current backend truth
       const [sectors, brands, systemStatus] = await Promise.all([
         storage.getAllSectors(),
         storage.getAllBrands(),
-        storage.getAllSystemStatus()
+        storage.getAllSystemStatus(),
       ]);
 
       const backendTruth = {
         sectors: sectors.length,
         brands: brands.length,
-        coreElements: brands.filter(b => !b.name.includes('Subnode')).length,
-        subnodes: brands.filter(b => b.name.includes('Subnode')).length,
+        coreElements: brands.filter((b) => !b.name.includes('Subnode')).length,
+        subnodes: brands.filter((b) => b.name.includes('Subnode')).length,
         totalElements: brands.length + sectors.length,
-        systemStatus: systemStatus.length
+        systemStatus: systemStatus.length,
       };
 
       // Compare DOM vs backend
@@ -140,27 +143,27 @@ export class LiveAuditSystem {
       let totalChecks = 0;
       let passedChecks = 0;
 
-      Object.keys(backendTruth).forEach(key => {
+      Object.keys(backendTruth).forEach((key) => {
         const backendValue = backendTruth[key];
         const domValue = domCounts[key];
-        
+
         if (domValue !== undefined) {
           totalChecks++;
-          
+
           if (domValue === backendValue) {
             passedChecks++;
           } else {
             const difference = Math.abs(backendValue - domValue);
             let severity: 'low' | 'medium' | 'high' = 'low';
-            
+
             if (difference > 50) severity = 'high';
             else if (difference > 10) severity = 'medium';
-            
+
             mismatches.push({
               field: key,
               backend: backendValue,
               dom: domValue,
-              severity
+              severity,
             });
           }
         }
@@ -172,9 +175,9 @@ export class LiveAuditSystem {
       // Determine recommended action
       let recommendedAction = 'no-action-needed';
       if (mismatches.length > 0) {
-        const hasHighSeverity = mismatches.some(m => m.severity === 'high');
-        const hasMediumSeverity = mismatches.some(m => m.severity === 'medium');
-        
+        const hasHighSeverity = mismatches.some((m) => m.severity === 'high');
+        const hasMediumSeverity = mismatches.some((m) => m.severity === 'medium');
+
         if (hasHighSeverity) {
           recommendedAction = 'immediate-rerender-required';
         } else if (hasMediumSeverity || mismatches.length > 3) {
@@ -188,7 +191,7 @@ export class LiveAuditSystem {
         isSync,
         mismatches,
         syncAccuracy: Math.round(syncAccuracy * 100) / 100,
-        recommendedAction
+        recommendedAction,
       };
 
       // Log results
@@ -196,8 +199,10 @@ export class LiveAuditSystem {
         console.log(`✅ DOM Sync Perfect for ${pageName} - ${syncAccuracy}% accuracy`);
       } else {
         console.log(`⚠️ DOM Sync Issues for ${pageName}:`);
-        mismatches.forEach(mismatch => {
-          console.log(`  ${mismatch.field}: Backend=${mismatch.backend}, DOM=${mismatch.dom} (${mismatch.severity})`);
+        mismatches.forEach((mismatch) => {
+          console.log(
+            `  ${mismatch.field}: Backend=${mismatch.backend}, DOM=${mismatch.dom} (${mismatch.severity})`
+          );
         });
       }
 
@@ -208,7 +213,7 @@ export class LiveAuditSystem {
         isSync: false,
         mismatches: [],
         syncAccuracy: 0,
-        recommendedAction: 'error-recovery-needed'
+        recommendedAction: 'error-recovery-needed',
       };
     }
   }
@@ -225,36 +230,36 @@ export class LiveAuditSystem {
     dataSnapshot: Record<string, number>;
   }> {
     console.log('🔄 Forcing sync from backend to frontend...');
-    
+
     try {
       const [sectors, brands, systemStatus] = await Promise.all([
         storage.getAllSectors(),
         storage.getAllBrands(),
-        storage.getAllSystemStatus()
+        storage.getAllSystemStatus(),
       ]);
 
       const dataSnapshot = {
         sectors: sectors.length,
         brands: brands.length,
-        coreElements: brands.filter(b => !b.name.includes('Subnode')).length,
-        subnodes: brands.filter(b => b.name.includes('Subnode')).length,
+        coreElements: brands.filter((b) => !b.name.includes('Subnode')).length,
+        subnodes: brands.filter((b) => b.name.includes('Subnode')).length,
         totalElements: brands.length + sectors.length,
-        systemStatus: systemStatus.length
+        systemStatus: systemStatus.length,
       };
 
       console.log('📊 Backend Data Snapshot:', dataSnapshot);
-      
+
       return {
         success: true,
         timestamp: new Date().toISOString(),
-        dataSnapshot
+        dataSnapshot,
       };
     } catch (error) {
       console.error('Error forcing sync from backend:', error);
       return {
         success: false,
         timestamp: new Date().toISOString(),
-        dataSnapshot: {}
+        dataSnapshot: {},
       };
     }
   }
@@ -269,17 +274,17 @@ export class LiveAuditSystem {
       // This would normally check timestamps of last data modifications
       // For now, we'll do a simple check
       const integrity = await this.validateBackendDataIntegrity();
-      
+
       return {
         rerenderNeeded: !integrity.isValid,
         reason: integrity.isValid ? 'Data is current' : 'Data integrity issues detected',
-        lastDataChange: new Date().toISOString()
+        lastDataChange: new Date().toISOString(),
       };
     } catch (error) {
       return {
         rerenderNeeded: true,
         reason: 'Error checking data staleness',
-        lastDataChange: new Date().toISOString()
+        lastDataChange: new Date().toISOString(),
       };
     }
   }

@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { Rocket, Shield, Users, Zap } from "lucide-react";
-import { GlobalFooter } from "@/components/ui/global-footer";
+import { Button } from '@/components/ui/button';
+import { Rocket, Shield, Users, Zap } from 'lucide-react';
+import { GlobalFooter } from '@/components/ui/global-footer';
 
 export default function Landing() {
   return (
@@ -17,8 +17,8 @@ export default function Landing() {
             Seedwave™ Brand Management Portal
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-            Comprehensive brand management ecosystem powered by VaultMesh™ with advanced legal document management 
-            and integration for multi-sector brand ecosystems.
+            Comprehensive brand management ecosystem powered by VaultMesh™ with advanced legal
+            document management and integration for multi-sector brand ecosystems.
           </p>
         </div>
 
@@ -30,7 +30,8 @@ export default function Landing() {
             </div>
             <h3 className="text-xl font-semibold mb-3">Advanced Legal Repository</h3>
             <p className="text-gray-600 dark:text-gray-400">
-              Intelligent categorization and real-time document synchronization across all portal components.
+              Intelligent categorization and real-time document synchronization across all portal
+              components.
             </p>
           </div>
 
@@ -40,7 +41,8 @@ export default function Landing() {
             </div>
             <h3 className="text-xl font-semibold mb-3">Ecosystem Explorer</h3>
             <p className="text-gray-600 dark:text-gray-400">
-              Real-time document explorer with comprehensive brand ecosystem management capabilities.
+              Real-time document explorer with comprehensive brand ecosystem management
+              capabilities.
             </p>
           </div>
 
@@ -62,18 +64,17 @@ export default function Landing() {
             <p className="text-gray-600 dark:text-gray-400 mb-8">
               Access your comprehensive brand management portal with enterprise-grade security.
             </p>
-            <Button 
-              onClick={() => window.location.href = '/api/login'}
-              size="lg" 
+            <Button
+              onClick={() => (window.location.href = '/api/login')}
+              size="lg"
               className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600"
             >
               Sign In to Portal
             </Button>
           </div>
         </div>
-
       </div>
-      
+
       {/* Global Footer with Banimal Integration */}
       <GlobalFooter />
     </div>

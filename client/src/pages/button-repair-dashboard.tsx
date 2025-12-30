@@ -1,130 +1,143 @@
-import { useState, useEffect } from "react"
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { 
-  AlertTriangle, 
-  CheckCircle, 
-  Settings, 
-  Play, 
-  Square, 
+import { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  AlertTriangle,
+  CheckCircle,
+  Settings,
+  Play,
+  Square,
   RefreshCw,
   Wrench,
   Shield,
   Zap,
-  TrendingUp
-} from "lucide-react"
-import { apiRequest } from "@/lib/queryClient"
+  TrendingUp,
+} from 'lucide-react';
+import { apiRequest } from '@/lib/queryClient';
 
 interface ButtonIssue {
-  id: string
-  element: string
-  selector: string
-  issue_type: 'not_clickable' | 'missing_handler' | 'broken_link' | 'css_issue' | 'accessibility_violation'
-  severity: 'low' | 'medium' | 'high' | 'critical'
-  detected_at: string
-  page_url: string
-  description: string
-  suggested_fix: string
-  auto_repair_available: boolean
+  id: string;
+  element: string;
+  selector: string;
+  issue_type:
+    | 'not_clickable'
+    | 'missing_handler'
+    | 'broken_link'
+    | 'css_issue'
+    | 'accessibility_violation';
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  detected_at: string;
+  page_url: string;
+  description: string;
+  suggested_fix: string;
+  auto_repair_available: boolean;
 }
 
 interface RepairAnalytics {
-  total_issues_detected: number
-  total_repairs_executed: number
-  success_rate: string
-  active_monitors: number
-  latest_scan: string | null
+  total_issues_detected: number;
+  total_repairs_executed: number;
+  success_rate: string;
+  active_monitors: number;
+  latest_scan: string | null;
   issues_by_severity: {
-    critical: number
-    high: number
-    medium: number
-    low: number
-  }
+    critical: number;
+    high: number;
+    medium: number;
+    low: number;
+  };
 }
 
 export default function ButtonRepairDashboard() {
-  const [isMonitoring, setIsMonitoring] = useState(false)
-  const queryClient = useQueryClient()
+  const [isMonitoring, setIsMonitoring] = useState(false);
+  const queryClient = useQueryClient();
 
   // Scan for button issues
   const { data: scanResults, isLoading: scanLoading } = useQuery({
     queryKey: ['/api/button-repair/scan'],
     refetchInterval: isMonitoring ? 30000 : false, // Auto-refresh when monitoring
-  })
+  });
 
   // Get repair analytics
   const { data: analytics } = useQuery<RepairAnalytics>({
     queryKey: ['/api/button-repair/analytics'],
     refetchInterval: 10000, // Refresh every 10 seconds
-  })
+  });
 
   // Start monitoring mutation
   const startMonitoringMutation = useMutation({
     mutationFn: async (interval: number) => {
       return await apiRequest('/api/button-repair/start-monitoring', {
         method: 'POST',
-        body: JSON.stringify({ interval_seconds: interval })
-      })
+        body: JSON.stringify({ interval_seconds: interval }),
+      });
     },
     onSuccess: () => {
-      setIsMonitoring(true)
-      queryClient.invalidateQueries({ queryKey: ['/api/button-repair/analytics'] })
-    }
-  })
+      setIsMonitoring(true);
+      queryClient.invalidateQueries({ queryKey: ['/api/button-repair/analytics'] });
+    },
+  });
 
   // Stop monitoring mutation
   const stopMonitoringMutation = useMutation({
     mutationFn: async () => {
       return await apiRequest('/api/button-repair/stop-monitoring', {
-        method: 'POST'
-      })
+        method: 'POST',
+      });
     },
     onSuccess: () => {
-      setIsMonitoring(false)
-      queryClient.invalidateQueries({ queryKey: ['/api/button-repair/analytics'] })
-    }
-  })
+      setIsMonitoring(false);
+      queryClient.invalidateQueries({ queryKey: ['/api/button-repair/analytics'] });
+    },
+  });
 
   // Execute repair mutation
   const executeRepairMutation = useMutation({
     mutationFn: async (issueId: string) => {
       return await apiRequest('/api/button-repair/execute', {
         method: 'POST',
-        body: JSON.stringify({ issue_id: issueId, user_confirmed: true })
-      })
+        body: JSON.stringify({ issue_id: issueId, user_confirmed: true }),
+      });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/button-repair/scan'] })
-      queryClient.invalidateQueries({ queryKey: ['/api/button-repair/analytics'] })
-    }
-  })
+      queryClient.invalidateQueries({ queryKey: ['/api/button-repair/scan'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/button-repair/analytics'] });
+    },
+  });
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'bg-red-500 text-white'
-      case 'high': return 'bg-orange-500 text-white'
-      case 'medium': return 'bg-yellow-500 text-black'
-      case 'low': return 'bg-blue-500 text-white'
-      default: return 'bg-gray-500 text-white'
+      case 'critical':
+        return 'bg-red-500 text-white';
+      case 'high':
+        return 'bg-orange-500 text-white';
+      case 'medium':
+        return 'bg-yellow-500 text-black';
+      case 'low':
+        return 'bg-blue-500 text-white';
+      default:
+        return 'bg-gray-500 text-white';
     }
-  }
+  };
 
   const getIssueIcon = (type: string) => {
     switch (type) {
-      case 'not_clickable': return <AlertTriangle className="w-4 h-4" />
-      case 'broken_link': return <AlertTriangle className="w-4 h-4" />
-      case 'accessibility_violation': return <Shield className="w-4 h-4" />
-      default: return <Settings className="w-4 h-4" />
+      case 'not_clickable':
+        return <AlertTriangle className="w-4 h-4" />;
+      case 'broken_link':
+        return <AlertTriangle className="w-4 h-4" />;
+      case 'accessibility_violation':
+        return <Shield className="w-4 h-4" />;
+      default:
+        return <Settings className="w-4 h-4" />;
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
-        
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -137,7 +150,7 @@ export default function ButtonRepairDashboard() {
           </div>
           <div className="flex gap-3">
             {!isMonitoring ? (
-              <Button 
+              <Button
                 onClick={() => startMonitoringMutation.mutate(30)}
                 disabled={startMonitoringMutation.isPending}
                 className="bg-green-600 hover:bg-green-700"
@@ -146,7 +159,7 @@ export default function ButtonRepairDashboard() {
                 Start Monitoring
               </Button>
             ) : (
-              <Button 
+              <Button
                 onClick={() => stopMonitoringMutation.mutate()}
                 disabled={stopMonitoringMutation.isPending}
                 variant="destructive"
@@ -155,8 +168,10 @@ export default function ButtonRepairDashboard() {
                 Stop Monitoring
               </Button>
             )}
-            <Button 
-              onClick={() => queryClient.invalidateQueries({ queryKey: ['/api/button-repair/scan'] })}
+            <Button
+              onClick={() =>
+                queryClient.invalidateQueries({ queryKey: ['/api/button-repair/scan'] })
+              }
               disabled={scanLoading}
               variant="outline"
             >
@@ -177,7 +192,8 @@ export default function ButtonRepairDashboard() {
               <CardContent>
                 <div className="text-2xl font-bold">{analytics.total_issues_detected}</div>
                 <p className="text-xs text-muted-foreground">
-                  {analytics.issues_by_severity.critical} critical, {analytics.issues_by_severity.high} high
+                  {analytics.issues_by_severity.critical} critical,{' '}
+                  {analytics.issues_by_severity.high} high
                 </p>
               </CardContent>
             </Card>
@@ -215,9 +231,7 @@ export default function ButtonRepairDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">Operational</div>
-                <p className="text-xs text-muted-foreground">
-                  Real-time repair suggestions
-                </p>
+                <p className="text-xs text-muted-foreground">Real-time repair suggestions</p>
               </CardContent>
             </Card>
           </div>
@@ -257,7 +271,9 @@ export default function ButtonRepairDashboard() {
                             {getIssueIcon(issue.issue_type)}
                             <div>
                               <h4 className="font-medium">{issue.element}</h4>
-                              <p className="text-sm text-gray-600 dark:text-gray-400">{issue.page_url}</p>
+                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                                {issue.page_url}
+                              </p>
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
@@ -288,7 +304,9 @@ export default function ButtonRepairDashboard() {
                   <div className="text-center py-8">
                     <CheckCircle className="w-12 h-12 mx-auto mb-4 text-green-500" />
                     <h3 className="font-medium mb-2">All Buttons Operational</h3>
-                    <p className="text-gray-600 dark:text-gray-400">No issues detected in the latest scan</p>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      No issues detected in the latest scan
+                    </p>
                   </div>
                 )}
               </CardContent>
@@ -306,37 +324,53 @@ export default function ButtonRepairDashboard() {
                   <div className="space-y-6">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-red-500">{analytics.issues_by_severity.critical}</div>
+                        <div className="text-2xl font-bold text-red-500">
+                          {analytics.issues_by_severity.critical}
+                        </div>
                         <div className="text-sm text-gray-600">Critical</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-orange-500">{analytics.issues_by_severity.high}</div>
+                        <div className="text-2xl font-bold text-orange-500">
+                          {analytics.issues_by_severity.high}
+                        </div>
                         <div className="text-sm text-gray-600">High</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-yellow-500">{analytics.issues_by_severity.medium}</div>
+                        <div className="text-2xl font-bold text-yellow-500">
+                          {analytics.issues_by_severity.medium}
+                        </div>
                         <div className="text-sm text-gray-600">Medium</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-blue-500">{analytics.issues_by_severity.low}</div>
+                        <div className="text-2xl font-bold text-blue-500">
+                          {analytics.issues_by_severity.low}
+                        </div>
                         <div className="text-sm text-gray-600">Low</div>
                       </div>
                     </div>
-                    
+
                     <div className="pt-4 border-t">
                       <h4 className="font-medium mb-2">System Status</h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span>Success Rate:</span>
-                          <span className="font-medium text-green-600">{analytics.success_rate}</span>
+                          <span className="font-medium text-green-600">
+                            {analytics.success_rate}
+                          </span>
                         </div>
                         <div className="flex justify-between">
                           <span>Last Scan:</span>
-                          <span>{analytics.latest_scan ? new Date(analytics.latest_scan).toLocaleString() : 'Never'}</span>
+                          <span>
+                            {analytics.latest_scan
+                              ? new Date(analytics.latest_scan).toLocaleString()
+                              : 'Never'}
+                          </span>
                         </div>
                         <div className="flex justify-between">
                           <span>Monitoring:</span>
-                          <span className={`font-medium ${isMonitoring ? 'text-green-600' : 'text-gray-600'}`}>
+                          <span
+                            className={`font-medium ${isMonitoring ? 'text-green-600' : 'text-gray-600'}`}
+                          >
                             {isMonitoring ? 'Active' : 'Inactive'}
                           </span>
                         </div>
@@ -352,18 +386,22 @@ export default function ButtonRepairDashboard() {
             <Card>
               <CardHeader>
                 <CardTitle>Monitoring Settings</CardTitle>
-                <CardDescription>Configure automatic monitoring and repair settings</CardDescription>
+                <CardDescription>
+                  Configure automatic monitoring and repair settings
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
                       <h4 className="font-medium">Continuous Monitoring</h4>
-                      <p className="text-sm text-gray-600">Automatically scan for issues every 30 seconds</p>
+                      <p className="text-sm text-gray-600">
+                        Automatically scan for issues every 30 seconds
+                      </p>
                     </div>
                     <div className="flex gap-2">
                       {!isMonitoring ? (
-                        <Button 
+                        <Button
                           onClick={() => startMonitoringMutation.mutate(30)}
                           disabled={startMonitoringMutation.isPending}
                           className="bg-green-600 hover:bg-green-700"
@@ -371,7 +409,7 @@ export default function ButtonRepairDashboard() {
                           Enable
                         </Button>
                       ) : (
-                        <Button 
+                        <Button
                           onClick={() => stopMonitoringMutation.mutate()}
                           disabled={stopMonitoringMutation.isPending}
                           variant="destructive"
@@ -381,11 +419,12 @@ export default function ButtonRepairDashboard() {
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="p-4 border rounded-lg bg-blue-50 dark:bg-blue-950">
                     <h4 className="font-medium mb-2">VaultMesh Integration</h4>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Enterprise-grade monitoring with real-time repair suggestions and FAA-X13 treaty compliance.
+                      Enterprise-grade monitoring with real-time repair suggestions and FAA-X13
+                      treaty compliance.
                     </p>
                   </div>
                 </div>
@@ -393,8 +432,7 @@ export default function ButtonRepairDashboard() {
             </Card>
           </TabsContent>
         </Tabs>
-
       </div>
     </div>
-  )
+  );
 }

@@ -27,6 +27,7 @@ cookies.txt
 temp-*.json
 *.tmp
 .cache
+/tmp/fruitful-packages/
 
 # Database files
 *.sqlite

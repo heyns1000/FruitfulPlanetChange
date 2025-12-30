@@ -5,18 +5,18 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Network, 
-  Search, 
-  Filter, 
-  Maximize2, 
-  RefreshCw, 
-  Eye, 
+import {
+  Network,
+  Search,
+  Filter,
+  Maximize2,
+  RefreshCw,
+  Eye,
   Target,
   Zap,
   Link,
   Users,
-  TrendingUp
+  TrendingUp,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -73,11 +73,11 @@ export function SectorRelationshipMapping() {
       y: Math.sin((index * 2 * Math.PI) / sectors.length) * 200 + 300,
       connections: Math.floor(Math.random() * 8) + 2,
       tier: getTier(sector.metadata?.pricing?.monthly || 79.99),
-      color: getNodeColor(sector.name)
+      color: getNodeColor(sector.name),
     }));
 
     const sectorRelationships: SectorRelationship[] = [];
-    
+
     // Generate relationships based on sector synergies
     sectors.forEach((source: Sector, i: number) => {
       sectors.forEach((target: Sector, j: number) => {
@@ -87,7 +87,7 @@ export function SectorRelationshipMapping() {
             targetId: target.id,
             strength: Math.random() * 0.8 + 0.2,
             type: getRelationshipType(source.name, target.name),
-            description: `${source.name} integrates with ${target.name} for enhanced ecosystem value`
+            description: `${source.name} integrates with ${target.name} for enhanced ecosystem value`,
           });
         }
       });
@@ -115,9 +115,9 @@ export function SectorRelationshipMapping() {
     // Draw connections
     ctx.strokeStyle = '#374151';
     ctx.lineWidth = 1;
-    relationships.forEach(rel => {
-      const source = nodes.find(n => n.id === rel.sourceId);
-      const target = nodes.find(n => n.id === rel.targetId);
+    relationships.forEach((rel) => {
+      const source = nodes.find((n) => n.id === rel.sourceId);
+      const target = nodes.find((n) => n.id === rel.targetId);
       if (source && target) {
         ctx.beginPath();
         ctx.moveTo(source.x, source.y);
@@ -129,9 +129,9 @@ export function SectorRelationshipMapping() {
     });
 
     // Draw nodes
-    nodes.forEach(node => {
+    nodes.forEach((node) => {
       const isSelected = selectedSector === node.id;
-      
+
       // Node circle
       ctx.beginPath();
       ctx.arc(node.x, node.y, isSelected ? 25 : 20, 0, 2 * Math.PI);
@@ -164,22 +164,27 @@ export function SectorRelationshipMapping() {
 
   const getNodeColor = (name: string) => {
     const colors: Record<string, string> = {
-      'Mining': '#F59E0B',
-      'Agriculture': '#10B981',
-      'Banking': '#3B82F6',
-      'Healthcare': '#EF4444',
-      'Education': '#8B5CF6',
-      'Creative': '#F97316',
-      'AI': '#06B6D4',
-      'Energy': '#84CC16'
+      Mining: '#F59E0B',
+      Agriculture: '#10B981',
+      Banking: '#3B82F6',
+      Healthcare: '#EF4444',
+      Education: '#8B5CF6',
+      Creative: '#F97316',
+      AI: '#06B6D4',
+      Energy: '#84CC16',
     };
-    
-    const key = Object.keys(colors).find(k => name.includes(k));
+
+    const key = Object.keys(colors).find((k) => name.includes(k));
     return key ? colors[key] : '#6B7280';
   };
 
   const getRelationshipType = (source: string, target: string): SectorRelationship['type'] => {
-    const types: SectorRelationship['type'][] = ['integration', 'synergy', 'dependency', 'collaboration'];
+    const types: SectorRelationship['type'][] = [
+      'integration',
+      'synergy',
+      'dependency',
+      'collaboration',
+    ];
     return types[Math.floor(Math.random() * types.length)];
   };
 
@@ -191,7 +196,7 @@ export function SectorRelationshipMapping() {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    const clickedNode = nodes.find(node => {
+    const clickedNode = nodes.find((node) => {
       const distance = Math.sqrt((x - node.x) ** 2 + (y - node.y) ** 2);
       return distance <= 25;
     });
@@ -203,16 +208,17 @@ export function SectorRelationshipMapping() {
     }
   };
 
-  const filteredRelationships = relationships.filter(rel => {
+  const filteredRelationships = relationships.filter((rel) => {
     if (filterType === 'all') return true;
     return rel.type === filterType;
   });
 
-  const selectedSectorData = selectedSector ? 
-    sectors.find((s: Sector) => s.id === selectedSector) : null;
+  const selectedSectorData = selectedSector
+    ? sectors.find((s: Sector) => s.id === selectedSector)
+    : null;
 
-  const selectedSectorConnections = relationships.filter(rel => 
-    rel.sourceId === selectedSector || rel.targetId === selectedSector
+  const selectedSectorConnections = relationships.filter(
+    (rel) => rel.sourceId === selectedSector || rel.targetId === selectedSector
   );
 
   if (isLoading) {
@@ -232,7 +238,9 @@ export function SectorRelationshipMapping() {
           <Network className="w-8 h-8 text-blue-500" />
           <div>
             <h1 className="text-3xl font-bold">Interactive Sector Relationship Mapping</h1>
-            <p className="text-gray-600">Visualize connections and synergies across the ecosystem</p>
+            <p className="text-gray-600">
+              Visualize connections and synergies across the ecosystem
+            </p>
           </div>
         </div>
         <Badge variant="outline" className="text-sm">
@@ -251,7 +259,7 @@ export function SectorRelationshipMapping() {
             className="w-64"
           />
         </div>
-        
+
         <div className="flex items-center gap-2">
           <Filter className="w-4 h-4 text-gray-400" />
           <select
@@ -267,11 +275,7 @@ export function SectorRelationshipMapping() {
           </select>
         </div>
 
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setSelectedSector(null)}
-        >
+        <Button variant="outline" size="sm" onClick={() => setSelectedSector(null)}>
           <Eye className="w-4 h-4 mr-2" />
           Clear Selection
         </Button>
@@ -321,7 +325,9 @@ export function SectorRelationshipMapping() {
                     <div className="text-center">
                       <div className="text-4xl mb-2">{selectedSectorData.emoji}</div>
                       <h3 className="font-semibold text-lg">{selectedSectorData.name}</h3>
-                      <p className="text-sm text-gray-600">{selectedSectorData.brandCount} brands</p>
+                      <p className="text-sm text-gray-600">
+                        {selectedSectorData.brandCount} brands
+                      </p>
                     </div>
 
                     <div className="space-y-3">
@@ -329,12 +335,14 @@ export function SectorRelationshipMapping() {
                         <span className="text-sm font-medium">Connections:</span>
                         <Badge>{selectedSectorConnections.length}</Badge>
                       </div>
-                      
+
                       <div className="space-y-2">
                         <span className="text-sm font-medium">Connected Sectors:</span>
                         {selectedSectorConnections.slice(0, 5).map((conn, i) => {
-                          const connectedSector = sectors.find((s: Sector) => 
-                            s.id === (conn.sourceId === selectedSector ? conn.targetId : conn.sourceId)
+                          const connectedSector = sectors.find(
+                            (s: Sector) =>
+                              s.id ===
+                              (conn.sourceId === selectedSector ? conn.targetId : conn.sourceId)
                           );
                           return (
                             <div key={i} className="flex items-center gap-2 text-sm">
@@ -385,18 +393,22 @@ export function SectorRelationshipMapping() {
                           {rowSector.emoji} {rowSector.name.split(' ')[0]}
                         </td>
                         {sectors.slice(0, 10).map((colSector: Sector) => {
-                          const relationship = relationships.find(rel =>
-                            (rel.sourceId === rowSector.id && rel.targetId === colSector.id) ||
-                            (rel.targetId === rowSector.id && rel.sourceId === colSector.id)
+                          const relationship = relationships.find(
+                            (rel) =>
+                              (rel.sourceId === rowSector.id && rel.targetId === colSector.id) ||
+                              (rel.targetId === rowSector.id && rel.sourceId === colSector.id)
                           );
                           return (
                             <td key={colSector.id} className="text-center p-2">
                               {relationship ? (
-                                <div 
+                                <div
                                   className={cn(
-                                    "w-4 h-4 rounded mx-auto",
-                                    relationship.strength > 0.6 ? "bg-green-500" :
-                                    relationship.strength > 0.3 ? "bg-yellow-500" : "bg-gray-300"
+                                    'w-4 h-4 rounded mx-auto',
+                                    relationship.strength > 0.6
+                                      ? 'bg-green-500'
+                                      : relationship.strength > 0.3
+                                        ? 'bg-yellow-500'
+                                        : 'bg-gray-300'
                                   )}
                                   title={`${relationship.type} - ${Math.round(relationship.strength * 100)}%`}
                                 />
@@ -422,25 +434,23 @@ export function SectorRelationshipMapping() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {['Enterprise', 'Infrastructure', 'Professional', 'Standard'].map(tier => {
-                  const tierSectors = nodes.filter(node => node.tier === tier);
+                {['Enterprise', 'Infrastructure', 'Professional', 'Standard'].map((tier) => {
+                  const tierSectors = nodes.filter((node) => node.tier === tier);
                   return (
                     <div key={tier} className="border rounded-lg p-4">
                       <div className="flex items-center gap-2 mb-3">
                         <Badge variant={tier === 'Enterprise' ? 'default' : 'secondary'}>
                           {tier} Tier
                         </Badge>
-                        <span className="text-sm text-gray-500">
-                          {tierSectors.length} sectors
-                        </span>
+                        <span className="text-sm text-gray-500">{tierSectors.length} sectors</span>
                       </div>
                       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                        {tierSectors.map(sector => (
+                        {tierSectors.map((sector) => (
                           <div
                             key={sector.id}
                             className={cn(
-                              "p-3 border rounded-lg text-center cursor-pointer hover:bg-gray-50",
-                              selectedSector === sector.id && "bg-blue-50 border-blue-300"
+                              'p-3 border rounded-lg text-center cursor-pointer hover:bg-gray-50',
+                              selectedSector === sector.id && 'bg-blue-50 border-blue-300'
                             )}
                             onClick={() => setSelectedSector(sector.id)}
                           >
@@ -471,9 +481,7 @@ export function SectorRelationshipMapping() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-blue-600">
-              {relationships.length}
-            </div>
+            <div className="text-3xl font-bold text-blue-600">{relationships.length}</div>
             <p className="text-sm text-gray-600">Active relationships</p>
           </CardContent>
         </Card>
@@ -502,7 +510,10 @@ export function SectorRelationshipMapping() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-purple-600">
-              {Math.round((relationships.length / (sectors.length * (sectors.length - 1) / 2)) * 100)}%
+              {Math.round(
+                (relationships.length / ((sectors.length * (sectors.length - 1)) / 2)) * 100
+              )}
+              %
             </div>
             <p className="text-sm text-gray-600">Connectivity</p>
           </CardContent>
