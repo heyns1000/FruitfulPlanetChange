@@ -44,16 +44,16 @@ export function PayPalEcosystemManager() {
     },
     onSuccess: (data) => {
       toast({
-        title: "PayPal Ecosystem Initialized!",
+        title: 'PayPal Ecosystem Initialized!',
         description: `Successfully created ${data.totalContainers} PayPal containers across your ecosystem.`,
       });
       queryClient.invalidateQueries({ queryKey: ['/api/paypal/containers'] });
     },
     onError: (error) => {
       toast({
-        title: "Initialization Failed",
-        description: "Failed to initialize PayPal ecosystem. Please try again.",
-        variant: "destructive",
+        title: 'Initialization Failed',
+        description: 'Failed to initialize PayPal ecosystem. Please try again.',
+        variant: 'destructive',
       });
     },
   });
@@ -65,22 +65,26 @@ export function PayPalEcosystemManager() {
     },
     onSuccess: (data) => {
       toast({
-        title: "Sector Containers Generated!",
+        title: 'Sector Containers Generated!',
         description: `Created ${data.containersGenerated} PayPal containers for sector ${data.sectorId}.`,
       });
       queryClient.invalidateQueries({ queryKey: ['/api/paypal/containers'] });
     },
     onError: (error) => {
       toast({
-        title: "Generation Failed",
-        description: "Failed to generate sector containers. Please try again.",
-        variant: "destructive",
+        title: 'Generation Failed',
+        description: 'Failed to generate sector containers. Please try again.',
+        variant: 'destructive',
       });
     },
   });
 
   const containers: PayPalContainer[] = containersData?.containers || [];
-  const stats: ContainerStats = containersData?.stats || { sectorContainers: 0, brandContainers: 0, averagePrice: 0 };
+  const stats: ContainerStats = containersData?.stats || {
+    sectorContainers: 0,
+    brandContainers: 0,
+    averagePrice: 0,
+  };
   const totalContainers = containersData?.totalContainers || 0;
 
   return (
@@ -205,10 +209,9 @@ export function PayPalEcosystemManager() {
         <CardHeader>
           <CardTitle>Active PayPal Containers</CardTitle>
           <CardDescription>
-            {containers.length > 0 ? 
-              `Showing ${containers.length} containers (limited view for performance)` : 
-              'No containers generated yet. Click "Initialize Full Ecosystem" to get started.'
-            }
+            {containers.length > 0
+              ? `Showing ${containers.length} containers (limited view for performance)`
+              : 'No containers generated yet. Click "Initialize Full Ecosystem" to get started.'}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -220,35 +223,35 @@ export function PayPalEcosystemManager() {
           ) : containers.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {containers.map((container) => (
-                <Card key={container.containerId} className="border-l-4 border-l-blue-500" data-testid={`container-${container.containerId}`}>
+                <Card
+                  key={container.containerId}
+                  className="border-l-4 border-l-blue-500"
+                  data-testid={`container-${container.containerId}`}
+                >
                   <CardContent className="p-4">
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <Badge variant={container.brandId ? "default" : "secondary"}>
-                          {container.brandId ? "Brand" : "Sector"}
+                        <Badge variant={container.brandId ? 'default' : 'secondary'}>
+                          {container.brandId ? 'Brand' : 'Sector'}
                         </Badge>
-                        <span className="text-lg font-bold text-green-600">
-                          ${container.price}
-                        </span>
+                        <span className="text-lg font-bold text-green-600">${container.price}</span>
                       </div>
-                      
+
                       <div>
                         <h4 className="font-semibold text-sm">
                           {container.brandName || container.sectorName}
                         </h4>
                         {container.brandName && (
-                          <p className="text-xs text-muted-foreground">
-                            {container.sectorName}
-                          </p>
+                          <p className="text-xs text-muted-foreground">{container.sectorName}</p>
                         )}
                       </div>
-                      
+
                       <div className="text-xs text-muted-foreground">
                         Container ID: {container.containerId.split('-').slice(-1)[0]}
                       </div>
-                      
-                      <Button 
-                        size="sm" 
+
+                      <Button
+                        size="sm"
                         className="w-full mt-2"
                         data-testid={`button-view-container-${container.containerId}`}
                       >
@@ -264,7 +267,9 @@ export function PayPalEcosystemManager() {
             <div className="text-center py-8 text-muted-foreground">
               <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p>No PayPal containers found.</p>
-              <p className="text-sm">Initialize the ecosystem to generate containers for your 7,000+ products.</p>
+              <p className="text-sm">
+                Initialize the ecosystem to generate containers for your 7,000+ products.
+              </p>
             </div>
           )}
         </CardContent>

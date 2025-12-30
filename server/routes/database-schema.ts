@@ -13,156 +13,174 @@ router.get('/schema/tables', async (req, res) => {
     const systemStatus = await storage.getSystemStatus().catch(() => []);
     const legalDocuments = await storage.getLegalDocuments().catch(() => []);
     const repositories = await storage.getRepositories().catch(() => []);
-    
+
     // Get comprehensive admin panel brands data
     const adminPanelBrands = await storage.getAdminPanelBrands().catch(() => []);
-    
+
     // Database schema with real record counts
     const schemaData = [
       {
-        name: "admin_panel_brands",
-        type: "table", 
-        size: "576 kB",
-        description: "Administrative brand management and oversight",
+        name: 'admin_panel_brands',
+        type: 'table',
+        size: '576 kB',
+        description: 'Administrative brand management and oversight',
         recordCount: adminPanelBrands.length,
-        category: "Brand Management",
-        fields: ["id", "sectorKey", "sectorName", "sectorEmoji", "brandName", "subNodes", "isCore", "status"]
+        category: 'Brand Management',
+        fields: [
+          'id',
+          'sectorKey',
+          'sectorName',
+          'sectorEmoji',
+          'brandName',
+          'subNodes',
+          'isCore',
+          'status',
+        ],
       },
       {
-        name: "banimal_transactions",
-        type: "table",
-        size: "32 kB", 
-        description: "Charitable giving transactions and distributions",
+        name: 'banimal_transactions',
+        type: 'table',
+        size: '32 kB',
+        description: 'Charitable giving transactions and distributions',
         recordCount: 156, // Real count from Banimal ecosystem
-        category: "Financial",
-        fields: ["id", "transactionId", "amount", "recipient", "status", "timestamp"]
+        category: 'Financial',
+        fields: ['id', 'transactionId', 'amount', 'recipient', 'status', 'timestamp'],
       },
       {
-        name: "brands",
-        type: "table",
-        size: "2336 kB",
-        description: "Core brand entities across all sectors", 
+        name: 'brands',
+        type: 'table',
+        size: '2336 kB',
+        description: 'Core brand entities across all sectors',
         recordCount: brands.length,
-        category: "Brand Management",
-        fields: ["id", "name", "description", "sectorId", "integration", "status", "isCore", "parentId"]
+        category: 'Brand Management',
+        fields: [
+          'id',
+          'name',
+          'description',
+          'sectorId',
+          'integration',
+          'status',
+          'isCore',
+          'parentId',
+        ],
       },
       {
-        name: "charitable_distributions", 
-        type: "table",
-        size: "32 kB",
-        description: "Banimal charitable distribution records",
+        name: 'charitable_distributions',
+        type: 'table',
+        size: '32 kB',
+        description: 'Banimal charitable distribution records',
         recordCount: 89,
-        category: "Charitable", 
-        fields: ["id", "distributionId", "amount", "cause", "impact", "timestamp"]
+        category: 'Charitable',
+        fields: ['id', 'distributionId', 'amount', 'cause', 'impact', 'timestamp'],
       },
       {
-        name: "legal_documents",
-        type: "table",
-        size: "32 kB",
-        description: "SecureSign VIP legal documentation system",
+        name: 'legal_documents',
+        type: 'table',
+        size: '32 kB',
+        description: 'SecureSign VIP legal documentation system',
         recordCount: legalDocuments.length,
-        category: "Legal",
-        fields: ["id", "title", "description", "url", "icon", "category", "tags"]
+        category: 'Legal',
+        fields: ['id', 'title', 'description', 'url', 'icon', 'category', 'tags'],
       },
       {
-        name: "media_projects",
-        type: "table", 
-        size: "24 kB",
-        description: "Motion, media and sonic project management",
+        name: 'media_projects',
+        type: 'table',
+        size: '24 kB',
+        description: 'Motion, media and sonic project management',
         recordCount: 67,
-        category: "Media",
-        fields: ["id", "projectName", "type", "status", "engine", "metadata"]
+        category: 'Media',
+        fields: ['id', 'projectName', 'type', 'status', 'engine', 'metadata'],
       },
       {
-        name: "payments",
-        type: "table",
-        size: "16 kB", 
-        description: "Payment processing and transaction records",
+        name: 'payments',
+        type: 'table',
+        size: '16 kB',
+        description: 'Payment processing and transaction records',
         recordCount: 423,
-        category: "Financial",
-        fields: ["id", "userId", "planName", "amount", "currency", "paypalOrderId", "status"]
+        category: 'Financial',
+        fields: ['id', 'userId', 'planName', 'amount', 'currency', 'paypalOrderId', 'status'],
       },
       {
-        name: "processing_engines",
-        type: "table",
-        size: "48 kB",
-        description: "Atom-level engines and processing systems",
+        name: 'processing_engines',
+        type: 'table',
+        size: '48 kB',
+        description: 'Atom-level engines and processing systems',
         recordCount: 9, // 9 core processing engines
-        category: "Infrastructure", 
-        fields: ["id", "engineName", "type", "status", "performance", "metrics"]
+        category: 'Infrastructure',
+        fields: ['id', 'engineName', 'type', 'status', 'performance', 'metrics'],
       },
       {
-        name: "repositories",
-        type: "table",
-        size: "72 kB",
-        description: "GitHub repository management and tracking", 
+        name: 'repositories',
+        type: 'table',
+        size: '72 kB',
+        description: 'GitHub repository management and tracking',
         recordCount: repositories.length,
-        category: "Development",
-        fields: ["id", "name", "url", "description", "category", "status"]
+        category: 'Development',
+        fields: ['id', 'name', 'url', 'description', 'category', 'status'],
       },
       {
-        name: "sectors",
-        type: "table",
-        size: "88 kB",
-        description: "48-sector ecosystem classification system",
+        name: 'sectors',
+        type: 'table',
+        size: '88 kB',
+        description: '48-sector ecosystem classification system',
         recordCount: sectors.length,
-        category: "Business",
-        fields: ["id", "name", "emoji", "description", "brandCount", "subnodeCount", "price"]
+        category: 'Business',
+        fields: ['id', 'name', 'emoji', 'description', 'brandCount', 'subnodeCount', 'price'],
       },
       {
-        name: "sessions",
-        type: "table",
-        size: "88 kB",
-        description: "User session management and authentication", 
+        name: 'sessions',
+        type: 'table',
+        size: '88 kB',
+        description: 'User session management and authentication',
         recordCount: 1247,
-        category: "Security",
-        fields: ["sid", "sess", "expire"]
+        category: 'Security',
+        fields: ['sid', 'sess', 'expire'],
       },
       {
-        name: "sonic_grid_connections",
-        type: "table", 
-        size: "32 kB",
-        description: "Banimal sonic grid network connections",
+        name: 'sonic_grid_connections',
+        type: 'table',
+        size: '32 kB',
+        description: 'Banimal sonic grid network connections',
         recordCount: 198,
-        category: "Network",
-        fields: ["id", "connectionName", "gridType", "frequency", "status", "metadata"]
+        category: 'Network',
+        fields: ['id', 'connectionName', 'gridType', 'frequency', 'status', 'metadata'],
       },
       {
-        name: "system_status",
-        type: "table",
-        size: "48 kB",
-        description: "Real-time system monitoring and health",
+        name: 'system_status',
+        type: 'table',
+        size: '48 kB',
+        description: 'Real-time system monitoring and health',
         recordCount: systemStatus.length,
-        category: "System", 
-        fields: ["id", "service", "status", "lastChecked"]
+        category: 'System',
+        fields: ['id', 'service', 'status', 'lastChecked'],
       },
       {
-        name: "users",
-        type: "table",
-        size: "48 kB",
-        description: "User accounts and profile management",
+        name: 'users',
+        type: 'table',
+        size: '48 kB',
+        description: 'User accounts and profile management',
         recordCount: 1, // Current authenticated user
-        category: "Users",
-        fields: ["id", "email", "firstName", "lastName", "profileImageUrl"]
+        category: 'Users',
+        fields: ['id', 'email', 'firstName', 'lastName', 'profileImageUrl'],
       },
       {
-        name: "users_backup",
-        type: "table", 
-        size: "8192 bytes",
-        description: "User data backup and recovery system",
+        name: 'users_backup',
+        type: 'table',
+        size: '8192 bytes',
+        description: 'User data backup and recovery system',
         recordCount: 1,
-        category: "Backup",
-        fields: ["id", "originalId", "backupData", "timestamp", "reason"]
+        category: 'Backup',
+        fields: ['id', 'originalId', 'backupData', 'timestamp', 'reason'],
       },
       {
-        name: "vault_actions", 
-        type: "table",
-        size: "32 kB",
-        description: "VaultMesh secure action logging and audit",
+        name: 'vault_actions',
+        type: 'table',
+        size: '32 kB',
+        description: 'VaultMesh secure action logging and audit',
         recordCount: 342,
-        category: "Security",
-        fields: ["id", "actionId", "userId", "action", "resource", "timestamp", "metadata"]
-      }
+        category: 'Security',
+        fields: ['id', 'actionId', 'userId', 'action', 'resource', 'timestamp', 'metadata'],
+      },
     ];
 
     // Calculate totals
@@ -171,9 +189,9 @@ router.get('/schema/tables', async (req, res) => {
       if (sizeMatch) {
         const value = parseFloat(sizeMatch[1]);
         const unit = sizeMatch[2];
-        if (unit === 'MB') return acc + (value * 1024);
+        if (unit === 'MB') return acc + value * 1024;
         if (unit === 'kB') return acc + value;
-        if (unit === 'bytes') return acc + (value / 1024);
+        if (unit === 'bytes') return acc + value / 1024;
       }
       return acc;
     }, 0);
@@ -185,10 +203,10 @@ router.get('/schema/tables', async (req, res) => {
       summary: {
         totalTables: schemaData.length,
         totalSizeKB: Math.round(totalSize),
-        totalSizeMB: Math.round(totalSize / 1024 * 100) / 100,
+        totalSizeMB: Math.round((totalSize / 1024) * 100) / 100,
         totalRecords,
-        lastUpdated: new Date().toISOString()
-      }
+        lastUpdated: new Date().toISOString(),
+      },
     });
   } catch (error) {
     console.error('Database schema API error:', error);
@@ -200,10 +218,10 @@ router.get('/schema/tables', async (req, res) => {
 router.get('/schema/table/:tableName', isAuthenticated, async (req, res) => {
   try {
     const { tableName } = req.params;
-    
+
     let sampleData = [];
     let recordCount = 0;
-    
+
     switch (tableName) {
       case 'brands':
         const brands = await storage.getBrands();
@@ -211,7 +229,7 @@ router.get('/schema/table/:tableName', isAuthenticated, async (req, res) => {
         recordCount = brands.length;
         break;
       case 'sectors':
-        const sectors = await storage.getSectors(); 
+        const sectors = await storage.getSectors();
         sampleData = sectors.slice(0, 5);
         recordCount = sectors.length;
         break;
@@ -227,7 +245,7 @@ router.get('/schema/table/:tableName', isAuthenticated, async (req, res) => {
         break;
       case 'repositories':
         const repos = await storage.getRepositories();
-        sampleData = repos.slice(0, 5); 
+        sampleData = repos.slice(0, 5);
         recordCount = repos.length;
         break;
       case 'system_status':
@@ -242,12 +260,12 @@ router.get('/schema/table/:tableName', isAuthenticated, async (req, res) => {
     res.json({
       tableName,
       recordCount,
-      sampleData: sampleData.map(record => ({
+      sampleData: sampleData.map((record) => ({
         ...record,
         // Mask sensitive data
         id: record.id || 'xxx',
-        email: record.email ? '***@***.***' : undefined
-      }))
+        email: record.email ? '***@***.***' : undefined,
+      })),
     });
   } catch (error) {
     console.error('Table details API error:', error);
@@ -260,30 +278,31 @@ router.get('/stats/realtime', async (req, res) => {
   try {
     const [brands, sectors, systemStatus, legalDocs, repos] = await Promise.all([
       storage.getBrands(),
-      storage.getSectors(), 
+      storage.getSectors(),
       storage.getSystemStatus(),
       storage.getLegalDocuments(),
-      storage.getRepositories()
+      storage.getRepositories(),
     ]);
 
     const stats = {
       core: {
         brands: brands.length,
         sectors: sectors.length,
-        coreBrands: brands.filter(b => b.isCore).length,
-        subnodes: brands.filter(b => !b.isCore).length
+        coreBrands: brands.filter((b) => b.isCore).length,
+        subnodes: brands.filter((b) => !b.isCore).length,
       },
       system: {
         services: systemStatus.length,
-        onlineServices: systemStatus.filter(s => s.status === 'online').length,
-        uptime: systemStatus.filter(s => s.status === 'online').length / systemStatus.length * 100
+        onlineServices: systemStatus.filter((s) => s.status === 'online').length,
+        uptime:
+          (systemStatus.filter((s) => s.status === 'online').length / systemStatus.length) * 100,
       },
       content: {
         legalDocuments: legalDocs.length,
         repositories: repos.length,
-        activeRepos: repos.filter(r => r.status === 'active').length
+        activeRepos: repos.filter((r) => r.status === 'active').length,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     res.json(stats);

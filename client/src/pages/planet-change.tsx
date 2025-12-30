@@ -15,19 +15,26 @@ export default function PlanetChange() {
     <section className="min-h-screen bg-gradient-to-br from-sky-100 via-green-50 to-lime-200 p-10 font-sans text-gray-800">
       {/* Header */}
       <header className="flex justify-between items-center border-b border-gray-400 pb-6">
-        <h1 className="text-3xl font-bold text-emerald-700 tracking-wide">Welcome to Fruitful.Planet.Change</h1>
-        <div className="text-sm uppercase text-gray-500">Seedwave™ Portal Node | FAA VaultMesh™</div>
+        <h1 className="text-3xl font-bold text-emerald-700 tracking-wide">
+          Welcome to Fruitful.Planet.Change
+        </h1>
+        <div className="text-sm uppercase text-gray-500">
+          Seedwave™ Portal Node | FAA VaultMesh™
+        </div>
       </header>
 
       {/* Message Block */}
       <main className="py-14 max-w-4xl mx-auto text-center space-y-8">
         <p className="text-xl leading-relaxed">
-          🌍 You've entered the Fruitful Global Brand Portal — home to <strong>{(stats as any)?.totalElements || '3,794'} FAA-linked brands</strong>,
-          secured across {(sectors as any)?.length || '48'} sectors with PostgreSQL live sync, SecureSign™ VIP, and VaultMesh™ deployment fabric.
+          🌍 You've entered the Fruitful Global Brand Portal — home to{' '}
+          <strong>{(stats as any)?.totalElements || '3,794'} FAA-linked brands</strong>, secured
+          across {(sectors as any)?.length || '48'} sectors with PostgreSQL live sync, SecureSign™
+          VIP, and VaultMesh™ deployment fabric.
         </p>
 
         <p className="text-lg text-gray-700">
-          GenesisGPT™ is now actively embedded in this node.<br />
+          GenesisGPT™ is now actively embedded in this node.
+          <br />
           We are listening, syncing, and ready to expand your portal intelligence.
         </p>
 
@@ -52,10 +59,14 @@ export default function PlanetChange() {
             <h3 className="text-lg font-semibold text-emerald-700 mb-4">🧬 Genesis Layer Active</h3>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="font-medium">Core Brands:</span> {(stats as any)?.coreBrands || '2,862'}
+                <span className="font-medium">Core Brands:</span>{' '}
+                {(stats as any)?.coreBrands || '2,862'}
               </div>
               <div>
-                <span className="font-medium">Subnodes:</span> {(stats as any)?.totalElements && (stats as any)?.coreBrands ? ((stats as any).totalElements - (stats as any).coreBrands) : '932'}
+                <span className="font-medium">Subnodes:</span>{' '}
+                {(stats as any)?.totalElements && (stats as any)?.coreBrands
+                  ? (stats as any).totalElements - (stats as any).coreBrands
+                  : '932'}
               </div>
               <div>
                 <span className="font-medium">User ID:</span> {(user as any)?.id || 'Genesis'}

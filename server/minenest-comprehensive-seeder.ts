@@ -1,15 +1,39 @@
-import { db } from "./db";
-import { sectors, brands, type InsertBrand } from "@shared/schema";
-import { eq } from "drizzle-orm";
+import { db } from './db';
+import { sectors, brands, type InsertBrand } from '@shared/schema';
+import { eq } from 'drizzle-orm';
 
 // Complete MineNest™ mining brands from HTML file (30 parent brands + 120 subnodes)
 const miningBrandsRaw = [
-  'MineNest', 'DrillCoreX', 'OreSync', 'VaultRock', 'ClaimMine',
-  'TrackShaft', 'PulseMine', 'CoreBeam', 'DigEcho', 'RockPath',
-  'YieldDrill', 'MineProof', 'OreLine', 'DrillLink', 'VaultTunnel',
-  'GeoGrid', 'SeamSync', 'ClaimOre', 'PulseBlast', 'OreEcho',
-  'DeepCrate', 'RockLogic', 'CoreDrill', 'MineCast', 'DrillMark',
-  'SignalOre', 'YieldTrack', 'VaultSeam', 'ShaftDrop', 'GeoNode'
+  'MineNest',
+  'DrillCoreX',
+  'OreSync',
+  'VaultRock',
+  'ClaimMine',
+  'TrackShaft',
+  'PulseMine',
+  'CoreBeam',
+  'DigEcho',
+  'RockPath',
+  'YieldDrill',
+  'MineProof',
+  'OreLine',
+  'DrillLink',
+  'VaultTunnel',
+  'GeoGrid',
+  'SeamSync',
+  'ClaimOre',
+  'PulseBlast',
+  'OreEcho',
+  'DeepCrate',
+  'RockLogic',
+  'CoreDrill',
+  'MineCast',
+  'DrillMark',
+  'SignalOre',
+  'YieldTrack',
+  'VaultSeam',
+  'ShaftDrop',
+  'GeoNode',
 ];
 
 const miningSubNodesRaw = [
@@ -42,18 +66,18 @@ const miningSubNodesRaw = [
   ['TrackYield', 'MineFrame', 'SignalGrid', 'EchoDrill'],
   ['VaultSeamX', 'QRClaimX', 'GridOre', 'TunnelEcho'],
   ['DropShaft', 'ClaimTunnelX', 'YieldDrillX', 'VaultGrid'],
-  ['GeoNodeX', 'SignalPing', 'DropEcho', 'MineLink']
+  ['GeoNodeX', 'SignalPing', 'DropEcho', 'MineLink'],
 ];
 
 export async function seedMineNestComprehensive() {
-  console.log("⛏️ Seeding comprehensive MineNest™ mining ecosystem from HTML data...");
+  console.log('⛏️ Seeding comprehensive MineNest™ mining ecosystem from HTML data...');
 
   try {
     // Find the mining sector
-    const miningSector = await db.select().from(sectors).where(eq(sectors.emoji, "⛏️"));
-    
+    const miningSector = await db.select().from(sectors).where(eq(sectors.emoji, '⛏️'));
+
     if (!miningSector.length) {
-      throw new Error("Mining sector not found in database");
+      throw new Error('Mining sector not found in database');
     }
 
     const miningId = miningSector[0].id;
@@ -61,7 +85,7 @@ export async function seedMineNestComprehensive() {
 
     // Clear existing mining brands to avoid duplicates
     await db.delete(brands).where(eq(brands.sectorId, miningId));
-    console.log("🧹 Cleared existing mining brands");
+    console.log('🧹 Cleared existing mining brands');
 
     let totalBrandsSeeded = 0;
     let totalSubnodesSeeded = 0;
@@ -76,23 +100,28 @@ export async function seedMineNestComprehensive() {
         name: `${brandName}™`,
         description: `Advanced ${brandName}™ mining & resources solution providing enterprise-grade ore extraction, tracking, and VaultMesh™ integration for secure mining operations across the Fruitful Global ecosystem.`,
         sectorId: miningId,
-        status: i < 25 ? "active" : "development", // Most are active
-        integration: i < 10 ? "VaultMesh™" : i < 20 ? "GridCore™" : "MineCore™",
+        status: i < 25 ? 'active' : 'development', // Most are active
+        integration: i < 10 ? 'VaultMesh™' : i < 20 ? 'GridCore™' : 'MineCore™',
         isCore: true,
         metadata: {
-          tier: i < 5 ? "A+" : i < 15 ? "A" : "B+",
-          category: "Core Mining",
-          source: "HTML_MINENEST",
-          pricing: "199.99",
-          features: [`${brandName} Analytics`, `Real-time Ore Tracking`, `Baobab Legal Compliance`, `VaultMesh™ Security`],
-          version: "3.2",
+          tier: i < 5 ? 'A+' : i < 15 ? 'A' : 'B+',
+          category: 'Core Mining',
+          source: 'HTML_MINENEST',
+          pricing: '199.99',
+          features: [
+            `${brandName} Analytics`,
+            `Real-time Ore Tracking`,
+            `Baobab Legal Compliance`,
+            `VaultMesh™ Security`,
+          ],
+          version: '3.2',
           deploymentDate: new Date().toISOString(),
           performance: Math.floor(Math.random() * 15) + 85, // 85-99%
           activeRigs: Math.floor(Math.random() * 20) + 5,
           monthlyYield: Math.floor(Math.random() * 1000) + 500,
           subnodeCount: subnodes.length,
-          totalProjects: Math.floor(Math.random() * 50) + 20
-        }
+          totalProjects: Math.floor(Math.random() * 50) + 20,
+        },
       };
 
       const [parentBrand] = await db.insert(brands).values(brandData).returning();
@@ -101,25 +130,26 @@ export async function seedMineNestComprehensive() {
       // Create 4 subnodes for each parent brand
       for (let j = 0; j < subnodes.length; j++) {
         const subnodeName = subnodes[j];
-        
+
         const subnodeData: InsertBrand = {
           name: `${subnodeName}™`,
           description: `${subnodeName}™ specialized mining component - ${j === 0 ? 'tracking' : j === 1 ? 'processing' : j === 2 ? 'quality control' : 'signal monitoring'} module for ${brandName}™ mining operations`,
           sectorId: miningId,
           parentId: parentBrand.id,
-          status: "active",
-          integration: "SubNode™",
+          status: 'active',
+          integration: 'SubNode™',
           isCore: false,
           metadata: {
-            tier: "Subnode",
-            category: "Mining Component",
-            source: "HTML_SUBNODE",
+            tier: 'Subnode',
+            category: 'Mining Component',
+            source: 'HTML_SUBNODE',
             parentName: `${brandName}™`,
-            component: j === 0 ? 'Tracking' : j === 1 ? 'Processing' : j === 2 ? 'QC' : 'Monitoring',
+            component:
+              j === 0 ? 'Tracking' : j === 1 ? 'Processing' : j === 2 ? 'QC' : 'Monitoring',
             performance: Math.floor(Math.random() * 10) + 90, // 90-99%
             activeConnections: Math.floor(Math.random() * 50) + 10,
-            dataVolume: `${Math.floor(Math.random() * 100) + 50}GB/day`
-          }
+            dataVolume: `${Math.floor(Math.random() * 100) + 50}GB/day`,
+          },
         };
 
         await db.insert(brands).values(subnodeData);
@@ -135,11 +165,10 @@ export async function seedMineNestComprehensive() {
     return {
       parentBrands: totalBrandsSeeded,
       subnodes: totalSubnodesSeeded,
-      total: totalBrandsSeeded + totalSubnodesSeeded
+      total: totalBrandsSeeded + totalSubnodesSeeded,
     };
-
   } catch (error) {
-    console.error("❌ Error seeding MineNest™ comprehensive data:", error);
+    console.error('❌ Error seeding MineNest™ comprehensive data:', error);
     throw error;
   }
 }

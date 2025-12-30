@@ -20,14 +20,14 @@ export class CloudflareDataSync {
       // Get real data from your HSOMNI9000 database
       const [sectorCount] = await db.select({ count: count() }).from(sectors);
       const [brandCount] = await db.select({ count: count() }).from(brands);
-      
+
       const allSectors = await db.select().from(sectors);
-      const activeSectors = allSectors.filter(sector => sector.isActive !== false);
-      
+      const activeSectors = allSectors.filter((sector) => sector.isActive !== false);
+
       // Calculate vault levels and intake fee based on real ecosystem size
       const vaultLevel = Math.min(8, Math.ceil(brandCount.count / 500)); // Dynamic vault level
       const intakeFee = `${(brandCount.count * 0.001).toFixed(1)}%`; // 0.1% per 1000 brands
-      
+
       return {
         activeSectors: activeSectors.length,
         connectedApps: brandCount.count,
@@ -41,14 +41,14 @@ export class CloudflareDataSync {
           totalSectors: sectorCount.count,
           coreApplications: 7, // Your 7 integrated applications
           vaultMeshCompliance: true,
-          faaX13TreatyCompliant: true
+          faaX13TreatyCompliant: true,
         },
-        sectorBreakdown: activeSectors.map(sector => ({
+        sectorBreakdown: activeSectors.map((sector) => ({
           id: sector.id,
           name: sector.name,
           brandCount: sector.brands?.length || 0,
-          status: 'active'
-        }))
+          status: 'active',
+        })),
       };
     } catch (error) {
       console.error('Error getting ecosystem data:', error);
@@ -66,20 +66,20 @@ export class CloudflareDataSync {
 
     try {
       const ecosystemData = await this.getEcosystemData();
-      
+
       const response = await fetch(`${this.cloudflareEndpoint}/api/ecosystem/sync`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.apiToken}`,
+          Authorization: `Bearer ${this.apiToken}`,
           'Content-Type': 'application/json',
-          'X-Source': 'HSOMNI9000-Main-Portal'
+          'X-Source': 'HSOMNI9000-Main-Portal',
         },
         body: JSON.stringify({
           ...ecosystemData,
           syncTimestamp: Date.now(),
           dataSource: 'replit-hsomni9000',
-          validationHash: this.generateValidationHash(ecosystemData)
-        })
+          validationHash: this.generateValidationHash(ecosystemData),
+        }),
       });
 
       if (!response.ok) {
@@ -88,12 +88,12 @@ export class CloudflareDataSync {
 
       const result = await response.json();
       console.log('✅ Successfully synced data to Cloudflare Workers:', result);
-      
+
       return {
         success: true,
         syncedData: ecosystemData,
         cloudflareResponse: result,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     } catch (error) {
       console.error('❌ Cloudflare sync failed:', error);
@@ -109,7 +109,7 @@ export class CloudflareDataSync {
     let hash = 0;
     for (let i = 0; i < dataString.length; i++) {
       const char = dataString.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return hash.toString(16);
@@ -121,14 +121,14 @@ export class CloudflareDataSync {
   async forceDataAlignment() {
     try {
       console.log('🔄 Forcing Cloudflare Workers data alignment...');
-      
+
       const ecosystemData = await this.getEcosystemData();
-      
+
       console.log('📊 Current HSOMNI9000 Ecosystem Data:', {
         sectors: ecosystemData.activeSectors,
         apps: ecosystemData.connectedApps,
         vaultLevel: ecosystemData.vaultLevel,
-        intakeFee: ecosystemData.intakeFee
+        intakeFee: ecosystemData.intakeFee,
       });
 
       // Multiple sync attempts to ensure data alignment
@@ -142,7 +142,7 @@ export class CloudflareDataSync {
         } catch (error) {
           console.warn(`Sync attempt ${attempt} failed:`, error);
           if (attempt === 3) throw error;
-          await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2s before retry
+          await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait 2s before retry
         }
       }
 
@@ -150,14 +150,14 @@ export class CloudflareDataSync {
         success: true,
         message: 'Cloudflare Workers data alignment completed',
         ecosystemData,
-        syncResults
+        syncResults,
       };
     } catch (error) {
       console.error('❌ Force data alignment failed:', error);
       return {
         success: false,
         message: `Data alignment failed: ${(error as Error).message}`,
-        error: error
+        error: error,
       };
     }
   }

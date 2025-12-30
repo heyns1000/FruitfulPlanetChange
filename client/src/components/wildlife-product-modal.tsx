@@ -1,173 +1,188 @@
-import { useState } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useToast } from "@/hooks/use-toast"
-import { Shield, Activity, Database, Zap, Download, ExternalLink, CheckCircle, ArrowRight } from "lucide-react"
+import { useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
+import {
+  Shield,
+  Activity,
+  Database,
+  Zap,
+  Download,
+  ExternalLink,
+  CheckCircle,
+  ArrowRight,
+} from 'lucide-react';
 
 // Wildlife products data extracted from uploaded HTML
 const wildlifeProducts = [
   {
-    id: "guardeco",
-    name: "GuardEco™",
-    description: "Advanced data sync protocol for wildlife conservation",
-    category: "Conservation",
-    status: "Active",
-    nodes: "2,856",
-    pulseActivity: "98,839 pulses/sec",
-    dataVolume: "98.71 TB",
-    securityRating: "AAA+",
-    vaultId: "VLT-WLD-001",
-    integration: "FAA.Zone™",
+    id: 'guardeco',
+    name: 'GuardEco™',
+    description: 'Advanced data sync protocol for wildlife conservation',
+    category: 'Conservation',
+    status: 'Active',
+    nodes: '2,856',
+    pulseActivity: '98,839 pulses/sec',
+    dataVolume: '98.71 TB',
+    securityRating: 'AAA+',
+    vaultId: 'VLT-WLD-001',
+    integration: 'FAA.Zone™',
     features: [
-      "Real-time habitat monitoring",
-      "Species tracking algorithms",
-      "Conservation data analysis",
-      "Emergency alert system"
+      'Real-time habitat monitoring',
+      'Species tracking algorithms',
+      'Conservation data analysis',
+      'Emergency alert system',
     ],
     pricing: {
-      starter: "$299/month",
-      professional: "$899/month", 
-      enterprise: "Custom"
+      starter: '$299/month',
+      professional: '$899/month',
+      enterprise: 'Custom',
     },
-    deployment: "Global Cloud Infrastructure",
-    protocols: ["HTTPS/2", "WebRTC", "MQTT", "LoRaWAN"]
+    deployment: 'Global Cloud Infrastructure',
+    protocols: ['HTTPS/2', 'WebRTC', 'MQTT', 'LoRaWAN'],
   },
   {
-    id: "linkhabitat",
-    name: "LinkHabitat™",
-    description: "Real-time habitat monitoring and protection system",
-    category: "Monitoring",
-    status: "Active",
-    nodes: "1,947",
-    pulseActivity: "67,234 pulses/sec",
-    dataVolume: "45.32 TB",
-    securityRating: "AA+",
-    vaultId: "VLT-WLD-002",
-    integration: "PulseGrid™",
+    id: 'linkhabitat',
+    name: 'LinkHabitat™',
+    description: 'Real-time habitat monitoring and protection system',
+    category: 'Monitoring',
+    status: 'Active',
+    nodes: '1,947',
+    pulseActivity: '67,234 pulses/sec',
+    dataVolume: '45.32 TB',
+    securityRating: 'AA+',
+    vaultId: 'VLT-WLD-002',
+    integration: 'PulseGrid™',
     features: [
-      "Habitat health metrics",
-      "Environmental sensors",
-      "Biodiversity tracking",
-      "Climate data integration"
+      'Habitat health metrics',
+      'Environmental sensors',
+      'Biodiversity tracking',
+      'Climate data integration',
     ],
     pricing: {
-      starter: "$199/month",
-      professional: "$599/month",
-      enterprise: "Custom"
+      starter: '$199/month',
+      professional: '$599/month',
+      enterprise: 'Custom',
     },
-    deployment: "Edge Computing Network",
-    protocols: ["MQTT", "CoAP", "6LoWPAN", "Zigbee"]
+    deployment: 'Edge Computing Network',
+    protocols: ['MQTT', 'CoAP', '6LoWPAN', 'Zigbee'],
   },
   {
-    id: "tracewild",
-    name: "TraceWild™", 
-    description: "Wildlife tracking and movement analysis platform",
-    category: "Analytics",
-    status: "Active",
-    nodes: "3,142",
-    pulseActivity: "134,567 pulses/sec",
-    dataVolume: "156.89 TB",
-    securityRating: "AAA",
-    vaultId: "VLT-WLD-003",
-    integration: "VaultMesh™",
+    id: 'tracewild',
+    name: 'TraceWild™',
+    description: 'Wildlife tracking and movement analysis platform',
+    category: 'Analytics',
+    status: 'Active',
+    nodes: '3,142',
+    pulseActivity: '134,567 pulses/sec',
+    dataVolume: '156.89 TB',
+    securityRating: 'AAA',
+    vaultId: 'VLT-WLD-003',
+    integration: 'VaultMesh™',
     features: [
-      "GPS tracking integration",
-      "Migration pattern analysis",
-      "Behavioral insights",
-      "Population dynamics"
+      'GPS tracking integration',
+      'Migration pattern analysis',
+      'Behavioral insights',
+      'Population dynamics',
     ],
     pricing: {
-      starter: "$399/month",
-      professional: "$1,199/month",
-      enterprise: "Custom"
+      starter: '$399/month',
+      professional: '$1,199/month',
+      enterprise: 'Custom',
     },
-    deployment: "Hybrid Cloud-Edge",
-    protocols: ["5G NR", "LTE-M", "NB-IoT", "LoRaWAN"]
+    deployment: 'Hybrid Cloud-Edge',
+    protocols: ['5G NR', 'LTE-M', 'NB-IoT', 'LoRaWAN'],
   },
   {
-    id: "nodebio",
-    name: "NodeBio™",
-    description: "Biological sensor network for ecosystem monitoring",
-    category: "Sensors",
-    status: "Active", 
-    nodes: "4,621",
-    pulseActivity: "203,445 pulses/sec",
-    dataVolume: "289.14 TB",
-    securityRating: "AAA+",
-    vaultId: "VLT-WLD-004",
-    integration: "FAA.Zone™",
+    id: 'nodebio',
+    name: 'NodeBio™',
+    description: 'Biological sensor network for ecosystem monitoring',
+    category: 'Sensors',
+    status: 'Active',
+    nodes: '4,621',
+    pulseActivity: '203,445 pulses/sec',
+    dataVolume: '289.14 TB',
+    securityRating: 'AAA+',
+    vaultId: 'VLT-WLD-004',
+    integration: 'FAA.Zone™',
     features: [
-      "Multi-species monitoring",
-      "Soil health analysis",
-      "Water quality tracking",
-      "Air quality sensors"
+      'Multi-species monitoring',
+      'Soil health analysis',
+      'Water quality tracking',
+      'Air quality sensors',
     ],
     pricing: {
-      starter: "$499/month",
-      professional: "$1,499/month",
-      enterprise: "Custom"
+      starter: '$499/month',
+      professional: '$1,499/month',
+      enterprise: 'Custom',
     },
-    deployment: "Distributed IoT Network",
-    protocols: ["Thread", "Matter", "Zigbee", "WiFi 6E"]
+    deployment: 'Distributed IoT Network',
+    protocols: ['Thread', 'Matter', 'Zigbee', 'WiFi 6E'],
   },
   {
-    id: "meshconserv",
-    name: "MeshConserv™",
-    description: "Conservation mesh network for habitat protection",
-    category: "Network",
-    status: "Active",
-    nodes: "2,387",
-    pulseActivity: "89,123 pulses/sec", 
-    dataVolume: "67.45 TB",
-    securityRating: "AA",
-    vaultId: "VLT-WLD-005",
-    integration: "PulseGrid™",
+    id: 'meshconserv',
+    name: 'MeshConserv™',
+    description: 'Conservation mesh network for habitat protection',
+    category: 'Network',
+    status: 'Active',
+    nodes: '2,387',
+    pulseActivity: '89,123 pulses/sec',
+    dataVolume: '67.45 TB',
+    securityRating: 'AA',
+    vaultId: 'VLT-WLD-005',
+    integration: 'PulseGrid™',
     features: [
-      "Mesh networking protocols",
-      "Self-healing networks",
-      "Edge processing",
-      "Offline capabilities"
+      'Mesh networking protocols',
+      'Self-healing networks',
+      'Edge processing',
+      'Offline capabilities',
     ],
     pricing: {
-      starter: "$349/month",
-      professional: "$1,049/month",
-      enterprise: "Custom"
+      starter: '$349/month',
+      professional: '$1,049/month',
+      enterprise: 'Custom',
     },
-    deployment: "Mesh Network Infrastructure",
-    protocols: ["802.11s", "Batman-adv", "OLSR", "AODV"]
-  }
-]
+    deployment: 'Mesh Network Infrastructure',
+    protocols: ['802.11s', 'Batman-adv', 'OLSR', 'AODV'],
+  },
+];
 
 export function WildlifeProductModal({ trigger }: { trigger: React.ReactNode }) {
-  const [selectedProduct, setSelectedProduct] = useState<string | null>(null)
-  const { toast } = useToast()
+  const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const handlePurchase = (productId: string, plan: string) => {
     toast({
-      title: "Purchase Processing",
-      description: `Processing ${plan} plan for ${wildlifeProducts.find(p => p.id === productId)?.name}...`,
-    })
-    console.log(`🛒 Purchase: ${productId} - ${plan} plan`)
-  }
+      title: 'Purchase Processing',
+      description: `Processing ${plan} plan for ${wildlifeProducts.find((p) => p.id === productId)?.name}...`,
+    });
+    console.log(`🛒 Purchase: ${productId} - ${plan} plan`);
+  };
 
   const handleDeployment = (productId: string) => {
     toast({
-      title: "Deployment Started",
-      description: `Deploying ${wildlifeProducts.find(p => p.id === productId)?.name} to production environment...`,
-    })
-    console.log(`🚀 Deploying: ${productId}`)
-  }
+      title: 'Deployment Started',
+      description: `Deploying ${wildlifeProducts.find((p) => p.id === productId)?.name} to production environment...`,
+    });
+    console.log(`🚀 Deploying: ${productId}`);
+  };
 
-  const selectedProductData = selectedProduct ? wildlifeProducts.find(p => p.id === selectedProduct) : null
+  const selectedProductData = selectedProduct
+    ? wildlifeProducts.find((p) => p.id === selectedProduct)
+    : null;
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        {trigger}
-      </DialogTrigger>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -186,15 +201,18 @@ export function WildlifeProductModal({ trigger }: { trigger: React.ReactNode }) 
               Available Products
             </h3>
             {wildlifeProducts.map((product) => (
-              <Card 
-                key={product.id} 
+              <Card
+                key={product.id}
                 className={`cursor-pointer transition-all ${selectedProduct === product.id ? 'ring-2 ring-green-500 bg-green-50 dark:bg-green-900/20' : 'hover:shadow-md'}`}
                 onClick={() => setSelectedProduct(product.id)}
               >
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-semibold text-sm">{product.name}</h4>
-                    <Badge variant={product.status === 'Active' ? 'default' : 'secondary'} className="text-xs">
+                    <Badge
+                      variant={product.status === 'Active' ? 'default' : 'secondary'}
+                      className="text-xs"
+                    >
                       {product.status}
                     </Badge>
                   </div>
@@ -235,23 +253,31 @@ export function WildlifeProductModal({ trigger }: { trigger: React.ReactNode }) 
                       {selectedProductData.category}
                     </Badge>
                   </div>
-                  
+
                   {/* Metrics */}
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-green-600">{selectedProductData.nodes}</div>
+                      <div className="text-2xl font-bold text-green-600">
+                        {selectedProductData.nodes}
+                      </div>
                       <div className="text-sm text-green-600">Active Nodes</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-blue-600">{selectedProductData.pulseActivity}</div>
+                      <div className="text-2xl font-bold text-blue-600">
+                        {selectedProductData.pulseActivity}
+                      </div>
                       <div className="text-sm text-blue-600">Pulse Activity</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-purple-600">{selectedProductData.dataVolume}</div>
+                      <div className="text-2xl font-bold text-purple-600">
+                        {selectedProductData.dataVolume}
+                      </div>
                       <div className="text-sm text-purple-600">Data Volume</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-orange-600">{selectedProductData.securityRating}</div>
+                      <div className="text-2xl font-bold text-orange-600">
+                        {selectedProductData.securityRating}
+                      </div>
                       <div className="text-sm text-orange-600">Security Rating</div>
                     </div>
                   </div>
@@ -292,7 +318,7 @@ export function WildlifeProductModal({ trigger }: { trigger: React.ReactNode }) 
                             <div className="text-2xl font-bold text-green-600">{price}</div>
                           </CardHeader>
                           <CardContent>
-                            <Button 
+                            <Button
                               onClick={() => handlePurchase(selectedProductData.id, plan)}
                               className="w-full"
                             >
@@ -329,7 +355,7 @@ export function WildlifeProductModal({ trigger }: { trigger: React.ReactNode }) 
                           </div>
                         </CardContent>
                       </Card>
-                      
+
                       <Card>
                         <CardHeader>
                           <CardTitle>Protocols</CardTitle>
@@ -359,7 +385,8 @@ export function WildlifeProductModal({ trigger }: { trigger: React.ReactNode }) 
                             <div className="flex-1">
                               <h4 className="font-semibold">Ready for Deployment</h4>
                               <p className="text-sm text-gray-600 dark:text-gray-400">
-                                {selectedProductData.name} is configured and ready for production deployment
+                                {selectedProductData.name} is configured and ready for production
+                                deployment
                               </p>
                             </div>
                             <Button onClick={() => handleDeployment(selectedProductData.id)}>
@@ -367,7 +394,7 @@ export function WildlifeProductModal({ trigger }: { trigger: React.ReactNode }) 
                               Deploy Now
                             </Button>
                           </div>
-                          
+
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <Button variant="outline" className="flex items-center gap-2">
                               <Download className="h-4 w-4" />
@@ -396,5 +423,5 @@ export function WildlifeProductModal({ trigger }: { trigger: React.ReactNode }) 
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
