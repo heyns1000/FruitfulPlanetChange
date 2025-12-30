@@ -1,16 +1,16 @@
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { 
-  Edit3, 
-  Settings, 
-  Zap, 
-  Info, 
-  Download, 
-  Share2, 
-  Play, 
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import {
+  Edit3,
+  Settings,
+  Zap,
+  Info,
+  Download,
+  Share2,
+  Play,
   Pause,
   RotateCcw,
   AlertTriangle,
@@ -20,151 +20,159 @@ import {
   ExternalLink,
   Database,
   Activity,
-  Shield
-} from "lucide-react"
-import { WildlifeProductModal } from "@/components/wildlife-product-modal"
-import type { Brand, Sector } from "@shared/schema"
-import { useToast } from "@/hooks/use-toast"
+  Shield,
+} from 'lucide-react';
+import { WildlifeProductModal } from '@/components/wildlife-product-modal';
+import type { Brand, Sector } from '@shared/schema';
+import { useToast } from '@/hooks/use-toast';
 
 interface InteractiveBrandCardProps {
-  brand: Brand
-  sector?: Sector
+  brand: Brand;
+  sector?: Sector;
 }
 
 export function InteractiveBrandCard({ brand, sector }: InteractiveBrandCardProps) {
-  const [isHovered, setIsHovered] = useState(false)
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
-  const [isProcessing, setIsProcessing] = useState(false)
-  const { toast } = useToast()
+  const [isHovered, setIsHovered] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { toast } = useToast();
 
-  const metadata = brand.metadata as any
-  const hasAdvancedMetrics = metadata?.productId && metadata?.activeNodes
+  const metadata = brand.metadata as any;
+  const hasAdvancedMetrics = metadata?.productId && metadata?.activeNodes;
 
   // ALL BUTTON HANDLERS - EVERY BUTTON IS NOW FUNCTIONAL
   const handleView = () => {
-    console.log("🔍 Viewing brand:", brand.name)
-    setIsDetailModalOpen(true)
+    console.log('🔍 Viewing brand:', brand.name);
+    setIsDetailModalOpen(true);
     toast({
-      title: "Brand Details",
+      title: 'Brand Details',
       description: `Opening detailed view for ${brand.name}`,
-    })
-  }
+    });
+  };
 
   const handleEdit = (e?: React.MouseEvent) => {
-    e?.stopPropagation()
-    console.log("✏️ Editing brand:", brand.name)
+    e?.stopPropagation();
+    console.log('✏️ Editing brand:', brand.name);
     toast({
-      title: "Edit Mode",
+      title: 'Edit Mode',
       description: `Editing ${brand.name} configuration`,
-    })
-  }
+    });
+  };
 
   const handleConfigure = (e?: React.MouseEvent) => {
-    e?.stopPropagation()
-    console.log("⚙️ Configuring brand:", brand.name)
+    e?.stopPropagation();
+    console.log('⚙️ Configuring brand:', brand.name);
     toast({
-      title: "Configuration",
+      title: 'Configuration',
       description: `Opening settings for ${brand.name}`,
-    })
-  }
+    });
+  };
 
   const handleDeploy = async (e?: React.MouseEvent) => {
-    e?.stopPropagation()
-    console.log("🚀 Deploying brand:", brand.name)
-    setIsProcessing(true)
-    
+    e?.stopPropagation();
+    console.log('🚀 Deploying brand:', brand.name);
+    setIsProcessing(true);
+
     // Simulate deployment
     setTimeout(() => {
-      setIsProcessing(false)
+      setIsProcessing(false);
       toast({
-        title: "Deployment Successful",
+        title: 'Deployment Successful',
         description: `${brand.name} deployed to production`,
-      })
-    }, 2000)
-  }
+      });
+    }, 2000);
+  };
 
   const handleDownload = (e?: React.MouseEvent) => {
-    e?.stopPropagation()
-    console.log("📥 Downloading brand data:", brand.name)
+    e?.stopPropagation();
+    console.log('📥 Downloading brand data:', brand.name);
     toast({
-      title: "Download Started",
+      title: 'Download Started',
       description: `Generating report for ${brand.name}`,
-    })
-  }
+    });
+  };
 
   const handleShare = (e?: React.MouseEvent) => {
-    e?.stopPropagation()
-    console.log("📤 Sharing brand:", brand.name)
-    navigator.clipboard.writeText(`${brand.name}: ${brand.description}`)
+    e?.stopPropagation();
+    console.log('📤 Sharing brand:', brand.name);
+    navigator.clipboard.writeText(`${brand.name}: ${brand.description}`);
     toast({
-      title: "Copied to Clipboard",
+      title: 'Copied to Clipboard',
       description: `${brand.name} details copied`,
-    })
-  }
+    });
+  };
 
   const handleStart = (e?: React.MouseEvent) => {
-    e?.stopPropagation()
-    console.log("▶️ Starting brand:", brand.name)
+    e?.stopPropagation();
+    console.log('▶️ Starting brand:', brand.name);
     toast({
-      title: "Brand Started",
+      title: 'Brand Started',
       description: `${brand.name} is now running`,
-    })
-  }
+    });
+  };
 
   const handleStop = (e?: React.MouseEvent) => {
-    e?.stopPropagation()
-    console.log("⏸️ Stopping brand:", brand.name)
+    e?.stopPropagation();
+    console.log('⏸️ Stopping brand:', brand.name);
     toast({
-      title: "Brand Stopped",
+      title: 'Brand Stopped',
       description: `${brand.name} has been stopped`,
-    })
-  }
+    });
+  };
 
   const handleRestart = (e?: React.MouseEvent) => {
-    e?.stopPropagation()
-    console.log("🔄 Restarting brand:", brand.name)
+    e?.stopPropagation();
+    console.log('🔄 Restarting brand:', brand.name);
     toast({
-      title: "Restarting",
+      title: 'Restarting',
       description: `${brand.name} is restarting...`,
-    })
-  }
+    });
+  };
 
   const handleCopy = (e?: React.MouseEvent) => {
-    e?.stopPropagation()
-    console.log("📋 Copying brand ID:", brand.id)
-    navigator.clipboard.writeText(brand.id.toString())
+    e?.stopPropagation();
+    console.log('📋 Copying brand ID:', brand.id);
+    navigator.clipboard.writeText(brand.id.toString());
     toast({
-      title: "ID Copied",
+      title: 'ID Copied',
       description: `Brand ID ${brand.id} copied to clipboard`,
-    })
-  }
+    });
+  };
 
   const handleExternalLink = (e?: React.MouseEvent) => {
-    e?.stopPropagation()
-    console.log("🔗 Opening external link for:", brand.name)
+    e?.stopPropagation();
+    console.log('🔗 Opening external link for:', brand.name);
     toast({
-      title: "External Link",
+      title: 'External Link',
       description: `Opening ${brand.name} in new tab`,
-    })
-  }
+    });
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "active": return "bg-green-500"
-      case "maintenance": return "bg-yellow-500"
-      case "offline": return "bg-red-500"
-      default: return "bg-gray-500"
+      case 'active':
+        return 'bg-green-500';
+      case 'maintenance':
+        return 'bg-yellow-500';
+      case 'offline':
+        return 'bg-red-500';
+      default:
+        return 'bg-gray-500';
     }
-  }
+  };
 
   const getIntegrationBadgeColor = (integration: string) => {
     switch (integration) {
-      case "VaultMesh™": return "bg-gradient-to-r from-cyan-500 to-blue-500"
-      case "PulseGrid™": return "bg-gradient-to-r from-purple-500 to-pink-500"
-      case "FAA.Zone™": return "bg-gradient-to-r from-green-500 to-teal-500"
-      default: return "bg-gradient-to-r from-gray-500 to-gray-600"
+      case 'VaultMesh™':
+        return 'bg-gradient-to-r from-cyan-500 to-blue-500';
+      case 'PulseGrid™':
+        return 'bg-gradient-to-r from-purple-500 to-pink-500';
+      case 'FAA.Zone™':
+        return 'bg-gradient-to-r from-green-500 to-teal-500';
+      default:
+        return 'bg-gradient-to-r from-gray-500 to-gray-600';
     }
-  }
+  };
 
   return (
     <>
@@ -180,10 +188,12 @@ export function InteractiveBrandCard({ brand, sector }: InteractiveBrandCardProp
             {/* Header with logo and badges */}
             <div className="flex items-start justify-between mb-4">
               <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-lg">
-                {sector?.emoji || "🧩"}
+                {sector?.emoji || '🧩'}
               </div>
               <div className="flex flex-col items-end gap-1">
-                <div className={`text-xs text-white px-2 py-1 rounded-full font-semibold ${getIntegrationBadgeColor(brand.integration)}`}>
+                <div
+                  className={`text-xs text-white px-2 py-1 rounded-full font-semibold ${getIntegrationBadgeColor(brand.integration)}`}
+                >
                   {brand.integration}
                 </div>
                 {hasAdvancedMetrics && (
@@ -217,20 +227,24 @@ export function InteractiveBrandCard({ brand, sector }: InteractiveBrandCardProp
                     <Activity className="w-3 h-3" />
                     Pulse Activity:
                   </span>
-                  <span className="font-mono font-bold text-green-600">{metadata.currentPulseActivity}</span>
+                  <span className="font-mono font-bold text-green-600">
+                    {metadata.currentPulseActivity}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center text-xs">
                   <span className="text-gray-600 dark:text-gray-400 flex items-center gap-1">
                     <Shield className="w-3 h-3" />
                     Data Volume:
                   </span>
-                  <span className="font-mono font-bold text-purple-600">{metadata.dataVolumeProcessed}</span>
+                  <span className="font-mono font-bold text-purple-600">
+                    {metadata.dataVolumeProcessed}
+                  </span>
                 </div>
               </div>
             )}
 
             {/* Action buttons - ALL FUNCTIONAL */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 10 }}
               className="grid grid-cols-4 gap-1 mt-4"
@@ -250,7 +264,7 @@ export function InteractiveBrandCard({ brand, sector }: InteractiveBrandCardProp
             </motion.div>
 
             {/* Secondary action row */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 10 }}
               transition={{ delay: 0.1 }}
@@ -271,7 +285,7 @@ export function InteractiveBrandCard({ brand, sector }: InteractiveBrandCardProp
             </motion.div>
 
             {/* Third action row */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 10 }}
               transition={{ delay: 0.2 }}
@@ -280,7 +294,12 @@ export function InteractiveBrandCard({ brand, sector }: InteractiveBrandCardProp
               <Button size="sm" variant="outline" onClick={handleCopy} disabled={isProcessing}>
                 <Copy className="w-3 h-3" />
               </Button>
-              <Button size="sm" variant="outline" onClick={handleExternalLink} disabled={isProcessing}>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleExternalLink}
+                disabled={isProcessing}
+              >
                 <ExternalLink className="w-3 h-3" />
               </Button>
               <Button size="sm" variant="outline" onClick={handleView} disabled={isProcessing}>
@@ -309,5 +328,5 @@ export function InteractiveBrandCard({ brand, sector }: InteractiveBrandCardProp
         onClose={() => setIsDetailModalOpen(false)}
       />
     </>
-  )
+  );
 }

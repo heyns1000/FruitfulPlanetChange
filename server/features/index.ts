@@ -1,6 +1,6 @@
 /**
  * Feature Flags System
- * 
+ *
  * Runtime feature toggling for gradual rollouts and A/B testing
  */
 
@@ -95,10 +95,7 @@ export function getFeature(featureName: string): FeatureFlag | undefined {
 /**
  * Update a feature flag (runtime configuration)
  */
-export function updateFeature(
-  featureName: string,
-  updates: Partial<FeatureFlag>
-): boolean {
+export function updateFeature(featureName: string, updates: Partial<FeatureFlag>): boolean {
   if (!features[featureName]) {
     logger.error(`Cannot update unknown feature: ${featureName}`);
     return false;
@@ -175,8 +172,11 @@ export function featureFlagsMiddleware(req: any, _res: any, next: any) {
 
 // Log initial feature flag state
 logger.info('Feature flags initialized', {
-  features: Object.keys(features).reduce((acc, key) => {
-    acc[key] = features[key].enabled;
-    return acc;
-  }, {} as Record<string, boolean>),
+  features: Object.keys(features).reduce(
+    (acc, key) => {
+      acc[key] = features[key].enabled;
+      return acc;
+    },
+    {} as Record<string, boolean>
+  ),
 });

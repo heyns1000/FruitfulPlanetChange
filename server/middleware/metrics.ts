@@ -1,6 +1,6 @@
 /**
  * Metrics Middleware - Prometheus-compatible metrics
- * 
+ *
  * Collects and exposes application metrics for monitoring:
  * - HTTP request duration
  * - Request count by status code
@@ -79,10 +79,7 @@ export function metricsMiddleware(req: Request, res: Response, next: NextFunctio
 
   // Track request
   metrics.requests.total++;
-  metrics.requests.byMethod.set(
-    req.method,
-    (metrics.requests.byMethod.get(req.method) || 0) + 1
-  );
+  metrics.requests.byMethod.set(req.method, (metrics.requests.byMethod.get(req.method) || 0) + 1);
 
   // Normalize path for tracking (remove IDs)
   const normalizedPath = req.path.replace(/\/\d+/g, '/:id');
@@ -107,20 +104,30 @@ export function metricsMiddleware(req: Request, res: Response, next: NextFunctio
 
     // Update histogram
     if (duration < 100) {
-      metrics.responses.duration.histogram.set('100', 
-        (metrics.responses.duration.histogram.get('100') || 0) + 1);
+      metrics.responses.duration.histogram.set(
+        '100',
+        (metrics.responses.duration.histogram.get('100') || 0) + 1
+      );
     } else if (duration < 500) {
-      metrics.responses.duration.histogram.set('500', 
-        (metrics.responses.duration.histogram.get('500') || 0) + 1);
+      metrics.responses.duration.histogram.set(
+        '500',
+        (metrics.responses.duration.histogram.get('500') || 0) + 1
+      );
     } else if (duration < 1000) {
-      metrics.responses.duration.histogram.set('1000', 
-        (metrics.responses.duration.histogram.get('1000') || 0) + 1);
+      metrics.responses.duration.histogram.set(
+        '1000',
+        (metrics.responses.duration.histogram.get('1000') || 0) + 1
+      );
     } else if (duration < 5000) {
-      metrics.responses.duration.histogram.set('5000', 
-        (metrics.responses.duration.histogram.get('5000') || 0) + 1);
+      metrics.responses.duration.histogram.set(
+        '5000',
+        (metrics.responses.duration.histogram.get('5000') || 0) + 1
+      );
     } else {
-      metrics.responses.duration.histogram.set('inf', 
-        (metrics.responses.duration.histogram.get('inf') || 0) + 1);
+      metrics.responses.duration.histogram.set(
+        'inf',
+        (metrics.responses.duration.histogram.get('inf') || 0) + 1
+      );
     }
 
     // Track errors
@@ -187,9 +194,10 @@ export function formatPrometheusMetrics(): string {
   // Response duration
   lines.push('# HELP http_response_duration_ms HTTP response duration in milliseconds');
   lines.push('# TYPE http_response_duration_ms summary');
-  const avgDuration = metrics.responses.duration.count > 0
-    ? metrics.responses.duration.sum / metrics.responses.duration.count
-    : 0;
+  const avgDuration =
+    metrics.responses.duration.count > 0
+      ? metrics.responses.duration.sum / metrics.responses.duration.count
+      : 0;
   lines.push(`http_response_duration_ms_sum ${metrics.responses.duration.sum}`);
   lines.push(`http_response_duration_ms_count ${metrics.responses.duration.count}`);
   lines.push(`http_response_duration_ms_avg ${avgDuration.toFixed(2)}`);

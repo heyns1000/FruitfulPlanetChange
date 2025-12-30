@@ -1,19 +1,25 @@
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useQuery } from "@tanstack/react-query";
-import { 
-  Pickaxe, 
-  Truck, 
-  BarChart3, 
-  Shield, 
-  MapPin, 
-  Users, 
-  Zap, 
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useQuery } from '@tanstack/react-query';
+import {
+  Pickaxe,
+  Truck,
+  BarChart3,
+  Shield,
+  MapPin,
+  Users,
+  Zap,
   Settings,
   TrendingUp,
   Activity,
@@ -33,9 +39,9 @@ import {
   FileText,
   Key,
   UserPlus,
-  LogIn
-} from "lucide-react";
-import { motion } from "framer-motion";
+  LogIn,
+} from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface ComprehensiveMineNestDashboardProps {
   brands: Array<{
@@ -49,7 +55,20 @@ interface ComprehensiveMineNestDashboardProps {
   }>;
 }
 
-type ViewType = 'dashboard' | 'projects' | 'new-project' | 'scroll-builder' | 'ecosystem-map' | 'global-checkout' | 'templates' | 'licenses' | 'analytics' | 'api-keys' | 'settings' | 'login' | 'signup';
+type ViewType =
+  | 'dashboard'
+  | 'projects'
+  | 'new-project'
+  | 'scroll-builder'
+  | 'ecosystem-map'
+  | 'global-checkout'
+  | 'templates'
+  | 'licenses'
+  | 'analytics'
+  | 'api-keys'
+  | 'settings'
+  | 'login'
+  | 'signup';
 
 export function ComprehensiveMineNestDashboard({ brands }: ComprehensiveMineNestDashboardProps) {
   const [currentView, setCurrentView] = useState<ViewType>('dashboard');
@@ -59,23 +78,33 @@ export function ComprehensiveMineNestDashboard({ brands }: ComprehensiveMineNest
   const [loadedProjects, setLoadedProjects] = useState(12);
 
   // Filter brands - parent brands only (subnodes have parentId)
-  const parentBrands = brands.filter(b => !b.parentId);
-  const activeBrands = parentBrands.filter(b => b.status === 'active' || b.status === 'development');
-  
+  const parentBrands = brands.filter((b) => !b.parentId);
+  const activeBrands = parentBrands.filter(
+    (b) => b.status === 'active' || b.status === 'development'
+  );
+
   // Calculate comprehensive metrics from actual data
-  const totalProjects = activeBrands.reduce((acc, brand) => acc + (brand.metadata?.totalProjects || 0), 0);
+  const totalProjects = activeBrands.reduce(
+    (acc, brand) => acc + (brand.metadata?.totalProjects || 0),
+    0
+  );
   const totalRigs = activeBrands.reduce((acc, brand) => acc + (brand.metadata?.activeRigs || 0), 0);
-  const monthlyYield = activeBrands.reduce((acc, brand) => acc + (brand.metadata?.monthlyYield || 0), 0);
+  const monthlyYield = activeBrands.reduce(
+    (acc, brand) => acc + (brand.metadata?.monthlyYield || 0),
+    0
+  );
 
   // Filter and search projects
-  const filteredProjects = activeBrands.filter(brand => {
-    const matchesSearch = brand.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         brand.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || 
-                         (statusFilter === 'live' && brand.status === 'active') ||
-                         (statusFilter === 'pending' && brand.status === 'development') ||
-                         (statusFilter === 'draft' && brand.status === 'draft') ||
-                         (statusFilter === 'error' && brand.status === 'maintenance');
+  const filteredProjects = activeBrands.filter((brand) => {
+    const matchesSearch =
+      brand.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      brand.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus =
+      statusFilter === 'all' ||
+      (statusFilter === 'live' && brand.status === 'active') ||
+      (statusFilter === 'pending' && brand.status === 'development') ||
+      (statusFilter === 'draft' && brand.status === 'draft') ||
+      (statusFilter === 'error' && brand.status === 'maintenance');
     return matchesSearch && matchesStatus;
   });
 
@@ -107,7 +136,9 @@ export function ComprehensiveMineNestDashboard({ brands }: ComprehensiveMineNest
               : 'text-slate-300 hover:bg-slate-700/50 hover:text-blue-400'
           }`}
         >
-          <item.icon className={`w-5 h-5 ${currentView === item.id ? 'text-white' : 'text-amber-500'}`} />
+          <item.icon
+            className={`w-5 h-5 ${currentView === item.id ? 'text-white' : 'text-amber-500'}`}
+          />
           <span className="font-medium">{item.label}</span>
         </button>
       ))}
@@ -115,7 +146,7 @@ export function ComprehensiveMineNestDashboard({ brands }: ComprehensiveMineNest
   );
 
   const DashboardView = () => (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="space-y-8"
@@ -123,13 +154,16 @@ export function ComprehensiveMineNestDashboard({ brands }: ComprehensiveMineNest
       {/* Welcome Panel */}
       <Card className="bg-slate-800/70 border-amber-500/30">
         <CardHeader>
-          <CardTitle className="text-amber-400 text-2xl">Welcome Back, Mining Operations Lead!</CardTitle>
+          <CardTitle className="text-amber-400 text-2xl">
+            Welcome Back, Mining Operations Lead!
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-slate-300">
-            Your MineNest™ portal provides comprehensive tools for managing, optimizing, and securing your mining and resource operations across the Fruitful Global Treaty Grid.
+            Your MineNest™ portal provides comprehensive tools for managing, optimizing, and
+            securing your mining and resource operations across the Fruitful Global Treaty Grid.
           </p>
-          <Button 
+          <Button
             onClick={() => setCurrentView('new-project')}
             className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white"
           >
@@ -228,7 +262,7 @@ export function ComprehensiveMineNestDashboard({ brands }: ComprehensiveMineNest
                 'VaultTrace™ Ledger Entries for secure and transparent logging',
                 'Integrated Compliance via VaultLink™ for mining-specific regulations',
                 'Scalable Node Expansion for adapting to fluctuating demands',
-                'Predictive Analytics for proactive decision-making'
+                'Predictive Analytics for proactive decision-making',
               ].map((feature, index) => (
                 <li key={index} className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-green-400" />
@@ -246,7 +280,7 @@ export function ComprehensiveMineNestDashboard({ brands }: ComprehensiveMineNest
   );
 
   const ProjectsView = () => (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="space-y-6"
@@ -260,8 +294,8 @@ export function ComprehensiveMineNestDashboard({ brands }: ComprehensiveMineNest
           <div className="flex flex-wrap gap-4">
             <div className="flex-grow relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <Input 
-                placeholder="Search projects..." 
+              <Input
+                placeholder="Search projects..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 bg-slate-700 border-amber-500/30 text-white placeholder:text-slate-400"
@@ -294,52 +328,75 @@ export function ComprehensiveMineNestDashboard({ brands }: ComprehensiveMineNest
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-amber-300 text-sm">{project.name}</CardTitle>
-                      <Badge className={`text-xs ${
-                        project.status === 'active' ? 'bg-green-600' : 
-                        project.status === 'development' ? 'bg-amber-600' : 'bg-slate-600'
-                      } text-white`}>
-                        {project.status === 'active' ? 'Active' : 
-                         project.status === 'development' ? 'Development' : project.status}
+                      <Badge
+                        className={`text-xs ${
+                          project.status === 'active'
+                            ? 'bg-green-600'
+                            : project.status === 'development'
+                              ? 'bg-amber-600'
+                              : 'bg-slate-600'
+                        } text-white`}
+                      >
+                        {project.status === 'active'
+                          ? 'Active'
+                          : project.status === 'development'
+                            ? 'Development'
+                            : project.status}
                       </Badge>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <p className="text-slate-300 text-xs line-clamp-2">{project.description}</p>
-                    
+
                     {project.metadata && (
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         {project.metadata.totalProjects && (
                           <div className="text-slate-400">
-                            Projects: <span className="text-amber-300">{project.metadata.totalProjects}</span>
+                            Projects:{' '}
+                            <span className="text-amber-300">{project.metadata.totalProjects}</span>
                           </div>
                         )}
                         {project.metadata.activeRigs && (
                           <div className="text-slate-400">
-                            Rigs: <span className="text-amber-300">{project.metadata.activeRigs}</span>
+                            Rigs:{' '}
+                            <span className="text-amber-300">{project.metadata.activeRigs}</span>
                           </div>
                         )}
                         {project.metadata.monthlyYield && (
                           <div className="text-slate-400">
-                            Yield: <span className="text-amber-300">{project.metadata.monthlyYield}t</span>
+                            Yield:{' '}
+                            <span className="text-amber-300">{project.metadata.monthlyYield}t</span>
                           </div>
                         )}
                         {project.metadata.subnodeCount && (
                           <div className="text-slate-400">
-                            Subnodes: <span className="text-amber-300">{project.metadata.subnodeCount}</span>
+                            Subnodes:{' '}
+                            <span className="text-amber-300">{project.metadata.subnodeCount}</span>
                           </div>
                         )}
                       </div>
                     )}
 
                     <div className="flex gap-2">
-                      <Button size="sm" className="bg-amber-600 hover:bg-amber-700 text-white text-xs flex-1">
+                      <Button
+                        size="sm"
+                        className="bg-amber-600 hover:bg-amber-700 text-white text-xs flex-1"
+                      >
                         <Monitor className="w-3 h-3 mr-1" />
                         Monitor
                       </Button>
-                      <Button size="sm" variant="outline" className="border-amber-500/30 text-amber-300 hover:bg-amber-500/10 text-xs">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-amber-500/30 text-amber-300 hover:bg-amber-500/10 text-xs"
+                      >
                         <Settings className="w-3 h-3" />
                       </Button>
-                      <Button size="sm" variant="outline" className="border-amber-500/30 text-amber-300 hover:bg-amber-500/10 text-xs">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-amber-500/30 text-amber-300 hover:bg-amber-500/10 text-xs"
+                      >
                         <Activity className="w-3 h-3" />
                       </Button>
                     </div>
@@ -352,8 +409,8 @@ export function ComprehensiveMineNestDashboard({ brands }: ComprehensiveMineNest
           {/* Load More Button */}
           {loadedProjects < filteredProjects.length && (
             <div className="text-center pt-4">
-              <Button 
-                onClick={() => setLoadedProjects(prev => prev + 12)}
+              <Button
+                onClick={() => setLoadedProjects((prev) => prev + 12)}
                 className="bg-amber-600 hover:bg-amber-700 text-white"
               >
                 <Plus className="w-4 h-4 mr-2" />
@@ -367,15 +424,17 @@ export function ComprehensiveMineNestDashboard({ brands }: ComprehensiveMineNest
   );
 
   return (
-    <div className={`min-h-screen flex transition-colors duration-300 ${
-      darkMode ? 'bg-slate-900 text-white' : 'bg-gray-100 text-gray-900'
-    }`}>
+    <div
+      className={`min-h-screen flex transition-colors duration-300 ${
+        darkMode ? 'bg-slate-900 text-white' : 'bg-gray-100 text-gray-900'
+      }`}
+    >
       {/* Sidebar */}
-      <aside className={`w-72 p-6 border-r flex flex-col transition-colors ${
-        darkMode 
-          ? 'bg-slate-800 border-slate-700' 
-          : 'bg-white border-gray-200'
-      }`}>
+      <aside
+        className={`w-72 p-6 border-r flex flex-col transition-colors ${
+          darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'
+        }`}
+      >
         {/* Header */}
         <div className="text-center mb-8 relative">
           <button
@@ -386,7 +445,8 @@ export function ComprehensiveMineNestDashboard({ brands }: ComprehensiveMineNest
             {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
           <h2 className="text-2xl font-bold">
-            <span className="text-white">Fruitful™</span> | <span className="text-amber-400">MineNest™</span>
+            <span className="text-white">Fruitful™</span> |{' '}
+            <span className="text-amber-400">MineNest™</span>
           </h2>
         </div>
 
@@ -399,7 +459,7 @@ export function ComprehensiveMineNestDashboard({ brands }: ComprehensiveMineNest
         {currentView === 'dashboard' && <DashboardView />}
         {currentView === 'projects' && <ProjectsView />}
         {currentView === 'new-project' && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
@@ -412,46 +472,56 @@ export function ComprehensiveMineNestDashboard({ brands }: ComprehensiveMineNest
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-slate-300 mb-6">Create a new mining project with comprehensive MineNest™ integration.</p>
+                <p className="text-slate-300 mb-6">
+                  Create a new mining project with comprehensive MineNest™ integration.
+                </p>
                 <div className="text-center py-12">
                   <Pickaxe className="w-16 h-16 mx-auto mb-4 text-amber-400" />
-                  <p className="text-slate-400">New project creation form will be implemented here</p>
+                  <p className="text-slate-400">
+                    New project creation form will be implemented here
+                  </p>
                 </div>
               </CardContent>
             </Card>
           </motion.div>
         )}
-        {(currentView !== 'dashboard' && currentView !== 'projects' && currentView !== 'new-project') && (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-6"
-          >
-            <Card className="bg-slate-800/70 border-amber-500/30">
-              <CardHeader>
-                <CardTitle className="text-amber-400">{currentView.charAt(0).toUpperCase() + currentView.slice(1).replace('-', ' ')}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <Wrench className="w-16 h-16 mx-auto mb-4 text-amber-400" />
-                  <p className="text-slate-400">This section will be implemented with comprehensive MineNest™ features</p>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
+        {currentView !== 'dashboard' &&
+          currentView !== 'projects' &&
+          currentView !== 'new-project' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-6"
+            >
+              <Card className="bg-slate-800/70 border-amber-500/30">
+                <CardHeader>
+                  <CardTitle className="text-amber-400">
+                    {currentView.charAt(0).toUpperCase() + currentView.slice(1).replace('-', ' ')}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-12">
+                    <Wrench className="w-16 h-16 mx-auto mb-4 text-amber-400" />
+                    <p className="text-slate-400">
+                      This section will be implemented with comprehensive MineNest™ features
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
 
         {/* Footer */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
           className="text-center py-8 mt-12"
         >
           <p className="text-slate-400">
-            Powered by <span className="text-amber-400">MineNest™</span> | 
-            Secured by <span className="text-amber-400">VaultMesh™</span> | 
-            Part of the <span className="text-amber-400">Fruitful Global</span> ecosystem
+            Powered by <span className="text-amber-400">MineNest™</span> | Secured by{' '}
+            <span className="text-amber-400">VaultMesh™</span> | Part of the{' '}
+            <span className="text-amber-400">Fruitful Global</span> ecosystem
           </p>
         </motion.div>
       </main>

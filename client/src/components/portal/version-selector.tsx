@@ -1,56 +1,76 @@
-import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Lock, Unlock, Crown, Zap, Star } from "lucide-react"
-import { hasVersionAccess, getAvailableVersions, PLAN_VERSION_MATRIX } from "@shared/subscription-schema"
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Lock, Unlock, Crown, Zap, Star } from 'lucide-react';
+import {
+  hasVersionAccess,
+  getAvailableVersions,
+  PLAN_VERSION_MATRIX,
+} from '@shared/subscription-schema';
 
 interface VersionSelectorProps {
-  onVersionChange: (version: string) => void
-  selectedVersion: string
-  sector?: string
+  onVersionChange: (version: string) => void;
+  selectedVersion: string;
+  sector?: string;
 }
 
-export function VersionSelector({ onVersionChange, selectedVersion, sector }: VersionSelectorProps) {
+export function VersionSelector({
+  onVersionChange,
+  selectedVersion,
+  sector,
+}: VersionSelectorProps) {
   // Mock user subscription - in real app this would come from auth context
   const [userSubscription] = useState({
-    planType: "free", // This should come from user context
-    maxVersion: "V1",
-    isActive: true
-  })
+    planType: 'free', // This should come from user context
+    maxVersion: 'V1',
+    isActive: true,
+  });
 
-  const availableVersions = getAvailableVersions(userSubscription.planType)
-  const allVersions = ["V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8", "V9"]
+  const availableVersions = getAvailableVersions(userSubscription.planType);
+  const allVersions = ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'V8', 'V9'];
 
   const getVersionStatus = (version: string) => {
-    const isAvailable = hasVersionAccess(userSubscription.planType, version)
+    const isAvailable = hasVersionAccess(userSubscription.planType, version);
     return {
       available: isAvailable,
       locked: !isAvailable,
-      current: version === selectedVersion
-    }
-  }
+      current: version === selectedVersion,
+    };
+  };
 
   const getPlanIcon = (planType: string) => {
     switch (planType) {
-      case "free": return <Zap className="h-4 w-4" />
-      case "basic": return <Star className="h-4 w-4" />
-      case "premium": return <Crown className="h-4 w-4" />
-      case "enterprise": return <Crown className="h-4 w-4 text-purple-500" />
-      default: return <Zap className="h-4 w-4" />
+      case 'free':
+        return <Zap className="h-4 w-4" />;
+      case 'basic':
+        return <Star className="h-4 w-4" />;
+      case 'premium':
+        return <Crown className="h-4 w-4" />;
+      case 'enterprise':
+        return <Crown className="h-4 w-4 text-purple-500" />;
+      default:
+        return <Zap className="h-4 w-4" />;
     }
-  }
+  };
 
   const getUpgradeMessage = (version: string) => {
-    const requiredPlan = Object.entries(PLAN_VERSION_MATRIX).find(([planKey, plan]) => 
-      hasVersionAccess(planKey, version)
-    )?.[0] || "premium"
-    
-    return `Upgrade to ${requiredPlan} plan to access ${version} features`
-  }
+    const requiredPlan =
+      Object.entries(PLAN_VERSION_MATRIX).find(([planKey, plan]) =>
+        hasVersionAccess(planKey, version)
+      )?.[0] || 'premium';
+
+    return `Upgrade to ${requiredPlan} plan to access ${version} features`;
+  };
 
   return (
     <div className="space-y-6">
@@ -60,16 +80,20 @@ export function VersionSelector({ onVersionChange, selectedVersion, sector }: Ve
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               {getPlanIcon(userSubscription.planType)}
-              <CardTitle className="text-lg capitalize">
-                {userSubscription.planType} Plan
-              </CardTitle>
+              <CardTitle className="text-lg capitalize">{userSubscription.planType} Plan</CardTitle>
             </div>
-            <Badge variant="secondary" className="bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200">
+            <Badge
+              variant="secondary"
+              className="bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200"
+            >
               Max: {userSubscription.maxVersion}
             </Badge>
           </div>
           <CardDescription>
-            {PLAN_VERSION_MATRIX[userSubscription.planType as keyof typeof PLAN_VERSION_MATRIX]?.description}
+            {
+              PLAN_VERSION_MATRIX[userSubscription.planType as keyof typeof PLAN_VERSION_MATRIX]
+                ?.description
+            }
           </CardDescription>
         </CardHeader>
       </Card>
@@ -92,13 +116,13 @@ export function VersionSelector({ onVersionChange, selectedVersion, sector }: Ve
               </SelectTrigger>
               <SelectContent>
                 {allVersions.map((version) => {
-                  const status = getVersionStatus(version)
+                  const status = getVersionStatus(version);
                   return (
-                    <SelectItem 
-                      key={version} 
+                    <SelectItem
+                      key={version}
                       value={version}
                       disabled={status.locked}
-                      className={status.locked ? "opacity-50" : ""}
+                      className={status.locked ? 'opacity-50' : ''}
                     >
                       <div className="flex items-center gap-2">
                         {status.locked ? (
@@ -114,7 +138,7 @@ export function VersionSelector({ onVersionChange, selectedVersion, sector }: Ve
                         )}
                       </div>
                     </SelectItem>
-                  )
+                  );
                 })}
               </SelectContent>
             </Select>
@@ -138,33 +162,29 @@ export function VersionSelector({ onVersionChange, selectedVersion, sector }: Ve
           {/* Version Grid Display */}
           <div className="grid grid-cols-3 gap-2">
             {allVersions.map((version) => {
-              const status = getVersionStatus(version)
+              const status = getVersionStatus(version);
               return (
                 <Button
                   key={version}
-                  variant={status.current ? "default" : status.available ? "outline" : "ghost"}
+                  variant={status.current ? 'default' : status.available ? 'outline' : 'ghost'}
                   size="sm"
                   disabled={status.locked}
                   onClick={() => status.available && onVersionChange(version)}
                   className={`
                     relative
-                    ${status.current ? "bg-cyan-500 text-white" : ""}
-                    ${status.locked ? "opacity-50 cursor-not-allowed" : ""}
+                    ${status.current ? 'bg-cyan-500 text-white' : ''}
+                    ${status.locked ? 'opacity-50 cursor-not-allowed' : ''}
                   `}
                 >
                   <div className="flex items-center gap-1">
-                    {status.locked ? (
-                      <Lock className="h-3 w-3" />
-                    ) : (
-                      <Unlock className="h-3 w-3" />
-                    )}
+                    {status.locked ? <Lock className="h-3 w-3" /> : <Unlock className="h-3 w-3" />}
                     {version}
                   </div>
                   {status.locked && (
                     <div className="absolute inset-0 bg-gray-500 bg-opacity-20 rounded" />
                   )}
                 </Button>
-              )
+              );
             })}
           </div>
 
@@ -197,5 +217,5 @@ export function VersionSelector({ onVersionChange, selectedVersion, sector }: Ve
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

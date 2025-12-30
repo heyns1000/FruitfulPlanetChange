@@ -1,82 +1,90 @@
-import { useState } from "react"
-import { useMutation, useQuery } from "@tanstack/react-query"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { 
-  CloudIcon, 
-  AlertTriangle, 
-  CheckCircle, 
+import { useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import {
+  CloudIcon,
+  AlertTriangle,
+  CheckCircle,
   RefreshCw,
   Zap,
   Database,
-  ExternalLink
-} from "lucide-react"
-import { apiRequest } from "@/lib/queryClient"
+  ExternalLink,
+} from 'lucide-react';
+import { apiRequest } from '@/lib/queryClient';
 
 interface EcosystemData {
-  activeSectors: number
-  connectedApps: number
-  vaultLevel: number
-  intakeFee: string
-  systemStatus: string
-  lastSync: string
-  realTimeData: boolean
+  activeSectors: number;
+  connectedApps: number;
+  vaultLevel: number;
+  intakeFee: string;
+  systemStatus: string;
+  lastSync: string;
+  realTimeData: boolean;
   ecosystemMetrics: {
-    totalBrands: number
-    totalSectors: number
-    coreApplications: number
-    vaultMeshCompliance: boolean
-    faaX13TreatyCompliant: boolean
-  }
+    totalBrands: number;
+    totalSectors: number;
+    coreApplications: number;
+    vaultMeshCompliance: boolean;
+    faaX13TreatyCompliant: boolean;
+  };
 }
 
 export function CloudflareSyncManager() {
-  const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'success' | 'error'>('idle')
+  const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'success' | 'error'>('idle');
 
   // Get current ecosystem data
   const { data: ecosystemData, isLoading } = useQuery<EcosystemData>({
     queryKey: ['/api/cloudflare/ecosystem-data'],
     refetchInterval: 30000, // Refresh every 30 seconds
-  })
+  });
 
   // Force sync mutation
   const forceSyncMutation = useMutation({
     mutationFn: async () => {
-      setSyncStatus('syncing')
+      setSyncStatus('syncing');
       return await apiRequest('/api/cloudflare/force-sync', {
-        method: 'POST'
-      })
+        method: 'POST',
+      });
     },
     onSuccess: (data) => {
-      setSyncStatus('success')
-      console.log('✅ Cloudflare Workers sync successful:', data)
-      setTimeout(() => setSyncStatus('idle'), 5000)
+      setSyncStatus('success');
+      console.log('✅ Cloudflare Workers sync successful:', data);
+      setTimeout(() => setSyncStatus('idle'), 5000);
     },
     onError: (error) => {
-      setSyncStatus('error')
-      console.error('❌ Cloudflare Workers sync failed:', error)
-      setTimeout(() => setSyncStatus('idle'), 5000)
-    }
-  })
+      setSyncStatus('error');
+      console.error('❌ Cloudflare Workers sync failed:', error);
+      setTimeout(() => setSyncStatus('idle'), 5000);
+    },
+  });
 
   const getSyncStatusColor = () => {
     switch (syncStatus) {
-      case 'syncing': return 'bg-blue-500 text-white'
-      case 'success': return 'bg-green-500 text-white'
-      case 'error': return 'bg-red-500 text-white'
-      default: return 'bg-gray-500 text-white'
+      case 'syncing':
+        return 'bg-blue-500 text-white';
+      case 'success':
+        return 'bg-green-500 text-white';
+      case 'error':
+        return 'bg-red-500 text-white';
+      default:
+        return 'bg-gray-500 text-white';
     }
-  }
+  };
 
   const getSyncStatusIcon = () => {
     switch (syncStatus) {
-      case 'syncing': return <RefreshCw className="w-4 h-4 animate-spin" />
-      case 'success': return <CheckCircle className="w-4 h-4" />
-      case 'error': return <AlertTriangle className="w-4 h-4" />
-      default: return <CloudIcon className="w-4 h-4" />
+      case 'syncing':
+        return <RefreshCw className="w-4 h-4 animate-spin" />;
+      case 'success':
+        return <CheckCircle className="w-4 h-4" />;
+      case 'error':
+        return <AlertTriangle className="w-4 h-4" />;
+      default:
+        return <CloudIcon className="w-4 h-4" />;
     }
-  }
+  };
 
   return (
     <Card className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-500/20">
@@ -90,7 +98,6 @@ export function CloudflareSyncManager() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        
         {/* Current Ecosystem Data Display */}
         {isLoading ? (
           <div className="flex items-center space-x-2 text-gray-400">
@@ -104,7 +111,9 @@ export function CloudflareSyncManager() {
               <div className="text-xs text-gray-400">Active Sectors</div>
             </div>
             <div className="text-center p-3 bg-gray-800/50 rounded-lg">
-              <div className="text-2xl font-bold text-green-400">{ecosystemData.connectedApps.toLocaleString()}</div>
+              <div className="text-2xl font-bold text-green-400">
+                {ecosystemData.connectedApps.toLocaleString()}
+              </div>
               <div className="text-xs text-gray-400">Connected Apps</div>
             </div>
             <div className="text-center p-3 bg-gray-800/50 rounded-lg">
@@ -135,7 +144,7 @@ export function CloudflareSyncManager() {
                 {syncStatus === 'idle' && 'Ready to Sync'}
               </span>
             </Badge>
-            
+
             {ecosystemData && (
               <div className="flex items-center space-x-2 text-sm text-gray-400">
                 <Database className="w-4 h-4" />
@@ -154,9 +163,11 @@ export function CloudflareSyncManager() {
               <Zap className="w-4 h-4 mr-1" />
               Force Sync
             </Button>
-            
+
             <Button
-              onClick={() => window.open('https://replit.com/@fruitfulglobal/CloudFlare-Workers', '_blank')}
+              onClick={() =>
+                window.open('https://replit.com/@fruitfulglobal/CloudFlare-Workers', '_blank')
+              }
               variant="outline"
               size="sm"
               className="border-purple-500 text-purple-400 hover:bg-purple-500/10"
@@ -174,8 +185,9 @@ export function CloudflareSyncManager() {
               <strong>⚠️ Data Misalignment Detected:</strong>
             </p>
             <p className="text-gray-300">
-              External Cloudflare Workers deployment is showing outdated data (2 sectors, 57 apps) 
-              instead of your real ecosystem data ({ecosystemData?.activeSectors} sectors, {ecosystemData?.connectedApps.toLocaleString()} brands).
+              External Cloudflare Workers deployment is showing outdated data (2 sectors, 57 apps)
+              instead of your real ecosystem data ({ecosystemData?.activeSectors} sectors,{' '}
+              {ecosystemData?.connectedApps.toLocaleString()} brands).
             </p>
             <p className="text-gray-300 mt-2">
               Click "Force Sync" to push correct HSOMNI9000 data to all external deployments.
@@ -187,12 +199,12 @@ export function CloudflareSyncManager() {
         {syncStatus === 'success' && (
           <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 text-sm">
             <p className="text-green-400">
-              ✅ <strong>Sync Successful!</strong> Cloudflare Workers now displays accurate HSOMNI9000 ecosystem data.
+              ✅ <strong>Sync Successful!</strong> Cloudflare Workers now displays accurate
+              HSOMNI9000 ecosystem data.
             </p>
           </div>
         )}
-
       </CardContent>
     </Card>
-  )
+  );
 }

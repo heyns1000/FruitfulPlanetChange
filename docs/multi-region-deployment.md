@@ -34,6 +34,7 @@ This document outlines the strategy for deploying FruitfulPlanet across multiple
 Use GeoDNS to route users to the nearest region:
 
 **CloudFlare Configuration:**
+
 ```javascript
 // Geo-routing rules
 {
@@ -47,6 +48,7 @@ Use GeoDNS to route users to the nearest region:
 ```
 
 **AWS Route53 Geolocation Policy:**
+
 ```yaml
 Type: AWS::Route53::RecordSet
 Properties:
@@ -64,16 +66,19 @@ Properties:
 #### Primary-Replica Setup
 
 **Primary Database (US-EAST-1):**
+
 - Handles all write operations
 - Streams changes to replicas
 - Point-in-time recovery enabled
 
 **Read Replicas (Other Regions):**
+
 - Handle read operations
 - Async replication from primary
 - Can be promoted to primary
 
 **PostgreSQL Replication Configuration:**
+
 ```sql
 -- On primary
 ALTER SYSTEM SET wal_level = replica;
@@ -104,6 +109,7 @@ cluster-node-timeout 5000
 #### Session Synchronization
 
 Options:
+
 1. **Sticky Sessions**: Route user to same region
 2. **Shared Session Store**: Redis with replication
 3. **JWT Tokens**: Stateless authentication
@@ -111,11 +117,13 @@ Options:
 ### 4. CDN Configuration
 
 **Static Assets:**
+
 - Cached at edge locations globally
 - Automatic failover
 - Cache invalidation hooks
 
 **CloudFlare Configuration:**
+
 ```javascript
 // Cache rules
 {
@@ -133,11 +141,13 @@ Options:
 ### Initial Setup
 
 1. **Deploy to Primary Region (US-EAST-1)**
+
    ```bash
    kubectl apply -f k8s/ --context=us-east-1
    ```
 
 2. **Set Up Database Replication**
+
    ```bash
    # Create read replicas in other regions
    aws rds create-db-instance-read-replica \
@@ -147,6 +157,7 @@ Options:
    ```
 
 3. **Deploy to Secondary Regions**
+
    ```bash
    kubectl apply -f k8s/ --context=eu-west-1
    kubectl apply -f k8s/ --context=apac-south
@@ -160,6 +171,7 @@ Options:
 ### Rolling Updates
 
 1. **Staged Rollout:**
+
    ```bash
    # Update one region at a time
    kubectl set image deployment/app app=new-version --context=us-east-1
@@ -178,6 +190,7 @@ Options:
 ### Automatic Failover
 
 **DNS Health Checks:**
+
 ```yaml
 # Route53 Health Check
 Type: AWS::Route53::HealthCheck
@@ -189,6 +202,7 @@ Properties:
 ```
 
 **Database Failover:**
+
 ```bash
 # Promote read replica to primary
 aws rds promote-read-replica \
@@ -203,6 +217,7 @@ aws rds promote-read-replica \
    - Determine affected region
 
 2. **Execute Failover:**
+
    ```bash
    # Update DNS to point to healthy region
    aws route53 change-resource-record-sets \
@@ -220,6 +235,7 @@ aws rds promote-read-replica \
 ### Write Operations
 
 All writes go to primary region:
+
 ```typescript
 // Route write operations to primary
 const isPrimaryRegion = process.env.REGION === 'us-east-1';
@@ -233,6 +249,7 @@ if (!isPrimaryRegion) {
 ### Read Operations
 
 Read from local replica when possible:
+
 ```typescript
 // Use local read replica
 const dbConfig = {
@@ -244,12 +261,13 @@ const dbConfig = {
 ### Conflict Resolution
 
 Use timestamps and versioning:
+
 ```sql
 -- Add version column
 ALTER TABLE items ADD COLUMN version INTEGER DEFAULT 1;
 
 -- Optimistic locking
-UPDATE items 
+UPDATE items
 SET data = $1, version = version + 1
 WHERE id = $2 AND version = $3;
 ```
@@ -272,7 +290,7 @@ alerts:
   - name: high_replication_lag
     condition: replication_lag > 10s
     severity: warning
-  
+
   - name: region_down
     condition: health_check_failed
     severity: critical
@@ -304,6 +322,7 @@ alerts:
    - Measure recovery time
 
 2. **Load Testing:**
+
    ```bash
    # Test with locust or k6
    k6 run --vus 1000 --duration 5m load-test.js

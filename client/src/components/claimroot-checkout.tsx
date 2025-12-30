@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { CheckCircle2, Shield, Zap, CreditCard } from "lucide-react"
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { CheckCircle2, Shield, Zap, CreditCard } from 'lucide-react';
 
 // PayPal Hosted Button Configuration
-const PAYPAL_CLIENT_ID = "BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q";
-const CLAIMROOT_HOSTED_BUTTON_ID = "K9BPET82JDRQ4";
+const PAYPAL_CLIENT_ID =
+  'BAAGdPecRsf6dw_nIrWqUen0GdW0UsBZapp1Gn62xkPdD-Vqc-4lqWAidKK8LOObXux8pHJGjXknZoar6Q';
+const CLAIMROOT_HOSTED_BUTTON_ID = 'K9BPET82JDRQ4';
 
 declare global {
   interface Window {
@@ -15,11 +16,11 @@ declare global {
 }
 
 export default function ClaimRootCheckout({
-  sector = "Technology",
+  sector = 'Technology',
   price = 1140,
-  onCheckoutComplete
+  onCheckoutComplete,
 }: ClaimRootCheckoutProps) {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const [paypalLoaded, setPaypalLoaded] = useState(false);
 
   useEffect(() => {
@@ -43,7 +44,7 @@ export default function ClaimRootCheckout({
     if (window.paypal && window.paypal.HostedButtons) {
       // Clear existing PayPal containers
       const containers = document.querySelectorAll('[id^="paypal-container-"]');
-      containers.forEach(container => {
+      containers.forEach((container) => {
         container.innerHTML = '';
       });
 
@@ -51,9 +52,11 @@ export default function ClaimRootCheckout({
       setTimeout(() => {
         const container = document.getElementById(`paypal-container-${CLAIMROOT_HOSTED_BUTTON_ID}`);
         if (container && window.paypal.HostedButtons) {
-          window.paypal.HostedButtons({
-            hostedButtonId: CLAIMROOT_HOSTED_BUTTON_ID,
-          }).render(`#paypal-container-${CLAIMROOT_HOSTED_BUTTON_ID}`);
+          window.paypal
+            .HostedButtons({
+              hostedButtonId: CLAIMROOT_HOSTED_BUTTON_ID,
+            })
+            .render(`#paypal-container-${CLAIMROOT_HOSTED_BUTTON_ID}`);
         }
       }, 100);
     }
@@ -110,16 +113,22 @@ export default function ClaimRootCheckout({
           {/* PayPal Hosted Button Integration */}
           <div className="space-y-4">
             <div className="text-center">
-              <h3 className="text-lg font-semibold mb-2">ClaimRoot License - CodeFlow ({sector})</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                ClaimRoot License - CodeFlow ({sector})
+              </h3>
               <p className="text-2xl font-bold text-green-600">${price.toLocaleString()} USD</p>
               <p className="text-sm text-gray-600 mt-2">
-                Grants full access to scroll-bound licensing certificate for CodeFlow under the {sector} sector.
-                Includes 🔒 VaultMesh activation, FAA.X13 Treaty compliance, and SHA-256 metadata seal.
+                Grants full access to scroll-bound licensing certificate for CodeFlow under the{' '}
+                {sector} sector. Includes 🔒 VaultMesh activation, FAA.X13 Treaty compliance, and
+                SHA-256 metadata seal.
               </p>
             </div>
 
             {/* PayPal Button Container */}
-            <div id={`paypal-container-${CLAIMROOT_HOSTED_BUTTON_ID}`} className="flex justify-center">
+            <div
+              id={`paypal-container-${CLAIMROOT_HOSTED_BUTTON_ID}`}
+              className="flex justify-center"
+            >
               {!paypalLoaded && (
                 <div className="animate-pulse bg-yellow-400 text-black px-8 py-3 rounded font-bold">
                   Loading PayPal...
@@ -185,5 +194,5 @@ export default function ClaimRootCheckout({
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

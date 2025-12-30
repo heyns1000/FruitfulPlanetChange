@@ -1,42 +1,78 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Shield, Globe, Zap, Database, Users, Activity, Cpu, Network, Cloud, Lock, CheckCircle } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import {
+  Shield,
+  Globe,
+  Zap,
+  Database,
+  Users,
+  Activity,
+  Cpu,
+  Network,
+  Cloud,
+  Lock,
+  CheckCircle,
+} from 'lucide-react';
 
 export function VaultMeshAbout() {
   const coreCapabilities = [
     {
-      title: "Decentralized Data Integrity",
-      description: "Ensures immutable and tamper-proof data records through distributed ledger technologies",
+      title: 'Decentralized Data Integrity',
+      description:
+        'Ensures immutable and tamper-proof data records through distributed ledger technologies',
       icon: Shield,
-      features: ["Blockchain-based verification", "Cryptographic hashing", "Distributed consensus"]
+      features: ['Blockchain-based verification', 'Cryptographic hashing', 'Distributed consensus'],
     },
     {
-      title: "Secure Data Orchestration", 
-      description: "Manages and secures the flow of sensitive data across disparate systems and protocols",
+      title: 'Secure Data Orchestration',
+      description:
+        'Manages and secures the flow of sensitive data across disparate systems and protocols',
       icon: Lock,
-      features: ["End-to-end encryption", "Zero-trust architecture", "Compliance monitoring"]
+      features: ['End-to-end encryption', 'Zero-trust architecture', 'Compliance monitoring'],
     },
     {
-      title: "Cross-Protocol Interoperability",
-      description: "Facilitates seamless communication and data exchange between different industry standards",
+      title: 'Cross-Protocol Interoperability',
+      description:
+        'Facilitates seamless communication and data exchange between different industry standards',
       icon: Network,
-      features: ["API gateway management", "Protocol translation", "Legacy system integration"]
+      features: ['API gateway management', 'Protocol translation', 'Legacy system integration'],
     },
     {
-      title: "Real-time Synchronization",
-      description: "Provides instant data synchronization across all connected systems and platforms",
+      title: 'Real-time Synchronization',
+      description:
+        'Provides instant data synchronization across all connected systems and platforms',
       icon: Zap,
-      features: ["Event-driven architecture", "Streaming data pipelines", "Low-latency processing"]
-    }
-  ]
+      features: ['Event-driven architecture', 'Streaming data pipelines', 'Low-latency processing'],
+    },
+  ];
 
   const ecosystemComponents = [
-    { name: "Omni Grid™", description: "Distributed network layer for real-time synchronization", status: "Active" },
-    { name: "BuildNest™", description: "Enterprise solutions platform built on VaultMesh™", status: "Active" },
-    { name: "SecureSign™", description: "Digital trust and verifiable identity solutions", status: "Active" },
-    { name: "Seedwave™", description: "Administrative and analytics portal for deployments", status: "Active" },
-    { name: "Baobab Archive™", description: "Compliance and immutable record-keeping solution", status: "Active" }
-  ]
+    {
+      name: 'Omni Grid™',
+      description: 'Distributed network layer for real-time synchronization',
+      status: 'Active',
+    },
+    {
+      name: 'BuildNest™',
+      description: 'Enterprise solutions platform built on VaultMesh™',
+      status: 'Active',
+    },
+    {
+      name: 'SecureSign™',
+      description: 'Digital trust and verifiable identity solutions',
+      status: 'Active',
+    },
+    {
+      name: 'Seedwave™',
+      description: 'Administrative and analytics portal for deployments',
+      status: 'Active',
+    },
+    {
+      name: 'Baobab Archive™',
+      description: 'Compliance and immutable record-keeping solution',
+      status: 'Active',
+    },
+  ];
 
   return (
     <div className="space-y-8">
@@ -50,13 +86,14 @@ export function VaultMeshAbout() {
         </CardHeader>
         <CardContent>
           <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">
-            VaultMesh™ is envisioned as the indispensable backbone for secure, real-time data synchronization 
-            and complex operational orchestration within and across FAA-regulated sectors.
+            VaultMesh™ is envisioned as the indispensable backbone for secure, real-time data
+            synchronization and complex operational orchestration within and across FAA-regulated
+            sectors.
           </p>
           <p className="text-gray-600 dark:text-gray-400">
-            Its primary goal is to provide a robust, immutable, and universally accessible layer for critical 
-            information and distributed processes, fostering trust and efficiency at an unprecedented scale. 
-            This is where individual efforts become a collective force.
+            Its primary goal is to provide a robust, immutable, and universally accessible layer for
+            critical information and distributed processes, fostering trust and efficiency at an
+            unprecedented scale. This is where individual efforts become a collective force.
           </p>
         </CardContent>
       </Card>
@@ -103,7 +140,9 @@ export function VaultMeshAbout() {
                       {component.status}
                     </Badge>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{component.description}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {component.description}
+                  </p>
                 </div>
               ))}
             </div>
@@ -125,14 +164,16 @@ export function VaultMeshAbout() {
               <Database className="h-12 w-12 text-cyan-500 mx-auto mb-4" />
               <h3 className="font-semibold mb-2">Distributed by Design</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                No single point of failure with distributed architecture across multiple regions and providers
+                No single point of failure with distributed architecture across multiple regions and
+                providers
               </p>
             </div>
             <div className="text-center">
               <Shield className="h-12 w-12 text-green-500 mx-auto mb-4" />
               <h3 className="font-semibold mb-2">Security First</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Zero-trust security model with end-to-end encryption and regulatory compliance built-in
+                Zero-trust security model with end-to-end encryption and regulatory compliance
+                built-in
               </p>
             </div>
             <div className="text-center">
@@ -199,5 +240,5 @@ export function VaultMeshAbout() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
