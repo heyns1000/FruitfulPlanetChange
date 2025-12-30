@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { motion, AnimatePresence } from "framer-motion";
-import { 
+import { useState, useEffect } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
   Heart,
   Users,
   DollarSign,
@@ -25,29 +25,29 @@ import {
   Award,
   Clock,
   ArrowRight,
-  ArrowDown
-} from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Progress } from "@/components/ui/progress";
-import { 
-  InteractiveCard, 
-  PulseIndicator, 
-  ProgressRing, 
+  ArrowDown,
+} from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Progress } from '@/components/ui/progress';
+import {
+  InteractiveCard,
+  PulseIndicator,
+  ProgressRing,
   SparkleEffect,
   RippleEffect,
   TypewriterText,
-  MorphingButton
-} from "@/components/ui/micro-interactions";
-import { apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
+  MorphingButton,
+} from '@/components/ui/micro-interactions';
+import { apiRequest } from '@/lib/queryClient';
+import { useToast } from '@/hooks/use-toast';
 
 export function BanimalIntegration() {
   const [selectedDistribution, setSelectedDistribution] = useState<string | null>(null);
   const [activeVaultActions, setActiveVaultActions] = useState<any[]>([]);
-  const [sonicGridStatus, setSonicGridStatus] = useState("active");
+  const [sonicGridStatus, setSonicGridStatus] = useState('active');
   const { toast } = useToast();
 
   // Mock data for Banimal ecosystem - would come from actual integration
@@ -58,7 +58,7 @@ export function BanimalIntegration() {
     vaultActions: 12,
     mediaProcessed: 156,
     sonicGridConnections: 8,
-    pendingDistributions: 4
+    pendingDistributions: 4,
   };
 
   const distributionRules = {
@@ -66,120 +66,120 @@ export function BanimalIntegration() {
     developer: 25, // 25% to developer
     operations: 20, // 20% to operations
     sonicGrid: 10, // 10% to SonicGrid processing
-    vault: 10 // 10% to vault reserves
+    vault: 10, // 10% to vault reserves
   };
 
   const recentTransactions = [
     {
       id: 1,
-      type: "sale",
+      type: 'sale',
       amount: 450,
-      product: "Banimal Winter Onesie Set",
-      timestamp: "2 minutes ago",
+      product: 'Banimal Winter Onesie Set',
+      timestamp: '2 minutes ago',
       distribution: {
-        charity: 157.50,
-        developer: 112.50,
+        charity: 157.5,
+        developer: 112.5,
         operations: 90,
         sonicGrid: 45,
-        vault: 45
+        vault: 45,
       },
       childBeneficiary: "Cape Town Children's Home",
-      status: "distributed"
+      status: 'distributed',
     },
     {
       id: 2,
-      type: "sale", 
+      type: 'sale',
       amount: 275,
-      product: "Banimal Soft Toy Bundle",
-      timestamp: "8 minutes ago",
+      product: 'Banimal Soft Toy Bundle',
+      timestamp: '8 minutes ago',
       distribution: {
         charity: 96.25,
         developer: 68.75,
         operations: 55,
-        sonicGrid: 27.50,
-        vault: 27.50
+        sonicGrid: 27.5,
+        vault: 27.5,
       },
-      childBeneficiary: "Johannesburg Youth Center",
-      status: "processing"
-    }
+      childBeneficiary: 'Johannesburg Youth Center',
+      status: 'processing',
+    },
   ];
 
   const sonicGridConnections = [
     {
       id: 1,
-      name: "Affirmative Document Processor",
-      type: "Media Processing",
-      status: "active",
+      name: 'Affirmative Document Processor',
+      type: 'Media Processing',
+      status: 'active',
       documentsProcessed: 48,
       confidenceScore: 97.8,
-      lastActivity: "30 seconds ago"
+      lastActivity: '30 seconds ago',
     },
     {
       id: 2,
-      name: "Charitable Impact Validator",
-      type: "Impact Verification",
-      status: "active", 
+      name: 'Charitable Impact Validator',
+      type: 'Impact Verification',
+      status: 'active',
       validationsCompleted: 156,
       confidenceScore: 99.2,
-      lastActivity: "1 minute ago"
+      lastActivity: '1 minute ago',
     },
     {
       id: 3,
-      name: "Audio Distribution Network",
-      type: "SonicGrid Core",
-      status: "active",
+      name: 'Audio Distribution Network',
+      type: 'SonicGrid Core',
+      status: 'active',
       audioStreams: 12,
       confidenceScore: 95.4,
-      lastActivity: "15 seconds ago"
-    }
+      lastActivity: '15 seconds ago',
+    },
   ];
 
   const vaultActions = [
     {
       id: 1,
-      action: "Charitable Distribution",
-      amount: 157.50,
+      action: 'Charitable Distribution',
+      amount: 157.5,
       beneficiary: "Cape Town Children's Home",
-      timestamp: "2 minutes ago",
-      status: "completed",
-      vaultSignature: "VLT-BNL-042-X1",
-      sonicValidation: true
+      timestamp: '2 minutes ago',
+      status: 'completed',
+      vaultSignature: 'VLT-BNL-042-X1',
+      sonicValidation: true,
     },
     {
       id: 2,
-      action: "Developer Payment",
-      amount: 112.50,
-      beneficiary: "Development Team",
-      timestamp: "2 minutes ago", 
-      status: "completed",
-      vaultSignature: "VLT-BNL-042-X2",
-      sonicValidation: true
+      action: 'Developer Payment',
+      amount: 112.5,
+      beneficiary: 'Development Team',
+      timestamp: '2 minutes ago',
+      status: 'completed',
+      vaultSignature: 'VLT-BNL-042-X2',
+      sonicValidation: true,
     },
     {
       id: 3,
-      action: "SonicGrid Processing Fee",
-      amount: 45.00,
-      beneficiary: "Media Sector Integration",
-      timestamp: "2 minutes ago",
-      status: "completed", 
-      vaultSignature: "VLT-BNL-042-X3",
-      sonicValidation: true
-    }
+      action: 'SonicGrid Processing Fee',
+      amount: 45.0,
+      beneficiary: 'Media Sector Integration',
+      timestamp: '2 minutes ago',
+      status: 'completed',
+      vaultSignature: 'VLT-BNL-042-X3',
+      sonicValidation: true,
+    },
   ];
 
   // Simulate real-time updates
   useEffect(() => {
     const interval = setInterval(() => {
       // Update active vault actions
-      setActiveVaultActions(prev => [
+      setActiveVaultActions((prev) => [
         ...prev.slice(-2),
         {
           id: Date.now(),
-          action: "Real-time Distribution",
+          action: 'Real-time Distribution',
           amount: Math.floor(Math.random() * 200) + 50,
-          timestamp: "Just now",
-          status: "processing"
-        }
+          timestamp: 'Just now',
+          status: 'processing',
+        },
       ]);
     }, 10000);
 
@@ -189,25 +189,21 @@ export function BanimalIntegration() {
   const handleDistributionView = (transactionId: string) => {
     setSelectedDistribution(transactionId);
     toast({
-      title: "Distribution Details",
-      description: "Viewing vault action breakdown for transaction",
+      title: 'Distribution Details',
+      description: 'Viewing vault action breakdown for transaction',
     });
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50 dark:from-teal-900 dark:via-cyan-900 dark:to-blue-900 p-6">
       {/* Header */}
-      <motion.div 
-        className="mb-8"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
+      <motion.div className="mb-8" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <motion.div
-              animate={{ 
+              animate={{
                 rotate: [0, 10, -10, 0],
-                scale: [1, 1.1, 1]
+                scale: [1, 1.1, 1],
               }}
               transition={{ duration: 2, repeat: Infinity }}
             >
@@ -222,7 +218,7 @@ export function BanimalIntegration() {
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-4">
             <div className="text-right">
               <div className="text-2xl font-bold text-teal-600">
@@ -230,7 +226,11 @@ export function BanimalIntegration() {
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400">Children Helped</div>
             </div>
-            <PulseIndicator active={sonicGridStatus === "active"} color="bg-teal-400" size="w-4 h-4" />
+            <PulseIndicator
+              active={sonicGridStatus === 'active'}
+              color="bg-teal-400"
+              size="w-4 h-4"
+            />
           </div>
         </div>
       </motion.div>
@@ -249,34 +249,34 @@ export function BanimalIntegration() {
           {/* Key Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {[
-              { 
-                label: "Total Sales", 
-                value: `R${banimalMetrics.totalSales.toLocaleString()}`, 
-                icon: DollarSign, 
-                color: "text-green-600",
-                trend: "+12.5%"
+              {
+                label: 'Total Sales',
+                value: `R${banimalMetrics.totalSales.toLocaleString()}`,
+                icon: DollarSign,
+                color: 'text-green-600',
+                trend: '+12.5%',
               },
-              { 
-                label: "Children Helped", 
-                value: banimalMetrics.childrenHelped.toLocaleString(), 
-                icon: Heart, 
-                color: "text-red-500",
-                trend: "+8.3%"
+              {
+                label: 'Children Helped',
+                value: banimalMetrics.childrenHelped.toLocaleString(),
+                icon: Heart,
+                color: 'text-red-500',
+                trend: '+8.3%',
               },
-              { 
-                label: "Active Donations", 
-                value: banimalMetrics.activeDonations.toString(), 
-                icon: Gift, 
-                color: "text-purple-600",
-                trend: "+15.2%"
+              {
+                label: 'Active Donations',
+                value: banimalMetrics.activeDonations.toString(),
+                icon: Gift,
+                color: 'text-purple-600',
+                trend: '+15.2%',
               },
-              { 
-                label: "Vault Actions", 
-                value: banimalMetrics.vaultActions.toString(), 
-                icon: Shield, 
-                color: "text-blue-600",
-                trend: "+23.1%"
-              }
+              {
+                label: 'Vault Actions',
+                value: banimalMetrics.vaultActions.toString(),
+                icon: Shield,
+                color: 'text-blue-600',
+                trend: '+23.1%',
+              },
             ].map((metric, index) => (
               <motion.div
                 key={metric.label}
@@ -309,7 +309,7 @@ export function BanimalIntegration() {
               <Coins className="w-5 h-5" />
               Automatic Distribution Rules
             </h3>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-4">
                 {Object.entries(distributionRules).map(([key, percentage]) => (
@@ -318,27 +318,37 @@ export function BanimalIntegration() {
                       <span className="text-gray-700 dark:text-gray-300 capitalize">
                         {key.replace(/([A-Z])/g, ' $1')}
                       </span>
-                      <span className="text-gray-900 dark:text-white font-bold">
-                        {percentage}%
-                      </span>
+                      <span className="text-gray-900 dark:text-white font-bold">{percentage}%</span>
                     </div>
                     <Progress value={percentage} className="h-2" />
                   </div>
                 ))}
               </div>
-              
+
               <div className="bg-gradient-to-br from-teal-100 to-cyan-100 dark:from-teal-800 dark:to-cyan-800 p-4 rounded-lg">
                 <h4 className="font-bold text-gray-900 dark:text-white mb-2">
                   Live Distribution Example
                 </h4>
                 <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
-                  <div>Sale Amount: <strong>R450.00</strong></div>
+                  <div>
+                    Sale Amount: <strong>R450.00</strong>
+                  </div>
                   <div className="border-t pt-2 mt-2">
-                    <div>→ Children's Charity: <strong>R157.50</strong></div>
-                    <div>→ Developer Team: <strong>R112.50</strong></div>
-                    <div>→ Operations: <strong>R90.00</strong></div>
-                    <div>→ SonicGrid™: <strong>R45.00</strong></div>
-                    <div>→ Vault Reserve: <strong>R45.00</strong></div>
+                    <div>
+                      → Children's Charity: <strong>R157.50</strong>
+                    </div>
+                    <div>
+                      → Developer Team: <strong>R112.50</strong>
+                    </div>
+                    <div>
+                      → Operations: <strong>R90.00</strong>
+                    </div>
+                    <div>
+                      → SonicGrid™: <strong>R45.00</strong>
+                    </div>
+                    <div>
+                      → Vault Reserve: <strong>R45.00</strong>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -365,7 +375,7 @@ export function BanimalIntegration() {
                       <p className="text-gray-600 dark:text-gray-400 text-sm">
                         {transaction.timestamp}
                       </p>
-                      <Badge 
+                      <Badge
                         variant={transaction.status === 'distributed' ? 'default' : 'secondary'}
                         className="mt-2"
                       >
@@ -373,12 +383,10 @@ export function BanimalIntegration() {
                       </Badge>
                     </div>
                     <div className="text-right">
-                      <div className="text-2xl font-bold text-green-600">
-                        R{transaction.amount}
-                      </div>
-                      <ProgressRing 
-                        progress={transaction.status === 'distributed' ? 100 : 75} 
-                        size={40} 
+                      <div className="text-2xl font-bold text-green-600">R{transaction.amount}</div>
+                      <ProgressRing
+                        progress={transaction.status === 'distributed' ? 100 : 75}
+                        size={40}
                         strokeWidth={3}
                         color="#10b981"
                       />
@@ -400,10 +408,20 @@ export function BanimalIntegration() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div>Developer: <strong>R{transaction.distribution.developer.toFixed(2)}</strong></div>
-                      <div>Operations: <strong>R{transaction.distribution.operations.toFixed(2)}</strong></div>
-                      <div>SonicGrid™: <strong>R{transaction.distribution.sonicGrid.toFixed(2)}</strong></div>
-                      <div>Vault: <strong>R{transaction.distribution.vault.toFixed(2)}</strong></div>
+                      <div>
+                        Developer: <strong>R{transaction.distribution.developer.toFixed(2)}</strong>
+                      </div>
+                      <div>
+                        Operations:{' '}
+                        <strong>R{transaction.distribution.operations.toFixed(2)}</strong>
+                      </div>
+                      <div>
+                        SonicGrid™:{' '}
+                        <strong>R{transaction.distribution.sonicGrid.toFixed(2)}</strong>
+                      </div>
+                      <div>
+                        Vault: <strong>R{transaction.distribution.vault.toFixed(2)}</strong>
+                      </div>
                     </div>
 
                     <RippleEffect onClick={() => handleDistributionView(transaction.id.toString())}>
@@ -441,23 +459,33 @@ export function BanimalIntegration() {
                   <Card className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 border-purple-200 dark:border-purple-600 p-5">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
-                        {connection.type === "Media Processing" && <FileText className="w-5 h-5 text-purple-600" />}
-                        {connection.type === "Impact Verification" && <Shield className="w-5 h-5 text-green-600" />}
-                        {connection.type === "SonicGrid Core" && <Radio className="w-5 h-5 text-blue-600" />}
+                        {connection.type === 'Media Processing' && (
+                          <FileText className="w-5 h-5 text-purple-600" />
+                        )}
+                        {connection.type === 'Impact Verification' && (
+                          <Shield className="w-5 h-5 text-green-600" />
+                        )}
+                        {connection.type === 'SonicGrid Core' && (
+                          <Radio className="w-5 h-5 text-blue-600" />
+                        )}
                         <Badge variant="outline" className="text-xs">
                           {connection.status.toUpperCase()}
                         </Badge>
                       </div>
-                      <PulseIndicator active={connection.status === "active"} color="bg-green-400" size="w-3 h-3" />
+                      <PulseIndicator
+                        active={connection.status === 'active'}
+                        color="bg-green-400"
+                        size="w-3 h-3"
+                      />
                     </div>
-                    
+
                     <h3 className="font-bold text-gray-900 dark:text-white mb-2">
                       {connection.name}
                     </h3>
                     <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
                       {connection.type}
                     </p>
-                    
+
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span>Confidence:</span>
@@ -466,7 +494,9 @@ export function BanimalIntegration() {
                       <div className="flex justify-between">
                         <span>Processed:</span>
                         <span className="font-bold">
-                          {connection.documentsProcessed || connection.validationsCompleted || connection.audioStreams}
+                          {connection.documentsProcessed ||
+                            connection.validationsCompleted ||
+                            connection.audioStreams}
                         </span>
                       </div>
                       <div className="text-xs text-gray-500 dark:text-gray-400">
@@ -487,7 +517,7 @@ export function BanimalIntegration() {
               <Shield className="w-6 h-6 text-blue-600" />
               Live Vault Actions
             </h2>
-            
+
             <div className="space-y-4">
               {vaultActions.map((action, index) => (
                 <motion.div
@@ -509,9 +539,7 @@ export function BanimalIntegration() {
                             </Badge>
                           )}
                         </div>
-                        <h3 className="font-bold text-gray-900 dark:text-white">
-                          {action.action}
-                        </h3>
+                        <h3 className="font-bold text-gray-900 dark:text-white">{action.action}</h3>
                         <p className="text-gray-600 dark:text-gray-400 text-sm">
                           → {action.beneficiary}
                         </p>
@@ -519,12 +547,12 @@ export function BanimalIntegration() {
                           {action.timestamp}
                         </p>
                       </div>
-                      
+
                       <div className="text-right">
                         <div className="text-xl font-bold text-green-600">
                           R{action.amount.toFixed(2)}
                         </div>
-                        <Badge 
+                        <Badge
                           variant={action.status === 'completed' ? 'default' : 'secondary'}
                           className="text-xs"
                         >
@@ -546,37 +574,37 @@ export function BanimalIntegration() {
               <Baby className="w-6 h-6 text-teal-600" />
               Banimal™ Product Ecosystem
             </h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
                 {
-                  name: "Winter Onesies Collection",
-                  description: "Age-specific illustrated characters, 0-12 months",
-                  price: "R450 - R650",
+                  name: 'Winter Onesies Collection',
+                  description: 'Age-specific illustrated characters, 0-12 months',
+                  price: 'R450 - R650',
                   charityImpact: "35% → Children's Homes",
-                  category: "Clothing"
+                  category: 'Clothing',
                 },
                 {
-                  name: "Soft Toys Collection", 
-                  description: "80cm & 50cm plush companions",
-                  price: "R275 - R895",
-                  charityImpact: "35% → Youth Centers",
-                  category: "Toys"
+                  name: 'Soft Toys Collection',
+                  description: '80cm & 50cm plush companions',
+                  price: 'R275 - R895',
+                  charityImpact: '35% → Youth Centers',
+                  category: 'Toys',
                 },
                 {
-                  name: "Feeding Bibs Collection",
-                  description: "Adjustable velcro, fluid-proof backing",
-                  price: "R125 - R175",
-                  charityImpact: "35% → Feeding Programs",
-                  category: "Accessories"
+                  name: 'Feeding Bibs Collection',
+                  description: 'Adjustable velcro, fluid-proof backing',
+                  price: 'R125 - R175',
+                  charityImpact: '35% → Feeding Programs',
+                  category: 'Accessories',
                 },
                 {
-                  name: "Gift Bundle Sets",
-                  description: "Complete newborn starter packages",
-                  price: "R850 - R1250",
-                  charityImpact: "35% → Complete Care",
-                  category: "Bundles"
-                }
+                  name: 'Gift Bundle Sets',
+                  description: 'Complete newborn starter packages',
+                  price: 'R850 - R1250',
+                  charityImpact: '35% → Complete Care',
+                  category: 'Bundles',
+                },
               ].map((product, index) => (
                 <motion.div
                   key={product.name}
@@ -589,14 +617,12 @@ export function BanimalIntegration() {
                       <Badge variant="outline" className="mb-2">
                         {product.category}
                       </Badge>
-                      <h3 className="font-bold text-gray-900 dark:text-white">
-                        {product.name}
-                      </h3>
+                      <h3 className="font-bold text-gray-900 dark:text-white">{product.name}</h3>
                       <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
                         {product.description}
                       </p>
                     </div>
-                    
+
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
                         <span className="text-gray-700 dark:text-gray-300">Price:</span>
@@ -604,7 +630,7 @@ export function BanimalIntegration() {
                           {product.price}
                         </span>
                       </div>
-                      
+
                       <div className="bg-red-100 dark:bg-red-900/30 p-2 rounded text-sm">
                         <Heart className="w-3 h-3 inline mr-1 text-red-600" />
                         <span className="text-red-700 dark:text-red-300">
@@ -612,7 +638,7 @@ export function BanimalIntegration() {
                         </span>
                       </div>
                     </div>
-                    
+
                     <Button className="w-full mt-4 bg-teal-600 hover:bg-teal-700">
                       <Gift className="w-4 h-4 mr-2" />
                       Buy & Help Child

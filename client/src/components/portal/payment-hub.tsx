@@ -1,11 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { CreditCard, ShoppingCart, DollarSign, Check, X, Loader2, Globe, Zap, Crown } from 'lucide-react';
+import {
+  CreditCard,
+  ShoppingCart,
+  DollarSign,
+  Check,
+  X,
+  Loader2,
+  Globe,
+  Zap,
+  Crown,
+} from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
@@ -57,8 +73,8 @@ export function PaymentHub() {
         'Resource tracking',
         'Standard analytics',
         'Community support',
-        'Basic API access'
-      ]
+        'Basic API access',
+      ],
     },
     {
       id: 'professional',
@@ -75,8 +91,8 @@ export function PaymentHub() {
         'Premium analytics dashboard',
         'Priority support',
         'Full API access',
-        'Custom workflows'
-      ]
+        'Custom workflows',
+      ],
     },
     {
       id: 'enterprise',
@@ -93,9 +109,9 @@ export function PaymentHub() {
         'White-label solutions',
         'Dedicated account manager',
         'Custom integrations',
-        '24/7 premium support'
-      ]
-    }
+        '24/7 premium support',
+      ],
+    },
   ];
 
   // Fetch payment history
@@ -105,7 +121,7 @@ export function PaymentHub() {
       const response = await fetch('/api/payments');
       if (!response.ok) throw new Error('Failed to fetch payments');
       return response.json() as Payment[];
-    }
+    },
   });
 
   // Currency converter integration
@@ -127,7 +143,7 @@ export function PaymentHub() {
   const processPaymentMutation = useMutation({
     mutationFn: async (planData: { planId: string; currency: string }) => {
       setIsProcessingPayment(true);
-      
+
       // Simulate PayPal integration
       const response = await fetch('/api/payments/create', {
         method: 'POST',
@@ -135,8 +151,8 @@ export function PaymentHub() {
         body: JSON.stringify({
           planName: selectedPlan?.name,
           amount: convertPrice(selectedPlan?.price || '0', planData.currency),
-          currency: planData.currency
-        })
+          currency: planData.currency,
+        }),
       });
 
       if (!response.ok) throw new Error('Payment processing failed');
@@ -144,7 +160,7 @@ export function PaymentHub() {
     },
     onSuccess: (data) => {
       toast({
-        title: "Payment initiated",
+        title: 'Payment initiated',
         description: `Payment for ${selectedPlan?.name} has been initiated successfully.`,
       });
       queryClient.invalidateQueries({ queryKey: ['/api/payments'] });
@@ -152,12 +168,12 @@ export function PaymentHub() {
     },
     onError: (error) => {
       toast({
-        title: "Payment failed",
+        title: 'Payment failed',
         description: error.message,
-        variant: "destructive",
+        variant: 'destructive',
       });
       setIsProcessingPayment(false);
-    }
+    },
   });
 
   const convertPrice = (price: string, currency: string): string => {
@@ -175,20 +191,29 @@ export function PaymentHub() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-green-500';
-      case 'pending': return 'bg-yellow-500';
-      case 'failed': return 'bg-red-500';
-      case 'cancelled': return 'bg-gray-500';
-      default: return 'bg-gray-500';
+      case 'completed':
+        return 'bg-green-500';
+      case 'pending':
+        return 'bg-yellow-500';
+      case 'failed':
+        return 'bg-red-500';
+      case 'cancelled':
+        return 'bg-gray-500';
+      default:
+        return 'bg-gray-500';
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'completed': return <Check className="w-4 h-4" />;
-      case 'pending': return <Loader2 className="w-4 h-4 animate-spin" />;
-      case 'failed': return <X className="w-4 h-4" />;
-      default: return <DollarSign className="w-4 h-4" />;
+      case 'completed':
+        return <Check className="w-4 h-4" />;
+      case 'pending':
+        return <Loader2 className="w-4 h-4 animate-spin" />;
+      case 'failed':
+        return <X className="w-4 h-4" />;
+      default:
+        return <DollarSign className="w-4 h-4" />;
     }
   };
 
@@ -204,9 +229,15 @@ export function PaymentHub() {
             Secure payments for MineNest, VaultMesh™, and FAA.ZONE™ ecosystem services
           </CardDescription>
           <div className="flex justify-center space-x-2 mt-4">
-            <Badge variant="outline" className="border-orange-500 text-orange-400">PayPal Integrated</Badge>
-            <Badge variant="outline" className="border-green-500 text-green-400">Multi-Currency</Badge>
-            <Badge variant="outline" className="border-blue-500 text-blue-400">SSO Ready</Badge>
+            <Badge variant="outline" className="border-orange-500 text-orange-400">
+              PayPal Integrated
+            </Badge>
+            <Badge variant="outline" className="border-green-500 text-green-400">
+              Multi-Currency
+            </Badge>
+            <Badge variant="outline" className="border-blue-500 text-blue-400">
+              SSO Ready
+            </Badge>
           </div>
         </CardHeader>
       </Card>
@@ -248,14 +279,14 @@ export function PaymentHub() {
         {paymentPlans.map((plan) => {
           const IconComponent = plan.icon;
           const convertedPrice = convertPrice(plan.price, selectedCurrency);
-          
+
           return (
-            <Card 
+            <Card
               key={plan.id}
               className={cn(
-                "relative cursor-pointer transition-all duration-300 hover:scale-105",
-                selectedPlan?.id === plan.id && "ring-2 ring-cyan-500 shadow-lg",
-                plan.popular && "border-purple-500/50"
+                'relative cursor-pointer transition-all duration-300 hover:scale-105',
+                selectedPlan?.id === plan.id && 'ring-2 ring-cyan-500 shadow-lg',
+                plan.popular && 'border-purple-500/50'
               )}
               onClick={() => setSelectedPlan(plan)}
             >
@@ -264,12 +295,14 @@ export function PaymentHub() {
                   <Badge className="bg-purple-500 text-white px-3 py-1">Most Popular</Badge>
                 </div>
               )}
-              
+
               <CardHeader className="text-center">
-                <div className={cn(
-                  "w-16 h-16 mx-auto rounded-full flex items-center justify-center bg-gradient-to-r",
-                  plan.color
-                )}>
+                <div
+                  className={cn(
+                    'w-16 h-16 mx-auto rounded-full flex items-center justify-center bg-gradient-to-r',
+                    plan.color
+                  )}
+                >
                   <IconComponent className="w-8 h-8 text-white" />
                 </div>
                 <CardTitle className="text-xl">{plan.name}</CardTitle>
@@ -279,7 +312,7 @@ export function PaymentHub() {
                   <span className="text-sm font-normal text-muted-foreground">/month</span>
                 </div>
               </CardHeader>
-              
+
               <CardContent className="space-y-4">
                 <ul className="space-y-2">
                   {plan.features.map((feature, index) => (
@@ -289,14 +322,16 @@ export function PaymentHub() {
                     </li>
                   ))}
                 </ul>
-                
+
                 {selectedPlan?.id === plan.id && (
-                  <Button 
+                  <Button
                     className="w-full"
-                    onClick={() => processPaymentMutation.mutate({ 
-                      planId: plan.id, 
-                      currency: selectedCurrency 
-                    })}
+                    onClick={() =>
+                      processPaymentMutation.mutate({
+                        planId: plan.id,
+                        currency: selectedCurrency,
+                      })
+                    }
                     disabled={isProcessingPayment}
                   >
                     {isProcessingPayment ? (
@@ -338,15 +373,17 @@ export function PaymentHub() {
           ) : (
             <div className="space-y-3">
               {payments.map((payment) => (
-                <div 
+                <div
                   key={payment.id}
                   className="flex items-center justify-between p-4 border rounded-lg"
                 >
                   <div className="flex items-center space-x-4">
-                    <div className={cn(
-                      "w-10 h-10 rounded-full flex items-center justify-center text-white",
-                      getStatusColor(payment.status)
-                    )}>
+                    <div
+                      className={cn(
+                        'w-10 h-10 rounded-full flex items-center justify-center text-white',
+                        getStatusColor(payment.status)
+                      )}
+                    >
                       {getStatusIcon(payment.status)}
                     </div>
                     <div>
@@ -360,8 +397,8 @@ export function PaymentHub() {
                     <div className="font-semibold">
                       {formatCurrency(payment.amount, payment.currency)}
                     </div>
-                    <Badge 
-                      className={cn("text-xs", getStatusColor(payment.status))}
+                    <Badge
+                      className={cn('text-xs', getStatusColor(payment.status))}
                       variant="secondary"
                     >
                       {payment.status}
@@ -385,7 +422,7 @@ export function PaymentHub() {
               { name: 'VaultMesh™', status: 'active', integration: 'PayPal SDK' },
               { name: 'HotStack', status: 'active', integration: 'SSO Ready' },
               { name: 'FAA.ZONE™', status: 'active', integration: 'Multi-Currency' },
-              { name: 'MineNest', status: 'active', integration: 'Subscription API' }
+              { name: 'MineNest', status: 'active', integration: 'Subscription API' },
             ].map((service) => (
               <div key={service.name} className="text-center p-4 border rounded-lg">
                 <div className="w-3 h-3 bg-green-500 rounded-full mx-auto mb-2"></div>

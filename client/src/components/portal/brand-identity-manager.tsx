@@ -5,9 +5,15 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { 
+import {
   BarChart3,
   Settings,
   Eye,
@@ -22,7 +28,7 @@ import {
   Database,
   Shield,
   Cpu,
-  Server
+  Server,
 } from 'lucide-react';
 import type { Brand, Sector } from '@shared/schema';
 
@@ -77,12 +83,12 @@ export function BrandIdentityManager() {
   // Transform real API data into brand identities
   const brandIdentities = useMemo(() => {
     if (!brands.length || !sectors.length) return [];
-    
+
     return brands.map((brand) => {
-      const sector = sectors.find(s => s.id === brand.sectorId);
+      const sector = sectors.find((s) => s.id === brand.sectorId);
       const brandHash = brand.name.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
       const statusOptions = ['active', 'development', 'maintenance'];
-      
+
       const identity: BrandIdentity = {
         id: brand.id.toString(),
         name: brand.name,
@@ -91,9 +97,11 @@ export function BrandIdentityManager() {
         status: statusOptions[brandHash % 3] as any,
         revenue: Math.floor((brandHash % 5000000) + 100000 + (brandHash % 1000000)),
         users: Math.floor((brandHash % 300000) + 5000 + (brandHash % 50000)),
-        uptime: 94 + ((brandHash % 600) / 100),
+        uptime: 94 + (brandHash % 600) / 100,
         lastUpdated: `${(brandHash % 30) + 1} days ago`,
-        description: brand.description || `Professional ${sector?.name?.replace(/[🔥🌱🏭🧠⚡🏦💊🎨🛡️🌐🏢🚗🎓📱🧪🔬⚖️🏠🌍🍎🌿📊🎯🛒📦🧮💼🔌⚙️🌊💡🎮🔒]/g, '').trim()} platform delivering innovative solutions through ${brand.name} technology`,
+        description:
+          brand.description ||
+          `Professional ${sector?.name?.replace(/[🔥🌱🏭🧠⚡🏦💊🎨🛡️🌐🏢🚗🎓📱🧪🔬⚖️🏠🌍🍎🌿📊🎯🛒📦🧮💼🔌⚙️🌊💡🎮🔒]/g, '').trim()} platform delivering innovative solutions through ${brand.name} technology`,
         features: [
           `${brand.name} Analytics Engine`,
           `Advanced ${brand.name} API`,
@@ -102,12 +110,27 @@ export function BrandIdentityManager() {
           `${brand.name} Multi-Platform Support`,
           `${brand.name} Real-time Monitoring`,
           `${brand.name} Business Intelligence`,
-          `${brand.name} Integration Hub`
+          `${brand.name} Integration Hub`,
         ].slice(0, 3 + (brandHash % 4)),
         techStack: [
-          'React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Redis', 'Docker', 
-          'AWS', 'GraphQL', 'Next.js', 'MongoDB', 'Kubernetes', 'Python',
-          'Go', 'Rust', 'WebSocket', 'REST API', 'GraphQL', 'Microservices'
+          'React',
+          'TypeScript',
+          'Node.js',
+          'PostgreSQL',
+          'Redis',
+          'Docker',
+          'AWS',
+          'GraphQL',
+          'Next.js',
+          'MongoDB',
+          'Kubernetes',
+          'Python',
+          'Go',
+          'Rust',
+          'WebSocket',
+          'REST API',
+          'GraphQL',
+          'Microservices',
         ].slice(0, 4 + (brandHash % 6)),
         isCore: brand.isCore || false,
         integration: brand.integration || 'HotStack',
@@ -118,39 +141,49 @@ export function BrandIdentityManager() {
 
   // Filter brands based on search, sector, and status
   const filteredBrands = useMemo(() => {
-    return brandIdentities.filter(brand => {
-      const matchesSearch = searchQuery === '' || 
+    return brandIdentities.filter((brand) => {
+      const matchesSearch =
+        searchQuery === '' ||
         brand.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         brand.sectorName.toLowerCase().includes(searchQuery.toLowerCase());
-      
+
       const matchesSector = selectedSector === 'all' || brand.sector === selectedSector;
       const matchesStatus = statusFilter === 'all' || brand.status === statusFilter;
-      
+
       return matchesSearch && matchesSector && matchesStatus;
     });
   }, [brandIdentities, searchQuery, selectedSector, statusFilter]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-500';
-      case 'development': return 'bg-yellow-500';
-      case 'maintenance': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      case 'active':
+        return 'bg-green-500';
+      case 'development':
+        return 'bg-yellow-500';
+      case 'maintenance':
+        return 'bg-red-500';
+      default:
+        return 'bg-gray-500';
     }
   };
 
   const getStatusVariant = (status: string) => {
     switch (status) {
-      case 'active': return 'default';
-      case 'development': return 'secondary';
-      case 'maintenance': return 'destructive';
-      default: return 'outline';
+      case 'active':
+        return 'default';
+      case 'development':
+        return 'secondary';
+      case 'maintenance':
+        return 'destructive';
+      default:
+        return 'outline';
     }
   };
 
   // Use real-time statistics from dashboard API
   const totalBrands = dashboardStats?.totalElements || brandIdentities.length;
-  const activeBrands = dashboardStats?.coreBrands || brandIdentities.filter(b => b.status === 'active').length;
+  const activeBrands =
+    dashboardStats?.coreBrands || brandIdentities.filter((b) => b.status === 'active').length;
   const totalRevenue = brandIdentities.reduce((sum, b) => sum + b.revenue, 0);
   const totalUsers = brandIdentities.reduce((sum, b) => sum + b.users, 0);
 
@@ -199,7 +232,7 @@ export function BrandIdentityManager() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -211,7 +244,7 @@ export function BrandIdentityManager() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -223,7 +256,7 @@ export function BrandIdentityManager() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -264,7 +297,7 @@ export function BrandIdentityManager() {
                     ))}
                   </SelectContent>
                 </Select>
-                
+
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-40">
                     <SelectValue />
@@ -324,16 +357,31 @@ export function BrandIdentityManager() {
                   </div>
                   <Separator />
                   <div className="flex flex-col space-y-2">
-                    <Button size="sm" variant="outline" className="w-full" data-testid={`button-view-${brand.id}`}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="w-full"
+                      data-testid={`button-view-${brand.id}`}
+                    >
                       <Eye className="h-3 w-3 mr-2" />
                       View Details
                     </Button>
                     <div className="flex space-x-2">
-                      <Button size="sm" variant="outline" className="flex-1" data-testid={`button-analytics-${brand.id}`}>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="flex-1"
+                        data-testid={`button-analytics-${brand.id}`}
+                      >
                         <BarChart3 className="h-3 w-3 mr-1" />
                         Analytics
                       </Button>
-                      <Button size="sm" variant="outline" className="flex-1" data-testid={`button-manage-${brand.id}`}>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="flex-1"
+                        data-testid={`button-manage-${brand.id}`}
+                      >
                         <Settings className="h-3 w-3 mr-1" />
                         Manage
                       </Button>
@@ -348,7 +396,10 @@ export function BrandIdentityManager() {
             <CardContent className="p-0">
               <div className="space-y-0">
                 {filteredBrands.map((brand, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-4 border-b last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-800">
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between p-4 border-b last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-800"
+                  >
                     <div className="flex items-center space-x-4">
                       <div className={`w-3 h-3 rounded-full ${getStatusColor(brand.status)}`} />
                       <div>
@@ -359,19 +410,33 @@ export function BrandIdentityManager() {
                     <div className="flex items-center space-x-4">
                       <div className="text-right text-sm">
                         <p className="font-medium">${(brand.revenue / 1000).toFixed(0)}K</p>
-                        <p className="text-muted-foreground">{(brand.users / 1000).toFixed(0)}K users</p>
+                        <p className="text-muted-foreground">
+                          {(brand.users / 1000).toFixed(0)}K users
+                        </p>
                       </div>
                       <Badge variant={getStatusVariant(brand.status) as any} className="text-xs">
                         {brand.uptime.toFixed(1)}% uptime
                       </Badge>
                       <div className="flex space-x-1">
-                        <Button size="sm" variant="ghost" data-testid={`button-view-list-${brand.id}`}>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          data-testid={`button-view-list-${brand.id}`}
+                        >
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button size="sm" variant="ghost" data-testid={`button-analytics-list-${brand.id}`}>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          data-testid={`button-analytics-list-${brand.id}`}
+                        >
                           <BarChart3 className="h-4 w-4" />
                         </Button>
-                        <Button size="sm" variant="ghost" data-testid={`button-manage-list-${brand.id}`}>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          data-testid={`button-manage-list-${brand.id}`}
+                        >
                           <Settings className="h-4 w-4" />
                         </Button>
                       </div>

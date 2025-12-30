@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import MadibaMockImage from "@assets/samfox-main/Madiba_mock.png"
-import BanimalImage from "@assets/Banimal_1753055992604.png"
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import MadibaMockImage from '@assets/samfox-main/Madiba_mock.png';
+import BanimalImage from '@assets/Banimal_1753055992604.png';
 
 export function SamFoxPortfolio() {
   return (
@@ -18,7 +18,6 @@ export function SamFoxPortfolio() {
 
       {/* Featured Work Grid */}
       <div className="grid md:grid-cols-2 gap-6">
-        
         {/* Madiba Mock - Nelson Mandela Tribute */}
         <Card className="overflow-hidden">
           <CardHeader>
@@ -32,9 +31,9 @@ export function SamFoxPortfolio() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="aspect-square bg-gray-50 dark:bg-gray-800 rounded-lg overflow-hidden">
-              <img 
-                src={MadibaMockImage} 
-                alt="Madiba Mock - Nelson Mandela digital art piece" 
+              <img
+                src={MadibaMockImage}
+                alt="Madiba Mock - Nelson Mandela digital art piece"
                 className="w-full h-full object-cover"
                 data-testid="img-madiba-mock"
               />
@@ -46,8 +45,10 @@ export function SamFoxPortfolio() {
                 <Badge variant="outline">Hand-drawn Style</Badge>
               </div>
               <p className="text-sm">
-                <strong>Medium:</strong> Digital illustration<br/>
-                <strong>Style:</strong> Stylized portrait with playful ice cream concept<br/>
+                <strong>Medium:</strong> Digital illustration
+                <br />
+                <strong>Style:</strong> Stylized portrait with playful ice cream concept
+                <br />
                 <strong>Theme:</strong> "Mama & Tata" - celebrating South African heritage
               </p>
             </div>
@@ -67,9 +68,9 @@ export function SamFoxPortfolio() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="aspect-video bg-gray-50 dark:bg-gray-800 rounded-lg overflow-hidden">
-              <img 
-                src={BanimalImage} 
-                alt="Banimal winter onesies collection" 
+              <img
+                src={BanimalImage}
+                alt="Banimal winter onesies collection"
                 className="w-full h-full object-cover"
                 data-testid="img-banimal-collection"
               />
@@ -81,8 +82,10 @@ export function SamFoxPortfolio() {
                 <Badge variant="outline">Product Design</Badge>
               </div>
               <p className="text-sm">
-                <strong>Brand:</strong> Banimal Soft Toys<br/>
-                <strong>Products:</strong> Winter onesies, soft toys, vinyl designs<br/>
+                <strong>Brand:</strong> Banimal Soft Toys
+                <br />
+                <strong>Products:</strong> Winter onesies, soft toys, vinyl designs
+                <br />
                 <strong>Target:</strong> Parents & children (0-3 years)
               </p>
             </div>
@@ -105,7 +108,7 @@ export function SamFoxPortfolio() {
                 <li>• Digital paintings</li>
               </ul>
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="font-semibold text-sm">Brand Materials</h4>
               <ul className="text-xs space-y-1 text-gray-600 dark:text-gray-400">
@@ -115,7 +118,7 @@ export function SamFoxPortfolio() {
                 <li>• Web banners (1m x 1m)</li>
               </ul>
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="font-semibold text-sm">Design Files</h4>
               <ul className="text-xs space-y-1 text-gray-600 dark:text-gray-400">
@@ -147,28 +150,31 @@ export function SamFoxPortfolio() {
                 <Badge variant="outline">Children's Illustration</Badge>
               </div>
             </div>
-            
+
             <div>
               <h4 className="font-semibold mb-2">Tools & Software</h4>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Adobe Creative Suite (Photoshop, Illustrator), Digital drawing tablets,
-                Brand development, Product mockups, Marketing materials
+                Adobe Creative Suite (Photoshop, Illustrator), Digital drawing tablets, Brand
+                development, Product mockups, Marketing materials
               </p>
             </div>
 
             <div>
               <h4 className="font-semibold mb-2">Specializations</h4>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                • Cultural tribute art (Madiba/Nelson Mandela artwork)<br/>
-                • Children's brand development (Banimal collection)<br/>
-                • Animal character design and illustration<br/>
-                • Product design for soft toys and clothing<br/>
-                • Digital marketing assets and brand materials
+                • Cultural tribute art (Madiba/Nelson Mandela artwork)
+                <br />
+                • Children's brand development (Banimal collection)
+                <br />
+                • Animal character design and illustration
+                <br />
+                • Product design for soft toys and clothing
+                <br />• Digital marketing assets and brand materials
               </p>
             </div>
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

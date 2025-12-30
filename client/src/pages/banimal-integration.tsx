@@ -1,14 +1,14 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowRight, Heart, Shield, Zap, Eye, Download, ExternalLink } from "lucide-react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { motion } from "framer-motion";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ArrowRight, Heart, Shield, Zap, Eye, Download, ExternalLink } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
+import { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
+import { motion } from 'framer-motion';
 
 interface BanimalTransaction {
   id: number;
@@ -60,68 +60,68 @@ interface SonicGridConnection {
 export default function BanimalIntegration() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [amount, setAmount] = useState("49.99");
+  const [amount, setAmount] = useState('49.99');
   const [childBeneficiary, setChildBeneficiary] = useState("Children's Hospital Trust");
 
   const { data: transactions = [] } = useQuery<BanimalTransaction[]>({
-    queryKey: ["/api/banimal/transactions"]
+    queryKey: ['/api/banimal/transactions'],
   });
 
   const { data: distributions = [] } = useQuery<CharitableDistribution[]>({
-    queryKey: ["/api/banimal/distributions"]
+    queryKey: ['/api/banimal/distributions'],
   });
 
   const { data: vaultActions = [] } = useQuery<VaultAction[]>({
-    queryKey: ["/api/banimal/vault-actions"]
+    queryKey: ['/api/banimal/vault-actions'],
   });
 
   const { data: sonicGridConnections = [] } = useQuery<SonicGridConnection[]>({
-    queryKey: ["/api/banimal/sonicgrid"]
+    queryKey: ['/api/banimal/sonicgrid'],
   });
 
   const createTransactionMutation = useMutation({
     mutationFn: async (data: any) => {
-      return await apiRequest("POST", "/api/banimal/transactions", data);
+      return await apiRequest('POST', '/api/banimal/transactions', data);
     },
     onSuccess: () => {
       toast({
-        title: "Payment Processed!",
-        description: "Your purchase has been completed and charitable distributions are active.",
+        title: 'Payment Processed!',
+        description: 'Your purchase has been completed and charitable distributions are active.',
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/banimal/transactions"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/banimal/distributions"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/banimal/vault-actions"] });
+      queryClient.invalidateQueries({ queryKey: ['/api/banimal/transactions'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/banimal/distributions'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/banimal/vault-actions'] });
     },
     onError: (error) => {
       toast({
-        title: "Payment Failed",
-        description: "There was an issue processing your payment. Please try again.",
-        variant: "destructive",
+        title: 'Payment Failed',
+        description: 'There was an issue processing your payment. Please try again.',
+        variant: 'destructive',
       });
-    }
+    },
   });
 
   const handlePurchase = () => {
     createTransactionMutation.mutate({
       transactionId: `BAN-${Date.now()}`,
-      productName: "Banimal Soft Toy - Premium Collection",
+      productName: 'Banimal Soft Toy - Premium Collection',
       amount,
-      currency: "USD",
-      userId: "current-user",
+      currency: 'USD',
+      userId: 'current-user',
       childBeneficiary,
       distributionRules: {
         charity: 35,
         developer: 25,
         operations: 20,
         sonicGrid: 10,
-        vault: 10
+        vault: 10,
       },
-      status: "completed"
+      status: 'completed',
     });
   };
 
   const totalDonated = distributions
-    .filter(d => d.beneficiaryType === "charity")
+    .filter((d) => d.beneficiaryType === 'charity')
     .reduce((sum, d) => sum + parseFloat(d.amount), 0);
 
   const totalTransactions = transactions.length;
@@ -130,7 +130,7 @@ export default function BanimalIntegration() {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-purple-900 dark:to-indigo-900">
       <div className="container mx-auto px-6 py-8">
         {/* Header Section */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
@@ -145,12 +145,13 @@ export default function BanimalIntegration() {
             Every Purchase Changes Lives
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Complete transparency in charitable distribution. Every payment immediately helps children in need with full vault action visibility.
+            Complete transparency in charitable distribution. Every payment immediately helps
+            children in need with full vault action visibility.
           </p>
         </motion.div>
 
         {/* Impact Statistics */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -212,7 +213,8 @@ export default function BanimalIntegration() {
                 <span>Make a Purchase & Give Back</span>
               </CardTitle>
               <CardDescription>
-                35% of every purchase goes directly to children in need. Full transparency guaranteed.
+                35% of every purchase goes directly to children in need. Full transparency
+                guaranteed.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -241,41 +243,53 @@ export default function BanimalIntegration() {
                     />
                   </div>
                 </div>
-                
+
                 <div className="space-y-4">
-                  <h4 className="font-semibold text-gray-900 dark:text-white">Distribution Breakdown</h4>
+                  <h4 className="font-semibold text-gray-900 dark:text-white">
+                    Distribution Breakdown
+                  </h4>
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600 dark:text-gray-300">Charity (35%)</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-300">
+                        Charity (35%)
+                      </span>
                       <Badge variant="secondary">${(parseFloat(amount) * 0.35).toFixed(2)}</Badge>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600 dark:text-gray-300">Developer (25%)</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-300">
+                        Developer (25%)
+                      </span>
                       <Badge variant="secondary">${(parseFloat(amount) * 0.25).toFixed(2)}</Badge>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600 dark:text-gray-300">Operations (20%)</span>
-                      <Badge variant="secondary">${(parseFloat(amount) * 0.20).toFixed(2)}</Badge>
+                      <span className="text-sm text-gray-600 dark:text-gray-300">
+                        Operations (20%)
+                      </span>
+                      <Badge variant="secondary">${(parseFloat(amount) * 0.2).toFixed(2)}</Badge>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600 dark:text-gray-300">SonicGrid (10%)</span>
-                      <Badge variant="secondary">${(parseFloat(amount) * 0.10).toFixed(2)}</Badge>
+                      <span className="text-sm text-gray-600 dark:text-gray-300">
+                        SonicGrid (10%)
+                      </span>
+                      <Badge variant="secondary">${(parseFloat(amount) * 0.1).toFixed(2)}</Badge>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-600 dark:text-gray-300">Vault (10%)</span>
-                      <Badge variant="secondary">${(parseFloat(amount) * 0.10).toFixed(2)}</Badge>
+                      <Badge variant="secondary">${(parseFloat(amount) * 0.1).toFixed(2)}</Badge>
                     </div>
                   </div>
                 </div>
               </div>
-              
-              <Button 
+
+              <Button
                 onClick={handlePurchase}
                 disabled={createTransactionMutation.isPending}
                 className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
                 size="lg"
               >
-                {createTransactionMutation.isPending ? "Processing..." : "Complete Purchase & Donate"}
+                {createTransactionMutation.isPending
+                  ? 'Processing...'
+                  : 'Complete Purchase & Donate'}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </CardContent>
@@ -300,14 +314,21 @@ export default function BanimalIntegration() {
               <Card className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border-0 shadow-xl">
                 <CardHeader>
                   <CardTitle>Recent Transactions</CardTitle>
-                  <CardDescription>All Banimal purchases with charitable distribution</CardDescription>
+                  <CardDescription>
+                    All Banimal purchases with charitable distribution
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     {transactions.map((transaction) => (
-                      <div key={transaction.id} className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                      <div
+                        key={transaction.id}
+                        className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg"
+                      >
                         <div>
-                          <h4 className="font-semibold text-gray-900 dark:text-white">{transaction.productName}</h4>
+                          <h4 className="font-semibold text-gray-900 dark:text-white">
+                            {transaction.productName}
+                          </h4>
                           <p className="text-sm text-gray-600 dark:text-gray-300">
                             {transaction.transactionId} • {transaction.childBeneficiary}
                           </p>
@@ -316,14 +337,18 @@ export default function BanimalIntegration() {
                           <p className="font-bold text-lg text-gray-900 dark:text-white">
                             ${parseFloat(transaction.amount).toFixed(2)}
                           </p>
-                          <Badge variant={transaction.status === "completed" ? "default" : "secondary"}>
+                          <Badge
+                            variant={transaction.status === 'completed' ? 'default' : 'secondary'}
+                          >
                             {transaction.status}
                           </Badge>
                         </div>
                       </div>
                     ))}
                     {transactions.length === 0 && (
-                      <p className="text-center text-gray-500 py-8">No transactions yet. Make your first purchase above!</p>
+                      <p className="text-center text-gray-500 py-8">
+                        No transactions yet. Make your first purchase above!
+                      </p>
                     )}
                   </div>
                 </CardContent>
@@ -334,14 +359,21 @@ export default function BanimalIntegration() {
               <Card className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border-0 shadow-xl">
                 <CardHeader>
                   <CardTitle>Charitable Distributions</CardTitle>
-                  <CardDescription>Real-time breakdown of how funds are distributed</CardDescription>
+                  <CardDescription>
+                    Real-time breakdown of how funds are distributed
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     {distributions.map((distribution) => (
-                      <div key={distribution.id} className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                      <div
+                        key={distribution.id}
+                        className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg"
+                      >
                         <div>
-                          <h4 className="font-semibold text-gray-900 dark:text-white">{distribution.beneficiaryName}</h4>
+                          <h4 className="font-semibold text-gray-900 dark:text-white">
+                            {distribution.beneficiaryName}
+                          </h4>
                           <p className="text-sm text-gray-600 dark:text-gray-300">
                             {distribution.beneficiaryType} • {distribution.percentage}%
                           </p>
@@ -350,14 +382,18 @@ export default function BanimalIntegration() {
                           <p className="font-bold text-lg text-gray-900 dark:text-white">
                             ${parseFloat(distribution.amount).toFixed(2)}
                           </p>
-                          <Badge variant={distribution.status === "completed" ? "default" : "secondary"}>
+                          <Badge
+                            variant={distribution.status === 'completed' ? 'default' : 'secondary'}
+                          >
                             {distribution.status}
                           </Badge>
                         </div>
                       </div>
                     ))}
                     {distributions.length === 0 && (
-                      <p className="text-center text-gray-500 py-8">No distributions yet. Complete a purchase to see distributions here!</p>
+                      <p className="text-center text-gray-500 py-8">
+                        No distributions yet. Complete a purchase to see distributions here!
+                      </p>
                     )}
                   </div>
                 </CardContent>
@@ -371,14 +407,21 @@ export default function BanimalIntegration() {
                     <Eye className="h-5 w-5" />
                     <span>Vault Action Transparency</span>
                   </CardTitle>
-                  <CardDescription>Complete visibility into all charitable distributions</CardDescription>
+                  <CardDescription>
+                    Complete visibility into all charitable distributions
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     {vaultActions.map((action) => (
-                      <div key={action.id} className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                      <div
+                        key={action.id}
+                        className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg"
+                      >
                         <div>
-                          <h4 className="font-semibold text-gray-900 dark:text-white">{action.actionType}</h4>
+                          <h4 className="font-semibold text-gray-900 dark:text-white">
+                            {action.actionType}
+                          </h4>
                           <p className="text-sm text-gray-600 dark:text-gray-300">
                             {action.beneficiary} • {action.actionId}
                           </p>
@@ -388,10 +431,16 @@ export default function BanimalIntegration() {
                             ${parseFloat(action.amount).toFixed(2)}
                           </p>
                           <div className="flex items-center space-x-2">
-                            <Badge variant={action.visibility === "transparent" ? "default" : "secondary"}>
+                            <Badge
+                              variant={
+                                action.visibility === 'transparent' ? 'default' : 'secondary'
+                              }
+                            >
                               {action.visibility}
                             </Badge>
-                            <Badge variant={action.status === "completed" ? "default" : "secondary"}>
+                            <Badge
+                              variant={action.status === 'completed' ? 'default' : 'secondary'}
+                            >
                               {action.status}
                             </Badge>
                           </div>
@@ -399,7 +448,9 @@ export default function BanimalIntegration() {
                       </div>
                     ))}
                     {vaultActions.length === 0 && (
-                      <p className="text-center text-gray-500 py-8">No vault actions recorded yet.</p>
+                      <p className="text-center text-gray-500 py-8">
+                        No vault actions recorded yet.
+                      </p>
                     )}
                   </div>
                 </CardContent>
@@ -410,27 +461,37 @@ export default function BanimalIntegration() {
               <Card className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border-0 shadow-xl">
                 <CardHeader>
                   <CardTitle>SonicGrid Media Integration</CardTitle>
-                  <CardDescription>Affirmative document processing for media sector integration</CardDescription>
+                  <CardDescription>
+                    Affirmative document processing for media sector integration
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     {sonicGridConnections.map((connection) => (
-                      <div key={connection.id} className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                      <div
+                        key={connection.id}
+                        className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg"
+                      >
                         <div>
-                          <h4 className="font-semibold text-gray-900 dark:text-white">{connection.connectionName}</h4>
+                          <h4 className="font-semibold text-gray-900 dark:text-white">
+                            {connection.connectionName}
+                          </h4>
                           <p className="text-sm text-gray-600 dark:text-gray-300">
-                            {connection.connectionType} • {connection.documentsProcessed} documents processed
+                            {connection.connectionType} • {connection.documentsProcessed} documents
+                            processed
                           </p>
                         </div>
                         <div className="text-right">
-                          <Badge variant={connection.status === "active" ? "default" : "secondary"}>
+                          <Badge variant={connection.status === 'active' ? 'default' : 'secondary'}>
                             {connection.status}
                           </Badge>
                         </div>
                       </div>
                     ))}
                     {sonicGridConnections.length === 0 && (
-                      <p className="text-center text-gray-500 py-8">No SonicGrid connections active.</p>
+                      <p className="text-center text-gray-500 py-8">
+                        No SonicGrid connections active.
+                      </p>
                     )}
                   </div>
                 </CardContent>

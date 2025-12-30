@@ -1,15 +1,24 @@
 #!/usr/bin/env tsx
 
-import { db } from "./db";
-import { 
-  sectors, brands, adminPanelBrands, legalDocuments, repositories, 
-  systemStatus, mediaProjects, processingEngines, interstellarNodes,
-  banimalTransactions, artworks, portfolioProjects 
-} from "@shared/schema";
-import { COMPREHENSIVE_BRAND_DATA } from "@shared/schema";
-import { FRUITFUL_CRATE_DANCE_SECTORS } from "@shared/fruitful-crate-dance-ecosystem";
-import { COMPREHENSIVE_SECTOR_BRAND_DATA } from "./comprehensive-brand-sync-clean";
-import { COMPLETE_COMPREHENSIVE_DATA } from "./execute-complete-comprehensive-sync";
+import { db } from './db';
+import {
+  sectors,
+  brands,
+  adminPanelBrands,
+  legalDocuments,
+  repositories,
+  systemStatus,
+  mediaProjects,
+  processingEngines,
+  interstellarNodes,
+  banimalTransactions,
+  artworks,
+  portfolioProjects,
+} from '@shared/schema';
+import { COMPREHENSIVE_BRAND_DATA } from '@shared/schema';
+import { FRUITFUL_CRATE_DANCE_SECTORS } from '@shared/fruitful-crate-dance-ecosystem';
+import { COMPREHENSIVE_SECTOR_BRAND_DATA } from './comprehensive-brand-sync-clean';
+import { COMPLETE_COMPREHENSIVE_DATA } from './execute-complete-comprehensive-sync';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -48,8 +57,8 @@ interface DiscrepancyReport {
 }
 
 export async function executeDeepDataInventoryAudit(): Promise<DiscrepancyReport> {
-  console.log("🔍 PHASE 1: DEEP DATA INVENTORY AUDIT - STARTING COMPREHENSIVE SCAN");
-  console.log("⚠️  READ-ONLY MODE: No changes will be applied during this audit\n");
+  console.log('🔍 PHASE 1: DEEP DATA INVENTORY AUDIT - STARTING COMPREHENSIVE SCAN');
+  console.log('⚠️  READ-ONLY MODE: No changes will be applied during this audit\n');
 
   const auditResults: AuditResult[] = [];
   const conflicts: DiscrepancyReport['conflicts'] = [];
@@ -57,12 +66,21 @@ export async function executeDeepDataInventoryAudit(): Promise<DiscrepancyReport
 
   try {
     // 1. QUERY ALL POSTGRESQL TABLES
-    console.log("📊 1. SCANNING POSTGRESQL DATABASE TABLES...");
-    
+    console.log('📊 1. SCANNING POSTGRESQL DATABASE TABLES...');
+
     const [
-      sectorsCount, brandsCount, adminPanelBrandsCount, legalDocsCount,
-      reposCount, systemStatusCount, mediaProjectsCount, processingEnginesCount,
-      interstellarNodesCount, banimalTransactionsCount, artworksCount, portfolioProjectsCount
+      sectorsCount,
+      brandsCount,
+      adminPanelBrandsCount,
+      legalDocsCount,
+      reposCount,
+      systemStatusCount,
+      mediaProjectsCount,
+      processingEnginesCount,
+      interstellarNodesCount,
+      banimalTransactionsCount,
+      artworksCount,
+      portfolioProjectsCount,
     ] = await Promise.all([
       db.select().from(sectors),
       db.select().from(brands),
@@ -75,13 +93,22 @@ export async function executeDeepDataInventoryAudit(): Promise<DiscrepancyReport
       db.select().from(interstellarNodes),
       db.select().from(banimalTransactions),
       db.select().from(artworks),
-      db.select().from(portfolioProjects)
+      db.select().from(portfolioProjects),
     ]);
 
-    const databaseTotalRecords = sectorsCount.length + brandsCount.length + adminPanelBrandsCount.length + 
-      legalDocsCount.length + reposCount.length + systemStatusCount.length + mediaProjectsCount.length +
-      processingEnginesCount.length + interstellarNodesCount.length + banimalTransactionsCount.length +
-      artworksCount.length + portfolioProjectsCount.length;
+    const databaseTotalRecords =
+      sectorsCount.length +
+      brandsCount.length +
+      adminPanelBrandsCount.length +
+      legalDocsCount.length +
+      reposCount.length +
+      systemStatusCount.length +
+      mediaProjectsCount.length +
+      processingEnginesCount.length +
+      interstellarNodesCount.length +
+      banimalTransactionsCount.length +
+      artworksCount.length +
+      portfolioProjectsCount.length;
 
     auditResults.push({
       source: 'PostgreSQL Database',
@@ -101,19 +128,21 @@ export async function executeDeepDataInventoryAudit(): Promise<DiscrepancyReport
         interstellarNodes: interstellarNodesCount.length,
         banimalTransactions: banimalTransactionsCount.length,
         artworks: artworksCount.length,
-        portfolioProjects: portfolioProjectsCount.length
+        portfolioProjects: portfolioProjectsCount.length,
       },
-      lastSeen: new Date().toISOString()
+      lastSeen: new Date().toISOString(),
     });
 
     console.log(`✅ Database scan complete: ${databaseTotalRecords} total records`);
     console.log(`   - Sectors: ${sectorsCount.length}`);
     console.log(`   - Brands: ${brandsCount.length}`);
     console.log(`   - Admin Panel Brands: ${adminPanelBrandsCount.length}`);
-    console.log(`   - Other tables: ${databaseTotalRecords - sectorsCount.length - brandsCount.length - adminPanelBrandsCount.length}`);
+    console.log(
+      `   - Other tables: ${databaseTotalRecords - sectorsCount.length - brandsCount.length - adminPanelBrandsCount.length}`
+    );
 
     // 2. PARSE TYPESCRIPT/JAVASCRIPT DATA SOURCES
-    console.log("\n🔍 2. PARSING TYPESCRIPT/JAVASCRIPT DATA SOURCES...");
+    console.log('\n🔍 2. PARSING TYPESCRIPT/JAVASCRIPT DATA SOURCES...');
 
     // Parse comprehensive-brand-sync-clean.ts
     const comprehensiveSyncData = COMPREHENSIVE_SECTOR_BRAND_DATA;
@@ -143,11 +172,11 @@ export async function executeDeepDataInventoryAudit(): Promise<DiscrepancyReport
         sectorBreakdown: Object.entries(comprehensiveSyncData).map(([key, data]) => ({
           sector: key,
           coreBrands: data.coreBrands.length,
-          subnodeArrays: data.subNodeArrays.length
-        }))
+          subnodeArrays: data.subNodeArrays.length,
+        })),
       },
       syncVersion: 'comprehensive-v1',
-      lastSeen: new Date().toISOString()
+      lastSeen: new Date().toISOString(),
     });
 
     // Parse execute-complete-comprehensive-sync.ts
@@ -178,11 +207,11 @@ export async function executeDeepDataInventoryAudit(): Promise<DiscrepancyReport
         sectorBreakdown: Object.entries(completeComprehensiveData).map(([key, data]) => ({
           sector: key,
           brands: data.brands.length,
-          subNodes: data.subNodes.length
-        }))
+          subNodes: data.subNodes.length,
+        })),
       },
       syncVersion: 'complete-comprehensive-v1',
-      lastSeen: new Date().toISOString()
+      lastSeen: new Date().toISOString(),
     });
 
     // Parse shared/schema.ts COMPREHENSIVE_BRAND_DATA
@@ -213,11 +242,11 @@ export async function executeDeepDataInventoryAudit(): Promise<DiscrepancyReport
           coreBrands: 660,
           totalNodes: 660,
           totalPages: 1320,
-          elementsUnderManagement: 7698
-        }
+          elementsUnderManagement: 7698,
+        },
       },
       syncVersion: 'schema-comprehensive-v9',
-      lastSeen: new Date().toISOString()
+      lastSeen: new Date().toISOString(),
     });
 
     // Parse FRUITFUL_CRATE_DANCE_SECTORS
@@ -238,24 +267,24 @@ export async function executeDeepDataInventoryAudit(): Promise<DiscrepancyReport
       details: {
         sectorsProcessed: Object.keys(FRUITFUL_CRATE_DANCE_SECTORS).length,
         totalBrands: fruitfulBrands,
-        ecosystem: 'fruitful-crate-dance'
+        ecosystem: 'fruitful-crate-dance',
       },
       syncVersion: 'fruitful-v1',
-      lastSeen: new Date().toISOString()
+      lastSeen: new Date().toISOString(),
     });
 
     // 3. PARSE HTML SOURCES
-    console.log("\n🌐 3. SCANNING HTML DATA SOURCES...");
+    console.log('\n🌐 3. SCANNING HTML DATA SOURCES...');
 
     // Parse HSOMNI9000_ICON_MATRIX.html
     try {
       const iconMatrixPath = path.join(process.cwd(), 'HSOMNI9000_ICON_MATRIX.html');
       const iconMatrixContent = fs.readFileSync(iconMatrixPath, 'utf8');
-      
+
       // Count sections and icons
       const sectionMatches = iconMatrixContent.match(/<div class="section">/g) || [];
       const iconCardMatches = iconMatrixContent.match(/<div class="icon-card"/g) || [];
-      
+
       auditResults.push({
         source: 'HSOMNI9000_ICON_MATRIX.html',
         type: 'html',
@@ -276,30 +305,35 @@ export async function executeDeepDataInventoryAudit(): Promise<DiscrepancyReport
             'Human Systems & Education',
             'Legal & Compliance Systems',
             'Specialized & Advanced Systems',
-            'Charitable & Global Impact'
-          ]
+            'Charitable & Global Impact',
+          ],
         },
         syncVersion: 'HSOMNI9000',
-        lastSeen: new Date().toISOString()
+        lastSeen: new Date().toISOString(),
       });
 
-      console.log(`✅ Icon Matrix scan complete: ${iconCardMatches.length} icons across ${sectionMatches.length} categories`);
+      console.log(
+        `✅ Icon Matrix scan complete: ${iconCardMatches.length} icons across ${sectionMatches.length} categories`
+      );
     } catch (error) {
-      console.error("❌ Could not parse HSOMNI9000_ICON_MATRIX.html:", error);
+      console.error('❌ Could not parse HSOMNI9000_ICON_MATRIX.html:', error);
     }
 
     // Parse admin-panel_full_arrays.html
     try {
-      const adminPanelPath = path.join(process.cwd(), 'attached_assets/interns.seedwave.faa.zone-main/public/admin-panel_full_arrays.html');
-      
+      const adminPanelPath = path.join(
+        process.cwd(),
+        'attached_assets/interns.seedwave.faa.zone-main/public/admin-panel_full_arrays.html'
+      );
+
       if (fs.existsSync(adminPanelPath)) {
         const adminPanelContent = fs.readFileSync(adminPanelPath, 'utf8');
-        
+
         // Count brand arrays and sector links
         const sectorLinkMatches = adminPanelContent.match(/data-sector="[^"]+"/g) || [];
         const brandArrayMatches = adminPanelContent.match(/const \w+Brands = \[/g) || [];
         const subnodeArrayMatches = adminPanelContent.match(/const \w+SubNodes = \[/g) || [];
-        
+
         // Estimate total brands by parsing array definitions
         let estimatedBrands = 0;
         const brandArrayRegex = /const \w+Brands = \[(.*?)\];/gs;
@@ -311,7 +345,8 @@ export async function executeDeepDataInventoryAudit(): Promise<DiscrepancyReport
         }
 
         auditResults.push({
-          source: 'attached_assets/interns.seedwave.faa.zone-main/public/admin-panel_full_arrays.html',
+          source:
+            'attached_assets/interns.seedwave.faa.zone-main/public/admin-panel_full_arrays.html',
           type: 'html',
           totalRecords: estimatedBrands,
           sectors: sectorLinkMatches.length,
@@ -321,20 +356,22 @@ export async function executeDeepDataInventoryAudit(): Promise<DiscrepancyReport
             brandArrays: brandArrayMatches.length,
             subnodeArrays: subnodeArrayMatches.length,
             estimatedBrandCount: estimatedBrands,
-            hasJavaScriptBrandData: true
+            hasJavaScriptBrandData: true,
           },
           syncVersion: 'admin-panel-v1',
-          lastSeen: new Date().toISOString()
+          lastSeen: new Date().toISOString(),
         });
 
-        console.log(`✅ Admin Panel scan complete: ~${estimatedBrands} estimated brands across ${sectorLinkMatches.length} sectors`);
+        console.log(
+          `✅ Admin Panel scan complete: ~${estimatedBrands} estimated brands across ${sectorLinkMatches.length} sectors`
+        );
       }
     } catch (error) {
-      console.error("❌ Could not parse admin-panel_full_arrays.html:", error);
+      console.error('❌ Could not parse admin-panel_full_arrays.html:', error);
     }
 
     // 4. CROSS-REFERENCE AND IDENTIFY CONFLICTS
-    console.log("\n🔍 4. CROSS-REFERENCING DATA SOURCES FOR CONFLICTS...");
+    console.log('\n🔍 4. CROSS-REFERENCING DATA SOURCES FOR CONFLICTS...');
 
     // Check for naming collisions between data sources
     const allBrandNames = new Set<string>();
@@ -353,14 +390,18 @@ export async function executeDeepDataInventoryAudit(): Promise<DiscrepancyReport
     const typescriptSources = [
       { name: 'comprehensive-sync', data: comprehensiveSyncData },
       { name: 'complete-sync', data: completeComprehensiveData },
-      { name: 'schema-data', data: COMPREHENSIVE_BRAND_DATA }
+      { name: 'schema-data', data: COMPREHENSIVE_BRAND_DATA },
     ];
 
     for (const source of typescriptSources) {
       for (const [sectorKey, sectorData] of Object.entries(source.data)) {
-        const brandArray = 'coreBrands' in sectorData ? sectorData.coreBrands : 
-                          'brands' in sectorData ? sectorData.brands : [];
-        
+        const brandArray =
+          'coreBrands' in sectorData
+            ? sectorData.coreBrands
+            : 'brands' in sectorData
+              ? sectorData.brands
+              : [];
+
         for (const brandName of brandArray) {
           allBrandNames.add(brandName);
           if (!brandNameSources.has(brandName)) {
@@ -374,24 +415,24 @@ export async function executeDeepDataInventoryAudit(): Promise<DiscrepancyReport
     // Identify naming collisions
     for (const [brandName, sources] of brandNameSources.entries()) {
       if (sources.length > 1 && sources.includes('database')) {
-        const nonDbSources = sources.filter(s => s !== 'database');
+        const nonDbSources = sources.filter((s) => s !== 'database');
         if (nonDbSources.length > 0) {
           conflicts.push({
             type: 'naming_collision',
             description: `Brand "${brandName}" exists in database and ${nonDbSources.length} other source(s)`,
             affectedRecords: 1,
-            sourceFiles: sources
+            sourceFiles: sources,
           });
         }
       }
     }
 
     // Check for orphaned brands (brands without valid sector references)
-    const validSectorNames = new Set(sectorsCount.map(s => s.name));
+    const validSectorNames = new Set(sectorsCount.map((s) => s.name));
     let orphanedBrands = 0;
 
     for (const brand of brandsCount) {
-      const sector = sectorsCount.find(s => s.id === brand.sectorId);
+      const sector = sectorsCount.find((s) => s.id === brand.sectorId);
       if (!sector) {
         orphanedBrands++;
       }
@@ -402,12 +443,12 @@ export async function executeDeepDataInventoryAudit(): Promise<DiscrepancyReport
         issue: `${orphanedBrands} brands have invalid sector references`,
         severity: 'high',
         affectedTables: ['brands', 'sectors'],
-        estimatedFixEffort: '2-4 hours'
+        estimatedFixEffort: '2-4 hours',
       });
     }
 
     // 5. CALCULATE TOTALS AND GAPS
-    console.log("\n📊 5. CALCULATING TOTALS AND IDENTIFYING GAPS...");
+    console.log('\n📊 5. CALCULATING TOTALS AND IDENTIFYING GAPS...');
 
     const totalSourceRecords = auditResults.reduce((sum, result) => sum + result.totalRecords, 0);
     const gapToTarget = 9000 - databaseTotalRecords;
@@ -417,11 +458,13 @@ export async function executeDeepDataInventoryAudit(): Promise<DiscrepancyReport
       `Database currently has ${databaseTotalRecords} records vs target of 9,000 (${gapToTarget} gap)`,
       `${conflicts.length} naming conflicts detected between data sources`,
       `Comprehensive sync sources contain ${comprehensiveSyncTotal + completeCompTotal} additional records`,
-      `Admin panel HTML contains estimated ${auditResults.find(r => r.source.includes('admin-panel'))?.brands || 0} brand definitions`,
-      `Icon matrix provides ${auditResults.find(r => r.source.includes('ICON_MATRIX'))?.icons || 0} icon mappings for frontend integration`,
-      integrityIssues.length > 0 ? `${integrityIssues.length} data integrity issues need resolution` : 'No critical integrity issues detected',
+      `Admin panel HTML contains estimated ${auditResults.find((r) => r.source.includes('admin-panel'))?.brands || 0} brand definitions`,
+      `Icon matrix provides ${auditResults.find((r) => r.source.includes('ICON_MATRIX'))?.icons || 0} icon mappings for frontend integration`,
+      integrityIssues.length > 0
+        ? `${integrityIssues.length} data integrity issues need resolution`
+        : 'No critical integrity issues detected',
       'Priority: Sync comprehensive brand data first, then resolve naming conflicts',
-      'Recommend staged migration approach to avoid disruption'
+      'Recommend staged migration approach to avoid disruption',
     ];
 
     // 7. PREPARE FINAL REPORT
@@ -433,19 +476,23 @@ export async function executeDeepDataInventoryAudit(): Promise<DiscrepancyReport
       auditResults,
       conflicts,
       integrityIssues,
-      recommendations
+      recommendations,
     };
 
     // 8. OUTPUT COMPREHENSIVE REPORT
-    console.log("\n" + "=".repeat(80));
-    console.log("📋 DEEP DATA INVENTORY AUDIT - COMPREHENSIVE REPORT");
-    console.log("=".repeat(80));
-    
+    console.log('\n' + '='.repeat(80));
+    console.log('📋 DEEP DATA INVENTORY AUDIT - COMPREHENSIVE REPORT');
+    console.log('='.repeat(80));
+
     console.log(`\n🎯 TARGET vs CURRENT STATUS:`);
     console.log(`   🎯 Target Records: 9,000`);
     console.log(`   📊 Current Database: ${databaseTotalRecords} records`);
-    console.log(`   📈 Gap to Target: ${gapToTarget} records (${Math.round((gapToTarget/9000)*100)}% missing)`);
-    console.log(`   🔍 Total Source Records: ${totalSourceRecords} across ${auditResults.length} sources`);
+    console.log(
+      `   📈 Gap to Target: ${gapToTarget} records (${Math.round((gapToTarget / 9000) * 100)}% missing)`
+    );
+    console.log(
+      `   🔍 Total Source Records: ${totalSourceRecords} across ${auditResults.length} sources`
+    );
 
     console.log(`\n📊 DATA SOURCE BREAKDOWN:`);
     for (const result of auditResults) {
@@ -456,7 +503,7 @@ export async function executeDeepDataInventoryAudit(): Promise<DiscrepancyReport
       console.log(`      • Subnodes/Other: ${result.subnodes || result.icons || 'N/A'}`);
       console.log(`      • Type: ${result.type}`);
       console.log(`      • Sync Version: ${result.syncVersion || 'N/A'}`);
-      console.log("");
+      console.log('');
     }
 
     console.log(`\n⚠️  CONFLICTS DETECTED (${conflicts.length}):`);
@@ -468,7 +515,9 @@ export async function executeDeepDataInventoryAudit(): Promise<DiscrepancyReport
 
     console.log(`\n🚨 INTEGRITY ISSUES (${integrityIssues.length}):`);
     for (const issue of integrityIssues) {
-      console.log(`   ${issue.severity === 'critical' ? '🔴' : issue.severity === 'high' ? '🟠' : '🟡'} ${issue.issue}`);
+      console.log(
+        `   ${issue.severity === 'critical' ? '🔴' : issue.severity === 'high' ? '🟠' : '🟡'} ${issue.issue}`
+      );
       console.log(`      • Severity: ${issue.severity.toUpperCase()}`);
       console.log(`      • Affected Tables: ${issue.affectedTables.join(', ')}`);
       console.log(`      • Estimated Fix: ${issue.estimatedFixEffort}`);
@@ -479,14 +528,13 @@ export async function executeDeepDataInventoryAudit(): Promise<DiscrepancyReport
       console.log(`   ${i + 1}. ${recommendations[i]}`);
     }
 
-    console.log("\n" + "=".repeat(80));
-    console.log("✅ PHASE 1 AUDIT COMPLETE - READY FOR PHASE 2 PLANNING");
-    console.log("=".repeat(80));
+    console.log('\n' + '='.repeat(80));
+    console.log('✅ PHASE 1 AUDIT COMPLETE - READY FOR PHASE 2 PLANNING');
+    console.log('='.repeat(80));
 
     return discrepancyReport;
-
   } catch (error) {
-    console.error("💥 Audit failed:", error);
+    console.error('💥 Audit failed:', error);
     throw error;
   }
 }
@@ -495,14 +543,20 @@ export async function executeDeepDataInventoryAudit(): Promise<DiscrepancyReport
 if (import.meta.url === `file://${process.argv[1]}`) {
   executeDeepDataInventoryAudit()
     .then((report) => {
-      console.log("\n🎉 Audit completed successfully!");
-      console.log(`📊 Summary: ${report.currentDatabaseCount}/${report.totalTargetRecords} records (${report.gapToTarget} gap)`);
-      console.log(`🔍 Found ${report.auditResults.length} data sources with ${report.totalSourceRecords} total records`);
-      console.log(`⚠️  ${report.conflicts.length} conflicts and ${report.integrityIssues.length} integrity issues detected`);
+      console.log('\n🎉 Audit completed successfully!');
+      console.log(
+        `📊 Summary: ${report.currentDatabaseCount}/${report.totalTargetRecords} records (${report.gapToTarget} gap)`
+      );
+      console.log(
+        `🔍 Found ${report.auditResults.length} data sources with ${report.totalSourceRecords} total records`
+      );
+      console.log(
+        `⚠️  ${report.conflicts.length} conflicts and ${report.integrityIssues.length} integrity issues detected`
+      );
       process.exit(0);
     })
     .catch((error) => {
-      console.error("💥 Audit failed:", error);
+      console.error('💥 Audit failed:', error);
       process.exit(1);
     });
 }

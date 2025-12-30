@@ -3,23 +3,23 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { 
-  Brain, 
-  Sparkles, 
-  TrendingUp, 
-  Target, 
-  Zap, 
+import {
+  Brain,
+  Sparkles,
+  TrendingUp,
+  Target,
+  Zap,
   Info,
   ChevronRight,
   RefreshCw,
   ThumbsUp,
-  ThumbsDown
+  ThumbsDown,
 } from 'lucide-react';
 import { sectorList } from './omnilevel-selector';
-import { 
-  recommendationEngine, 
-  type RecommendationScore, 
-  type UserProfile 
+import {
+  recommendationEngine,
+  type RecommendationScore,
+  type UserProfile,
 } from '@/services/recommendation-engine';
 
 interface RecommendationPanelProps {
@@ -29,11 +29,11 @@ interface RecommendationPanelProps {
   className?: string;
 }
 
-export function RecommendationPanel({ 
-  selectedSectors, 
-  onSectorRecommend, 
+export function RecommendationPanel({
+  selectedSectors,
+  onSectorRecommend,
   userProfile = {},
-  className = "" 
+  className = '',
 }: RecommendationPanelProps) {
   const [recommendations, setRecommendations] = useState<RecommendationScore[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -49,21 +49,18 @@ export function RecommendationPanel({
       riskTolerance: userProfile.preferences?.riskTolerance || 'medium',
       focusAreas: userProfile.preferences?.focusAreas || [],
       businessStage: userProfile.preferences?.businessStage || 'growth',
-      ...userProfile.preferences
-    }
+      ...userProfile.preferences,
+    },
   };
 
   const generateRecommendations = async () => {
     setIsGenerating(true);
-    
+
     // Simulate AI processing time
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    const newRecommendations = recommendationEngine.generateRecommendations(
-      fullUserProfile,
-      6
-    );
-    
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    const newRecommendations = recommendationEngine.generateRecommendations(fullUserProfile, 6);
+
     setRecommendations(newRecommendations);
     setIsGenerating(false);
   };
@@ -78,27 +75,37 @@ export function RecommendationPanel({
 
   const getCategoryIcon = (category: RecommendationScore['category']) => {
     switch (category) {
-      case 'synergy': return <Zap className="w-4 h-4" />;
-      case 'complementary': return <Target className="w-4 h-4" />;
-      case 'expansion': return <TrendingUp className="w-4 h-4" />;
-      case 'strategic': return <Brain className="w-4 h-4" />;
-      default: return <Sparkles className="w-4 h-4" />;
+      case 'synergy':
+        return <Zap className="w-4 h-4" />;
+      case 'complementary':
+        return <Target className="w-4 h-4" />;
+      case 'expansion':
+        return <TrendingUp className="w-4 h-4" />;
+      case 'strategic':
+        return <Brain className="w-4 h-4" />;
+      default:
+        return <Sparkles className="w-4 h-4" />;
     }
   };
 
   const getCategoryColor = (category: RecommendationScore['category']) => {
     switch (category) {
-      case 'synergy': return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200';
-      case 'complementary': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-      case 'expansion': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-      case 'strategic': return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200';
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+      case 'synergy':
+        return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200';
+      case 'complementary':
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
+      case 'expansion':
+        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+      case 'strategic':
+        return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200';
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
     }
   };
 
   const handleFeedback = (sectorKey: string, type: 'positive' | 'negative') => {
-    setFeedback(prev => ({ ...prev, [sectorKey]: type }));
-    
+    setFeedback((prev) => ({ ...prev, [sectorKey]: type }));
+
     // In a real implementation, this would send feedback to improve the recommendation engine
     console.log(`Feedback for ${sectorKey}: ${type}`);
   };
@@ -112,8 +119,8 @@ export function RecommendationPanel({
             AI Recommendations Ready
           </h3>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            Select one or more sectors to get intelligent AI-powered recommendations 
-            for complementary sectors and strategic expansion opportunities.
+            Select one or more sectors to get intelligent AI-powered recommendations for
+            complementary sectors and strategic expansion opportunities.
           </p>
         </CardContent>
       </Card>
@@ -166,17 +173,25 @@ export function RecommendationPanel({
         ) : (
           <div className="space-y-3">
             {recommendations.map((rec) => {
-              const sectorName = sectorList[rec.sectorKey as keyof typeof sectorList]?.name || rec.sectorKey;
+              const sectorName =
+                sectorList[rec.sectorKey as keyof typeof sectorList]?.name || rec.sectorKey;
               const isExpanded = expandedCard === rec.sectorKey;
               const userFeedback = feedback[rec.sectorKey];
-              
+
               return (
-                <Card 
+                <Card
                   key={rec.sectorKey}
                   className="transition-all duration-200 hover:shadow-md border-l-4"
-                  style={{ borderLeftColor: rec.category === 'synergy' ? '#8b5cf6' : 
-                                            rec.category === 'strategic' ? '#f59e0b' :
-                                            rec.category === 'complementary' ? '#3b82f6' : '#10b981' }}
+                  style={{
+                    borderLeftColor:
+                      rec.category === 'synergy'
+                        ? '#8b5cf6'
+                        : rec.category === 'strategic'
+                          ? '#f59e0b'
+                          : rec.category === 'complementary'
+                            ? '#3b82f6'
+                            : '#10b981',
+                  }}
                 >
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between mb-3">
@@ -187,11 +202,9 @@ export function RecommendationPanel({
                             {sectorName}
                           </span>
                         </div>
-                        <Badge className={getCategoryColor(rec.category)}>
-                          {rec.category}
-                        </Badge>
+                        <Badge className={getCategoryColor(rec.category)}>{rec.category}</Badge>
                       </div>
-                      
+
                       <div className="flex items-center gap-2">
                         <div className="text-right">
                           <div className="text-sm font-semibold text-gray-900 dark:text-white">
@@ -207,12 +220,16 @@ export function RecommendationPanel({
                     <Progress value={rec.score * 100} className="mb-3" />
 
                     <div className="space-y-2 mb-3">
-                      {rec.reasoning.slice(0, isExpanded ? rec.reasoning.length : 1).map((reason, idx) => (
-                        <div key={idx} className="flex items-start gap-2">
-                          <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
-                          <span className="text-sm text-gray-600 dark:text-gray-400">{reason}</span>
-                        </div>
-                      ))}
+                      {rec.reasoning
+                        .slice(0, isExpanded ? rec.reasoning.length : 1)
+                        .map((reason, idx) => (
+                          <div key={idx} className="flex items-start gap-2">
+                            <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
+                            <span className="text-sm text-gray-600 dark:text-gray-400">
+                              {reason}
+                            </span>
+                          </div>
+                        ))}
                     </div>
 
                     <div className="flex items-center justify-between">
@@ -225,7 +242,7 @@ export function RecommendationPanel({
                           <Sparkles className="w-3 h-3" />
                           Add Sector
                         </Button>
-                        
+
                         {rec.reasoning.length > 1 && (
                           <Button
                             onClick={() => setExpandedCard(isExpanded ? null : rec.sectorKey)}
@@ -235,7 +252,9 @@ export function RecommendationPanel({
                           >
                             <Info className="w-3 h-3" />
                             {isExpanded ? 'Less' : 'Details'}
-                            <ChevronRight className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                            <ChevronRight
+                              className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
+                            />
                           </Button>
                         )}
                       </div>
@@ -282,8 +301,8 @@ export function RecommendationPanel({
               No Additional Recommendations
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Your current sector selection appears comprehensive. 
-              Try adjusting your preferences or adding different sectors for new recommendations.
+              Your current sector selection appears comprehensive. Try adjusting your preferences or
+              adding different sectors for new recommendations.
             </p>
           </div>
         )}

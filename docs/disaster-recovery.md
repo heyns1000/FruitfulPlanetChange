@@ -14,12 +14,14 @@ This document outlines the disaster recovery (DR) procedures for FruitfulPlanet 
 ### Database Backups
 
 **Automated Backups:**
+
 - **Frequency**: Every 6 hours
 - **Retention**: 30 days for daily, 90 days for weekly, 1 year for monthly
 - **Location**: AWS S3 with cross-region replication
 - **Encryption**: AES-256 encryption at rest
 
 **Manual Backups:**
+
 ```bash
 ./scripts/backup-database.sh production
 ```
@@ -27,11 +29,13 @@ This document outlines the disaster recovery (DR) procedures for FruitfulPlanet 
 ### Application State
 
 **Session Data:**
+
 - Stored in Redis with persistence enabled
 - RDB snapshots every 6 hours
 - AOF (Append Only File) for durability
 
 **File Uploads:**
+
 - Stored in S3 with versioning enabled
 - Cross-region replication to backup region
 - Lifecycle policies for old versions
@@ -39,6 +43,7 @@ This document outlines the disaster recovery (DR) procedures for FruitfulPlanet 
 ### Configuration Backups
 
 **Infrastructure as Code:**
+
 - All Kubernetes manifests in Git
 - Environment variables in sealed-secrets
 - Regular Git backups
@@ -48,6 +53,7 @@ This document outlines the disaster recovery (DR) procedures for FruitfulPlanet 
 ### Scenario 1: Database Failure
 
 **Detection:**
+
 - Health check failures
 - Application errors
 - Monitoring alerts
@@ -55,6 +61,7 @@ This document outlines the disaster recovery (DR) procedures for FruitfulPlanet 
 **Recovery Procedure:**
 
 1. **Assess Situation**
+
    ```bash
    # Check database status
    kubectl get pods -n fruitfulplanet | grep postgres
@@ -62,15 +69,17 @@ This document outlines the disaster recovery (DR) procedures for FruitfulPlanet 
    ```
 
 2. **Attempt Restart**
+
    ```bash
    kubectl delete pod postgres-0 -n fruitfulplanet
    ```
 
 3. **Restore from Backup (if needed)**
+
    ```bash
    # Download latest backup
    aws s3 cp s3://fruitfulplanet-backups/latest.sql.gz ./
-   
+
    # Restore database
    ./scripts/restore-database.sh latest.sql.gz production
    ```
@@ -84,6 +93,7 @@ This document outlines the disaster recovery (DR) procedures for FruitfulPlanet 
 ### Scenario 2: Complete Region Failure
 
 **Detection:**
+
 - All services down in primary region
 - DNS health checks failing
 - Multiple monitoring alerts
@@ -91,6 +101,7 @@ This document outlines the disaster recovery (DR) procedures for FruitfulPlanet 
 **Recovery Procedure:**
 
 1. **Activate DR Region**
+
    ```bash
    # Promote read replica to primary
    aws rds promote-read-replica \
@@ -98,6 +109,7 @@ This document outlines the disaster recovery (DR) procedures for FruitfulPlanet 
    ```
 
 2. **Update DNS**
+
    ```bash
    # Update Route53 to point to DR region
    aws route53 change-resource-record-sets \
@@ -106,6 +118,7 @@ This document outlines the disaster recovery (DR) procedures for FruitfulPlanet 
    ```
 
 3. **Scale Up DR Region**
+
    ```bash
    kubectl scale deployment fruitfulplanet-app --replicas=10 -n fruitfulplanet
    ```
@@ -118,6 +131,7 @@ This document outlines the disaster recovery (DR) procedures for FruitfulPlanet 
 ### Scenario 3: Data Corruption
 
 **Detection:**
+
 - Data inconsistencies reported
 - Failed integrity checks
 - Application errors
@@ -125,18 +139,21 @@ This document outlines the disaster recovery (DR) procedures for FruitfulPlanet 
 **Recovery Procedure:**
 
 1. **Identify Corruption Scope**
+
    ```bash
    # Check database logs
    kubectl logs postgres-0 -n fruitfulplanet --tail=1000
    ```
 
 2. **Stop Writes**
+
    ```bash
    # Scale down application temporarily
    kubectl scale deployment fruitfulplanet-app --replicas=0
    ```
 
 3. **Restore from Point-in-Time**
+
    ```bash
    # Restore to point before corruption
    aws rds restore-db-instance-to-point-in-time \
@@ -146,12 +163,14 @@ This document outlines the disaster recovery (DR) procedures for FruitfulPlanet 
    ```
 
 4. **Verify Data**
+
    ```bash
    # Run data integrity checks
    npm run db:verify
    ```
 
 5. **Switch to Restored Database**
+
    ```bash
    # Update DATABASE_URL in secrets
    kubectl edit secret app-secrets -n fruitfulplanet
@@ -165,6 +184,7 @@ This document outlines the disaster recovery (DR) procedures for FruitfulPlanet 
 ### Scenario 4: Security Breach
 
 **Detection:**
+
 - Unusual access patterns
 - Security alerts
 - Suspected unauthorized access
@@ -172,6 +192,7 @@ This document outlines the disaster recovery (DR) procedures for FruitfulPlanet 
 **Response Procedure:**
 
 1. **Isolate Affected Systems**
+
    ```bash
    # Remove from load balancer
    kubectl scale deployment fruitfulplanet-app --replicas=0
@@ -183,11 +204,12 @@ This document outlines the disaster recovery (DR) procedures for FruitfulPlanet 
    - Identify entry point
 
 3. **Secure Systems**
+
    ```bash
    # Rotate all secrets
    kubectl delete secret app-secrets -n fruitfulplanet
    kubectl create secret generic app-secrets --from-env-file=.env.new
-   
+
    # Update firewall rules
    # Force password resets for users
    ```
@@ -208,21 +230,24 @@ This document outlines the disaster recovery (DR) procedures for FruitfulPlanet 
 **Incident Commander:** CTO or designated on-call engineer
 
 **Communication Channels:**
+
 - Slack: #incidents channel
 - Email: incidents@fruitfulplanet.com
 - Phone: Emergency contact list
 
 **Status Updates:**
+
 - Every 30 minutes during active incident
 - Every 2 hours during recovery
 
 ### External Communication
 
 **User Communication:**
+
 ```
 Subject: Service Status Update
 
-We are currently experiencing [issue description]. 
+We are currently experiencing [issue description].
 Our team is actively working on resolution.
 
 Current Status: [status]
@@ -232,6 +257,7 @@ We apologize for the inconvenience.
 ```
 
 **Status Page Updates:**
+
 - Post initial incident within 15 minutes
 - Update every 30 minutes
 - Post resolution and post-mortem
@@ -297,45 +323,55 @@ We apologize for the inconvenience.
 # Incident Post-Mortem
 
 ## Summary
+
 [Brief description of incident]
 
 ## Timeline
+
 - [Time]: Incident detected
 - [Time]: Response initiated
 - [Time]: Resolution completed
 
 ## Impact
+
 - Duration: [X hours]
 - Users affected: [number]
 - Data loss: [description]
 - Financial impact: [amount]
 
 ## Root Cause
+
 [Detailed analysis]
 
 ## What Went Well
+
 - [List positive aspects]
 
 ## What Went Wrong
+
 - [List issues encountered]
 
 ## Action Items
+
 - [ ] [Action item 1]
 - [ ] [Action item 2]
 
 ## Lessons Learned
+
 [Key takeaways]
 ```
 
 ## Contact Information
 
 **Emergency Contacts:**
+
 - Incident Commander: [phone]
 - DevOps Lead: [phone]
 - Database Admin: [phone]
 - Security Lead: [phone]
 
 **Vendor Support:**
+
 - AWS Support: [case submission link]
 - Database Provider: [support email/phone]
 - CDN Provider: [support email/phone]

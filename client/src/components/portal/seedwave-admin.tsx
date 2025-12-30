@@ -5,18 +5,24 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
-import { 
-  Home, 
-  Users, 
-  Package, 
-  FileText, 
-  Settings, 
-  BarChart3, 
-  CreditCard, 
-  Shield, 
+import {
+  Home,
+  Users,
+  Package,
+  FileText,
+  Settings,
+  BarChart3,
+  CreditCard,
+  Shield,
   Globe,
   Zap,
   TrendingUp,
@@ -27,7 +33,7 @@ import {
   Rocket,
   Building,
   PanelRight,
-  RefreshCw
+  RefreshCw,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -54,22 +60,26 @@ export function SeedwaveAdmin() {
     totalUsers: 1234,
     totalOrders: 567,
     monthlyRevenue: 12345,
-    totalProducts: 89
+    totalProducts: 89,
   });
 
   // Fetch admin panel data from backend APIs
   const { data: adminPanelStats } = useQuery({
     queryKey: ['/api/admin-panel/stats'],
-    refetchInterval: 30000
+    refetchInterval: 30000,
   });
 
   const { data: adminPanelBrands } = useQuery({
     queryKey: ['/api/admin-panel/brands'],
-    refetchInterval: 30000
+    refetchInterval: 30000,
   });
-  
+
   // Enhanced data synchronization with comprehensive backend mirroring
-  const { data: sectorBreakdown = [], refetch: refetchSectorBreakdown, isLoading: isLoadingSectorBreakdown } = useQuery({
+  const {
+    data: sectorBreakdown = [],
+    refetch: refetchSectorBreakdown,
+    isLoading: isLoadingSectorBreakdown,
+  } = useQuery({
     queryKey: ['/api/admin-panel/sector-breakdown'],
     staleTime: 0, // Real-time data sync
     gcTime: 0, // Force fresh data on every request
@@ -104,12 +114,12 @@ export function SeedwaveAdmin() {
   });
   const [xeroIntegration, setXeroIntegration] = useState<XeroIntegration>({
     connected: false,
-    connectionStatus: 'Disconnected'
+    connectionStatus: 'Disconnected',
   });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
   const [sidepanelVisible, setSidepanelVisible] = useState(false);
-  
+
   const chartRef = useRef<HTMLCanvasElement>(null);
   const { toast } = useToast();
 
@@ -141,7 +151,7 @@ export function SeedwaveAdmin() {
         const gradient = ctx.createLinearGradient(0, 0, 0, 200);
         gradient.addColorStop(0, 'rgba(147, 197, 253, 0.8)');
         gradient.addColorStop(1, 'rgba(147, 197, 253, 0.1)');
-        
+
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, chartRef.current.width, chartRef.current.height);
       }
@@ -152,17 +162,17 @@ export function SeedwaveAdmin() {
     // Simulate login process
     toast({
       title: `Logging in with ${provider}`,
-      description: "Redirecting to authentication provider...",
+      description: 'Redirecting to authentication provider...',
     });
-    
+
     // In real implementation, this would redirect to OAuth provider
     setTimeout(() => {
       setIsAuthenticated(true);
       setCurrentUser('admin@seedwave.com');
       localStorage.setItem('seedwave_admin_user', 'admin@seedwave.com');
       toast({
-        title: "Login successful",
-        description: "Welcome to Seedwave™ Admin Portal",
+        title: 'Login successful',
+        description: 'Welcome to Seedwave™ Admin Portal',
       });
     }, 2000);
   };
@@ -172,27 +182,27 @@ export function SeedwaveAdmin() {
     setCurrentUser(null);
     localStorage.removeItem('seedwave_admin_user');
     toast({
-      title: "Logged out successfully",
-      description: "You have been signed out of the admin portal",
+      title: 'Logged out successfully',
+      description: 'You have been signed out of the admin portal',
     });
   };
 
   const connectXero = () => {
     toast({
-      title: "Connecting to Xero",
-      description: "Initiating OAuth flow...",
+      title: 'Connecting to Xero',
+      description: 'Initiating OAuth flow...',
     });
-    
+
     // Simulate Xero connection
     setTimeout(() => {
       setXeroIntegration({
         connected: true,
         tenantId: 'seedwave-tenant-123',
-        connectionStatus: 'Connected'
+        connectionStatus: 'Connected',
       });
       toast({
-        title: "Xero connected successfully",
-        description: "Integration is now active",
+        title: 'Xero connected successfully',
+        description: 'Integration is now active',
       });
     }, 1500);
   };
@@ -200,16 +210,16 @@ export function SeedwaveAdmin() {
   const fetchXeroData = async (dataType: string) => {
     if (!xeroIntegration.connected) {
       toast({
-        title: "Not connected to Xero",
-        description: "Please connect to Xero first",
-        variant: "destructive",
+        title: 'Not connected to Xero',
+        description: 'Please connect to Xero first',
+        variant: 'destructive',
       });
       return;
     }
 
     toast({
       title: `Fetching ${dataType}`,
-      description: "Retrieving data from Xero API...",
+      description: 'Retrieving data from Xero API...',
     });
 
     // Simulate API call
@@ -246,23 +256,22 @@ export function SeedwaveAdmin() {
             <div className="text-4xl mb-4">🦁</div>
             <CardTitle className="text-2xl font-bold">Seedwave™ Admin Portal</CardTitle>
             <CardDescription>
-              Please log in with your account to access the portal.<br/>
-              <span className="text-sm text-muted-foreground">✿Corebrands management & AI logic deployment center</span>
+              Please log in with your account to access the portal.
+              <br />
+              <span className="text-sm text-muted-foreground">
+                ✿Corebrands management & AI logic deployment center
+              </span>
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button 
-              onClick={() => handleLogin('FAA™ | Zoho')} 
+            <Button
+              onClick={() => handleLogin('FAA™ | Zoho')}
               className="w-full bg-blue-600 hover:bg-blue-700"
             >
               <Building className="w-4 h-4 mr-2" />
               Login with 🦍 FAA™ | Zoho
             </Button>
-            <Button 
-              onClick={() => handleLogin('Google')} 
-              variant="outline" 
-              className="w-full"
-            >
+            <Button onClick={() => handleLogin('Google')} variant="outline" className="w-full">
               <Globe className="w-4 h-4 mr-2" />
               Login with Google
             </Button>
@@ -346,12 +355,14 @@ export function SeedwaveAdmin() {
 
         {/* Dashboard Content - Integrated with Admin Panel Backend Data */}
         <TabsContent value="dashboard" className="space-y-6">
-          
           {/* Admin Portal Section - 4 Access Control Buttons */}
           <Card className="border-2 border-green-500/20 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950 dark:to-blue-950">
             <CardHeader>
               <CardTitle className="text-xl font-bold">🛠️ Seedwave™ Admin Portal</CardTitle>
-              <CardDescription>Core brand management & AI logic deployment center with comprehensive access controls</CardDescription>
+              <CardDescription>
+                Core brand management & AI logic deployment center with comprehensive access
+                controls
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -405,17 +416,23 @@ export function SeedwaveAdmin() {
                 </div>
                 <div>
                   <Label htmlFor="brand-name">🏷️ Brand Name</Label>
-                  <Input id="brand-name" placeholder="e.g. OmniCore™" className="bg-gray-700 border-gray-600" />
+                  <Input
+                    id="brand-name"
+                    placeholder="e.g. OmniCore™"
+                    className="bg-gray-700 border-gray-600"
+                  />
                 </div>
                 <div>
                   <Label htmlFor="subnodes">✨ Subnodes</Label>
-                  <Input id="subnodes" placeholder="e.g. VaultSync, OmniClaim" className="bg-gray-700 border-gray-600" />
+                  <Input
+                    id="subnodes"
+                    placeholder="e.g. VaultSync, OmniClaim"
+                    className="bg-gray-700 border-gray-600"
+                  />
                 </div>
               </div>
               <div className="mt-4 flex justify-end">
-                <Button className="bg-cyan-600 hover:bg-cyan-700">
-                  ➕ Add Brand
-                </Button>
+                <Button className="bg-cyan-600 hover:bg-cyan-700">➕ Add Brand</Button>
               </div>
             </CardContent>
           </Card>
@@ -423,9 +440,15 @@ export function SeedwaveAdmin() {
           {/* FAA.ZONE INDEX — Expanded Table Structure with Backend Data */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>FAA.ZONE INDEX — Expanded Table Structure ({sectorBreakdown?.length || 0} sectors)</CardTitle>
+              <CardTitle>
+                FAA.ZONE INDEX — Expanded Table Structure ({sectorBreakdown?.length || 0} sectors)
+              </CardTitle>
               <div className="flex gap-2">
-                <Button onClick={() => setSidepanelVisible(!sidepanelVisible)} variant="outline" size="sm">
+                <Button
+                  onClick={() => setSidepanelVisible(!sidepanelVisible)}
+                  variant="outline"
+                  size="sm"
+                >
                   <PanelRight className="w-4 h-4 mr-2" />
                   Database Sync Panel
                 </Button>
@@ -440,70 +463,102 @@ export function SeedwaveAdmin() {
                 <table className="w-full border-collapse border border-gray-300 dark:border-gray-700">
                   <thead>
                     <tr className="bg-gray-100 dark:bg-gray-800">
-                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Sector</th>
-                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Brand Name</th>
-                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Sub Nodes</th>
-                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Monthly Fee</th>
-                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Tier</th>
-                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">Actions</th>
+                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">
+                        Sector
+                      </th>
+                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">
+                        Brand Name
+                      </th>
+                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">
+                        Sub Nodes
+                      </th>
+                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">
+                        Monthly Fee
+                      </th>
+                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">
+                        Tier
+                      </th>
+                      <th className="border border-gray-300 dark:border-gray-700 p-3 text-left">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {sectorBreakdown && Array.isArray(sectorBreakdown) && sectorBreakdown.length > 0 ? sectorBreakdown.map((sector: any, index: number) => (
-                      <tr key={sector.sector || index} className="hover:bg-gray-50 dark:hover:bg-gray-800">
-                        <td className="border border-gray-300 dark:border-gray-700 p-3">
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium">{sector.sector}</span>
-                          </div>
-                        </td>
-                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
-                          <Badge variant="outline">{sector.coreBrands}</Badge>
-                        </td>
-                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
-                          <Badge variant="outline">{sector.totalNodes}</Badge>
-                        </td>
-                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
-                          <CurrencyConverter usdAmount={sector.monthlyFee} />
-                        </td>
-                        <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
-                          <Badge variant="default" className={
-                            sector.tier === 'A++' ? "bg-purple-600" :
-                            sector.tier === 'A+' ? "bg-blue-600" :
-                            sector.tier === 'A' ? "bg-green-600" : "bg-gray-600"
-                          }>
-                            {sector.tier}
-                          </Badge>
-                        </td>
-                        <td className="border border-gray-300 dark:border-gray-700 p-3">
-                          <div className="flex gap-2">
-                            <Button 
-                              size="sm" 
-                              variant="outline"
-                              onClick={() => handleViewSector(sector)}
-                              data-testid={`button-view-sector-${index}`}
+                    {sectorBreakdown &&
+                    Array.isArray(sectorBreakdown) &&
+                    sectorBreakdown.length > 0 ? (
+                      sectorBreakdown.map((sector: any, index: number) => (
+                        <tr
+                          key={sector.sector || index}
+                          className="hover:bg-gray-50 dark:hover:bg-gray-800"
+                        >
+                          <td className="border border-gray-300 dark:border-gray-700 p-3">
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium">{sector.sector}</span>
+                            </div>
+                          </td>
+                          <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
+                            <Badge variant="outline">{sector.coreBrands}</Badge>
+                          </td>
+                          <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
+                            <Badge variant="outline">{sector.totalNodes}</Badge>
+                          </td>
+                          <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
+                            <CurrencyConverter usdAmount={sector.monthlyFee} />
+                          </td>
+                          <td className="border border-gray-300 dark:border-gray-700 p-3 text-center">
+                            <Badge
+                              variant="default"
+                              className={
+                                sector.tier === 'A++'
+                                  ? 'bg-purple-600'
+                                  : sector.tier === 'A+'
+                                    ? 'bg-blue-600'
+                                    : sector.tier === 'A'
+                                      ? 'bg-green-600'
+                                      : 'bg-gray-600'
+                              }
                             >
-                              <Eye className="w-3 h-3 mr-1" />
-                              View
-                            </Button>
-                            <Button 
-                              size="sm" 
-                              variant="outline"
-                              onClick={() => handleDeploySector(sector)}
-                              data-testid={`button-deploy-sector-${index}`}
-                            >
-                              <Zap className="w-3 h-3 mr-1" />
-                              Deploy
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    )) : (
+                              {sector.tier}
+                            </Badge>
+                          </td>
+                          <td className="border border-gray-300 dark:border-gray-700 p-3">
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleViewSector(sector)}
+                                data-testid={`button-view-sector-${index}`}
+                              >
+                                <Eye className="w-3 h-3 mr-1" />
+                                View
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleDeploySector(sector)}
+                                data-testid={`button-deploy-sector-${index}`}
+                              >
+                                <Zap className="w-3 h-3 mr-1" />
+                                Deploy
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
                       <tr>
-                        <td colSpan={6} className="border border-gray-300 dark:border-gray-700 p-3 text-center text-muted-foreground">
+                        <td
+                          colSpan={6}
+                          className="border border-gray-300 dark:border-gray-700 p-3 text-center text-muted-foreground"
+                        >
                           {isLoadingSectorBreakdown ? (
                             <>Loading all 48 sectors from database...</>
                           ) : (
-                            <>No sector data available. API Response: {JSON.stringify(sectorBreakdown)}</>
+                            <>
+                              No sector data available. API Response:{' '}
+                              {JSON.stringify(sectorBreakdown)}
+                            </>
                           )}
                         </td>
                       </tr>
@@ -523,7 +578,10 @@ export function SeedwaveAdmin() {
             <CardContent>
               <div className="space-y-4">
                 <div className="flex gap-4">
-                  <Input placeholder="Search users..." className="flex-1 bg-gray-700 border-gray-600" />
+                  <Input
+                    placeholder="Search users..."
+                    className="flex-1 bg-gray-700 border-gray-600"
+                  />
                   <Button>
                     <Users className="w-4 h-4 mr-2" />
                     Add User
@@ -548,7 +606,9 @@ export function SeedwaveAdmin() {
                           <Badge variant="default">Owner</Badge>
                         </td>
                         <td className="p-3">
-                          <Badge variant="default" className="bg-green-600">Active</Badge>
+                          <Badge variant="default" className="bg-green-600">
+                            Active
+                          </Badge>
                         </td>
                         <td className="p-3">
                           <div className="flex gap-2">
@@ -576,7 +636,6 @@ export function SeedwaveAdmin() {
               </div>
             </CardContent>
           </Card>
-
         </TabsContent>
 
         {/* Users Management */}
@@ -608,9 +667,24 @@ export function SeedwaveAdmin() {
                     </thead>
                     <tbody>
                       {[
-                        { name: 'John Doe', email: 'john@seedwave.com', role: 'Admin', status: 'Active' },
-                        { name: 'Jane Smith', email: 'jane@seedwave.com', role: 'Manager', status: 'Active' },
-                        { name: 'Mike Johnson', email: 'mike@seedwave.com', role: 'User', status: 'Pending' },
+                        {
+                          name: 'John Doe',
+                          email: 'john@seedwave.com',
+                          role: 'Admin',
+                          status: 'Active',
+                        },
+                        {
+                          name: 'Jane Smith',
+                          email: 'jane@seedwave.com',
+                          role: 'Manager',
+                          status: 'Active',
+                        },
+                        {
+                          name: 'Mike Johnson',
+                          email: 'mike@seedwave.com',
+                          role: 'User',
+                          status: 'Pending',
+                        },
                       ].map((user, index) => (
                         <tr key={index} className="border-b hover:bg-muted/30">
                           <td className="p-3 font-medium">{user.name}</td>
@@ -656,7 +730,9 @@ export function SeedwaveAdmin() {
               <div className="text-center py-8">
                 <ShoppingCart className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
                 <h3 className="text-lg font-semibold mb-2">Order Processing Center</h3>
-                <p className="text-muted-foreground">Advanced order management and fulfillment system</p>
+                <p className="text-muted-foreground">
+                  Advanced order management and fulfillment system
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -673,7 +749,9 @@ export function SeedwaveAdmin() {
               <div className="text-center py-8">
                 <Package className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
                 <h3 className="text-lg font-semibold mb-2">Product Management</h3>
-                <p className="text-muted-foreground">Comprehensive product catalog and inventory system</p>
+                <p className="text-muted-foreground">
+                  Comprehensive product catalog and inventory system
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -706,13 +784,17 @@ export function SeedwaveAdmin() {
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center gap-3">
-                  <div className={cn(
-                    "w-3 h-3 rounded-full",
-                    xeroIntegration.connected ? "bg-green-500" : "bg-red-500"
-                  )} />
+                  <div
+                    className={cn(
+                      'w-3 h-3 rounded-full',
+                      xeroIntegration.connected ? 'bg-green-500' : 'bg-red-500'
+                    )}
+                  />
                   <div>
                     <p className="font-medium">
-                      {xeroIntegration.connected ? "✅ Connected to Xero!" : "❌ Not connected to Xero"}
+                      {xeroIntegration.connected
+                        ? '✅ Connected to Xero!'
+                        : '❌ Not connected to Xero'}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       Status: {xeroIntegration.connectionStatus}
@@ -743,7 +825,7 @@ export function SeedwaveAdmin() {
                       Fetch Payments
                     </Button>
                   </div>
-                  
+
                   <Card>
                     <CardContent className="p-4">
                       <h4 className="font-semibold mb-2">Xero Data Display</h4>
@@ -758,8 +840,6 @@ export function SeedwaveAdmin() {
           </Card>
         </TabsContent>
 
-
-
         {/* Settings */}
         <TabsContent value="settings" className="space-y-6">
           <Card>
@@ -773,12 +853,12 @@ export function SeedwaveAdmin() {
                   <Label htmlFor="company-name">Company Name</Label>
                   <Input id="company-name" defaultValue="Seedwave™ Technologies" />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="admin-email">Admin Email</Label>
                   <Input id="admin-email" type="email" defaultValue="admin@seedwave.com" />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="timezone">Timezone</Label>
                   <Select defaultValue="utc">
@@ -797,9 +877,7 @@ export function SeedwaveAdmin() {
                 <Separator />
 
                 <div className="flex justify-between">
-                  <Button variant="outline">
-                    Reset Settings
-                  </Button>
+                  <Button variant="outline">Reset Settings</Button>
                   <Button>
                     <Shield className="w-4 h-4 mr-2" />
                     Save Changes
@@ -810,11 +888,11 @@ export function SeedwaveAdmin() {
           </Card>
         </TabsContent>
       </Tabs>
-      
+
       {/* Enhanced Sidepanel for Database Synchronization */}
-      <EnhancedSidepanel 
-        isVisible={sidepanelVisible} 
-        onToggle={() => setSidepanelVisible(!sidepanelVisible)} 
+      <EnhancedSidepanel
+        isVisible={sidepanelVisible}
+        onToggle={() => setSidepanelVisible(!sidepanelVisible)}
       />
     </div>
   );

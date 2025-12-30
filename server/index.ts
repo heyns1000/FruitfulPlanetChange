@@ -1,3 +1,14 @@
+import express, { type Request, Response, NextFunction } from 'express';
+import { registerRoutes } from './routes';
+import { setupVite, serveStatic, log } from './vite';
+import { seedDatabase } from './seed-data';
+import { seedLegalDocuments } from './seed-legal';
+import { seedAllMiningBrands } from './mining-brands-seeder';
+import { updateSectorPricing } from './update-sector-pricing';
+import { seedComprehensiveBrands } from './comprehensive-brand-seeder';
+import { seedMineNestComprehensive } from './minenest-comprehensive-seeder';
+import { seedEcosystemPulseData } from './seed-ecosystem-pulse';
+import { storage } from './storage';
 import express, { type Request, Response, NextFunction } from "express";
 import { z } from "zod";
 import { registerRoutes } from "./routes";
@@ -75,16 +86,16 @@ app.use((req, res, next) => {
     return originalResJson.apply(res, [bodyJson, ...args]);
   };
 
-  res.on("finish", () => {
+  res.on('finish', () => {
     const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
+    if (path.startsWith('/api')) {
       let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
       if (capturedJsonResponse) {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
 
       if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
+        logLine = logLine.slice(0, 79) + '…';
       }
 
       log(logLine);
@@ -98,27 +109,29 @@ app.use((req, res, next) => {
   const server = await registerRoutes(app);
 
   // Seed database with comprehensive brand data in development
-  if (app.get("env") === "development") {
+  if (app.get('env') === 'development') {
     try {
       await seedDatabase();
       await seedLegalDocuments();
-      console.log("💰 Updating sector pricing structure...");
+      console.log('💰 Updating sector pricing structure...');
       await updateSectorPricing();
 
-      console.log("🐻 Seeding Banimal ecosystem for charitable giving...");
+      console.log('🐻 Seeding Banimal ecosystem for charitable giving...');
       await storage.seedBanimalData();
-      console.log("🎬 Seeding Motion, Media & Sonic engines...");
+      console.log('🎬 Seeding Motion, Media & Sonic engines...');
       await storage.seedMediaData();
-      console.log("🚀 Seeding Omnilevel Interstellar operations...");
+      console.log('🚀 Seeding Omnilevel Interstellar operations...');
       await storage.seedInterstellarData();
+      console.log('🌊 Seeding Ecosystem Pulse integration...');
+      await seedEcosystemPulseData();
     } catch (error) {
-      console.error("Failed to seed database:", error);
+      console.error('Failed to seed database:', error);
     }
   }
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
+    const message = err.message || 'Internal Server Error';
 
     res.status(status).json({ message });
     throw err;
@@ -127,7 +140,7 @@ app.use((req, res, next) => {
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
+  if (app.get('env') === 'development') {
     await setupVite(app, server);
   } else {
     serveStatic(app);
@@ -138,7 +151,7 @@ app.use((req, res, next) => {
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || '5000', 10);
-  
+
   // Add error handling for port conflicts
   server.on('error', (err: any) => {
     if (err.code === 'EADDRINUSE') {
@@ -154,10 +167,13 @@ app.use((req, res, next) => {
     }
   });
 
-  server.listen({
-    port,
-    host: "0.0.0.0",
-  }, () => {
-    log(`🚀 Server successfully started on port ${port}`);
-  });
+  server.listen(
+    {
+      port,
+      host: '0.0.0.0',
+    },
+    () => {
+      log(`🚀 Server successfully started on port ${port}`);
+    }
+  );
 })();

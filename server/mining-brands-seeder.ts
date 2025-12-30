@@ -1,15 +1,39 @@
-import { db } from "./db";
-import { brands } from "@shared/schema";
-import { desc } from "drizzle-orm";
+import { db } from './db';
+import { brands } from '@shared/schema';
+import { desc } from 'drizzle-orm';
 
 // Complete mining brands and subnodes extracted from the HTML file
 const miningBrandsRaw = [
-  'MineNest', 'DrillCoreX', 'OreSync', 'VaultRock', 'ClaimMine',
-  'TrackShaft', 'PulseMine', 'CoreBeam', 'DigEcho', 'RockPath',
-  'YieldDrill', 'MineProof', 'OreLine', 'DrillLink', 'VaultTunnel',
-  'GeoGrid', 'SeamSync', 'ClaimOre', 'PulseBlast', 'OreEcho',
-  'DeepCrate', 'RockLogic', 'CoreDrill', 'MineCast', 'DrillMark',
-  'SignalOre', 'YieldTrack', 'VaultSeam', 'ShaftDrop', 'GeoNode'
+  'MineNest',
+  'DrillCoreX',
+  'OreSync',
+  'VaultRock',
+  'ClaimMine',
+  'TrackShaft',
+  'PulseMine',
+  'CoreBeam',
+  'DigEcho',
+  'RockPath',
+  'YieldDrill',
+  'MineProof',
+  'OreLine',
+  'DrillLink',
+  'VaultTunnel',
+  'GeoGrid',
+  'SeamSync',
+  'ClaimOre',
+  'PulseBlast',
+  'OreEcho',
+  'DeepCrate',
+  'RockLogic',
+  'CoreDrill',
+  'MineCast',
+  'DrillMark',
+  'SignalOre',
+  'YieldTrack',
+  'VaultSeam',
+  'ShaftDrop',
+  'GeoNode',
 ];
 
 const miningSubNodesRaw = [
@@ -42,15 +66,15 @@ const miningSubNodesRaw = [
   ['TrackYield', 'MineFrame', 'SignalGrid', 'EchoDrill'],
   ['VaultSeamX', 'QRClaimX', 'GridOre', 'TunnelEcho'],
   ['DropShaft', 'ClaimTunnelX', 'YieldDrillX', 'VaultGrid'],
-  ['GeoNodeX', 'SignalPing', 'DropEcho', 'MineLink']
+  ['GeoNodeX', 'SignalPing', 'DropEcho', 'MineLink'],
 ];
 
 export async function seedAllMiningBrands() {
-  console.log("⛏️ Seeding ALL 30 mining brands with complete subnodes...");
-  
+  console.log('⛏️ Seeding ALL 30 mining brands with complete subnodes...');
+
   const miningSectorId = 297;
   const miningBrandsToInsert = [];
-  
+
   // Get the highest existing brand ID to avoid conflicts
   const existingBrands = await db.select().from(brands).orderBy(desc(brands.id)).limit(1);
   let brandId = (existingBrands.length > 0 ? existingBrands[0].id : 2669) + 1;
@@ -59,25 +83,25 @@ export async function seedAllMiningBrands() {
   for (let i = 0; i < miningBrandsRaw.length; i++) {
     const brandName = miningBrandsRaw[i];
     const subnodes = miningSubNodesRaw[i] || [];
-    
+
     // Insert parent brand
     miningBrandsToInsert.push({
       id: brandId,
       name: `${brandName}™`,
       description: `Advanced ${brandName}™ mining & resources management solution with comprehensive VaultMesh™ integration, real-time ore tracking, and Baobab legal compliance for secure mining operations across the Fruitful Global ecosystem.`,
       sectorId: miningSectorId,
-      integration: "VaultMesh™",
-      status: "active",
+      integration: 'VaultMesh™',
+      status: 'active',
       isCore: true,
       parentId: null,
       metadata: {
-        sector: "mining",
+        sector: 'mining',
         featured: true,
         totalProjects: Math.floor(Math.random() * 50) + 20,
         activeRigs: Math.floor(Math.random() * 20) + 5,
         monthlyYield: Math.floor(Math.random() * 1000) + 500,
-        subnodeCount: subnodes.length
-      }
+        subnodeCount: subnodes.length,
+      },
     });
 
     brandId++;
@@ -90,17 +114,17 @@ export async function seedAllMiningBrands() {
         name: `${subnode}™`,
         description: `Specialized ${subnode}™ submodule providing targeted mining operations support with advanced analytics, real-time monitoring, and seamless integration with ${brandName}™ parent system.`,
         sectorId: miningSectorId,
-        integration: "VaultMesh™",
-        status: "active",
+        integration: 'VaultMesh™',
+        status: 'active',
         isCore: false,
         parentId: brandId - 1, // Reference to parent brand
         metadata: {
-          sector: "mining",
+          sector: 'mining',
           parentBrand: brandName,
           submodule: true,
-          operationalStatus: "active",
-          performance: Math.floor(Math.random() * 100) + 85
-        }
+          operationalStatus: 'active',
+          performance: Math.floor(Math.random() * 100) + 85,
+        },
       });
       brandId++;
     }
@@ -111,9 +135,11 @@ export async function seedAllMiningBrands() {
     await db.insert(brands).values(brand);
   }
 
-  console.log(`✅ Successfully seeded ${miningBrandsToInsert.length} total mining brands and subnodes!`);
+  console.log(
+    `✅ Successfully seeded ${miningBrandsToInsert.length} total mining brands and subnodes!`
+  );
   console.log(`📊 Parent brands: ${miningBrandsRaw.length}`);
   console.log(`📊 Total subnodes: ${miningBrandsToInsert.length - miningBrandsRaw.length}`);
-  
+
   return miningBrandsToInsert;
 }

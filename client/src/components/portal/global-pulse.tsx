@@ -20,7 +20,7 @@ export function GlobalPulse() {
   const [brandName, setBrandName] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [pulseCanvases, setPulseCanvases] = useState<Record<string, PulseCanvas>>({});
-  
+
   const heroGridRef = useRef<HTMLDivElement>(null);
   const headerPulseRef = useRef<HTMLCanvasElement>(null);
   const { toast } = useToast();
@@ -30,7 +30,7 @@ export function GlobalPulse() {
     initializeCanvases();
     return () => {
       // Cleanup animations on unmount
-      Object.values(pulseCanvases).forEach(canvasObj => {
+      Object.values(pulseCanvases).forEach((canvasObj) => {
         if (canvasObj.animationId) {
           cancelAnimationFrame(canvasObj.animationId);
         }
@@ -45,21 +45,21 @@ export function GlobalPulse() {
       'shooting-pulses',
       'particle-grid',
       'radial-bursts',
-      'hyperspace-warp'
+      'hyperspace-warp',
     ];
 
     const newCanvases: Record<string, PulseCanvas> = {};
 
-    canvasIds.forEach(id => {
+    canvasIds.forEach((id) => {
       const canvas = document.getElementById(id) as HTMLCanvasElement;
       if (canvas) {
         const ctx = canvas.getContext('2d');
         newCanvases[id] = {
           canvas,
           ctx,
-          animationId: null
+          animationId: null,
         };
-        
+
         // Set canvas size to match container
         const rect = canvas.getBoundingClientRect();
         canvas.width = rect.width;
@@ -77,13 +77,13 @@ export function GlobalPulse() {
       newCanvases['header-pulse'] = {
         canvas,
         ctx,
-        animationId: null
+        animationId: null,
       };
-      
+
       const rect = canvas.getBoundingClientRect();
       canvas.width = rect.width;
       canvas.height = rect.height;
-      
+
       startHeaderPulse(newCanvases['header-pulse']);
     }
 
@@ -139,27 +139,27 @@ export function GlobalPulse() {
       if (!ctx || !canvas) return;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+
       // Draw stock exchange style pulse
       time += 0.05;
       const points = 100;
       const amplitude = 15;
-      
+
       ctx.strokeStyle = '#00e393';
       ctx.lineWidth = 2;
       ctx.beginPath();
-      
+
       for (let i = 0; i < points; i++) {
         const x = (i / points) * canvas.width;
         const y = canvas.height / 2 + Math.sin(i * 0.1 + time) * amplitude;
-        
+
         if (i === 0) {
           ctx.moveTo(x, y);
         } else {
           ctx.lineTo(x, y);
         }
       }
-      
+
       ctx.stroke();
       canvasObj.animationId = requestAnimationFrame(animate);
     };
@@ -172,7 +172,7 @@ export function GlobalPulse() {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     const time = Date.now() * 0.005;
-    
+
     for (let i = 0; i < 3; i++) {
       const radius = 30 + i * 20 + Math.sin(time + i) * 10;
       ctx.strokeStyle = `hsl(${120 + i * 60}, 100%, 60%)`;
@@ -187,11 +187,11 @@ export function GlobalPulse() {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     const time = Date.now() * 0.003;
-    
+
     for (let i = 0; i < 5; i++) {
       const radius = (time * 50 + i * 40) % (canvas.width / 2);
-      const alpha = 1 - (radius / (canvas.width / 2));
-      
+      const alpha = 1 - radius / (canvas.width / 2);
+
       ctx.strokeStyle = `rgba(0, 123, 255, ${alpha})`;
       ctx.lineWidth = 3;
       ctx.beginPath();
@@ -202,11 +202,11 @@ export function GlobalPulse() {
 
   const drawShootingPulses = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
     const time = Date.now() * 0.01;
-    
+
     for (let i = 0; i < 10; i++) {
       const x = ((time + i * 30) % (canvas.width + 50)) - 25;
       const y = canvas.height / 2 + Math.sin(time + i) * 50;
-      
+
       ctx.fillStyle = `hsl(${200 + i * 20}, 100%, 60%)`;
       ctx.beginPath();
       ctx.arc(x, y, 4, 0, Math.PI * 2);
@@ -217,12 +217,12 @@ export function GlobalPulse() {
   const drawParticleGrid = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
     const time = Date.now() * 0.002;
     const gridSize = 30;
-    
+
     for (let x = 0; x < canvas.width; x += gridSize) {
       for (let y = 0; y < canvas.height; y += gridSize) {
         const size = 2 + Math.sin(time + x * 0.01 + y * 0.01) * 2;
         const alpha = 0.3 + Math.sin(time + x * 0.02 + y * 0.02) * 0.3;
-        
+
         ctx.fillStyle = `rgba(255, 100, 150, ${alpha})`;
         ctx.beginPath();
         ctx.arc(x, y, size, 0, Math.PI * 2);
@@ -235,19 +235,16 @@ export function GlobalPulse() {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     const time = Date.now() * 0.008;
-    
+
     for (let i = 0; i < 12; i++) {
       const angle = (i / 12) * Math.PI * 2;
       const length = 80 + Math.sin(time + i) * 40;
-      
+
       ctx.strokeStyle = `hsl(${300 + i * 20}, 100%, 70%)`;
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.moveTo(centerX, centerY);
-      ctx.lineTo(
-        centerX + Math.cos(angle) * length,
-        centerY + Math.sin(angle) * length
-      );
+      ctx.lineTo(centerX + Math.cos(angle) * length, centerY + Math.sin(angle) * length);
       ctx.stroke();
     }
   };
@@ -255,10 +252,10 @@ export function GlobalPulse() {
   const drawHyperspaceWarp = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
     const time = Date.now() * 0.003;
     const gridSpacing = 25;
-    
+
     ctx.strokeStyle = `rgba(255, 255, 255, ${0.7 + Math.sin(time) * 0.3})`;
     ctx.lineWidth = 1.5;
-    
+
     // Horizontal lines
     for (let y = 0; y < canvas.height; y += gridSpacing) {
       ctx.beginPath();
@@ -266,7 +263,7 @@ export function GlobalPulse() {
       ctx.lineTo(canvas.width, y + Math.sin(time + y * 0.03) * 20);
       ctx.stroke();
     }
-    
+
     // Vertical lines
     for (let x = 0; x < canvas.width; x += gridSpacing) {
       ctx.beginPath();
@@ -279,38 +276,38 @@ export function GlobalPulse() {
   const handleGenerateBrandInsight = async () => {
     if (!brandName.trim()) {
       toast({
-        title: "Please enter a brand name",
-        description: "Enter a brand name to generate insights.",
-        variant: "destructive",
+        title: 'Please enter a brand name',
+        description: 'Enter a brand name to generate insights.',
+        variant: 'destructive',
       });
       return;
     }
 
     setIsGenerating(true);
-    
+
     try {
       // Simulate AI insight generation (in real app would use Gemini API)
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       const insights = [
         `${brandName}™ - "Innovating Beyond Tomorrow's Horizon"`,
         `Strategic positioning: Premium technology integration with sustainable practices`,
         `Target market: Forward-thinking enterprises seeking next-generation solutions`,
         `Core value proposition: Seamless ecosystem integration with measurable ROI`,
-        `Brand differentiator: AI-powered automation with human-centric design philosophy`
+        `Brand differentiator: AI-powered automation with human-centric design philosophy`,
       ];
-      
+
       setBrandInsight(insights.join('\n\n'));
-      
+
       toast({
-        title: "Brand insights generated successfully",
+        title: 'Brand insights generated successfully',
         description: `Generated comprehensive insights for ${brandName}™`,
       });
     } catch (error) {
       toast({
-        title: "Failed to generate insights",
-        description: "Please try again later.",
-        variant: "destructive",
+        title: 'Failed to generate insights',
+        description: 'Please try again later.',
+        variant: 'destructive',
       });
     } finally {
       setIsGenerating(false);
@@ -330,7 +327,7 @@ export function GlobalPulse() {
                 <span className="text-gray-300">|</span>
                 <span className="text-2xl font-bold">Seedwave™</span>
               </div>
-              <canvas 
+              <canvas
                 ref={headerPulseRef}
                 className="ml-6 h-10 w-96"
                 style={{ maxWidth: '400px' }}
@@ -340,8 +337,9 @@ export function GlobalPulse() {
               Seedwave™: The Global Pulse
             </CardTitle>
             <CardDescription className="text-xl text-gray-300 mt-4">
-              *Integrating beyond what the word has witnessed as yet.* We orchestrate the future of innovation, 
-              from digital enterprises to groundbreaking non-digital ventures, with atomic precision and global reach.
+              *Integrating beyond what the word has witnessed as yet.* We orchestrate the future of
+              innovation, from digital enterprises to groundbreaking non-digital ventures, with
+              atomic precision and global reach.
             </CardDescription>
             <Button className="mt-6 bg-white text-black hover:bg-gray-100 font-bold px-8 py-3 rounded-lg">
               <Sparkles className="w-5 h-5 mr-2" />
@@ -354,7 +352,10 @@ export function GlobalPulse() {
       {/* Hero Pulse Grid */}
       <Card className="bg-gray-900 border-gray-700">
         <CardContent className="p-6">
-          <div ref={heroGridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 h-96">
+          <div
+            ref={heroGridRef}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 h-96"
+          >
             <div className="bg-gray-800 rounded-lg border border-gray-600 relative overflow-hidden">
               <canvas id="rhythmic-pulse" className="w-full h-full" />
             </div>
@@ -380,11 +381,13 @@ export function GlobalPulse() {
       {/* Operational Pillars */}
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold">Our Operational Pillars: Beyond Conventional Integration</CardTitle>
+          <CardTitle className="text-3xl font-bold">
+            Our Operational Pillars: Beyond Conventional Integration
+          </CardTitle>
           <CardDescription className="text-lg max-w-4xl mx-auto">
-            Seedwave's operational philosophy transcends traditional boundaries, focusing on seamless, 
-            intuitive integration across all phases of enterprise development. We automate the unseen, 
-            build the impossible, and deploy with a global consciousness.
+            Seedwave's operational philosophy transcends traditional boundaries, focusing on
+            seamless, intuitive integration across all phases of enterprise development. We automate
+            the unseen, build the impossible, and deploy with a global consciousness.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -403,7 +406,8 @@ export function GlobalPulse() {
                 <Activity className="w-12 h-12 mx-auto mb-4 text-green-500" />
                 <h3 className="text-2xl font-bold">Auto Build</h3>
                 <p className="text-muted-foreground mt-2">
-                  Automated construction pipelines with intelligent error correction and optimization
+                  Automated construction pipelines with intelligent error correction and
+                  optimization
                 </p>
               </CardContent>
             </Card>
@@ -423,18 +427,20 @@ export function GlobalPulse() {
       {/* Master License Brands */}
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold">Seedwave™ Global Master License Brands</CardTitle>
+          <CardTitle className="text-3xl font-bold">
+            Seedwave™ Global Master License Brands
+          </CardTitle>
           <CardDescription className="text-lg max-w-4xl mx-auto">
-            Our portfolio embodies a new epoch of integrated ventures, where each brand is a self-aware node 
-            in a larger, evolving consciousness, transcending traditional market boundaries and resonating 
-            with the very pulse of global transformation.
+            Our portfolio embodies a new epoch of integrated ventures, where each brand is a
+            self-aware node in a larger, evolving consciousness, transcending traditional market
+            boundaries and resonating with the very pulse of global transformation.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-8">
           {/* Art Typography */}
           <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
             <pre className="text-sm font-mono text-left leading-relaxed">
-{`Seedwave™:
+              {`Seedwave™:
     The Nexus.
       A Portfolio of Innovation.
         Digital Enterprises, and so much more...
@@ -454,27 +460,27 @@ export function GlobalPulse() {
 
           {/* Master Brand Blocks */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <a 
-              href="https://samfox.faa.zone" 
-              target="_blank" 
+            <a
+              href="https://samfox.faa.zone"
+              target="_blank"
               rel="noopener noreferrer"
               className="block p-8 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-lg text-center hover:shadow-xl transition-all transform hover:scale-105"
             >
               <h3 className="text-2xl font-bold">Samfox™</h3>
               <ExternalLink className="w-5 h-5 mx-auto mt-2 opacity-70" />
             </a>
-            <a 
-              href="https://seedwave.faa.zone" 
-              target="_blank" 
+            <a
+              href="https://seedwave.faa.zone"
+              target="_blank"
               rel="noopener noreferrer"
               className="block p-8 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-lg text-center hover:shadow-xl transition-all transform hover:scale-105"
             >
               <h3 className="text-2xl font-bold">Seedwave™</h3>
               <ExternalLink className="w-5 h-5 mx-auto mt-2 opacity-70" />
             </a>
-            <a 
-              href="https://faa.zone/" 
-              target="_blank" 
+            <a
+              href="https://faa.zone/"
+              target="_blank"
               rel="noopener noreferrer"
               className="block p-8 bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-lg text-center hover:shadow-xl transition-all transform hover:scale-105"
             >
@@ -493,7 +499,8 @@ export function GlobalPulse() {
             Brand Insight Generator
           </CardTitle>
           <CardDescription>
-            Enter a brand name to generate a marketing slogan and strategic insight, powered by advanced AI analysis.
+            Enter a brand name to generate a marketing slogan and strategic insight, powered by
+            advanced AI analysis.
           </CardDescription>
         </CardHeader>
         <CardContent className="max-w-2xl mx-auto space-y-6">
@@ -504,11 +511,7 @@ export function GlobalPulse() {
               onChange={(e) => setBrandName(e.target.value)}
               className="flex-1"
             />
-            <Button 
-              onClick={handleGenerateBrandInsight}
-              disabled={isGenerating}
-              className="px-6"
-            >
+            <Button onClick={handleGenerateBrandInsight} disabled={isGenerating} className="px-6">
               {isGenerating ? (
                 <>
                   <Activity className="w-4 h-4 mr-2 animate-spin" />
@@ -522,7 +525,7 @@ export function GlobalPulse() {
               )}
             </Button>
           </div>
-          
+
           <div className="min-h-[200px] p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border">
             {brandInsight ? (
               <pre className="whitespace-pre-wrap text-sm">{brandInsight}</pre>
@@ -546,7 +549,7 @@ export function GlobalPulse() {
               { name: 'Seedwave™ Core', status: 'active', integration: 'Auto Design & Build' },
               { name: 'Samfox™ Network', status: 'active', integration: 'AI Brand Insights' },
               { name: 'FAA.ZONE™ Portal', status: 'active', integration: 'Global Deployment' },
-              { name: 'Pulse Analytics', status: 'active', integration: 'Real-time Monitoring' }
+              { name: 'Pulse Analytics', status: 'active', integration: 'Real-time Monitoring' },
             ].map((service) => (
               <div key={service.name} className="text-center p-4 border rounded-lg">
                 <div className="w-3 h-3 bg-green-500 rounded-full mx-auto mb-2"></div>
