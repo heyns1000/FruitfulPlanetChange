@@ -1,6 +1,6 @@
 /**
  * Redis Configuration
- * 
+ *
  * Redis cache configuration and connection settings
  */
 

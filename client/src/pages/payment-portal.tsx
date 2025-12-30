@@ -1,22 +1,22 @@
-import { useState, useEffect } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { useToast } from "@/hooks/use-toast"
-import { CreditCard, Shield, CheckCircle, ArrowLeft, Zap } from "lucide-react"
+import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
+import { CreditCard, Shield, CheckCircle, ArrowLeft, Zap } from 'lucide-react';
 
 export default function PaymentPortal() {
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
-  const [processing, setProcessing] = useState(false)
-  const { toast } = useToast()
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [processing, setProcessing] = useState(false);
+  const { toast } = useToast();
 
   // Get product details from URL params
-  const urlParams = new URLSearchParams(window.location.search)
-  const productName = urlParams.get('product') || 'Product'
-  const price = urlParams.get('price') || '29.99'
-  const category = urlParams.get('category') || 'General'
-  const productId = urlParams.get('productId') || '1'
+  const urlParams = new URLSearchParams(window.location.search);
+  const productName = urlParams.get('product') || 'Product';
+  const price = urlParams.get('price') || '29.99';
+  const category = urlParams.get('category') || 'General';
+  const productId = urlParams.get('productId') || '1';
 
   // Payment Portal pricing tiers
   const pricingPlans = [
@@ -27,12 +27,12 @@ export default function PaymentPortal() {
       price: 29.99,
       features: [
         'Basic mining algorithms',
-        'Resource tracking', 
+        'Resource tracking',
         'Standard analytics',
         'Community support',
-        'Basic API access'
+        'Basic API access',
       ],
-      popular: false
+      popular: false,
     },
     {
       id: 'vaultmesh-pro',
@@ -44,9 +44,9 @@ export default function PaymentPortal() {
         'Real-time blockchain sync',
         'Premium analytics dashboard',
         'Priority support',
-        'Full API access'
+        'Full API access',
       ],
-      popular: true
+      popular: true,
     },
     {
       id: 'faa-enterprise',
@@ -58,38 +58,38 @@ export default function PaymentPortal() {
         'HotStack integration',
         'Seedwave™ Admin Portal',
         'White-label options',
-        'Dedicated support'
+        'Dedicated support',
       ],
-      popular: false
-    }
-  ]
+      popular: false,
+    },
+  ];
 
   // Auto-select plan based on product price
   useEffect(() => {
-    const productPrice = parseFloat(price)
-    const matchingPlan = pricingPlans.find(plan => plan.price === productPrice)
+    const productPrice = parseFloat(price);
+    const matchingPlan = pricingPlans.find((plan) => plan.price === productPrice);
     if (matchingPlan) {
-      setSelectedPlan(matchingPlan.id)
+      setSelectedPlan(matchingPlan.id);
     } else {
       // Default to closest price tier
-      if (productPrice <= 29.99) setSelectedPlan('minenest-basic')
-      else if (productPrice <= 89.99) setSelectedPlan('vaultmesh-pro')
-      else setSelectedPlan('faa-enterprise')
+      if (productPrice <= 29.99) setSelectedPlan('minenest-basic');
+      else if (productPrice <= 89.99) setSelectedPlan('vaultmesh-pro');
+      else setSelectedPlan('faa-enterprise');
     }
-  }, [price])
+  }, [price]);
 
   const handlePayment = async (planId: string) => {
-    setProcessing(true)
-    const plan = pricingPlans.find(p => p.id === planId)
-    
+    setProcessing(true);
+    const plan = pricingPlans.find((p) => p.id === planId);
+
     if (!plan) {
       toast({
-        title: "Error",
-        description: "Selected plan not found",
-        variant: "destructive"
-      })
-      setProcessing(false)
-      return
+        title: 'Error',
+        description: 'Selected plan not found',
+        variant: 'destructive',
+      });
+      setProcessing(false);
+      return;
     }
 
     try {
@@ -103,46 +103,42 @@ export default function PaymentPortal() {
           currency: 'USD',
           productId: productId,
           productName: productName,
-          category: category
-        })
-      })
+          category: category,
+        }),
+      });
 
       if (response.ok) {
-        const paymentData = await response.json()
-        
+        const paymentData = await response.json();
+
         toast({
-          title: "Payment Successful!",
+          title: 'Payment Successful!',
           description: `${plan.name} purchased successfully. Deploying to production...`,
-        })
+        });
 
         // Redirect to success page or back to portal
         setTimeout(() => {
-          window.location.href = `/payment/success?paymentId=${paymentData.id}`
-        }, 2000)
+          window.location.href = `/payment/success?paymentId=${paymentData.id}`;
+        }, 2000);
       } else {
-        throw new Error('Payment failed')
+        throw new Error('Payment failed');
       }
     } catch (error) {
       toast({
-        title: "Payment Failed",
-        description: "Please try again or contact support",
-        variant: "destructive"
-      })
+        title: 'Payment Failed',
+        description: 'Please try again or contact support',
+        variant: 'destructive',
+      });
     } finally {
-      setProcessing(false)
+      setProcessing(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={() => window.history.back()}
-          >
+          <Button variant="outline" size="sm" onClick={() => window.history.back()}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
@@ -174,11 +170,11 @@ export default function PaymentPortal() {
         {/* Pricing Plans */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {pricingPlans.map((plan) => (
-            <Card 
-              key={plan.id} 
+            <Card
+              key={plan.id}
               className={`cursor-pointer transition-all ${
-                selectedPlan === plan.id 
-                  ? 'ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-900/20' 
+                selectedPlan === plan.id
+                  ? 'ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-900/20'
                   : 'hover:shadow-lg'
               } ${plan.popular ? 'border-purple-500' : ''}`}
               onClick={() => setSelectedPlan(plan.id)}
@@ -210,7 +206,7 @@ export default function PaymentPortal() {
                     </div>
                   ))}
                 </div>
-                <Button 
+                <Button
                   className={`w-full mt-6 ${selectedPlan === plan.id ? 'bg-blue-600' : ''}`}
                   onClick={() => handlePayment(plan.id)}
                   disabled={processing}
@@ -242,7 +238,8 @@ export default function PaymentPortal() {
                   Secure Payment Processing
                 </h4>
                 <p className="text-sm text-green-600 dark:text-green-300">
-                  All payments are processed through encrypted channels with automatic deployment to production servers after successful payment.
+                  All payments are processed through encrypted channels with automatic deployment to
+                  production servers after successful payment.
                 </p>
               </div>
             </div>
@@ -250,5 +247,5 @@ export default function PaymentPortal() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

@@ -1,6 +1,6 @@
 /**
  * Logging Middleware - Structured logging with Winston
- * 
+ *
  * Provides structured JSON logging for:
  * - HTTP requests/responses
  * - Application events
@@ -68,16 +68,16 @@ function formatForConsole(entry: LogEntry): string {
     debug: '\x1b[90m',
   };
   const reset = '\x1b[0m';
-  
+
   const levelColor = colors[entry.level];
   const levelStr = entry.level.toUpperCase().padEnd(5);
-  
+
   let output = `${levelColor}${levelStr}${reset} ${entry.timestamp} ${entry.message}`;
-  
+
   if (entry.context && Object.keys(entry.context).length > 0) {
     output += `\n${JSON.stringify(entry.context, null, 2)}`;
   }
-  
+
   return output;
 }
 
@@ -120,11 +120,11 @@ export class Logger {
 
   error(message: string, error?: Error | any, metadata?: Record<string, any>) {
     const context: Record<string, any> = { ...metadata };
-    
+
     if (this.context) {
       context.component = this.context;
     }
-    
+
     if (error) {
       context.error = {
         message: error.message,
@@ -132,7 +132,7 @@ export class Logger {
         ...error,
       };
     }
-    
+
     writeLog(createLogEntry('error', message, context));
   }
 
@@ -191,12 +191,11 @@ export function loggingMiddleware(req: Request, res: Response, next: NextFunctio
   // Log response
   res.on('finish', () => {
     const duration = Date.now() - startTime;
-    const level: LogLevel = res.statusCode >= 500 ? 'error' 
-      : res.statusCode >= 400 ? 'warn' 
-      : 'info';
+    const level: LogLevel =
+      res.statusCode >= 500 ? 'error' : res.statusCode >= 400 ? 'warn' : 'info';
 
     const message = `${req.method} ${req.path} ${res.statusCode} - ${duration}ms`;
-    
+
     const context = {
       requestId,
       method: req.method,

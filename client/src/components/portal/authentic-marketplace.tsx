@@ -4,9 +4,24 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { Crown, Star, Search, Filter, ShoppingCart, Zap, CheckCircle, TrendingUp } from 'lucide-react';
+import {
+  Crown,
+  Star,
+  Search,
+  Filter,
+  ShoppingCart,
+  Zap,
+  CheckCircle,
+  TrendingUp,
+} from 'lucide-react';
 import { motion } from 'framer-motion';
 
 type Brand = {
@@ -34,27 +49,28 @@ export function AuthenticMarketplace() {
   const [searchTerm, setSearchTerm] = useState('');
   const [priceRange, setPriceRange] = useState<string>('all');
 
-  const { data: sectors = [] } = useQuery<Sector[]>({ 
-    queryKey: ['/api/sectors'] 
+  const { data: sectors = [] } = useQuery<Sector[]>({
+    queryKey: ['/api/sectors'],
   });
 
-  const { data: brands = [] } = useQuery<Brand[]>({ 
-    queryKey: ['/api/brands'] 
+  const { data: brands = [] } = useQuery<Brand[]>({
+    queryKey: ['/api/brands'],
   });
 
   // Filter brands based on selection criteria
-  const filteredBrands = brands.filter(brand => {
-    const matchesSearch = brand.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         brand.description.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesSector = selectedSector === 'all' || 
-                         brand.sectorId.toString() === selectedSector;
-    
+  const filteredBrands = brands.filter((brand) => {
+    const matchesSearch =
+      brand.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      brand.description.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesSector = selectedSector === 'all' || brand.sectorId.toString() === selectedSector;
+
     const hasValidPricing = brand.metadata?.pricing?.monthly && brand.metadata?.pricing?.annual;
-    
+
     let matchesPriceRange = true;
     if (priceRange !== 'all' && hasValidPricing) {
-      const price = billingCycle === 'monthly' ? brand.metadata.pricing.monthly : brand.metadata.pricing.annual;
+      const price =
+        billingCycle === 'monthly' ? brand.metadata.pricing.monthly : brand.metadata.pricing.annual;
       switch (priceRange) {
         case 'under100':
           matchesPriceRange = price < 100;
@@ -70,33 +86,36 @@ export function AuthenticMarketplace() {
           break;
       }
     }
-    
+
     return matchesSearch && matchesSector && hasValidPricing && matchesPriceRange;
   });
 
   // Group brands by sector for better display
-  const brandsBySector = filteredBrands.reduce((acc, brand) => {
-    const sector = sectors.find(s => s.id === brand.sectorId);
-    const sectorName = sector?.name || 'Unknown Sector';
-    if (!acc[sectorName]) {
-      acc[sectorName] = [];
-    }
-    acc[sectorName].push(brand);
-    return acc;
-  }, {} as Record<string, Brand[]>);
+  const brandsBySector = filteredBrands.reduce(
+    (acc, brand) => {
+      const sector = sectors.find((s) => s.id === brand.sectorId);
+      const sectorName = sector?.name || 'Unknown Sector';
+      if (!acc[sectorName]) {
+        acc[sectorName] = [];
+      }
+      acc[sectorName].push(brand);
+      return acc;
+    },
+    {} as Record<string, Brand[]>
+  );
 
   const formatPrice = (brand: Brand) => {
     const pricing = brand.metadata?.pricing;
     if (!pricing) return { display: '$79.99', period: '/month' };
-    
+
     const price = billingCycle === 'monthly' ? pricing.monthly : pricing.annual;
     const period = billingCycle === 'monthly' ? '/month' : '/year';
-    
+
     return {
       display: `$${price.toFixed(2)}`,
       period,
       savings: billingCycle === 'annual' ? pricing.savingsText : null,
-      monthlyEquivalent: billingCycle === 'annual' ? pricing.monthlyEquivalent : null
+      monthlyEquivalent: billingCycle === 'annual' ? pricing.monthlyEquivalent : null,
     };
   };
 
@@ -141,7 +160,8 @@ export function AuthenticMarketplace() {
           🛒 Fruitful Global Marketplace
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-          Discover {brands.length} premium brand solutions across {sectors.length} sectors with authentic VaultMesh™ integration and real-time pricing.
+          Discover {brands.length} premium brand solutions across {sectors.length} sectors with
+          authentic VaultMesh™ integration and real-time pricing.
         </p>
       </motion.div>
 
@@ -170,7 +190,7 @@ export function AuthenticMarketplace() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Sectors</SelectItem>
-            {sectors.map(sector => (
+            {sectors.map((sector) => (
               <SelectItem key={sector.id} value={sector.id.toString()}>
                 {sector.name}
               </SelectItem>
@@ -193,10 +213,18 @@ export function AuthenticMarketplace() {
         </Select>
 
         {/* Billing Cycle */}
-        <Tabs value={billingCycle} onValueChange={(value) => setBillingCycle(value as 'monthly' | 'annual')} className="w-full">
+        <Tabs
+          value={billingCycle}
+          onValueChange={(value) => setBillingCycle(value as 'monthly' | 'annual')}
+          className="w-full"
+        >
           <TabsList className="w-full">
-            <TabsTrigger value="monthly" className="flex-1">Monthly</TabsTrigger>
-            <TabsTrigger value="annual" className="flex-1">Annual</TabsTrigger>
+            <TabsTrigger value="monthly" className="flex-1">
+              Monthly
+            </TabsTrigger>
+            <TabsTrigger value="annual" className="flex-1">
+              Annual
+            </TabsTrigger>
           </TabsList>
         </Tabs>
       </motion.div>
@@ -237,18 +265,23 @@ export function AuthenticMarketplace() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {sectorBrands.slice(0, 6).map((brand, brandIndex) => {
                 const priceInfo = formatPrice(brand);
-                const features = brand.metadata?.pricing?.features || ['VaultMesh™ Integration', 'Standard Support'];
-                
+                const features = brand.metadata?.pricing?.features || [
+                  'VaultMesh™ Integration',
+                  'Standard Support',
+                ];
+
                 return (
                   <motion.div
                     key={brand.id}
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.8 + (brandIndex * 0.1) }}
+                    transition={{ delay: 0.8 + brandIndex * 0.1 }}
                   >
                     <Card className="relative h-full hover:shadow-xl transition-all duration-300 group">
                       {/* Tier Badge */}
-                      <div className={`absolute top-4 right-4 px-2 py-1 rounded-full ${getTierColor(brand.tier)} text-white text-xs font-bold flex items-center gap-1`}>
+                      <div
+                        className={`absolute top-4 right-4 px-2 py-1 rounded-full ${getTierColor(brand.tier)} text-white text-xs font-bold flex items-center gap-1`}
+                      >
                         {getTierBadge(brand.tier)}
                         {brand.tier?.toUpperCase() || 'STANDARD'}
                       </div>
@@ -257,7 +290,7 @@ export function AuthenticMarketplace() {
                         <CardTitle className="text-lg font-bold flex items-start justify-between">
                           <span className="flex-1 pr-2">{brand.name}</span>
                         </CardTitle>
-                        
+
                         {/* Pricing */}
                         <div className="space-y-1">
                           <div className="text-3xl font-bold text-blue-600">
@@ -303,7 +336,10 @@ export function AuthenticMarketplace() {
                           <Button variant="outline" size="sm" className="text-xs">
                             View Details
                           </Button>
-                          <Button size="sm" className="text-xs bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700">
+                          <Button
+                            size="sm"
+                            className="text-xs bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+                          >
                             <ShoppingCart className="w-3 h-3 mr-1" />
                             Add to Cart
                           </Button>
@@ -329,11 +365,7 @@ export function AuthenticMarketplace() {
 
       {/* No Results */}
       {filteredBrands.length === 0 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center py-12"
-        >
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12">
           <div className="text-6xl mb-4">🔍</div>
           <h3 className="text-xl font-semibold mb-2">No products found</h3>
           <p className="text-gray-600 dark:text-gray-400">

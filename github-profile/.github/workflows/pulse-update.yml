@@ -1,0 +1,126 @@
+name: 🌊 Ecosystem Pulse Update
+
+on:
+  schedule:
+    # Run every minute (GitHub Actions minimum interval)
+    # Note: Actual 9-second pulse precision happens at the API level,
+    # this workflow updates the profile README with latest data every minute
+    - cron: '*/1 * * * *'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-pulse:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Fetch Latest Pulse
+        id: fetch-pulse
+        run: |
+          echo "🌊 Fetching latest ecosystem pulse..."
+          
+          # Fetch pulse from FruitfulPlanetChange API
+          PULSE_DATA=$(curl -s https://fruitfulplanetchange.faa.zone/api/banimal/pulse/latest || echo '{}')
+          
+          # Extract key metrics
+          SIGNAL_STRENGTH=$(echo $PULSE_DATA | jq -r '.signal_strength // 0')
+          TIMESTAMP=$(echo $PULSE_DATA | jq -r '.timestamp // "N/A"')
+          ACTIVE_SECTORS=$(echo $PULSE_DATA | jq -r '.active_sectors | length // 0')
+          VAULT_IDS=$(echo $PULSE_DATA | jq -r '.vault_ids | length // 0')
+          
+          echo "signal_strength=$SIGNAL_STRENGTH" >> $GITHUB_OUTPUT
+          echo "timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
+          echo "active_sectors=$ACTIVE_SECTORS" >> $GITHUB_OUTPUT
+          echo "vault_ids=$VAULT_IDS" >> $GITHUB_OUTPUT
+          
+          echo "✅ Pulse fetched: Signal $SIGNAL_STRENGTH%, $ACTIVE_SECTORS sectors, $VAULT_IDS vaults"
+          
+      - name: Update README
+        env:
+          SIGNAL_STRENGTH: ${{ steps.fetch-pulse.outputs.signal_strength }}
+          TIMESTAMP: ${{ steps.fetch-pulse.outputs.timestamp }}
+          ACTIVE_SECTORS: ${{ steps.fetch-pulse.outputs.active_sectors }}
+          VAULT_IDS: ${{ steps.fetch-pulse.outputs.vault_ids }}
+        run: |
+          echo "📝 Updating README with pulse data..."
+          
+          # Format timestamp
+          if [ "$TIMESTAMP" != "N/A" ]; then
+            FORMATTED_TIME=$(date -d "$TIMESTAMP" "+%Y-%m-%d %H:%M:%S UTC" 2>/dev/null || echo "$TIMESTAMP")
+          else
+            FORMATTED_TIME="Waiting for pulse..."
+          fi
+          
+          # Update README.md
+          sed -i "s/> \*\*Last Pulse:\*\* \`\[AUTO-UPDATED EVERY 9 SECONDS\]\`/> **Last Pulse:** \`$FORMATTED_TIME\`/" README.md
+          sed -i "s/> \*\*Signal Strength:\*\* \`[0-9]*%\`/> **Signal Strength:** \`$SIGNAL_STRENGTH%\`/" README.md
+          
+          # Update status badge
+          if [ "$SIGNAL_STRENGTH" -ge 90 ]; then
+            STATUS="OPERATIONAL"
+            STATUS_COLOR="success"
+          elif [ "$SIGNAL_STRENGTH" -ge 70 ]; then
+            STATUS="DEGRADED"
+            STATUS_COLOR="yellow"
+          else
+            STATUS="OFFLINE"
+            STATUS_COLOR="critical"
+          fi
+          
+          sed -i "s/> \*\*Status:\*\* \`[A-Z]*\`/> **Status:** \`$STATUS\`/" README.md
+          
+          # Update vault health bars
+          VAULT_PERCENT=$((SIGNAL_STRENGTH))
+          CODENEST_PERCENT=85
+          SEEDWAVE_PERCENT=95
+          JARGON_PERCENT=100
+          
+          VAULT_BARS=$(printf '█%.0s' $(seq 1 $((VAULT_PERCENT/5))))
+          VAULT_BARS="${VAULT_BARS}$(printf '░%.0s' $(seq 1 $((20-VAULT_PERCENT/5))))"
+          
+          sed -i "s/VaultTrace™ Network: .*$/VaultTrace™ Network: $VAULT_BARS $VAULT_PERCENT%/" README.md
+          
+          echo "✅ README updated successfully"
+          
+      - name: Commit Changes
+        run: |
+          git config user.name "Seedwave Bot"
+          git config user.email "seedwave@faa.zone"
+          
+          # Check if there are changes
+          if git diff --quiet; then
+            echo "ℹ️ No changes to commit"
+            exit 0
+          fi
+          
+          git add README.md
+          git commit -m "🌊 Pulse update: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          
+      - name: Push Changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+          
+      - name: Pulse Summary
+        run: |
+          echo "## 🌊 Ecosystem Pulse Update Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Signal Strength:** ${{ steps.fetch-pulse.outputs.signal_strength }}%" >> $GITHUB_STEP_SUMMARY
+          echo "- **Active Sectors:** ${{ steps.fetch-pulse.outputs.active_sectors }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Vault IDs:** ${{ steps.fetch-pulse.outputs.vault_ids }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Last Update:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Profile README updated successfully!" >> $GITHUB_STEP_SUMMARY

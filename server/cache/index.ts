@@ -1,6 +1,6 @@
 /**
  * Cache Layer
- * 
+ *
  * Redis-based caching with fallback to in-memory cache
  */
 
@@ -48,7 +48,7 @@ class MemoryCache implements Cache {
   }
 
   async set(key: string, value: any, ttl: number = redisConfig.ttl): Promise<void> {
-    const expiresAt = Date.now() + (ttl * 1000);
+    const expiresAt = Date.now() + ttl * 1000;
     memoryCache.set(key, { value, expiresAt });
   }
 

@@ -62,10 +62,8 @@ import { app } from '../server';
 
 describe('API Integration', () => {
   it('should create and retrieve user', async () => {
-    const response = await request(app)
-      .post('/api/users')
-      .send({ email: 'test@example.com' });
-    
+    const response = await request(app).post('/api/users').send({ email: 'test@example.com' });
+
     expect(response.status).toBe(201);
   });
 });
@@ -83,7 +81,7 @@ test('user can log in', async ({ page }) => {
   await page.fill('[name="email"]', 'user@example.com');
   await page.fill('[name="password"]', 'password');
   await page.click('button[type="submit"]');
-  
+
   await expect(page).toHaveURL('/dashboard');
 });
 ```
@@ -91,11 +89,13 @@ test('user can log in', async ({ page }) => {
 ## Test Coverage
 
 Aim for:
+
 - **Unit Tests**: 80%+ coverage
 - **Integration Tests**: Critical paths
 - **E2E Tests**: Key user flows
 
 View coverage report:
+
 ```bash
 pnpm test:coverage
 open coverage/index.html
@@ -115,6 +115,7 @@ open coverage/index.html
 ## Continuous Integration
 
 Tests run automatically on:
+
 - Pull requests
 - Pushes to main/develop
 - Before deployment

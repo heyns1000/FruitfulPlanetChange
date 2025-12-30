@@ -1,6 +1,6 @@
 /**
  * Health Check Routes
- * 
+ *
  * Provides liveness and readiness probes for Kubernetes and monitoring
  */
 
@@ -36,7 +36,7 @@ async function checkDatabase(): Promise<HealthCheck> {
     const client = await pool.connect();
     await client.query('SELECT 1');
     client.release();
-    
+
     return {
       status: 'healthy',
       message: 'Database connection successful',
@@ -56,7 +56,7 @@ async function checkDatabase(): Promise<HealthCheck> {
 function checkMemory(): HealthCheck {
   const memUsage = process.memoryUsage();
   const heapUsedPercent = (memUsage.heapUsed / memUsage.heapTotal) * 100;
-  
+
   if (heapUsedPercent > 90) {
     return {
       status: 'unhealthy',
@@ -68,7 +68,7 @@ function checkMemory(): HealthCheck {
       message: `Elevated memory usage: ${heapUsedPercent.toFixed(1)}%`,
     };
   }
-  
+
   return {
     status: 'healthy',
     message: `Memory usage: ${heapUsedPercent.toFixed(1)}%`,
