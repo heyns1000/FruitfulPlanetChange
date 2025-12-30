@@ -23,16 +23,16 @@ This repo features:
 
 ## 📁 Directory Structure
 
-| 📄 Filename                                     | 📝 Description                                          |
-|-------------------------------------------------|--------------------------------------------------------|
-| `faa_zone_minutes_of_meeting.html`              | 🕒 General meeting minutes                             |
-| `firebase_core_minutes.html`                    | 🔥 Firebase integration notes                          |
-| `paypal.html`, `paypal_setup.html`              | 💸 PayPal integration & setup guides                   |
-| `xero_integration_minutes.html`                 | 📊 Xero integration minutes                            |
-| `fruitful_seedwave_deployment_manual.html`      | 🌱 Seedwave deployment manual                          |
-| `manual.html`                                   | 📚 General Vlegal/how-to manual                        |
-| `index.html`                                    | 🏠 Main documentation index                            |
-| ...                                             | 🌍 More partner docs, NDAs, and advanced setups        |
+| 📄 Filename                                | 📝 Description                                  |
+| ------------------------------------------ | ----------------------------------------------- |
+| `faa_zone_minutes_of_meeting.html`         | 🕒 General meeting minutes                      |
+| `firebase_core_minutes.html`               | 🔥 Firebase integration notes                   |
+| `paypal.html`, `paypal_setup.html`         | 💸 PayPal integration & setup guides            |
+| `xero_integration_minutes.html`            | 📊 Xero integration minutes                     |
+| `fruitful_seedwave_deployment_manual.html` | 🌱 Seedwave deployment manual                   |
+| `manual.html`                              | 📚 General Vlegal/how-to manual                 |
+| `index.html`                               | 🏠 Main documentation index                     |
+| ...                                        | 🌍 More partner docs, NDAs, and advanced setups |
 
 > **Pro Tip:** Open `.html` files in your browser for the best experience!
 
@@ -81,7 +81,7 @@ This repo features:
 
 - Open an issue in this repository for help or to report missing docs.
 - Contact the maintainer: [heyns1000](https://github.com/heyns1000)....now please dont this is after the fact i dont do helplines my brother, u have a wonderful time do not download i u dont have the desire to battle, we are changing the world and dont have time for time wasters therefore we dont have time to pickup the imaginary phone when u call , because u to fucking lazy to read and try, so this is a very important message that u do not proceed without motive of change,
-and a lekker Black label !
+  and a lekker Black label !
 
 ---
 
@@ -91,4 +91,4 @@ This repository is **public** and intended for open documentation and knowledge 
 
 ---
 
-*Last updated: July 2025* 🌻 all rightts reserved myuniverse.ai
+_Last updated: July 2025_ 🌻 all rightts reserved myuniverse.ai

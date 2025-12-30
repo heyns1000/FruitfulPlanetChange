@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback } from 'react';
 
 interface SectorTransitionState {
   isTransitioning: boolean;
@@ -23,7 +23,7 @@ export function useSectorTransition() {
   }, []);
 
   const updateProgress = useCallback((progress: number) => {
-    setTransitionState(prev => ({
+    setTransitionState((prev) => ({
       ...prev,
       progress,
     }));

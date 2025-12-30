@@ -4,76 +4,154 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ExternalLink, ShoppingCart, DollarSign, TrendingUp, Users, Package, Star, Filter, Search, Crown, Zap, Globe, Truck } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  ExternalLink,
+  ShoppingCart,
+  DollarSign,
+  TrendingUp,
+  Users,
+  Package,
+  Star,
+  Filter,
+  Search,
+  Crown,
+  Zap,
+  Globe,
+  Truck,
+} from 'lucide-react';
 import { motion } from 'framer-motion';
 
 // Original V1-10 Sector Structure from HTML examples
 const sectorList = {
-  "agriculture": "🌱 Agriculture & Biotech",
-  "fsf": "🥦 Food, Soil & Farming", 
-  "banking": "🏦 Banking & Finance",
-  "creative": "🖋️ Creative Tech",
-  "logistics": "📦 Logistics & Packaging",
-  "education-ip": "📚 Education & IP",
-  "fashion": "✂ Fashion & Identity",
-  "gaming": "🎮 Gaming & Simulation",
-  "health": "🧠 Health & Hygiene",
-  "housing": "🏗️ Housing & Infrastructure",
-  "justice": "⚖ Justice & Ethics",
-  "knowledge": "📖 Knowledge & Archives",
-  "micromesh": "☰ Micro-Mesh Logistics",
-  "media": "🎬 Motion, Media & Sonic",
-  "nutrition": "✿ Nutrition & Food Chain",
-  "ai-logic": "🧠 AI, Logic & Grid",
-  "packaging": "📦 Packaging & Materials",
-  "quantum": "✴️ Quantum Protocols",
-  "ritual": "☯ Ritual & Culture",
-  "saas": "🔑 SaaS & Licensing",
-  "trade": "🧺 Trade Systems",
-  "utilities": "🔋 Utilities & Energy",
-  "voice": "🎙️ Voice & Audio",
-  "webless": "📡 Webless Tech & Nodes",
-  "nft": "🔁 NFT & Ownership",
-  "education-youth": "🎓 Education & Youth",
-  "zerowaste": "♻️ Zero Waste",
-  "professional": "🧾 Professional Services",
-  "payroll-mining": "🪙 Payroll Mining & Accounting",
-  "mining": "⛏️ Mining & Resources",
-  "wildlife": "🦁 Wildlife & Habitat",
-  "admin-panel": "⚙️ Admin Panel",
-  "global-index": "🌐 Global Brand Index"
+  agriculture: '🌱 Agriculture & Biotech',
+  fsf: '🥦 Food, Soil & Farming',
+  banking: '🏦 Banking & Finance',
+  creative: '🖋️ Creative Tech',
+  logistics: '📦 Logistics & Packaging',
+  'education-ip': '📚 Education & IP',
+  fashion: '✂ Fashion & Identity',
+  gaming: '🎮 Gaming & Simulation',
+  health: '🧠 Health & Hygiene',
+  housing: '🏗️ Housing & Infrastructure',
+  justice: '⚖ Justice & Ethics',
+  knowledge: '📖 Knowledge & Archives',
+  micromesh: '☰ Micro-Mesh Logistics',
+  media: '🎬 Motion, Media & Sonic',
+  nutrition: '✿ Nutrition & Food Chain',
+  'ai-logic': '🧠 AI, Logic & Grid',
+  packaging: '📦 Packaging & Materials',
+  quantum: '✴️ Quantum Protocols',
+  ritual: '☯ Ritual & Culture',
+  saas: '🔑 SaaS & Licensing',
+  trade: '🧺 Trade Systems',
+  utilities: '🔋 Utilities & Energy',
+  voice: '🎙️ Voice & Audio',
+  webless: '📡 Webless Tech & Nodes',
+  nft: '🔁 NFT & Ownership',
+  'education-youth': '🎓 Education & Youth',
+  zerowaste: '♻️ Zero Waste',
+  professional: '🧾 Professional Services',
+  'payroll-mining': '🪙 Payroll Mining & Accounting',
+  mining: '⛏️ Mining & Resources',
+  wildlife: '🦁 Wildlife & Habitat',
+  'admin-panel': '⚙️ Admin Panel',
+  'global-index': '🌐 Global Brand Index',
 };
 
 // Sample comprehensive brand data per sector (from original examples)
 const sampleBrands = {
-  agriculture: ['CropLink', 'SoilPulse', 'RootYield', 'AquaFarm', 'AgriMesh', 'GrowNode', 'GrainCast', 'SoilBank'],
-  banking: ['FinGrid', 'TradeAmp', 'LoopPay', 'TaxNova', 'VaultMaster', 'Gridwise', 'CrateDance', 'CashGlyph'],
-  logistics: ['CrateLogic', 'PackChain', 'SortFleet', 'RouteMesh', 'LogiStack', 'DeliveryX', 'CargoVault', 'PalletPath'],
-  creative: ['MediaGrid', 'StudioPath', 'SoundReel', 'EditFrame', 'MotionKit', 'GhostTrace', 'TalentMap', 'SignalVerse'],
-  saas: ['CloudLink', 'DataGrid', 'SyncCore', 'APIVault', 'CodeNest', 'DevStack', 'CloudFlow', 'DataSync']
+  agriculture: [
+    'CropLink',
+    'SoilPulse',
+    'RootYield',
+    'AquaFarm',
+    'AgriMesh',
+    'GrowNode',
+    'GrainCast',
+    'SoilBank',
+  ],
+  banking: [
+    'FinGrid',
+    'TradeAmp',
+    'LoopPay',
+    'TaxNova',
+    'VaultMaster',
+    'Gridwise',
+    'CrateDance',
+    'CashGlyph',
+  ],
+  logistics: [
+    'CrateLogic',
+    'PackChain',
+    'SortFleet',
+    'RouteMesh',
+    'LogiStack',
+    'DeliveryX',
+    'CargoVault',
+    'PalletPath',
+  ],
+  creative: [
+    'MediaGrid',
+    'StudioPath',
+    'SoundReel',
+    'EditFrame',
+    'MotionKit',
+    'GhostTrace',
+    'TalentMap',
+    'SignalVerse',
+  ],
+  saas: [
+    'CloudLink',
+    'DataGrid',
+    'SyncCore',
+    'APIVault',
+    'CodeNest',
+    'DevStack',
+    'CloudFlow',
+    'DataSync',
+  ],
 };
 
-// Licensing tiers from original structure  
+// Licensing tiers from original structure
 const licensingTiers = {
-  starter: { 
-    name: 'Starter License', 
+  starter: {
+    name: 'Starter License',
     price: 299,
     currency: 'R',
-    features: ['Basic branding rights', 'Single domain', 'Email support', '1 Brand Package'] 
+    features: ['Basic branding rights', 'Single domain', 'Email support', '1 Brand Package'],
   },
-  professional: { 
-    name: 'Professional License', 
+  professional: {
+    name: 'Professional License',
     price: 899,
-    currency: 'R', 
-    features: ['Full branding rights', 'Multiple domains', 'Priority support', 'API access', '5 Brand Packages'] 
+    currency: 'R',
+    features: [
+      'Full branding rights',
+      'Multiple domains',
+      'Priority support',
+      'API access',
+      '5 Brand Packages',
+    ],
   },
-  enterprise: { 
-    name: 'Enterprise License', 
+  enterprise: {
+    name: 'Enterprise License',
     price: 2499,
     currency: 'R',
-    features: ['Unlimited usage', 'White-label options', 'Dedicated support', 'Custom integrations', 'Unlimited Brand Packages', 'VaultMesh™ Integration'] 
-  }
+    features: [
+      'Unlimited usage',
+      'White-label options',
+      'Dedicated support',
+      'Custom integrations',
+      'Unlimited Brand Packages',
+      'VaultMesh™ Integration',
+    ],
+  },
 };
 
 export function FruitfulMarketplace() {
@@ -91,7 +169,7 @@ export function FruitfulMarketplace() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800">
       {/* Enhanced Hero Header */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white"
@@ -99,7 +177,7 @@ export function FruitfulMarketplace() {
         <div className="absolute inset-0 bg-black/10" />
         <div className="relative max-w-7xl mx-auto px-4 py-12">
           <div className="text-center space-y-6">
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2 }}
@@ -111,17 +189,18 @@ export function FruitfulMarketplace() {
               </h1>
               <Crown className="h-12 w-12 text-yellow-300" />
             </motion.div>
-            
-            <motion.p 
+
+            <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
               className="text-xl text-blue-100 max-w-3xl mx-auto"
             >
-              VaultMesh™ Powered Brand Ecosystem • Comprehensive Licensing Solutions • Global Commerce Platform
+              VaultMesh™ Powered Brand Ecosystem • Comprehensive Licensing Solutions • Global
+              Commerce Platform
             </motion.p>
-            
-            <motion.div 
+
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
@@ -150,7 +229,7 @@ export function FruitfulMarketplace() {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Pricing & Licensing Tiers */}
-        <motion.section 
+        <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
@@ -161,10 +240,11 @@ export function FruitfulMarketplace() {
               💰 Brand Package Pricing & VaultMesh™ Licensing
             </h2>
             <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Choose the perfect licensing tier for your business needs. All packages include VaultMesh™ integration and FAA.ZONE™ ecosystem access.
+              Choose the perfect licensing tier for your business needs. All packages include
+              VaultMesh™ integration and FAA.ZONE™ ecosystem access.
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-3 gap-8 mb-8">
             {Object.entries(licensingTiers).map(([key, tier], index) => (
               <motion.div
@@ -173,11 +253,13 @@ export function FruitfulMarketplace() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.9 + index * 0.1 }}
               >
-                <Card className={`relative overflow-hidden ${
-                  key === 'professional' 
-                    ? 'ring-2 ring-blue-500 transform scale-105 shadow-2xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20' 
-                    : 'hover:shadow-lg transition-shadow bg-white dark:bg-slate-800'
-                }`}>
+                <Card
+                  className={`relative overflow-hidden ${
+                    key === 'professional'
+                      ? 'ring-2 ring-blue-500 transform scale-105 shadow-2xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20'
+                      : 'hover:shadow-lg transition-shadow bg-white dark:bg-slate-800'
+                  }`}
+                >
                   {key === 'professional' && (
                     <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-center py-2 text-sm font-semibold">
                       ⭐ MOST POPULAR
@@ -189,7 +271,8 @@ export function FruitfulMarketplace() {
                       {key === 'enterprise' && <Crown className="h-6 w-6 text-yellow-500" />}
                     </CardTitle>
                     <div className="text-4xl font-bold text-blue-600">
-                      {tier.currency}{tier.price.toLocaleString()}
+                      {tier.currency}
+                      {tier.price.toLocaleString()}
                       <span className="text-lg font-normal text-gray-500">/month</span>
                     </div>
                   </CardHeader>
@@ -202,10 +285,10 @@ export function FruitfulMarketplace() {
                         </li>
                       ))}
                     </ul>
-                    <Button 
+                    <Button
                       className={`w-full ${
-                        key === 'professional' 
-                          ? 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700' 
+                        key === 'professional'
+                          ? 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'
                           : ''
                       }`}
                       variant={key === 'professional' ? 'default' : 'outline'}
@@ -238,7 +321,7 @@ export function FruitfulMarketplace() {
         </div>
 
         {/* Comprehensive Sector Grid */}
-        <motion.section 
+        <motion.section
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
@@ -271,7 +354,9 @@ export function FruitfulMarketplace() {
               <SelectContent>
                 <SelectItem value="all">All Sectors</SelectItem>
                 {Object.entries(sectorList).map(([key, name]) => (
-                  <SelectItem key={key} value={key}>{name}</SelectItem>
+                  <SelectItem key={key} value={key}>
+                    {name}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -280,18 +365,17 @@ export function FruitfulMarketplace() {
           {/* Sector Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {Object.entries(sectorList)
-              .filter(([key, name]) => 
-                selectedSector === 'all' || selectedSector === key
-              )
-              .filter(([key, name]) => 
-                searchQuery === '' || 
-                name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                key.toLowerCase().includes(searchQuery.toLowerCase())
+              .filter(([key, name]) => selectedSector === 'all' || selectedSector === key)
+              .filter(
+                ([key, name]) =>
+                  searchQuery === '' ||
+                  name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  key.toLowerCase().includes(searchQuery.toLowerCase())
               )
               .map(([key, name], index) => {
                 const brands = sampleBrands[key as keyof typeof sampleBrands] || ['Coming Soon'];
                 const brandCount = key === 'agriculture' ? 45 : Math.floor(Math.random() * 30) + 5;
-                
+
                 return (
                   <motion.div
                     key={key}
@@ -305,18 +389,17 @@ export function FruitfulMarketplace() {
                           <Badge variant="secondary" className="text-xs">
                             {brandCount} brands
                           </Badge>
-                          <div className="text-2xl">
-                            {name.split(' ')[0].charAt(0)}
-                          </div>
+                          <div className="text-2xl">{name.split(' ')[0].charAt(0)}</div>
                         </div>
-                        <CardTitle className="text-lg leading-tight">
-                          {name}
-                        </CardTitle>
+                        <CardTitle className="text-lg leading-tight">{name}</CardTitle>
                       </CardHeader>
                       <CardContent className="pt-0">
                         <div className="space-y-2 mb-4">
                           {brands.slice(0, 4).map((brand, i) => (
-                            <div key={i} className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                            <div
+                              key={i}
+                              className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300"
+                            >
                               <div className="w-1.5 h-1.5 bg-blue-500 rounded-full flex-shrink-0" />
                               <span className="truncate">{brand}</span>
                             </div>
@@ -331,9 +414,9 @@ export function FruitfulMarketplace() {
                           <div>Nodes: {Math.floor(brandCount * 1.5)}</div>
                           <div>Active: {Math.floor(brandCount * 0.8)}</div>
                         </div>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
+                        <Button
+                          variant="outline"
+                          size="sm"
                           className="w-full mt-4 hover:bg-blue-50 hover:border-blue-300"
                         >
                           View Packages
@@ -347,7 +430,7 @@ export function FruitfulMarketplace() {
         </motion.section>
 
         {/* Global Marketplace Features */}
-        <motion.section 
+        <motion.section
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.4 }}
@@ -366,24 +449,24 @@ export function FruitfulMarketplace() {
             {[
               {
                 icon: <Globe className="h-8 w-8 text-blue-500" />,
-                title: "Global Commerce",
-                description: "Access to worldwide brand licensing and marketplace integration"
+                title: 'Global Commerce',
+                description: 'Access to worldwide brand licensing and marketplace integration',
               },
               {
                 icon: <Zap className="h-8 w-8 text-yellow-500" />,
-                title: "Real-time Sync", 
-                description: "Live inventory tracking across all 6,005+ products and brands"
+                title: 'Real-time Sync',
+                description: 'Live inventory tracking across all 6,005+ products and brands',
               },
               {
                 icon: <Crown className="h-8 w-8 text-purple-500" />,
-                title: "VaultMesh™ Security",
-                description: "Enterprise-grade security and blockchain-verified transactions"
+                title: 'VaultMesh™ Security',
+                description: 'Enterprise-grade security and blockchain-verified transactions',
               },
               {
                 icon: <Truck className="h-8 w-8 text-green-500" />,
-                title: "Seamless Delivery",
-                description: "Integrated logistics with tracking across multiple shipping partners"
-              }
+                title: 'Seamless Delivery',
+                description: 'Integrated logistics with tracking across multiple shipping partners',
+              },
             ].map((feature, index) => (
               <motion.div
                 key={index}
@@ -392,13 +475,9 @@ export function FruitfulMarketplace() {
                 transition={{ delay: 1.5 + index * 0.1 }}
               >
                 <Card className="text-center p-6 hover:shadow-lg transition-shadow">
-                  <div className="flex justify-center mb-4">
-                    {feature.icon}
-                  </div>
+                  <div className="flex justify-center mb-4">{feature.icon}</div>
                   <h3 className="font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
-                    {feature.description}
-                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">{feature.description}</p>
                 </Card>
               </motion.div>
             ))}
@@ -412,18 +491,21 @@ export function FruitfulMarketplace() {
           transition={{ delay: 1.6 }}
           className="text-center bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl p-12 mb-8"
         >
-          <h2 className="text-4xl font-bold mb-4">
-            Ready to Join the Global Ecosystem?
-          </h2>
+          <h2 className="text-4xl font-bold mb-4">Ready to Join the Global Ecosystem?</h2>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Get started with Fruitful™ Brand Packages and unlock access to the world's most comprehensive licensing marketplace.
+            Get started with Fruitful™ Brand Packages and unlock access to the world's most
+            comprehensive licensing marketplace.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
               <Crown className="h-5 w-5 mr-2" />
               Start Free Trial
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-white text-white hover:bg-white/10"
+            >
               <ExternalLink className="h-5 w-5 mr-2" />
               View Live Demo
             </Button>

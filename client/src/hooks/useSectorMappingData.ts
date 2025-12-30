@@ -45,8 +45,8 @@ interface RelationshipMatrix {
       strength: number;
       type: string;
       bidirectional: boolean;
-    }
-  }
+    };
+  };
 }
 
 // Primary data management hook for sector mapping system
@@ -103,7 +103,7 @@ export function useSectorMappingData() {
           color: getNodeColorFromTier(sector.name),
           metadata: sector.metadata,
           dependencyCount: 0,
-          dependentCount: 0
+          dependentCount: 0,
         };
       });
 
@@ -123,17 +123,57 @@ export function useSectorMappingData() {
   // Generate relationships based on sector intelligence
   const generateIntelligentRelationships = useCallback(async (nodes: SectorNode[]) => {
     const relationships: SectorRelationship[] = [];
-    
+
     // Sector synergy mappings based on real business logic
     const sectorSynergies = {
-      'Creative Tech': ['Motion, Media & Sonic', 'Gaming & Simulation', 'Marketing & Branding', 'Fashion & Identity'],
-      'Agriculture & Biotech': ['Food, Soil & Farming', 'Sustainability & Impact', 'Health & Hygiene', 'Nutrition & Food Chain'],
-      'Banking & Finance': ['Mining & Resources', 'Professional Services', 'Tech Infrastructure', 'Payroll Mining & Accounting'],
-      'Logistics & Packaging': ['Trade Systems', 'Micro-Mesh Logistics', 'Packaging & Materials', 'Logistics & Operations'],
-      'AI, Logic & Grid': ['Tech Infrastructure', 'Gaming & Simulation', 'Creative Tech', 'Analytics & Insights'],
-      'Mining & Resources': ['Banking & Finance', 'Utilities & Energy', 'Tech Infrastructure', 'Sustainability & Impact'],
-      'Motion, Media & Sonic': ['Creative Tech', 'Marketing & Branding', 'Content Creation', 'Voice & Audio'],
-      'Health & Hygiene': ['Agriculture & Biotech', 'Food, Soil & Farming', 'Professional Services', 'Education & Youth']
+      'Creative Tech': [
+        'Motion, Media & Sonic',
+        'Gaming & Simulation',
+        'Marketing & Branding',
+        'Fashion & Identity',
+      ],
+      'Agriculture & Biotech': [
+        'Food, Soil & Farming',
+        'Sustainability & Impact',
+        'Health & Hygiene',
+        'Nutrition & Food Chain',
+      ],
+      'Banking & Finance': [
+        'Mining & Resources',
+        'Professional Services',
+        'Tech Infrastructure',
+        'Payroll Mining & Accounting',
+      ],
+      'Logistics & Packaging': [
+        'Trade Systems',
+        'Micro-Mesh Logistics',
+        'Packaging & Materials',
+        'Logistics & Operations',
+      ],
+      'AI, Logic & Grid': [
+        'Tech Infrastructure',
+        'Gaming & Simulation',
+        'Creative Tech',
+        'Analytics & Insights',
+      ],
+      'Mining & Resources': [
+        'Banking & Finance',
+        'Utilities & Energy',
+        'Tech Infrastructure',
+        'Sustainability & Impact',
+      ],
+      'Motion, Media & Sonic': [
+        'Creative Tech',
+        'Marketing & Branding',
+        'Content Creation',
+        'Voice & Audio',
+      ],
+      'Health & Hygiene': [
+        'Agriculture & Biotech',
+        'Food, Soil & Farming',
+        'Professional Services',
+        'Education & Youth',
+      ],
     };
 
     // Generate relationships based on synergies
@@ -141,16 +181,22 @@ export function useSectorMappingData() {
       for (let j = i + 1; j < nodes.length; j++) {
         const sourceNode = nodes[i];
         const targetNode = nodes[j];
-        
-        const sourceName = sourceNode.name.replace(/[🎬🌱🏦📦🖋️✂🎮🧠🏗️⚖📖☰🎙️✿🧠📦✴️☯🔑🧺🔋🎬📡🔁🎓♻️🧾🪙⛏️🦁⚙️]/g, '').trim();
-        const targetName = targetNode.name.replace(/[🎬🌱🏦📦🖋️✂🎮🧠🏗️⚖📖☰🎙️✿🧠📦✴️☯🔑🧺🔋🎬📡🔁🎓♻️🧾🪙⛏️🦁⚙️]/g, '').trim();
+
+        const sourceName = sourceNode.name
+          .replace(/[🎬🌱🏦📦🖋️✂🎮🧠🏗️⚖📖☰🎙️✿🧠📦✴️☯🔑🧺🔋🎬📡🔁🎓♻️🧾🪙⛏️🦁⚙️]/g, '')
+          .trim();
+        const targetName = targetNode.name
+          .replace(/[🎬🌱🏦📦🖋️✂🎮🧠🏗️⚖📖☰🎙️✿🧠📦✴️☯🔑🧺🔋🎬📡🔁🎓♻️🧾🪙⛏️🦁⚙️]/g, '')
+          .trim();
 
         let strength = 0;
         let relationshipType: SectorRelationship['type'] = 'collaboration';
-        
+
         // Check for direct synergies
-        if (sectorSynergies[sourceName]?.includes(targetName) || 
-            sectorSynergies[targetName]?.includes(sourceName)) {
+        if (
+          sectorSynergies[sourceName]?.includes(targetName) ||
+          sectorSynergies[targetName]?.includes(sourceName)
+        ) {
           strength = 0.7 + Math.random() * 0.3;
           relationshipType = 'synergy';
         }
@@ -160,8 +206,10 @@ export function useSectorMappingData() {
           relationshipType = 'collaboration';
         }
         // Cross-tier dependencies
-        else if ((sourceNode.tier === 'Enterprise' && targetNode.tier === 'Infrastructure') ||
-                 (sourceNode.tier === 'Infrastructure' && targetNode.tier === 'Professional')) {
+        else if (
+          (sourceNode.tier === 'Enterprise' && targetNode.tier === 'Infrastructure') ||
+          (sourceNode.tier === 'Infrastructure' && targetNode.tier === 'Professional')
+        ) {
           strength = 0.5 + Math.random() * 0.2;
           relationshipType = 'dependency';
         }
@@ -181,31 +229,31 @@ export function useSectorMappingData() {
             bidirectional: strength > 0.6,
             weight: Math.floor(strength * 10),
             createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date().toISOString(),
           });
         }
       }
     }
 
     // Update connection counts
-    const updatedNodes = nodes.map(node => {
-      const connections = relationships.filter(rel => 
-        rel.sourceId === node.id || rel.targetId === node.id
+    const updatedNodes = nodes.map((node) => {
+      const connections = relationships.filter(
+        (rel) => rel.sourceId === node.id || rel.targetId === node.id
       ).length;
-      
-      const dependencies = relationships.filter(rel => 
-        rel.targetId === node.id && rel.type === 'dependency'
+
+      const dependencies = relationships.filter(
+        (rel) => rel.targetId === node.id && rel.type === 'dependency'
       ).length;
-      
-      const dependents = relationships.filter(rel => 
-        rel.sourceId === node.id && rel.type === 'dependency'
+
+      const dependents = relationships.filter(
+        (rel) => rel.sourceId === node.id && rel.type === 'dependency'
       ).length;
 
       return {
         ...node,
         connections,
         dependencyCount: dependencies,
-        dependentCount: dependents
+        dependentCount: dependents,
       };
     });
 
@@ -216,7 +264,7 @@ export function useSectorMappingData() {
     try {
       await apiRequest('/api/sector-mapping/relationships/bulk', {
         method: 'POST',
-        body: { relationships }
+        body: { relationships },
       });
     } catch (error) {
       console.error('Failed to store relationships:', error);
@@ -228,14 +276,14 @@ export function useSectorMappingData() {
     mutationFn: async (relationship: SectorRelationship) => {
       const response = await apiRequest('/api/sector-mapping/relationships', {
         method: 'POST',
-        body: relationship
+        body: relationship,
       });
       return response;
     },
     onSuccess: (newRelationship) => {
-      setLocalRelationships(prev => [...prev, newRelationship]);
+      setLocalRelationships((prev) => [...prev, newRelationship]);
       queryClient.invalidateQueries({ queryKey: ['/api/sector-mapping/relationships'] });
-    }
+    },
   });
 
   // Update node
@@ -243,93 +291,97 @@ export function useSectorMappingData() {
     mutationFn: async (node: SectorNode) => {
       const response = await apiRequest(`/api/sector-mapping/nodes/${node.id}`, {
         method: 'PUT',
-        body: node
+        body: node,
       });
       return response;
     },
     onSuccess: (updatedNode) => {
-      setLocalNodes(prev => prev.map(node => 
-        node.id === updatedNode.id ? updatedNode : node
-      ));
-    }
+      setLocalNodes((prev) =>
+        prev.map((node) => (node.id === updatedNode.id ? updatedNode : node))
+      );
+    },
   });
 
   // Delete relationship
   const deleteRelationship = useMutation({
     mutationFn: async (relationshipId: string) => {
       await apiRequest(`/api/sector-mapping/relationships/${relationshipId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
       return relationshipId;
     },
     onSuccess: (deletedId) => {
-      setLocalRelationships(prev => prev.filter(rel => rel.id !== deletedId));
+      setLocalRelationships((prev) => prev.filter((rel) => rel.id !== deletedId));
       queryClient.invalidateQueries({ queryKey: ['/api/sector-mapping/relationships'] });
-    }
+    },
   });
 
   // Get dependency map for a specific sector
-  const getDependencyMap = useCallback((sectorId: number) => {
-    const dependencies: SectorNode[] = [];
-    const dependents: SectorNode[] = [];
-    
-    localRelationships.forEach(rel => {
-      if (rel.type === 'dependency') {
-        if (rel.sourceId === sectorId) {
-          const target = localNodes.find(n => n.id === rel.targetId);
-          if (target) dependencies.push(target);
+  const getDependencyMap = useCallback(
+    (sectorId: number) => {
+      const dependencies: SectorNode[] = [];
+      const dependents: SectorNode[] = [];
+
+      localRelationships.forEach((rel) => {
+        if (rel.type === 'dependency') {
+          if (rel.sourceId === sectorId) {
+            const target = localNodes.find((n) => n.id === rel.targetId);
+            if (target) dependencies.push(target);
+          }
+          if (rel.targetId === sectorId) {
+            const source = localNodes.find((n) => n.id === rel.sourceId);
+            if (source) dependents.push(source);
+          }
         }
-        if (rel.targetId === sectorId) {
-          const source = localNodes.find(n => n.id === rel.sourceId);
-          if (source) dependents.push(source);
-        }
-      }
-    });
-    
-    return { dependencies, dependents };
-  }, [localRelationships, localNodes]);
+      });
+
+      return { dependencies, dependents };
+    },
+    [localRelationships, localNodes]
+  );
 
   // Get strongest connections
-  const getStrongestConnections = useCallback((limit: number = 10) => {
-    return localRelationships
-      .sort((a, b) => b.strength - a.strength)
-      .slice(0, limit);
-  }, [localRelationships]);
+  const getStrongestConnections = useCallback(
+    (limit: number = 10) => {
+      return localRelationships.sort((a, b) => b.strength - a.strength).slice(0, limit);
+    },
+    [localRelationships]
+  );
 
   // Calculate network centrality
   const calculateNetworkCentrality = useCallback(() => {
     const centralityMap = new Map<number, number>();
-    
-    localNodes.forEach(node => {
+
+    localNodes.forEach((node) => {
       const connections = localRelationships.filter(
-        rel => rel.sourceId === node.id || rel.targetId === node.id
+        (rel) => rel.sourceId === node.id || rel.targetId === node.id
       ).length;
       centralityMap.set(node.id, connections);
     });
 
     return Array.from(centralityMap.entries())
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 10)
       .map(([nodeId, centrality]) => ({
-        node: localNodes.find(n => n.id === nodeId)!,
-        centrality
+        node: localNodes.find((n) => n.id === nodeId)!,
+        centrality,
       }));
   }, [localNodes, localRelationships]);
 
   // Generate relationship matrix
   const getRelationshipMatrix = useCallback((): RelationshipMatrix => {
     const matrix: RelationshipMatrix = {};
-    
-    localRelationships.forEach(rel => {
+
+    localRelationships.forEach((rel) => {
       const sourceKey = rel.sourceId.toString();
       const targetKey = rel.targetId.toString();
-      
+
       if (!matrix[sourceKey]) matrix[sourceKey] = {};
-      
+
       matrix[sourceKey][targetKey] = {
         strength: rel.strength,
         type: rel.type,
-        bidirectional: rel.bidirectional || false
+        bidirectional: rel.bidirectional || false,
       };
 
       // Handle bidirectional relationships
@@ -338,25 +390,25 @@ export function useSectorMappingData() {
         matrix[targetKey][sourceKey] = {
           strength: rel.strength,
           type: rel.type,
-          bidirectional: true
+          bidirectional: true,
         };
       }
     });
-    
+
     return matrix;
   }, [localRelationships]);
 
   // Get hierarchy data grouped by tiers
   const getHierarchyData = useCallback(() => {
     const hierarchy: { [tier: string]: SectorNode[] } = {};
-    
-    localNodes.forEach(node => {
+
+    localNodes.forEach((node) => {
       if (!hierarchy[node.tier]) {
         hierarchy[node.tier] = [];
       }
       hierarchy[node.tier].push(node);
     });
-    
+
     return hierarchy;
   }, [localNodes]);
 
@@ -369,21 +421,21 @@ export function useSectorMappingData() {
         networkDensity: 0,
         maxConnections: 0,
         isolatedNodes: 0,
-        lastCalculated: new Date().toISOString()
+        lastCalculated: new Date().toISOString(),
       };
     }
 
     const totalConnections = localRelationships.length;
     const maxPossibleConnections = (localNodes.length * (localNodes.length - 1)) / 2;
-    const connectionCounts = localNodes.map(node => node.connections);
-    
+    const connectionCounts = localNodes.map((node) => node.connections);
+
     return {
       totalConnections,
-      avgConnections: Math.round(totalConnections / localNodes.length * 10) / 10,
+      avgConnections: Math.round((totalConnections / localNodes.length) * 10) / 10,
       networkDensity: Math.round((totalConnections / maxPossibleConnections) * 100),
       maxConnections: Math.max(...connectionCounts, 0),
-      isolatedNodes: connectionCounts.filter(count => count === 0).length,
-      lastCalculated: new Date().toISOString()
+      isolatedNodes: connectionCounts.filter((count) => count === 0).length,
+      lastCalculated: new Date().toISOString(),
     };
   }, [localRelationships, localNodes]);
 
@@ -407,24 +459,24 @@ export function useSectorMappingData() {
     networkStats,
     isLoading: sectorsLoading || relationshipsLoading,
     isInitialized,
-    
+
     // Storage operations
     storeRelationship: storeRelationship.mutate,
     updateNode: updateNode.mutate,
     deleteRelationship: deleteRelationship.mutate,
-    
+
     // Analysis functions
     getDependencyMap,
     getStrongestConnections,
     calculateNetworkCentrality,
-    
+
     // Matrix and hierarchy operations
     getRelationshipMatrix,
     getHierarchyData,
-    
+
     // Cache management
     refreshCache,
-    clearCache
+    clearCache,
   };
 }
 
@@ -438,33 +490,33 @@ function getTierFromPricing(monthly: number): string {
 
 function getNodeColorFromTier(sectorName: string): string {
   const colorMap: Record<string, string> = {
-    'Mining': '#F59E0B',
-    'Agriculture': '#10B981',
-    'Banking': '#3B82F6',
-    'Health': '#EF4444',
-    'Education': '#8B5CF6',
-    'Creative': '#F97316',
-    'AI': '#06B6D4',
-    'Energy': '#84CC16',
-    'Logistics': '#6366F1',
-    'Tech': '#14B8A6'
+    Mining: '#F59E0B',
+    Agriculture: '#10B981',
+    Banking: '#3B82F6',
+    Health: '#EF4444',
+    Education: '#8B5CF6',
+    Creative: '#F97316',
+    AI: '#06B6D4',
+    Energy: '#84CC16',
+    Logistics: '#6366F1',
+    Tech: '#14B8A6',
   };
-  
-  const key = Object.keys(colorMap).find(k => sectorName.includes(k));
+
+  const key = Object.keys(colorMap).find((k) => sectorName.includes(k));
   return key ? colorMap[key] : '#6B7280';
 }
 
 function generateRelationshipDescription(
-  source: SectorNode, 
-  target: SectorNode, 
+  source: SectorNode,
+  target: SectorNode,
   type: SectorRelationship['type']
 ): string {
   const templates = {
     integration: `${source.emoji} ${source.name} integrates seamlessly with ${target.emoji} ${target.name}`,
     synergy: `Strategic synergy between ${source.emoji} ${source.name} and ${target.emoji} ${target.name}`,
     dependency: `${source.emoji} ${source.name} provides foundational support to ${target.emoji} ${target.name}`,
-    collaboration: `Active collaboration connecting ${source.emoji} ${source.name} with ${target.emoji} ${target.name}`
+    collaboration: `Active collaboration connecting ${source.emoji} ${source.name} with ${target.emoji} ${target.name}`,
   };
-  
+
   return templates[type] || `Connection between ${source.name} and ${target.name}`;
 }

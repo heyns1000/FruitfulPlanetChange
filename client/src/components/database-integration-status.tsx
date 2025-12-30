@@ -1,124 +1,136 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Database, Activity, CheckCircle, AlertTriangle, RefreshCw, Eye, Shield } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
-import { WildlifeProductModal } from "@/components/wildlife-product-modal"
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Database,
+  Activity,
+  CheckCircle,
+  AlertTriangle,
+  RefreshCw,
+  Eye,
+  Shield,
+} from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { WildlifeProductModal } from '@/components/wildlife-product-modal';
 
 export function DatabaseIntegrationStatus() {
-  const { toast } = useToast()
-  const queryClient = useQueryClient()
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // Real-time database queries showing live connection
   const { data: brands = [], isLoading: brandsLoading } = useQuery({
-    queryKey: ["/api/brands"],
+    queryKey: ['/api/brands'],
     refetchInterval: 10000, // Update every 10 seconds
-  })
+  });
 
-  const { data: sectors = [], isLoading: sectorsLoading, error: sectorsError } = useQuery({
-    queryKey: ["/api/sectors"],
+  const {
+    data: sectors = [],
+    isLoading: sectorsLoading,
+    error: sectorsError,
+  } = useQuery({
+    queryKey: ['/api/sectors'],
     refetchInterval: 10000,
     retry: 3,
-  })
+  });
 
   const { data: systemStatus = [] } = useQuery({
-    queryKey: ["/api/system-status"],
+    queryKey: ['/api/system-status'],
     refetchInterval: 5000, // Real-time monitoring
-  })
+  });
 
   const { data: dashboardStats = {} } = useQuery({
-    queryKey: ["/api/dashboard/stats"],
+    queryKey: ['/api/dashboard/stats'],
     refetchInterval: 30000,
-  })
+  });
 
   // Add direct legal documents query for accurate status
   const { data: legalDocuments = [] } = useQuery({
-    queryKey: ["/api/legal-documents"],
+    queryKey: ['/api/legal-documents'],
     refetchInterval: 15000,
-  })
+  });
 
   const handleViewDatabase = () => {
     toast({
-      title: "Database Access",
-      description: "Opening PostgreSQL database console in new tab...",
-    })
+      title: 'Database Access',
+      description: 'Opening PostgreSQL database console in new tab...',
+    });
     // In production, this would open the database console
-    console.log("🗃️ Opening PostgreSQL database console")
-  }
+    console.log('🗃️ Opening PostgreSQL database console');
+  };
 
   const handleRefreshData = () => {
-    queryClient.invalidateQueries({ queryKey: ["/api/brands"] })
-    queryClient.invalidateQueries({ queryKey: ["/api/sectors"] })
-    queryClient.invalidateQueries({ queryKey: ["/api/system-status"] })
-    queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] })
+    queryClient.invalidateQueries({ queryKey: ['/api/brands'] });
+    queryClient.invalidateQueries({ queryKey: ['/api/sectors'] });
+    queryClient.invalidateQueries({ queryKey: ['/api/system-status'] });
+    queryClient.invalidateQueries({ queryKey: ['/api/dashboard/stats'] });
     toast({
-      title: "Data Refresh",
-      description: "Refreshing all database connections and live data feeds...",
-    })
-  }
+      title: 'Data Refresh',
+      description: 'Refreshing all database connections and live data feeds...',
+    });
+  };
 
   const integrationStatus = [
     {
-      name: "Brands Database",
+      name: 'Brands Database',
       count: brands.length,
-      status: brands.length > 0 ? "connected" : "disconnected",
+      status: brands.length > 0 ? 'connected' : 'disconnected',
       description: `PostgreSQL table with ${brands.length} active brand records`,
-      table: "brands"
+      table: 'brands',
     },
     {
-      name: "Sectors Database", 
+      name: 'Sectors Database',
       count: dashboardStats.sectors || 48,
-      status: "connected",
+      status: 'connected',
       description: `PostgreSQL table with ${dashboardStats.sectors || 48} sector categories`,
-      table: "sectors"
+      table: 'sectors',
     },
     {
-      name: "System Status",
+      name: 'System Status',
       count: systemStatus.length,
-      status: systemStatus.length > 0 ? "connected" : "disconnected", 
+      status: systemStatus.length > 0 ? 'connected' : 'disconnected',
       description: `Live monitoring of ${systemStatus.length} system services`,
-      table: "system_status"
+      table: 'system_status',
     },
     {
-      name: "Legal Documents",
+      name: 'Legal Documents',
       count: legalDocuments.length,
-      status: legalDocuments.length > 0 ? "connected" : "disconnected",
-      description: "SecureSign™ VIP document management system",
-      table: "legal_documents"
+      status: legalDocuments.length > 0 ? 'connected' : 'disconnected',
+      description: 'SecureSign™ VIP document management system',
+      table: 'legal_documents',
     },
     {
-      name: "Payments System",
+      name: 'Payments System',
       count: dashboardStats.totalPayments || 0,
-      status: "connected",
-      description: "Transaction processing and payment records",
-      table: "payments"
+      status: 'connected',
+      description: 'Transaction processing and payment records',
+      table: 'payments',
     },
     {
-      name: "Media Projects",
+      name: 'Media Projects',
       count: dashboardStats.mediaProjects || 0,
-      status: "connected",
-      description: "Motion, Media & Sonic project database",
-      table: "media_projects"
+      status: 'connected',
+      description: 'Motion, Media & Sonic project database',
+      table: 'media_projects',
     },
     {
-      name: "Repositories",
+      name: 'Repositories',
       count: dashboardStats.repositories || 0,
-      status: "connected",
-      description: "Code repository and deployment tracking",
-      table: "repositories"
+      status: 'connected',
+      description: 'Code repository and deployment tracking',
+      table: 'repositories',
     },
     {
-      name: "Processing Engines",
+      name: 'Processing Engines',
       count: dashboardStats.processingEngines || 0,
-      status: "connected",
-      description: "AI processing and automation engines",
-      table: "processing_engines"
-    }
-  ]
+      status: 'connected',
+      description: 'AI processing and automation engines',
+      table: 'processing_engines',
+    },
+  ];
 
-  const connectedCount = integrationStatus.filter(item => item.status === "connected").length
-  const totalSystems = integrationStatus.length
+  const connectedCount = integrationStatus.filter((item) => item.status === 'connected').length;
+  const totalSystems = integrationStatus.length;
 
   return (
     <div className="space-y-6">
@@ -130,7 +142,8 @@ export function DatabaseIntegrationStatus() {
             PostgreSQL Database Integration
           </h2>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
-            Complete Seedwave portal connected to live PostgreSQL database with real-time data synchronization
+            Complete Seedwave portal connected to live PostgreSQL database with real-time data
+            synchronization
           </p>
         </div>
         <div className="flex gap-2">
@@ -171,7 +184,9 @@ export function DatabaseIntegrationStatus() {
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-green-600">{dashboardStats.totalElements || brands.length}</div>
+              <div className="text-2xl font-bold text-green-600">
+                {dashboardStats.totalElements || brands.length}
+              </div>
               <div className="text-sm text-green-600">Total Brand Records</div>
             </div>
           </div>
@@ -185,11 +200,11 @@ export function DatabaseIntegrationStatus() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-medium">{system.name}</CardTitle>
-                <Badge 
-                  variant={system.status === "connected" ? "default" : "destructive"}
+                <Badge
+                  variant={system.status === 'connected' ? 'default' : 'destructive'}
                   className="text-xs"
                 >
-                  {system.status === "connected" ? (
+                  {system.status === 'connected' ? (
                     <CheckCircle className="h-3 w-3 mr-1" />
                   ) : (
                     <AlertTriangle className="h-3 w-3 mr-1" />
@@ -204,9 +219,7 @@ export function DatabaseIntegrationStatus() {
                   <span className="text-sm text-gray-500">Records:</span>
                   <span className="font-semibold">{system.count.toLocaleString()}</span>
                 </div>
-                <p className="text-xs text-gray-600 dark:text-gray-400">
-                  {system.description}
-                </p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">{system.description}</p>
                 <div className="flex items-center gap-1 text-xs text-gray-500">
                   <Activity className="h-3 w-3" />
                   <span>Table: {system.table}</span>
@@ -236,7 +249,7 @@ export function DatabaseIntegrationStatus() {
                 {brands.length} records loaded
               </Badge>
             </div>
-            
+
             <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -246,7 +259,7 @@ export function DatabaseIntegrationStatus() {
                 {sectors.length} sectors active
               </Badge>
             </div>
-            
+
             <div className="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
@@ -260,5 +273,5 @@ export function DatabaseIntegrationStatus() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
