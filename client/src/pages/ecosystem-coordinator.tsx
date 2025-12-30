@@ -5,11 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
-import { 
-  Network, 
-  Activity, 
-  Globe, 
-  Zap, 
+import {
+  Network,
+  Activity,
+  Globe,
+  Zap,
   Target,
   TrendingUp,
   RefreshCw,
@@ -23,7 +23,7 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
-  XCircle
+  XCircle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CrossSectorHeatmap } from '@/components/heatmap/CrossSectorHeatmap';
@@ -176,11 +176,7 @@ export function EcosystemCoordinator() {
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <Button
-              variant="outline"
-              onClick={refreshAllData}
-              className="flex items-center gap-2"
-            >
+            <Button variant="outline" onClick={refreshAllData} className="flex items-center gap-2">
               <RefreshCw className="w-4 h-4" />
               Refresh
             </Button>
@@ -222,7 +218,9 @@ export function EcosystemCoordinator() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-purple-100">Connected Apps</p>
-                    <p className="text-3xl font-bold">{dashboardData.integrationRoadmap.connectedApps}</p>
+                    <p className="text-3xl font-bold">
+                      {dashboardData.integrationRoadmap.connectedApps}
+                    </p>
                   </div>
                   <Link2 className="w-8 h-8 text-purple-200" />
                 </div>
@@ -234,7 +232,9 @@ export function EcosystemCoordinator() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-orange-100">Data Integrity</p>
-                    <p className="text-3xl font-bold">{dashboardData.ecosystemHealth.dataIntegrity}%</p>
+                    <p className="text-3xl font-bold">
+                      {dashboardData.ecosystemHealth.dataIntegrity}%
+                    </p>
                   </div>
                   <Shield className="w-8 h-8 text-orange-200" />
                 </div>
@@ -287,12 +287,13 @@ export function EcosystemCoordinator() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {dashboardData && Object.entries(dashboardData.sectorBreakdown).map(([sector, count]) => (
-                        <div key={sector} className="flex items-center justify-between">
-                          <span className="capitalize font-medium">{sector}</span>
-                          <Badge variant="secondary">{count} sectors</Badge>
-                        </div>
-                      ))}
+                      {dashboardData &&
+                        Object.entries(dashboardData.sectorBreakdown).map(([sector, count]) => (
+                          <div key={sector} className="flex items-center justify-between">
+                            <span className="capitalize font-medium">{sector}</span>
+                            <Badge variant="secondary">{count} sectors</Badge>
+                          </div>
+                        ))}
                     </div>
                   </CardContent>
                 </Card>
@@ -314,15 +315,21 @@ export function EcosystemCoordinator() {
                         </div>
                         <div className="flex items-center justify-between">
                           <span>Connected Apps</span>
-                          <Badge variant="secondary">{dashboardData.integrationRoadmap.connectedApps}</Badge>
+                          <Badge variant="secondary">
+                            {dashboardData.integrationRoadmap.connectedApps}
+                          </Badge>
                         </div>
                         <div className="flex items-center justify-between">
                           <span>Pending Integrations</span>
-                          <Badge variant="outline">{dashboardData.integrationRoadmap.pendingIntegrations}</Badge>
+                          <Badge variant="outline">
+                            {dashboardData.integrationRoadmap.pendingIntegrations}
+                          </Badge>
                         </div>
                         <div className="flex items-center justify-between">
                           <span>Active Webhooks</span>
-                          <Badge className="bg-green-500">{dashboardData.integrationRoadmap.activeWebhooks}</Badge>
+                          <Badge className="bg-green-500">
+                            {dashboardData.integrationRoadmap.activeWebhooks}
+                          </Badge>
                         </div>
                       </div>
                     )}
@@ -342,7 +349,12 @@ export function EcosystemCoordinator() {
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
                           <span>System Status</span>
-                          <Badge className={cn("flex items-center gap-1", getStatusColor(dashboardData.ecosystemHealth.systemStatus))}>
+                          <Badge
+                            className={cn(
+                              'flex items-center gap-1',
+                              getStatusColor(dashboardData.ecosystemHealth.systemStatus)
+                            )}
+                          >
                             {getStatusIcon(dashboardData.ecosystemHealth.systemStatus)}
                             {dashboardData.ecosystemHealth.systemStatus}
                           </Badge>
@@ -350,13 +362,23 @@ export function EcosystemCoordinator() {
                         <div className="space-y-2">
                           <div className="flex items-center justify-between">
                             <span>Data Integrity</span>
-                            <span className="font-medium">{dashboardData.ecosystemHealth.dataIntegrity}%</span>
+                            <span className="font-medium">
+                              {dashboardData.ecosystemHealth.dataIntegrity}%
+                            </span>
                           </div>
-                          <Progress value={dashboardData.ecosystemHealth.dataIntegrity} className="h-2" />
+                          <Progress
+                            value={dashboardData.ecosystemHealth.dataIntegrity}
+                            className="h-2"
+                          />
                         </div>
                         <div className="flex items-center justify-between">
                           <span>Sync Status</span>
-                          <Badge className={cn("flex items-center gap-1", getStatusColor(dashboardData.ecosystemHealth.syncStatus))}>
+                          <Badge
+                            className={cn(
+                              'flex items-center gap-1',
+                              getStatusColor(dashboardData.ecosystemHealth.syncStatus)
+                            )}
+                          >
                             {getStatusIcon(dashboardData.ecosystemHealth.syncStatus)}
                             {dashboardData.ecosystemHealth.syncStatus}
                           </Badge>
@@ -383,15 +405,21 @@ export function EcosystemCoordinator() {
                         </div>
                         <div className="flex items-center justify-between">
                           <span>Dependency Chains</span>
-                          <Badge variant="secondary">{dashboardData.heatmapAnalytics.dependencyChains}</Badge>
+                          <Badge variant="secondary">
+                            {dashboardData.heatmapAnalytics.dependencyChains}
+                          </Badge>
                         </div>
                         <div className="flex items-center justify-between">
                           <span>Isolated Sectors</span>
-                          <Badge variant="outline">{dashboardData.heatmapAnalytics.isolatedSectors}</Badge>
+                          <Badge variant="outline">
+                            {dashboardData.heatmapAnalytics.isolatedSectors}
+                          </Badge>
                         </div>
                         <div className="flex items-center justify-between">
                           <span>Strongest Connections</span>
-                          <Badge className="bg-purple-500">{dashboardData.heatmapAnalytics.strongestConnections.length}</Badge>
+                          <Badge className="bg-purple-500">
+                            {dashboardData.heatmapAnalytics.strongestConnections.length}
+                          </Badge>
                         </div>
                       </div>
                     )}
@@ -415,25 +443,33 @@ export function EcosystemCoordinator() {
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <Card>
                       <CardContent className="p-4 text-center">
-                        <div className="text-2xl font-bold text-blue-600">{applicationsData.totalApplications}</div>
+                        <div className="text-2xl font-bold text-blue-600">
+                          {applicationsData.totalApplications}
+                        </div>
                         <div className="text-sm text-gray-600">Total Applications</div>
                       </CardContent>
                     </Card>
                     <Card>
                       <CardContent className="p-4 text-center">
-                        <div className="text-2xl font-bold text-green-600">{applicationsData.activeApplications}</div>
+                        <div className="text-2xl font-bold text-green-600">
+                          {applicationsData.activeApplications}
+                        </div>
                         <div className="text-sm text-gray-600">Active</div>
                       </CardContent>
                     </Card>
                     <Card>
                       <CardContent className="p-4 text-center">
-                        <div className="text-2xl font-bold text-blue-600">{applicationsData.deployedApplications}</div>
+                        <div className="text-2xl font-bold text-blue-600">
+                          {applicationsData.deployedApplications}
+                        </div>
                         <div className="text-sm text-gray-600">Deployed</div>
                       </CardContent>
                     </Card>
                     <Card>
                       <CardContent className="p-4 text-center">
-                        <div className="text-2xl font-bold text-yellow-600">{applicationsData.plannedApplications}</div>
+                        <div className="text-2xl font-bold text-yellow-600">
+                          {applicationsData.plannedApplications}
+                        </div>
                         <div className="text-sm text-gray-600">Planned</div>
                       </CardContent>
                     </Card>
@@ -448,11 +484,19 @@ export function EcosystemCoordinator() {
                   <CardContent>
                     <div className="space-y-4">
                       {applicationsData?.applications.map((app) => (
-                        <div key={app.id} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div
+                          key={app.id}
+                          className="flex items-center justify-between p-4 border rounded-lg"
+                        >
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
                               <h3 className="font-semibold">{app.name}</h3>
-                              <Badge className={cn("flex items-center gap-1", getStatusColor(app.status))}>
+                              <Badge
+                                className={cn(
+                                  'flex items-center gap-1',
+                                  getStatusColor(app.status)
+                                )}
+                              >
                                 {getStatusIcon(app.status)}
                                 {app.status}
                               </Badge>

@@ -39,8 +39,8 @@ interface RelationshipMatrix {
       strength: number;
       type: string;
       bidirectional: boolean;
-    }
-  }
+    };
+  };
 }
 
 // Storage service for sector relationship data with deep respect and handling
@@ -54,7 +54,7 @@ export class SectorRelationshipStorageService {
     avgConnections: 0,
     networkDensity: 0,
     maxConnections: 0,
-    isolatedNodes: 0
+    isolatedNodes: 0,
   };
 
   static getInstance(): SectorRelationshipStorageService {
@@ -96,19 +96,19 @@ export class SectorRelationshipStorageService {
   // Matrix operations with focused integration
   private async updateMatrix(): Promise<void> {
     this.matrix = {};
-    
+
     for (const relationship of this.relationships.values()) {
       const sourceKey = relationship.sourceId.toString();
       const targetKey = relationship.targetId.toString();
-      
+
       if (!this.matrix[sourceKey]) {
         this.matrix[sourceKey] = {};
       }
-      
+
       this.matrix[sourceKey][targetKey] = {
         strength: relationship.strength,
         type: relationship.type,
-        bidirectional: relationship.bidirectional || false
+        bidirectional: relationship.bidirectional || false,
       };
 
       // Handle bidirectional relationships
@@ -119,7 +119,7 @@ export class SectorRelationshipStorageService {
         this.matrix[targetKey][sourceKey] = {
           strength: relationship.strength,
           type: relationship.type,
-          bidirectional: true
+          bidirectional: true,
         };
       }
     }
@@ -129,40 +129,41 @@ export class SectorRelationshipStorageService {
   private async recalculateStats(): Promise<void> {
     const nodes = this.getAllNodes();
     const relationships = this.getAllRelationships();
-    
+
     if (nodes.length === 0) {
       this.stats = {
         totalConnections: 0,
         avgConnections: 0,
         networkDensity: 0,
         maxConnections: 0,
-        isolatedNodes: 0
+        isolatedNodes: 0,
       };
       return;
     }
 
     const connectionCounts = new Map<number, number>();
-    
+
     // Count connections per node
     for (const node of nodes) {
       connectionCounts.set(node.id, 0);
     }
-    
+
     for (const rel of relationships) {
       connectionCounts.set(rel.sourceId, (connectionCounts.get(rel.sourceId) || 0) + 1);
       connectionCounts.set(rel.targetId, (connectionCounts.get(rel.targetId) || 0) + 1);
     }
-    
+
     const counts = Array.from(connectionCounts.values());
     const totalConnections = relationships.length;
     const maxPossibleConnections = (nodes.length * (nodes.length - 1)) / 2;
-    
+
     this.stats = {
       totalConnections,
       avgConnections: totalConnections > 0 ? counts.reduce((a, b) => a + b, 0) / nodes.length : 0,
-      networkDensity: maxPossibleConnections > 0 ? (totalConnections / maxPossibleConnections) * 100 : 0,
+      networkDensity:
+        maxPossibleConnections > 0 ? (totalConnections / maxPossibleConnections) * 100 : 0,
       maxConnections: Math.max(...counts, 0),
-      isolatedNodes: counts.filter(count => count === 0).length
+      isolatedNodes: counts.filter((count) => count === 0).length,
     };
   }
 
@@ -178,14 +179,14 @@ export class SectorRelationshipStorageService {
   public getHierarchyTiers(): { [tier: string]: SectorNode[] } {
     const nodes = this.getAllNodes();
     const tiers: { [tier: string]: SectorNode[] } = {};
-    
+
     for (const node of nodes) {
       if (!tiers[node.tier]) {
         tiers[node.tier] = [];
       }
       tiers[node.tier].push(node);
     }
-    
+
     return tiers;
   }
 
@@ -197,10 +198,13 @@ export class SectorRelationshipStorageService {
   }
 
   // Sector dependency mapping
-  public getDependencies(sectorId: number): { dependencies: SectorNode[], dependents: SectorNode[] } {
+  public getDependencies(sectorId: number): {
+    dependencies: SectorNode[];
+    dependents: SectorNode[];
+  } {
     const dependencies: SectorNode[] = [];
     const dependents: SectorNode[] = [];
-    
+
     for (const rel of this.getAllRelationships()) {
       if (rel.type === 'dependency') {
         if (rel.sourceId === sectorId) {
@@ -213,7 +217,7 @@ export class SectorRelationshipStorageService {
         }
       }
     }
-    
+
     return { dependencies, dependents };
   }
 }
@@ -249,7 +253,7 @@ export function useSectorRelationshipStorage() {
         connections: Math.floor(Math.random() * 8) + 2,
         tier: getTierFromPricing(sector.metadata?.pricing?.monthly || 79.99),
         color: getNodeColor(sector.name),
-        metadata: sector.metadata
+        metadata: sector.metadata,
       }));
 
       // Store all nodes
@@ -259,7 +263,7 @@ export function useSectorRelationshipStorage() {
 
       // Generate intelligent relationships based on sector metadata
       await generateRelationships(nodes);
-      
+
       setIsInitialized(true);
     } catch (error) {
       console.error('Failed to initialize sector relationship storage:', error);
@@ -267,34 +271,38 @@ export function useSectorRelationshipStorage() {
   }, [sectors, storageService]);
 
   // Generate relationships with deep analysis
-  const generateRelationships = useCallback(async (nodes: SectorNode[]) => {
-    const relationships: SectorRelationship[] = [];
-    
-    for (let i = 0; i < nodes.length; i++) {
-      for (let j = i + 1; j < nodes.length; j++) {
-        const source = nodes[i];
-        const target = nodes[j];
-        
-        // Calculate relationship strength based on sector synergy
-        const strength = calculateSectorSynergy(source, target);
-        
-        if (strength > 0.3) { // Only store meaningful relationships
-          const relationship: SectorRelationship = {
-            sourceId: source.id,
-            targetId: target.id,
-            strength,
-            type: determineRelationshipType(source, target, strength),
-            description: generateRelationshipDescription(source, target),
-            bidirectional: strength > 0.7,
-            weight: Math.floor(strength * 10)
-          };
-          
-          relationships.push(relationship);
-          await storageService.storeRelationship(relationship);
+  const generateRelationships = useCallback(
+    async (nodes: SectorNode[]) => {
+      const relationships: SectorRelationship[] = [];
+
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const source = nodes[i];
+          const target = nodes[j];
+
+          // Calculate relationship strength based on sector synergy
+          const strength = calculateSectorSynergy(source, target);
+
+          if (strength > 0.3) {
+            // Only store meaningful relationships
+            const relationship: SectorRelationship = {
+              sourceId: source.id,
+              targetId: target.id,
+              strength,
+              type: determineRelationshipType(source, target, strength),
+              description: generateRelationshipDescription(source, target),
+              bidirectional: strength > 0.7,
+              weight: Math.floor(strength * 10),
+            };
+
+            relationships.push(relationship);
+            await storageService.storeRelationship(relationship);
+          }
         }
       }
-    }
-  }, [storageService]);
+    },
+    [storageService]
+  );
 
   // Storage operations with confident integration
   const storeRelationship = useMutation({
@@ -304,7 +312,7 @@ export function useSectorRelationshipStorage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['sector-relationships'] });
-    }
+    },
   });
 
   const updateNode = useMutation({
@@ -314,7 +322,7 @@ export function useSectorRelationshipStorage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['sector-nodes'] });
-    }
+    },
   });
 
   // Real-time data access with respectful handling
@@ -330,13 +338,19 @@ export function useSectorRelationshipStorage() {
     return storageService.getHierarchyTiers();
   }, [storageService]);
 
-  const getDependencyMap = useCallback((sectorId: number) => {
-    return storageService.getDependencies(sectorId);
-  }, [storageService]);
+  const getDependencyMap = useCallback(
+    (sectorId: number) => {
+      return storageService.getDependencies(sectorId);
+    },
+    [storageService]
+  );
 
-  const getStrongestConnections = useCallback((limit?: number) => {
-    return storageService.getStrongestConnections(limit);
-  }, [storageService]);
+  const getStrongestConnections = useCallback(
+    (limit?: number) => {
+      return storageService.getStrongestConnections(limit);
+    },
+    [storageService]
+  );
 
   return {
     // Core data
@@ -344,22 +358,22 @@ export function useSectorRelationshipStorage() {
     isLoading: sectorsLoading || !isInitialized,
     nodes: storageService.getAllNodes(),
     relationships: storageService.getAllRelationships(),
-    
+
     // Matrix operations
     relationshipMatrix: getRelationshipMatrix(),
     networkStats: getNetworkStats(),
     hierarchyData: getHierarchyData(),
-    
+
     // Mutations
     storeRelationship: storeRelationship.mutate,
     updateNode: updateNode.mutate,
-    
+
     // Analysis functions
     getDependencyMap,
     getStrongestConnections,
-    
+
     // Direct storage service access
-    storageService
+    storageService,
   };
 }
 
@@ -374,8 +388,16 @@ function getTierFromPricing(monthly: number): string {
 
 function getNodeColor(sectorName: string): string {
   const colors = [
-    '#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6',
-    '#06B6D4', '#F97316', '#84CC16', '#EC4899', '#6366F1'
+    '#3B82F6',
+    '#EF4444',
+    '#10B981',
+    '#F59E0B',
+    '#8B5CF6',
+    '#06B6D4',
+    '#F97316',
+    '#84CC16',
+    '#EC4899',
+    '#6366F1',
   ];
   const hash = sectorName.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
   return colors[hash % colors.length];
@@ -385,28 +407,38 @@ function calculateSectorSynergy(source: SectorNode, target: SectorNode): number 
   // Sophisticated synergy calculation based on sector characteristics
   const sectorSynergies: { [key: string]: string[] } = {
     'Creative Tech': ['Motion, Media & Sonic', 'Gaming & Simulation', 'Marketing & Branding'],
-    'Agriculture & Biotech': ['Food, Soil & Farming', 'Sustainability & Impact', 'Health & Hygiene'],
+    'Agriculture & Biotech': [
+      'Food, Soil & Farming',
+      'Sustainability & Impact',
+      'Health & Hygiene',
+    ],
     'Banking & Finance': ['Mining & Resources', 'Professional Services', 'Tech Infrastructure'],
-    'Logistics & Packaging': ['Trade Systems', 'Micro-Mesh Logistics', 'Packaging & Materials']
+    'Logistics & Packaging': ['Trade Systems', 'Micro-Mesh Logistics', 'Packaging & Materials'],
   };
-  
+
   const sourceKey = source.name.replace(/[🎬🌱🏦📦]/g, '').trim();
   const targetKey = target.name.replace(/[🎬🌱🏦📦]/g, '').trim();
-  
-  if (sectorSynergies[sourceKey]?.includes(targetKey) || 
-      sectorSynergies[targetKey]?.includes(sourceKey)) {
+
+  if (
+    sectorSynergies[sourceKey]?.includes(targetKey) ||
+    sectorSynergies[targetKey]?.includes(sourceKey)
+  ) {
     return 0.8 + Math.random() * 0.2;
   }
-  
+
   // Tier-based synergy
   if (source.tier === target.tier) {
     return 0.4 + Math.random() * 0.3;
   }
-  
+
   return Math.random() * 0.6;
 }
 
-function determineRelationshipType(source: SectorNode, target: SectorNode, strength: number): 'integration' | 'synergy' | 'dependency' | 'collaboration' {
+function determineRelationshipType(
+  source: SectorNode,
+  target: SectorNode,
+  strength: number
+): 'integration' | 'synergy' | 'dependency' | 'collaboration' {
   if (strength > 0.8) return 'integration';
   if (strength > 0.6) return 'synergy';
   if (strength > 0.4) return 'collaboration';
@@ -418,8 +450,8 @@ function generateRelationshipDescription(source: SectorNode, target: SectorNode)
     `${source.emoji} ${source.name} provides infrastructure support to ${target.emoji} ${target.name}`,
     `Strategic partnership between ${source.emoji} ${source.name} and ${target.emoji} ${target.name}`,
     `Data flow integration linking ${source.emoji} ${source.name} with ${target.emoji} ${target.name}`,
-    `Cross-sector collaboration: ${source.emoji} ${source.name} ↔ ${target.emoji} ${target.name}`
+    `Cross-sector collaboration: ${source.emoji} ${source.name} ↔ ${target.emoji} ${target.name}`,
   ];
-  
+
   return templates[Math.floor(Math.random() * templates.length)];
 }

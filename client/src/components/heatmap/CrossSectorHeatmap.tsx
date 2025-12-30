@@ -4,17 +4,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  RefreshCw, 
-  TrendingUp, 
-  Network, 
-  Zap, 
+import {
+  RefreshCw,
+  TrendingUp,
+  Network,
+  Zap,
   Target,
   Activity,
   BarChart3,
   Eye,
   Settings,
-  Info
+  Info,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -56,7 +56,11 @@ export function CrossSectorHeatmap() {
   const [intensityLevel, setIntensityLevel] = useState(1);
 
   // Fetch heatmap data from the interstellar coordination engine
-  const { data: heatmapData, isLoading, refetch } = useQuery<HeatmapData>({
+  const {
+    data: heatmapData,
+    isLoading,
+    refetch,
+  } = useQuery<HeatmapData>({
     queryKey: ['/api/ecosystem/interstellar/heatmap'],
     refetchInterval: 30000, // Refresh every 30 seconds
   });
@@ -70,13 +74,13 @@ export function CrossSectorHeatmap() {
   // Enhanced sectors with brand counts
   const enhancedSectors = useMemo(() => {
     if (!heatmapData?.sectors || !sectorsData) return heatmapData?.sectors || [];
-    
-    return heatmapData.sectors.map(sector => {
+
+    return heatmapData.sectors.map((sector) => {
       const sectorDetails = sectorsData.find((s: any) => s.id.toString() === sector.id);
       return {
         ...sector,
         brandCount: sectorDetails?.brandCount || 0,
-        totalElements: sectorDetails?.totalElements || 0
+        totalElements: sectorDetails?.totalElements || 0,
       };
     });
   }, [heatmapData?.sectors, sectorsData]);
@@ -84,7 +88,7 @@ export function CrossSectorHeatmap() {
   // Calculate color intensity based on view mode
   const getCellColor = (cell: HeatmapCell, sourceId: string, targetId: string) => {
     if (sourceId === targetId) return 'bg-gray-100 dark:bg-gray-800';
-    
+
     let value = 0;
     switch (viewMode) {
       case 'strength':
@@ -100,7 +104,7 @@ export function CrossSectorHeatmap() {
 
     const normalizedValue = Math.min(value / 100, 1);
     const adjustedValue = Math.pow(normalizedValue, 1 / intensityLevel);
-    
+
     if (adjustedValue === 0) return 'bg-gray-50 dark:bg-gray-900';
     if (adjustedValue < 0.2) return 'bg-blue-100 dark:bg-blue-900/30';
     if (adjustedValue < 0.4) return 'bg-blue-200 dark:bg-blue-800/50';
@@ -112,7 +116,7 @@ export function CrossSectorHeatmap() {
   // Get text color for readability
   const getCellTextColor = (cell: HeatmapCell, sourceId: string, targetId: string) => {
     if (sourceId === targetId) return 'text-gray-500';
-    
+
     let value = 0;
     switch (viewMode) {
       case 'strength':
@@ -128,7 +132,7 @@ export function CrossSectorHeatmap() {
 
     const normalizedValue = Math.min(value / 100, 1);
     const adjustedValue = Math.pow(normalizedValue, 1 / intensityLevel);
-    
+
     return adjustedValue > 0.5 ? 'text-white' : 'text-gray-800 dark:text-gray-200';
   };
 
@@ -136,7 +140,7 @@ export function CrossSectorHeatmap() {
   const getCellValue = (cell: HeatmapCell, sourceId: string, targetId: string) => {
     if (sourceId === targetId) return '—';
     if (!cell) return '0';
-    
+
     switch (viewMode) {
       case 'strength':
         return Math.round(cell.strength || 0);
@@ -190,11 +194,7 @@ export function CrossSectorHeatmap() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            onClick={() => refetch()}
-            className="flex items-center gap-2"
-          >
+          <Button variant="outline" onClick={() => refetch()} className="flex items-center gap-2">
             <RefreshCw className="w-4 h-4" />
             Refresh
           </Button>
@@ -220,7 +220,9 @@ export function CrossSectorHeatmap() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Strongest Connection</p>
-                <p className="text-2xl font-bold">{Math.round(heatmapData.analytics.strongestConnection)}</p>
+                <p className="text-2xl font-bold">
+                  {Math.round(heatmapData.analytics.strongestConnection)}
+                </p>
               </div>
               <TrendingUp className="w-8 h-8 text-green-500" />
             </div>
@@ -232,7 +234,9 @@ export function CrossSectorHeatmap() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Average Strength</p>
-                <p className="text-2xl font-bold">{Math.round(heatmapData.analytics.averageStrength)}</p>
+                <p className="text-2xl font-bold">
+                  {Math.round(heatmapData.analytics.averageStrength)}
+                </p>
               </div>
               <BarChart3 className="w-8 h-8 text-purple-500" />
             </div>
@@ -254,7 +258,11 @@ export function CrossSectorHeatmap() {
 
       {/* View Mode Controls */}
       <div className="flex items-center justify-between">
-        <Tabs value={viewMode} onValueChange={(value: any) => setViewMode(value)} className="w-full">
+        <Tabs
+          value={viewMode}
+          onValueChange={(value: any) => setViewMode(value)}
+          className="w-full"
+        >
           <TabsList className="grid w-full grid-cols-3 max-w-md">
             <TabsTrigger value="strength" className="flex items-center gap-2">
               <Activity className="w-4 h-4" />
@@ -289,14 +297,17 @@ export function CrossSectorHeatmap() {
       {/* Heatmap Grid */}
       <div className="overflow-auto">
         <div className="inline-block min-w-full">
-          <div className="grid gap-1" style={{ gridTemplateColumns: `120px repeat(${enhancedSectors.length}, 80px)` }}>
+          <div
+            className="grid gap-1"
+            style={{ gridTemplateColumns: `120px repeat(${enhancedSectors.length}, 80px)` }}
+          >
             {/* Header Row */}
             <div className="p-2"></div>
             {enhancedSectors.map((sector) => (
               <div
                 key={`header-${sector.id}`}
                 className={cn(
-                  "p-2 text-center text-xs font-medium border-2 rounded-md transition-all cursor-pointer",
+                  'p-2 text-center text-xs font-medium border-2 rounded-md transition-all cursor-pointer',
                   getSectorInfluenceColor(sector.influence),
                   hoveredSector === sector.id ? 'ring-2 ring-blue-500' : ''
                 )}
@@ -318,7 +329,7 @@ export function CrossSectorHeatmap() {
                 {/* Row Label */}
                 <div
                   className={cn(
-                    "p-2 text-sm font-medium border-2 rounded-md flex items-center gap-2 transition-all cursor-pointer",
+                    'p-2 text-sm font-medium border-2 rounded-md flex items-center gap-2 transition-all cursor-pointer',
                     getSectorInfluenceColor(rowSector.influence),
                     hoveredSector === rowSector.id ? 'ring-2 ring-blue-500' : ''
                   )}
@@ -342,14 +353,20 @@ export function CrossSectorHeatmap() {
                     <div
                       key={`cell-${rowSector.id}-${colSector.id}`}
                       className={cn(
-                        "p-2 text-center text-xs font-medium border rounded transition-all cursor-pointer",
+                        'p-2 text-center text-xs font-medium border rounded transition-all cursor-pointer',
                         getCellColor(cell, rowSector.id, colSector.id),
                         getCellTextColor(cell, rowSector.id, colSector.id),
-                        (hoveredSector === rowSector.id || hoveredSector === colSector.id) ? 'ring-2 ring-blue-400' : '',
+                        hoveredSector === rowSector.id || hoveredSector === colSector.id
+                          ? 'ring-2 ring-blue-400'
+                          : '',
                         selectedCell === cell ? 'ring-2 ring-purple-500' : ''
                       )}
                       onClick={() => setSelectedCell(cell)}
-                      title={cell ? `${rowSector.name} ↔ ${colSector.name}\nStrength: ${Math.round(cell.strength || 0)}\nPotential: ${Math.round(cell.integrationPotential || 0)}\nSynergy: ${Math.round(cell.operationalSynergy || 0)}` : ''}
+                      title={
+                        cell
+                          ? `${rowSector.name} ↔ ${colSector.name}\nStrength: ${Math.round(cell.strength || 0)}\nPotential: ${Math.round(cell.integrationPotential || 0)}\nSynergy: ${Math.round(cell.operationalSynergy || 0)}`
+                          : ''
+                      }
                     >
                       {getCellValue(cell, rowSector.id, colSector.id)}
                     </div>
@@ -446,25 +463,27 @@ export function CrossSectorHeatmap() {
                   <span className="text-sm font-medium">Relationship Strength:</span>
                   <div className="flex items-center gap-2 mt-1">
                     <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                      <div 
-                        className="bg-blue-600 h-2 rounded-full" 
+                      <div
+                        className="bg-blue-600 h-2 rounded-full"
                         style={{ width: `${selectedCell.strength}%` }}
                       ></div>
                     </div>
                     <span className="text-sm">{Math.round(selectedCell.strength)}%</span>
                   </div>
                 </div>
-                
+
                 <div>
                   <span className="text-sm font-medium">Integration Potential:</span>
                   <div className="flex items-center gap-2 mt-1">
                     <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                      <div 
-                        className="bg-green-600 h-2 rounded-full" 
+                      <div
+                        className="bg-green-600 h-2 rounded-full"
                         style={{ width: `${selectedCell.integrationPotential}%` }}
                       ></div>
                     </div>
-                    <span className="text-sm">{Math.round(selectedCell.integrationPotential)}%</span>
+                    <span className="text-sm">
+                      {Math.round(selectedCell.integrationPotential)}%
+                    </span>
                   </div>
                 </div>
 
@@ -472,8 +491,8 @@ export function CrossSectorHeatmap() {
                   <span className="text-sm font-medium">Operational Synergy:</span>
                   <div className="flex items-center gap-2 mt-1">
                     <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                      <div 
-                        className="bg-purple-600 h-2 rounded-full" 
+                      <div
+                        className="bg-purple-600 h-2 rounded-full"
                         style={{ width: `${selectedCell.operationalSynergy}%` }}
                       ></div>
                     </div>
@@ -482,17 +501,16 @@ export function CrossSectorHeatmap() {
                 </div>
 
                 <div className="flex items-center gap-2 mt-3">
-                  <Badge variant={selectedCell.bidirectional ? "default" : "secondary"}>
+                  <Badge variant={selectedCell.bidirectional ? 'default' : 'secondary'}>
                     {selectedCell.bidirectional ? 'Bidirectional' : 'Unidirectional'}
                   </Badge>
-                  <Badge variant="outline">
-                    {selectedCell.type}
-                  </Badge>
+                  <Badge variant="outline">{selectedCell.type}</Badge>
                 </div>
               </div>
             ) : (
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Select any cell in the heatmap to view detailed relationship information including strength, integration potential, and operational synergy.
+                Select any cell in the heatmap to view detailed relationship information including
+                strength, integration potential, and operational synergy.
               </p>
             )}
           </CardContent>

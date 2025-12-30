@@ -1,6 +1,6 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
-import { ScrollBreathGlyphs } from "./ScrollBreathGlyphs";
+import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { ScrollBreathGlyphs } from './ScrollBreathGlyphs';
 
 interface SectorTransitionEffectsProps {
   isVisible: boolean;
@@ -9,11 +9,11 @@ interface SectorTransitionEffectsProps {
   onComplete?: () => void;
 }
 
-export function SectorTransitionEffects({ 
-  isVisible, 
-  sectorName, 
-  sectorEmoji, 
-  onComplete 
+export function SectorTransitionEffects({
+  isVisible,
+  sectorName,
+  sectorEmoji,
+  onComplete,
 }: SectorTransitionEffectsProps) {
   const [progress, setProgress] = useState(0);
 
@@ -28,7 +28,7 @@ export function SectorTransitionEffects({
       if (!startTime) startTime = timestamp;
       const elapsed = timestamp - startTime;
       const newProgress = Math.min(elapsed / duration, 1);
-      
+
       setProgress(newProgress);
 
       if (newProgress < 1) {
@@ -58,19 +58,19 @@ export function SectorTransitionEffects({
         <div className="text-center">
           <motion.div
             initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ 
-              scale: [0.5, 1.2, 1], 
+            animate={{
+              scale: [0.5, 1.2, 1],
               opacity: [0, 1, 1],
-              rotate: [0, 180, 360]
+              rotate: [0, 180, 360],
             }}
-            transition={{ 
+            transition={{
               duration: 1.5,
-              ease: "easeInOut",
-              times: [0, 0.6, 1]
+              ease: 'easeInOut',
+              times: [0, 0.6, 1],
             }}
             className="text-8xl mb-6"
           >
-            {sectorEmoji || "🔧"}
+            {sectorEmoji || '🔧'}
           </motion.div>
 
           <motion.h2
@@ -79,7 +79,7 @@ export function SectorTransitionEffects({
             transition={{ delay: 0.3 }}
             className="text-2xl font-bold text-white mb-8"
           >
-            Loading {sectorName || "Sector"}...
+            Loading {sectorName || 'Sector'}...
           </motion.h2>
 
           {/* Progress Ring */}
@@ -105,14 +105,12 @@ export function SectorTransitionEffects({
                 strokeLinecap="round"
                 strokeDasharray={283} // 2 * PI * 45
                 initial={{ strokeDashoffset: 283 }}
-                animate={{ strokeDashoffset: 283 - (283 * progress) }}
-                transition={{ duration: 0.1, ease: "easeOut" }}
+                animate={{ strokeDashoffset: 283 - 283 * progress }}
+                transition={{ duration: 0.1, ease: 'easeOut' }}
               />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-white font-bold text-lg">
-                {Math.round(progress * 100)}%
-              </span>
+              <span className="text-white font-bold text-lg">{Math.round(progress * 100)}%</span>
             </div>
           </div>
 
@@ -151,11 +149,7 @@ export function SectorTransitionEffects({
         </div>
 
         {/* ScrollBinder Breath Glyphs Integration */}
-        <ScrollBreathGlyphs 
-          isActive={true}
-          intensity="intense"
-          scrollPosition={progress * 100}
-        />
+        <ScrollBreathGlyphs isActive={true} intensity="intense" scrollPosition={progress * 100} />
       </motion.div>
     </AnimatePresence>
   );

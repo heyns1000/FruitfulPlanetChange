@@ -16,17 +16,16 @@ export function GlobalSyncIndicator() {
         ) : (
           <WifiOff className="w-4 h-4 text-red-400" />
         )}
-        <Badge variant={isOnline ? "default" : "destructive"} className="text-xs">
-          {isOnline ? "SYNCED" : "OFFLINE"}
+        <Badge variant={isOnline ? 'default' : 'destructive'} className="text-xs">
+          {isOnline ? 'SYNCED' : 'OFFLINE'}
         </Badge>
       </div>
 
       {/* Sync Count */}
       <div className="flex items-center gap-1">
-        <Activity className={cn(
-          "w-3 h-3",
-          isOnline ? "text-green-400 animate-pulse" : "text-gray-400"
-        )} />
+        <Activity
+          className={cn('w-3 h-3', isOnline ? 'text-green-400 animate-pulse' : 'text-gray-400')}
+        />
         <span className="text-xs text-gray-300">{syncStatus.syncCount}</span>
       </div>
 
@@ -36,12 +35,7 @@ export function GlobalSyncIndicator() {
       </span>
 
       {/* Force Sync Button */}
-      <Button 
-        size="sm" 
-        variant="ghost" 
-        onClick={forceSync}
-        className="h-6 w-6 p-0"
-      >
+      <Button size="sm" variant="ghost" onClick={forceSync} className="h-6 w-6 p-0">
         <RefreshCw className="w-3 h-3" />
       </Button>
     </div>

@@ -5,6 +5,7 @@
 **Stack**: React 18 + Express.js monorepo with TypeScript, PostgreSQL (Neon), Drizzle ORM, and Vite.
 
 **Key Directories**:
+
 - `client/src/` - React frontend with Wouter routing, TanStack Query, Radix UI components
 - `server/` - Express backend with API routes, middleware, seeding scripts
 - `shared/` - Common schemas (Drizzle tables, Zod validators) shared between client/server
@@ -15,15 +16,17 @@
 ## Database & ORM Patterns
 
 **Schema Definition**: All tables defined in `shared/schema.ts` using Drizzle ORM:
+
 ```typescript
-export const brands = pgTable("brands", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  sectorId: integer("sector_id").references(() => sectors.id)
+export const brands = pgTable('brands', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  sectorId: integer('sector_id').references(() => sectors.id),
 });
 ```
 
 **Data Access**: Centralized through `server/storage.ts` singleton service with methods like:
+
 - `storage.getBrands()`, `storage.createBrand()`, `storage.seedBanimalData()`
 - All database operations go through this layer - never import `db` directly in routes
 
@@ -36,6 +39,7 @@ export const brands = pgTable("brands", {
 **Build**: `pnpm build` - builds client with Vite, server with esbuild to `dist/`
 
 **Database Seeding**: On dev startup, `server/index.ts` automatically runs:
+
 - `seedDatabase()` for core sectors/brands
 - `seedLegalDocuments()`, `updateSectorPricing()`, `storage.seedBanimalData()`, etc.
 - Check `server/seed-*.ts` files for seeding patterns
@@ -47,10 +51,11 @@ export const brands = pgTable("brands", {
 **Registration**: Routes registered in `server/routes.ts` via `registerRoutes(app)`
 
 **Structure**: Individual route files in `server/routes/` export default functions:
+
 ```typescript
 // server/routes/sectors.ts
-export default function(app: Express) {
-  app.get("/api/sectors", async (req, res) => {
+export default function (app: Express) {
+  app.get('/api/sectors', async (req, res) => {
     const sectors = await storage.getSectors();
     res.json(sectors);
   });
@@ -62,13 +67,15 @@ export default function(app: Express) {
 ## Frontend Architecture
 
 **Routing**: Uses Wouter (lightweight) - routes defined in `client/src/App.tsx`:
+
 ```tsx
 <Route path="/sectors" component={SectorsPage} />
 ```
 
 **State Management**: TanStack Query for server state, React Context for global state (theme, auth)
 
-**UI Components**: 
+**UI Components**:
+
 - Design system in `client/src/components/ui/` (Radix-based, Tailwind styled)
 - Portal components in `client/src/components/portal/` (feature-specific like `FruitfulMarketplace`, `SectorRelationshipMapping`)
 
@@ -77,14 +84,17 @@ export default function(app: Express) {
 ## HSOMNI9000 Ecosystem Concepts
 
 **Sector System**: 48+ hierarchical business sectors (agriculture, banking, creative, etc.) with relationship mapping
+
 - Sectors stored in DB with tiers: Enterprise, Infrastructure, Professional, Standard
 - Complex inter-sector relationships tracked in `sector_relationships` table (710+ connections)
 
 **Distributed Apps**: FruitfulPlanet is main hub connected to 7 other apps:
+
 - SamFox (creative studio), Banimal (charitable toys), VaultMesh (trading), HotStack (code hosting), SecureSign (legal), OmniGrid/FAA.Zone (infrastructure), BuildNest (construction)
 - Shared API keys managed via `shared/api-config.ts`
 
 **"Seedwave" Philosophy**: Continuous data seeding/syncing paradigm with "water the seed 24/7" mission
+
 - ScrollBinder protocol for real-time 3-second sync intervals
 - Global sync indicator shows ecosystem health
 
@@ -111,6 +121,7 @@ export default function(app: Express) {
 ## 🦊 SamFox Studio Integration Widget
 
 ### Quick Reference
+
 **Creative Director**: Samantha Ford (SamFox Studio)  
 **GitHub**: samperfox-oss/samfox_Fruitful  
 **Portfolio**: Behance (Samantha Ford / samfox)  
@@ -118,6 +129,7 @@ export default function(app: Express) {
 **Status**: ✅ Active across global ecosystem
 
 ### Asset Locations
+
 - **Main Studio Page**: `client/src/pages/samfox-creative-studio.tsx` (1725 lines)
 - **Portfolio Component**: `client/src/components/portal/samfox-portfolio.tsx`
 - **Standalone Portfolio**: `client/src/pages/samfox-portfolio.tsx`
@@ -127,6 +139,7 @@ export default function(app: Express) {
 - **Master Canvas**: `attached_assets/samfox-main/foxed_got_mobiles.html` (116KB, 2145 lines)
 
 ### When Working with SamFox Assets
+
 ✅ **Always credit**: "Design by SamFox Studio"  
 ✅ **Reference templates**: Use `attached_assets/samfox-main/` as source  
 ✅ **Use design system**: Reference master CSS variables below  
@@ -138,76 +151,81 @@ export default function(app: Express) {
 ### Design System Variables (Master Theme)
 
 **Core Colors:**
+
 ```css
 /* Seedwave/Fruitful Theme */
---primary-glow: #00e393;              /* Seedwave signature green */
---dark-bg: #0a0a0d;                   /* Main dark background */
---card-bg-dark: #1c1c21;              /* Card backgrounds */
---fruitful-logo-color: #ffffff;       /* White logo text */
---fruitful-separator-color: #bbbbbb;  /* Grey separator */
+--primary-glow: #00e393; /* Seedwave signature green */
+--dark-bg: #0a0a0d; /* Main dark background */
+--card-bg-dark: #1c1c21; /* Card backgrounds */
+--fruitful-logo-color: #ffffff; /* White logo text */
+--fruitful-separator-color: #bbbbbb; /* Grey separator */
 ```
 
 **Banimal™ Palette:**
+
 ```css
---banimal-soft-peach: #FFF0ED;        /* Soft peach background */
---banimal-soft-pink: #F8DCDC;         /* Soft pink accents */
---banimal-soft-lavender: #E8E4F3;     /* Soft lavender */
---banimal-soft-mint: #E0F4F1;         /* Soft mint green */
---banimal-soft-cream: #FFF8E1;        /* Soft cream */
---banimal-accent-blue: #66B2FF;       /* Vibrant accent blue */
---banimal-accent-coral: #FF8A80;      /* Coral accent */
+--banimal-soft-peach: #fff0ed; /* Soft peach background */
+--banimal-soft-pink: #f8dcdc; /* Soft pink accents */
+--banimal-soft-lavender: #e8e4f3; /* Soft lavender */
+--banimal-soft-mint: #e0f4f1; /* Soft mint green */
+--banimal-soft-cream: #fff8e1; /* Soft cream */
+--banimal-accent-blue: #66b2ff; /* Vibrant accent blue */
+--banimal-accent-coral: #ff8a80; /* Coral accent */
 ```
 
 **18+ Pastel Collection:**
+
 ```css
---pastel-grey: #ECEFF1;               /* Light grey */
---pastel-yellow: #FFFDE7;             /* Pale yellow */
---pastel-blue: #E3F2FD;               /* Sky blue */
---pastel-green: #E8F5E9;              /* Mint green */
---pastel-pink: #FCE4EC;               /* Baby pink */
---pastel-purple: #F3E5F5;             /* Lavender */
---pastel-orange: #FFF3E0;             /* Peach */
---pastel-teal: #E0F2F1;               /* Seafoam */
---pastel-indigo: #E8EAF6;             /* Periwinkle */
---pastel-cyan: #E0F7FA;               /* Aqua */
---pastel-amber: #FFF8E1;              /* Butter */
---pastel-lime: #F9FBE7;               /* Pale lime */
---pastel-brown: #EFEBE9;              /* Tan */
---pastel-blue-grey: #ECEFF1;          /* Slate */
---pastel-deep-orange: #FBE9E7;        /* Salmon */
---pastel-light-green: #F1F8E9;        /* Celery */
---pastel-deep-purple: #EDE7F6;        /* Lilac */
---pastel-light-blue: #E1F5FE;         /* Powder blue */
+--pastel-grey: #eceff1; /* Light grey */
+--pastel-yellow: #fffde7; /* Pale yellow */
+--pastel-blue: #e3f2fd; /* Sky blue */
+--pastel-green: #e8f5e9; /* Mint green */
+--pastel-pink: #fce4ec; /* Baby pink */
+--pastel-purple: #f3e5f5; /* Lavender */
+--pastel-orange: #fff3e0; /* Peach */
+--pastel-teal: #e0f2f1; /* Seafoam */
+--pastel-indigo: #e8eaf6; /* Periwinkle */
+--pastel-cyan: #e0f7fa; /* Aqua */
+--pastel-amber: #fff8e1; /* Butter */
+--pastel-lime: #f9fbe7; /* Pale lime */
+--pastel-brown: #efebe9; /* Tan */
+--pastel-blue-grey: #eceff1; /* Slate */
+--pastel-deep-orange: #fbe9e7; /* Salmon */
+--pastel-light-green: #f1f8e9; /* Celery */
+--pastel-deep-purple: #ede7f6; /* Lilac */
+--pastel-light-blue: #e1f5fe; /* Powder blue */
 ```
 
 **Special Theme Colors:**
+
 ```css
 /* MindLift™ Purple */
---mindlift-primary: #9333EA;
---mindlift-glow: #A855F7;
---mindlift-dark: #581C87;
+--mindlift-primary: #9333ea;
+--mindlift-glow: #a855f7;
+--mindlift-dark: #581c87;
 
 /* FCU Currency */
---fcu-gold: #FFD700;
---fcu-dark-gold: #B8860B;
+--fcu-gold: #ffd700;
+--fcu-dark-gold: #b8860b;
 
 /* SecureSign™ Buttons */
---securesign-green: #10B981;
---securesign-red: #EF4444;
---securesign-blue: #3B82F6;
+--securesign-green: #10b981;
+--securesign-red: #ef4444;
+--securesign-blue: #3b82f6;
 
 /* Hyper Mode (Advanced) */
---hyper-neon-green: #39FF14;
---hyper-neon-pink: #FF10F0;
---hyper-neon-blue: #00D4FF;
---hyper-neon-yellow: #FFFF00;
+--hyper-neon-green: #39ff14;
+--hyper-neon-pink: #ff10f0;
+--hyper-neon-blue: #00d4ff;
+--hyper-neon-yellow: #ffff00;
 ```
 
 ### Commercial Gallery
 
-**20+ Designs Available**: $12.99 - $24.99 each  
+**20+ Designs Available**: $12.99 - $24.99 each
 
-**Categories**: 
+**Categories**:
+
 - Minimalist (Rabbit Sketch, Eyes Pattern)
 - Character Art (Wolf Monster, Toad Creature, Sambreel Umbrella, In Love Character, Chief Portrait)
 - Typography (Voetsek Hand, MANDARK Monster)
@@ -232,17 +250,20 @@ export default function(app: Express) {
 ### Sector Integration Map
 
 **🟢 Primary (85-100% impact):**
+
 - **Creative Arts**: 100% - SamFox IS the creative sector
 - **Banimal™**: 95% - All character designs, branding, soft palette
 - **Fruitful™**: 90% - Master templates, color system, navigation
 - **Seedwave™**: 85% - Synergy hub UI, merge logic, ScrollBinder protocol
 
 **🟡 Secondary (55-70% impact):**
+
 - **VaultMesh™**: 70% - Checkout forms, payment templates
 - **HotStack™**: 65% - Omnidrop interface, developer dashboard
 - **FAA.ZONE™**: 60% - SPA dashboard, brand control panels
 
 **🔵 Tertiary (20-30% impact):**
+
 - **SecureSign™**: 30% - API interface, button styling
 - **BuildNest™**: 25% - Sector templates
 - **OmniGrid™**: 20% - Infrastructure UI elements
@@ -250,6 +271,7 @@ export default function(app: Express) {
 ### Template System
 
 **Master Template**: `foxed_got_mobiles.html` (116KB, 2145 lines)
+
 - 18+ Color Palettes (see variables above)
 - 3 Theme Modes (Light/Dark/Hyper)
 - 8+ Canvas Systems:
@@ -266,6 +288,7 @@ export default function(app: Express) {
 - Production-ready
 
 **Production Templates** (20+ files in `attached_assets/samfox-main/public/`):
+
 1. `index.html` (140KB) - Fruitful Innovations merged
 2. `merge_logic.html` (170KB) - Seedwave™ synergy hub
 3. `sector_index.html` (198KB) - Master navigation
@@ -273,43 +296,30 @@ export default function(app: Express) {
 5. `master_license_pricing.html` (170KB) - License pricing
 6. `foxed_got_mobiles.html` (88KB) - Production version
 
-**Templates in `public/Templates/`:**
-7. `global_checkout_form.html` (78KB) - VaultMesh™ checkout
-8. `global_footer.html` (5KB) - Universal footer
-9. `ancestortag_heritage_portal.html` (211KB) - Heritage Portal
-10. `Fruitful_payment.html` (102KB) - Payment integration
-11. `dashboardv3.0.html` (61KB) - Latest dashboard
-12. `omni.html` (98KB) - Omni core engines
+**Templates in `public/Templates/`:** 7. `global_checkout_form.html` (78KB) - VaultMesh™ checkout 8. `global_footer.html` (5KB) - Universal footer 9. `ancestortag_heritage_portal.html` (211KB) - Heritage Portal 10. `Fruitful_payment.html` (102KB) - Payment integration 11. `dashboardv3.0.html` (61KB) - Latest dashboard 12. `omni.html` (98KB) - Omni core engines
 
-**Templates in `public/global_templates/`:**
-13. `spa_dashboard.html` (60KB) - FAA™ Brand Control
-14. `global_footer_banimal.html` (41KB) - Banimal footer
-15. `hotstack.html` (15KB) - HotStack template
-16. `securesign_api.html` (38KB) - SecureSign API
-17. `south_african_brands.html` (91KB) - SA brands
-18. `Fruitful_media_motion_sonic_dashboard.html` (235KB) - Media dashboard
-19. `codenest_desktop_dashboard.html` (227KB) - CodeNest dashboard
-20. `loop_pay.html` (27KB) - Loop payment system
+**Templates in `public/global_templates/`:** 13. `spa_dashboard.html` (60KB) - FAA™ Brand Control 14. `global_footer_banimal.html` (41KB) - Banimal footer 15. `hotstack.html` (15KB) - HotStack template 16. `securesign_api.html` (38KB) - SecureSign API 17. `south_african_brands.html` (91KB) - SA brands 18. `Fruitful_media_motion_sonic_dashboard.html` (235KB) - Media dashboard 19. `codenest_desktop_dashboard.html` (227KB) - CodeNest dashboard 20. `loop_pay.html` (27KB) - Loop payment system
 
 ### React Component Architecture
 
 **Main Component** (`samfox-creative-studio.tsx` - 1725 lines):
+
 ```typescript
 // Structure:
 - VipDashboardComponent (lines 109-350)
   - Real-time queries: brands, sectors, system-status, dashboard/stats
   - Live metrics: 3794+ brands, 48+ sectors, service health
-  
+
 - CommercialGallerySection (lines 351-800)
   - 20+ designs with filtering by category
   - PayPal integration for purchases
   - Download system post-purchase
-  
+
 - PortfolioShowcase (lines 801-1200)
   - Project grid with filtering
   - Modal detail views
   - Framer Motion animations
-  
+
 - HeritagePortal Integration (lines 1201-1400)
   - Madiba Portrait feature
   - Cultural context (South African heritage)
@@ -324,6 +334,7 @@ export default function(app: Express) {
 ```
 
 **Portfolio Components:**
+
 - `client/src/pages/samfox-portfolio.tsx` - Standalone portfolio page
 - `client/src/components/portal/samfox-portfolio.tsx` - Reusable component
 
@@ -331,41 +342,76 @@ export default function(app: Express) {
 
 ```css
 @keyframes pulseBG {
-  0%, 100% { background-color: #0a0a0d; }
-  50% { background-color: #1c1c21; }
+  0%,
+  100% {
+    background-color: #0a0a0d;
+  }
+  50% {
+    background-color: #1c1c21;
+  }
 }
 
 @keyframes moveSunLion {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 @keyframes floatFox {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 @keyframes omnidrop {
-  0% { opacity: 0; transform: translateY(-20px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes seedwavePulse {
-  0%, 100% { box-shadow: 0 0 10px #00e393; }
-  50% { box-shadow: 0 0 30px #00e393; }
+  0%,
+  100% {
+    box-shadow: 0 0 10px #00e393;
+  }
+  50% {
+    box-shadow: 0 0 30px #00e393;
+  }
 }
 
 @keyframes hyperGlitch {
-  0%, 100% { transform: translate(0); }
-  25% { transform: translate(-2px, 2px); }
-  50% { transform: translate(2px, -2px); }
-  75% { transform: translate(-2px, -2px); }
+  0%,
+  100% {
+    transform: translate(0);
+  }
+  25% {
+    transform: translate(-2px, 2px);
+  }
+  50% {
+    transform: translate(2px, -2px);
+  }
+  75% {
+    transform: translate(-2px, -2px);
+  }
 }
 ```
 
 ### Theme Modes
 
 **🌞 Light Mode** (Default)
+
 - Background: #ffffff
 - Text: #1a1a1a
 - Cards: #f5f5f5
@@ -373,6 +419,7 @@ export default function(app: Express) {
 - Features: Pastel emphasis, soft shadows, high readability
 
 **🌙 Dark Mode** (Toggle or system preference)
+
 - Background: --dark-bg (#0a0a0d)
 - Text: #ffffff
 - Cards: --card-bg-dark (#1c1c21)
@@ -380,6 +427,7 @@ export default function(app: Express) {
 - Features: Reduced eye strain, glow effects, canvas animations prominent
 
 **⚡ Hyper Mode** (Hidden unlock)
+
 - Background: #000000
 - Text: Neon colors (rotating)
 - Cards: Transparent with neon borders
@@ -390,6 +438,7 @@ export default function(app: Express) {
 ### Integration Best Practices
 
 **When adding new features:**
+
 1. Check if SamFox template exists for similar functionality
 2. Use established color variables (never hardcode colors)
 3. Follow component patterns from `samfox-creative-studio.tsx`
@@ -399,6 +448,7 @@ export default function(app: Express) {
 7. Credit appropriately: "Design by SamFox Studio"
 
 **When modifying SamFox components:**
+
 1. Review complete documentation in `SAMFOX_ECOSYSTEM_COMPLETE.md`
 2. Maintain existing design patterns
 3. Test across all three theme modes
@@ -407,6 +457,7 @@ export default function(app: Express) {
 6. Keep consistent with 7+ brand integrations
 
 **When creating new templates:**
+
 1. Start with `foxed_got_mobiles.html` as base
 2. Customize color variables for specific brand
 3. Select appropriate canvas system
@@ -417,6 +468,7 @@ export default function(app: Express) {
 ### For Complete Documentation
 
 📚 **Full Ecosystem Analysis**: `SAMFOX_ECOSYSTEM_COMPLETE.md`
+
 - 31+ file references with line numbers
 - Complete asset inventory (20+ designs, 20+ templates)
 - Sector integration heatmap
@@ -427,6 +479,7 @@ export default function(app: Express) {
 - Extraction & archive scripts
 
 🏆 **Official Recognition**: `SAMFOX_ACKNOWLEDGEMENT.md`
+
 - Ecosystem-wide acknowledgement
 - Impact metrics (10,000+ lines of code, 25-30% influence)
 - What sets SamFox apart (cultural depth, technical mastery, versatility)
@@ -440,6 +493,7 @@ export default function(app: Express) {
 > — Fruitful Global Planet Ecosystem
 
 **Quantitative Impact:**
+
 - 31+ file references across repository
 - 20+ commercial designs ($320+ revenue potential)
 - 20+ production templates (5000+ lines HTML)
@@ -450,6 +504,7 @@ export default function(app: Express) {
 - 100% Creative Arts sector ownership
 
 **Qualitative Impact:**
+
 - Unified design system across all platforms
 - Cultural authenticity (South African heritage)
 - Production-ready code quality (zero dependencies)
@@ -464,7 +519,7 @@ export default function(app: Express) {
 
 ---
 
-*SamFox Studio Integration Widget - Version 1.0*  
-*Integrated: December 2024*  
-*Maintained by: Fruitful Global Planet Ecosystem*  
-*Status: Production & Active*
+_SamFox Studio Integration Widget - Version 1.0_  
+_Integrated: December 2024_  
+_Maintained by: Fruitful Global Planet Ecosystem_  
+_Status: Production & Active_

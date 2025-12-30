@@ -7,6 +7,7 @@ FruitfulPlanet is a modern, globally-scalable full-stack application designed fo
 ## Technology Stack
 
 ### Frontend
+
 - **Framework**: React 18 with TypeScript
 - **Build Tool**: Vite 7
 - **Styling**: Tailwind CSS 4
@@ -16,6 +17,7 @@ FruitfulPlanet is a modern, globally-scalable full-stack application designed fo
 - **Forms**: React Hook Form with Zod validation
 
 ### Backend
+
 - **Runtime**: Node.js 20
 - **Framework**: Express.js
 - **Language**: TypeScript
@@ -25,12 +27,14 @@ FruitfulPlanet is a modern, globally-scalable full-stack application designed fo
 - **Session Store**: connect-pg-simple / Redis
 
 ### Database
+
 - **Primary Database**: PostgreSQL 16 (Neon Serverless)
 - **Cache Layer**: Redis 7
 - **Schema Management**: Drizzle Kit
 - **Migrations**: Drizzle migrations
 
 ### Infrastructure
+
 - **Containerization**: Docker with multi-stage builds
 - **Orchestration**: Kubernetes
 - **CI/CD**: GitHub Actions
@@ -65,6 +69,7 @@ FruitfulPlanet is a modern, globally-scalable full-stack application designed fo
 The application uses PostgreSQL with the following key entities:
 
 **Core Tables:**
+
 - `users` - User accounts and authentication
 - `sessions` - User session data
 - `sectors` - Business sectors/categories
@@ -74,6 +79,7 @@ The application uses PostgreSQL with the following key entities:
 - `transactions` - Payment transactions
 
 **Relationships:**
+
 - Users have many orders
 - Brands belong to sectors
 - Products belong to brands
@@ -88,8 +94,8 @@ import { Pool } from '@neondatabase/serverless';
 
 export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  max: 20,                    // Maximum connections in pool
-  idleTimeoutMillis: 30000,   // Close idle connections after 30s
+  max: 20, // Maximum connections in pool
+  idleTimeoutMillis: 30000, // Close idle connections after 30s
   connectionTimeoutMillis: 2000, // Fail fast on connection issues
 });
 ```
@@ -99,7 +105,7 @@ export const pool = new Pool({
 #### Redis Cache Architecture
 
 ```
-Request → Check Cache → Cache Hit? 
+Request → Check Cache → Cache Hit?
            ↓              ↓ Yes: Return cached data
            ↓ No           ↓
            ↓              └─────────────────┐
@@ -108,12 +114,14 @@ Request → Check Cache → Cache Hit?
 ```
 
 **Cache Layers:**
+
 1. **Session Cache**: User sessions stored in Redis
 2. **API Response Cache**: Frequently accessed data
 3. **Rate Limiting Cache**: Request counters
 4. **Feature Flags Cache**: Runtime configuration
 
 **Cache Invalidation:**
+
 - Time-based expiration (TTL)
 - Event-based invalidation (on data updates)
 - Manual cache busting via admin API
@@ -212,6 +220,7 @@ Client ←──WebSocket──→ Server
 ```
 
 **Use Cases:**
+
 - Real-time notifications
 - Live metrics updates
 - Chat functionality
@@ -223,6 +232,7 @@ Client ←──WebSocket──→ Server
 #### Metrics Collection
 
 **Application Metrics:**
+
 - Request rate (requests/second)
 - Response time (p50, p95, p99)
 - Error rate (errors/second)
@@ -231,6 +241,7 @@ Client ←──WebSocket──→ Server
 - CPU usage
 
 **Business Metrics:**
+
 - User registrations
 - Orders placed
 - Revenue
@@ -240,12 +251,14 @@ Client ←──WebSocket──→ Server
 #### Health Checks
 
 **Liveness Probe**: Checks if application is running
+
 ```typescript
 GET /api/health/liveness
 Response: { status: "ok", timestamp: "..." }
 ```
 
 **Readiness Probe**: Checks if application can serve traffic
+
 ```typescript
 GET /api/health/readiness
 Response: {
@@ -261,12 +274,14 @@ Response: {
 #### Logging Strategy
 
 **Log Levels:**
+
 - ERROR: Application errors, exceptions
 - WARN: Warning conditions, deprecated features
 - INFO: General informational messages
 - DEBUG: Detailed debugging information
 
 **Log Format:**
+
 ```json
 {
   "timestamp": "2025-11-20T01:22:00.000Z",
@@ -287,12 +302,14 @@ Response: {
 #### Horizontal Scaling
 
 **Kubernetes HPA Configuration:**
+
 - Min replicas: 3
 - Max replicas: 10
 - Target CPU: 70%
 - Target Memory: 80%
 
 **Scaling Triggers:**
+
 - High CPU utilization
 - High memory usage
 - Request queue depth
@@ -301,12 +318,14 @@ Response: {
 #### Database Scaling
 
 **Read Replicas:**
+
 - Master: Write operations
 - Replicas: Read operations
 - Automatic failover
 - Connection pooling
 
 **Partitioning:**
+
 - Horizontal partitioning (sharding)
 - Vertical partitioning (column separation)
 - Time-based partitioning (archives)
@@ -314,6 +333,7 @@ Response: {
 #### Caching Strategy
 
 **Multi-Level Cache:**
+
 1. Browser cache (static assets)
 2. CDN cache (global edge locations)
 3. Application cache (Redis)
@@ -331,6 +351,7 @@ Development → Staging → Production
 ```
 
 **Environment Separation:**
+
 - Separate databases
 - Separate secrets
 - Separate domains
@@ -350,12 +371,14 @@ Code Push → Tests → Build → Security Scan → Deploy
 #### Backup Strategy
 
 **Database Backups:**
+
 - Automated daily backups
 - Point-in-time recovery (PITR)
 - Retention: 30 days
 - Off-site backup storage
 
 **Application State:**
+
 - Stateless application design
 - Session data in Redis (replicated)
 - File uploads in object storage
@@ -363,18 +386,21 @@ Code Push → Tests → Build → Security Scan → Deploy
 #### Recovery Procedures
 
 **Database Failure:**
+
 1. Automatic failover to replica
 2. Promote replica to master
 3. Alert operations team
 4. Update DNS/connection strings
 
 **Application Failure:**
+
 1. Kubernetes auto-restart
 2. Health check failure detection
 3. Traffic rerouting
 4. Scale up replacement pods
 
 **Complete Site Failure:**
+
 1. Activate backup region
 2. DNS failover (geo-routing)
 3. Restore from backups
@@ -412,6 +438,7 @@ Code Push → Tests → Build → Security Scan → Deploy
 ## Best Practices
 
 ### Code Quality
+
 - TypeScript strict mode
 - ESLint configuration
 - Prettier code formatting
@@ -419,6 +446,7 @@ Code Push → Tests → Build → Security Scan → Deploy
 - Code review process
 
 ### Testing
+
 - Unit tests (Jest/Vitest)
 - Integration tests
 - E2E tests (Playwright)
@@ -426,6 +454,7 @@ Code Push → Tests → Build → Security Scan → Deploy
 - Security testing
 
 ### Documentation
+
 - Code comments
 - API documentation (OpenAPI)
 - Architecture diagrams

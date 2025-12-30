@@ -37,15 +37,15 @@ describe('COLLAPSE_PROTOCOL_1984', () => {
 
   it('should have correct gorilla trinity configuration', () => {
     const trinity = COLLAPSE_PROTOCOL_1984.gorillatrinity;
-    
+
     expect(trinity.gorilla.role).toBe('CENTRAL_HUB');
     expect(trinity.gorilla.strength).toBe('MAXIMUM');
     expect(trinity.gorilla.repository).toBe('heyns1000/codenest');
-    
+
     expect(trinity.mountain.role).toBe('FOUNDATION');
     expect(trinity.mountain.stability).toBe('SOLID');
     expect(trinity.mountain.engines).toBe('buildnest-engines');
-    
+
     expect(trinity.fox.role).toBe('DISTRIBUTION');
     expect(trinity.fox.cunning).toBe('OPTIMAL');
     expect(trinity.fox.strategy).toBe('SMART_DEPLOY');
