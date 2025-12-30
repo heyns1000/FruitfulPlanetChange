@@ -1,12 +1,8 @@
 import type { Express } from 'express';
 import { createServer, type Server } from 'http';
+import rateLimit from 'express-rate-limit';
 import { storage } from './storage';
 import { registerMineNestRoutes } from './routes-minenest';
-import type { Express } from "express";
-import { createServer, type Server } from "http";
-import rateLimit from "express-rate-limit";
-import { storage } from "./storage";
-import { registerMineNestRoutes } from "./routes-minenest";
 import fs from 'fs';
 import path from 'path';
 import {
@@ -222,19 +218,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       success: false,
       message: 'Sync operations temporarily disabled for performance optimization',
     });
-    return;
-    /*
+  });
+  /*
+  // The following code is commented out for performance optimization
   // Rate limiter for sync operations - max 3 requests per 15 minutes
   const syncLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 3, // max 3 requests per window
-    message: 'Too many sync requests, please try again later',
-    standardHeaders: true,
-    legacyHeaders: false,
-  });
-
-  // Sync endpoint with rate limiting and background job support
-  app.post('/api/sync/comprehensive-brands', syncLimiter, async (req, res) => {
     try {
       logger.info('Starting comprehensive brand data synchronization...');
       
@@ -2275,6 +2263,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: 'Failed to delete artwork' });
     }
   });
+  */
 
   // Initialize SamFox data on server startup
   try {
