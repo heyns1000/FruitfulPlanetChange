@@ -1,35 +1,52 @@
-import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { Search, ExternalLink, Crown, Trophy, Users, Zap, Target, TrendingUp } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { FRUITFUL_CRATE_DANCE_ECOSYSTEM, FRUITFUL_CRATE_DANCE_SECTORS } from "@shared/fruitful-crate-dance-ecosystem"
-import { ClickableBrandName } from "@/components/clickable-brand-name"
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Search, ExternalLink, Crown, Trophy, Users, Zap, Target, TrendingUp } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import {
+  FRUITFUL_CRATE_DANCE_ECOSYSTEM,
+  FRUITFUL_CRATE_DANCE_SECTORS,
+} from '@shared/fruitful-crate-dance-ecosystem';
+import { ClickableBrandName } from '@/components/clickable-brand-name';
 
 export function FruitfulCrateDancePage() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedSector, setSelectedSector] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedSector, setSelectedSector] = useState<string | null>(null);
 
   // Calculate total brand count
   const totalBrands = Object.values(FRUITFUL_CRATE_DANCE_SECTORS).reduce(
-    (sum, sector) => sum + sector.brands.length, 
+    (sum, sector) => sum + sector.brands.length,
     0
-  )
+  );
 
   const filteredSectors = Object.entries(FRUITFUL_CRATE_DANCE_SECTORS).filter(([key, sector]) => {
-    if (!searchQuery) return true
-    return sector.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-           sector.brands.some(brand => brand.toLowerCase().includes(searchQuery.toLowerCase()))
-  })
+    if (!searchQuery) return true;
+    return (
+      sector.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      sector.brands.some((brand) => brand.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+  });
 
   const kingPriceSponsorship = {
     packages: [
-      { tier: "Platinum", amount: "R1.5 Million", features: ["Title Sponsorship", "Car Giveaway", "2M Impressions", "20K Sign-ups"] },
-      { tier: "Gold", amount: "R750,000", features: ["Co-Sponsorship", "Regional Crates", "1M Impressions", "10K Sign-ups"] },
-      { tier: "Silver", amount: "R300,000", features: ["Branded Crates", "QR Promotions", "500K Impressions", "5K Sign-ups"] }
-    ]
-  }
+      {
+        tier: 'Platinum',
+        amount: 'R1.5 Million',
+        features: ['Title Sponsorship', 'Car Giveaway', '2M Impressions', '20K Sign-ups'],
+      },
+      {
+        tier: 'Gold',
+        amount: 'R750,000',
+        features: ['Co-Sponsorship', 'Regional Crates', '1M Impressions', '10K Sign-ups'],
+      },
+      {
+        tier: 'Silver',
+        amount: 'R300,000',
+        features: ['Branded Crates', 'QR Promotions', '500K Impressions', '5K Sign-ups'],
+      },
+    ],
+  };
 
   return (
     <div className="space-y-8">
@@ -68,7 +85,10 @@ export function FruitfulCrateDancePage() {
         <CardContent>
           <div className="grid md:grid-cols-3 gap-4">
             {kingPriceSponsorship.packages.map((pkg, index) => (
-              <Card key={index} className="bg-white dark:bg-gray-800 border-red-200 dark:border-red-700">
+              <Card
+                key={index}
+                className="bg-white dark:bg-gray-800 border-red-200 dark:border-red-700"
+              >
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg">{pkg.tier} Tier</CardTitle>
                   <div className="text-2xl font-bold text-red-600">{pkg.amount}</div>
@@ -131,7 +151,9 @@ export function FruitfulCrateDancePage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-300">Sectors</p>
-                <p className="text-lg font-semibold">{Object.keys(FRUITFUL_CRATE_DANCE_SECTORS).length}</p>
+                <p className="text-lg font-semibold">
+                  {Object.keys(FRUITFUL_CRATE_DANCE_SECTORS).length}
+                </p>
               </div>
               <Users className="h-8 w-8 text-purple-500" />
             </div>
@@ -166,7 +188,7 @@ export function FruitfulCrateDancePage() {
               <CardContent>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
                   {sector.brands.slice(0, 9).map((brand, index) => (
-                    <ClickableBrandName 
+                    <ClickableBrandName
                       key={index}
                       brandName={brand}
                       variant="button"
@@ -197,15 +219,22 @@ export function FruitfulCrateDancePage() {
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {Object.entries(FRUITFUL_CRATE_DANCE_ECOSYSTEM.deploymentInfrastructure).map(([key, value]) => (
-              <div key={key} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
-                <ExternalLink className="h-4 w-4 text-blue-500" />
-                <div>
-                  <p className="text-sm font-medium capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">{value}</p>
+            {Object.entries(FRUITFUL_CRATE_DANCE_ECOSYSTEM.deploymentInfrastructure).map(
+              ([key, value]) => (
+                <div
+                  key={key}
+                  className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800"
+                >
+                  <ExternalLink className="h-4 w-4 text-blue-500" />
+                  <div>
+                    <p className="text-sm font-medium capitalize">
+                      {key.replace(/([A-Z])/g, ' $1').trim()}
+                    </p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{value}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            )}
           </div>
         </CardContent>
       </Card>
@@ -215,8 +244,9 @@ export function FruitfulCrateDancePage() {
         <CardContent className="pt-6">
           <h3 className="text-2xl font-bold mb-2">Ready for Full Deployment</h3>
           <p className="mb-4 opacity-90">
-            {totalBrands} carefully curated brands across {Object.keys(FRUITFUL_CRATE_DANCE_SECTORS).length} sectors, 
-            ready for complete A-Z deployment and management
+            {totalBrands} carefully curated brands across{' '}
+            {Object.keys(FRUITFUL_CRATE_DANCE_SECTORS).length} sectors, ready for complete A-Z
+            deployment and management
           </p>
           <div className="flex justify-center gap-4 text-sm">
             <div className="bg-white/20 px-4 py-2 rounded-lg">
@@ -232,5 +262,5 @@ export function FruitfulCrateDancePage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

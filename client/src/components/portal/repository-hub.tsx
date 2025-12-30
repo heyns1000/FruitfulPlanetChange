@@ -1,115 +1,144 @@
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, GitBranch, Download, ExternalLink, FileText, Code, Database, Settings, Eye, Plus, Filter } from "lucide-react"
-import { motion } from "framer-motion"
-import { useQuery } from "@tanstack/react-query"
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Search,
+  GitBranch,
+  Download,
+  ExternalLink,
+  FileText,
+  Code,
+  Database,
+  Settings,
+  Eye,
+  Plus,
+  Filter,
+} from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
 
 interface Repository {
-  id: string
-  name: string
-  description: string
-  category: string
-  language: string
-  stars: number
-  forks: number
-  lastUpdate: string
-  status: 'active' | 'archived' | 'development'
-  size: string
-  owner: string
-  isPrivate: boolean
-  branches: number
-  commits: number
-  tags: string[]
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  language: string;
+  stars: number;
+  forks: number;
+  lastUpdate: string;
+  status: 'active' | 'archived' | 'development';
+  size: string;
+  owner: string;
+  isPrivate: boolean;
+  branches: number;
+  commits: number;
+  tags: string[];
 }
 
 export function RepositoryHub() {
-  const [filteredRepos, setFilteredRepos] = useState<Repository[]>([])
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("all")
-  const [selectedLanguage, setSelectedLanguage] = useState("all")
+  const [filteredRepos, setFilteredRepos] = useState<Repository[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedLanguage, setSelectedLanguage] = useState('all');
 
   // Fetch real repositories from database
   const { data: repositories = [], isLoading } = useQuery({
-    queryKey: ["/api/repositories", searchTerm, selectedCategory],
+    queryKey: ['/api/repositories', searchTerm, selectedCategory],
     queryFn: async () => {
-      const params = new URLSearchParams()
-      if (searchTerm) params.append('search', searchTerm)
-      if (selectedCategory !== 'all') params.append('category', selectedCategory)
-      
-      const response = await fetch(`/api/repositories?${params}`)
-      if (!response.ok) throw new Error('Failed to fetch repositories')
-      return response.json()
-    }
-  })
+      const params = new URLSearchParams();
+      if (searchTerm) params.append('search', searchTerm);
+      if (selectedCategory !== 'all') params.append('category', selectedCategory);
+
+      const response = await fetch(`/api/repositories?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch repositories');
+      return response.json();
+    },
+  });
 
   // Transform database repositories to component format
   const transformedRepositories: Repository[] = repositories.map((repo: any) => ({
-    id: repo.id?.toString() || "0",
-    name: repo.name || "",
-    description: repo.description || "",
-    category: repo.category || "general",
-    language: "HTML",
+    id: repo.id?.toString() || '0',
+    name: repo.name || '',
+    description: repo.description || '',
+    category: repo.category || 'general',
+    language: 'HTML',
     stars: 0,
     forks: 0,
-    lastUpdate: "2 days ago",
-    status: (repo.status as 'active' | 'archived' | 'development') || "active",
-    size: "2.1 MB",
-    owner: "heyns1000",
+    lastUpdate: '2 days ago',
+    status: (repo.status as 'active' | 'archived' | 'development') || 'active',
+    size: '2.1 MB',
+    owner: 'heyns1000',
     isPrivate: false,
     branches: 1,
     commits: 45,
-    tags: [repo.category || "general"]
-  }))
+    tags: [repo.category || 'general'],
+  }));
 
   // Filter and search logic
   useEffect(() => {
-    let filtered = transformedRepositories
+    let filtered = transformedRepositories;
 
     if (searchTerm) {
-      filtered = filtered.filter(repo =>
-        repo.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        repo.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        repo.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-      )
+      filtered = filtered.filter(
+        (repo) =>
+          repo.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          repo.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          repo.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
     }
 
-    if (selectedCategory !== "all") {
-      filtered = filtered.filter(repo => repo.category === selectedCategory)
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter((repo) => repo.category === selectedCategory);
     }
 
-    if (selectedLanguage !== "all") {
-      filtered = filtered.filter(repo => repo.language === selectedLanguage)
+    if (selectedLanguage !== 'all') {
+      filtered = filtered.filter((repo) => repo.language === selectedLanguage);
     }
 
-    setFilteredRepos(filtered)
-  }, [transformedRepositories, searchTerm, selectedCategory, selectedLanguage])
+    setFilteredRepos(filtered);
+  }, [transformedRepositories, searchTerm, selectedCategory, selectedLanguage]);
 
-  const categories = Array.from(new Set(transformedRepositories.map(repo => repo.category)))
-  const languages = Array.from(new Set(transformedRepositories.map(repo => repo.language)))
+  const categories = Array.from(new Set(transformedRepositories.map((repo) => repo.category)));
+  const languages = Array.from(new Set(transformedRepositories.map((repo) => repo.language)));
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-500'
-      case 'development': return 'bg-yellow-500'
-      case 'archived': return 'bg-gray-500'
-      default: return 'bg-blue-500'
+      case 'active':
+        return 'bg-green-500';
+      case 'development':
+        return 'bg-yellow-500';
+      case 'archived':
+        return 'bg-gray-500';
+      default:
+        return 'bg-blue-500';
     }
-  }
+  };
 
   const getCategoryIcon = (category: string) => {
     switch (category.toLowerCase()) {
-      case 'infrastructure': return <Database className="h-4 w-4" />
-      case 'ai': return <Settings className="h-4 w-4" />
-      case 'legal': return <FileText className="h-4 w-4" />
-      case 'finance': return <Settings className="h-4 w-4" />
-      case 'core': return <Code className="h-4 w-4" />
-      default: return <GitBranch className="h-4 w-4" />
+      case 'infrastructure':
+        return <Database className="h-4 w-4" />;
+      case 'ai':
+        return <Settings className="h-4 w-4" />;
+      case 'legal':
+        return <FileText className="h-4 w-4" />;
+      case 'finance':
+        return <Settings className="h-4 w-4" />;
+      case 'core':
+        return <Code className="h-4 w-4" />;
+      default:
+        return <GitBranch className="h-4 w-4" />;
     }
-  }
+  };
 
   return (
     <div className="space-y-6 p-6">
@@ -120,7 +149,8 @@ export function RepositoryHub() {
           <h1 className="text-2xl font-bold">Repository & Legal Hub</h1>
         </div>
         <p className="text-green-100">
-          Comprehensive repository management with integrated legal documentation and SecureSign™ VIP access
+          Comprehensive repository management with integrated legal documentation and SecureSign™
+          VIP access
         </p>
       </div>
 
@@ -135,7 +165,9 @@ export function RepositoryHub() {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Search Repositories</label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Search Repositories
+              </label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
@@ -154,7 +186,7 @@ export function RepositoryHub() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All</SelectItem>
-                  {categories.map(category => (
+                  {categories.map((category) => (
                     <SelectItem key={category} value={category}>
                       {category.charAt(0).toUpperCase() + category.slice(1)}
                     </SelectItem>
@@ -170,7 +202,7 @@ export function RepositoryHub() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">all</SelectItem>
-                  {languages.map(language => (
+                  {languages.map((language) => (
                     <SelectItem key={language} value={language}>
                       {language}
                     </SelectItem>
@@ -275,11 +307,19 @@ export function RepositoryHub() {
                         <Eye className="h-4 w-4 mr-1" />
                         View
                       </Button>
-                      <Button size="sm" variant="outline" className="border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white"
+                      >
                         <Download className="h-4 w-4 mr-1" />
                         Clone
                       </Button>
-                      <Button size="sm" variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-600">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-gray-600 text-gray-300 hover:bg-gray-600"
+                      >
                         <ExternalLink className="h-4 w-4 mr-1" />
                         GitHub
                       </Button>
@@ -303,5 +343,5 @@ export function RepositoryHub() {
         </Card>
       )}
     </div>
-  )
+  );
 }

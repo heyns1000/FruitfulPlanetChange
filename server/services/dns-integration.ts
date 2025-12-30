@@ -22,7 +22,7 @@ export class DNSIntegrationService {
       lastChecked: new Date().toISOString(),
       isLive: false,
       domain: 'fruitfulplanet.com',
-      cloudflareZoneId: 'b3220969343cf767a56095ddbd6d91a'
+      cloudflareZoneId: 'b3220969343cf767a56095ddbd6d91a',
     };
   }
 
@@ -42,18 +42,21 @@ export class DNSIntegrationService {
           ...this.currentStatus,
           status: 'error',
           lastChecked: new Date().toISOString(),
-          isLive: false
+          isLive: false,
         };
         return this.currentStatus;
       }
 
       // Make direct API call to Cloudflare
-      const response = await fetch(`https://api.cloudflare.com/client/v4/zones/${this.currentStatus.cloudflareZoneId}`, {
-        headers: {
-          'Authorization': `Bearer ${apiToken}`,
-          'Content-Type': 'application/json'
+      const response = await fetch(
+        `https://api.cloudflare.com/client/v4/zones/${this.currentStatus.cloudflareZoneId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${apiToken}`,
+            'Content-Type': 'application/json',
+          },
         }
-      });
+      );
 
       const data = await response.json();
 
@@ -63,24 +66,23 @@ export class DNSIntegrationService {
           ...this.currentStatus,
           status: status === 'active' ? 'active' : 'pending',
           lastChecked: new Date().toISOString(),
-          isLive: status === 'active'
+          isLive: status === 'active',
         };
       } else {
         this.currentStatus = {
           ...this.currentStatus,
           status: 'error',
           lastChecked: new Date().toISOString(),
-          isLive: false
+          isLive: false,
         };
       }
-
     } catch (error) {
       console.error('DNS Status Check Error:', error);
       this.currentStatus = {
         ...this.currentStatus,
         status: 'error',
         lastChecked: new Date().toISOString(),
-        isLive: false
+        isLive: false,
       };
     }
 
@@ -93,15 +95,15 @@ export class DNSIntegrationService {
 
   async startDNSMonitoring(): Promise<void> {
     console.log('🌐 Starting DNS monitoring for fruitfulplanet.com...');
-    
+
     // Initial check
     await this.checkDNSStatus();
-    
+
     // Set up periodic monitoring (every 9 minutes)
     setInterval(async () => {
       const status = await this.checkDNSStatus();
       console.log(`[${status.lastChecked}] DNS Status: ${status.status} (Live: ${status.isLive})`);
-      
+
       if (status.isLive) {
         console.log('✅ fruitfulplanet.com DNS is LIVE on Cloudflare!');
       }
@@ -115,11 +117,11 @@ export class DNSIntegrationService {
     readyForDeployment: boolean;
   }> {
     const dnsStatus = await this.checkDNSStatus();
-    
+
     return {
       dnsStatus,
       ecosystemCoordination: dnsStatus.isLive,
-      readyForDeployment: dnsStatus.isLive && dnsStatus.status === 'active'
+      readyForDeployment: dnsStatus.isLive && dnsStatus.status === 'active',
     };
   }
 }

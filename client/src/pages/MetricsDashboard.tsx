@@ -1,12 +1,21 @@
 /**
  * Metrics Dashboard
- * 
+ *
  * Real-time metrics visualization and system health monitoring
  */
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Activity, TrendingUp, Users, AlertCircle, Database, Cpu, Clock, CheckCircle } from 'lucide-react';
+import {
+  Activity,
+  TrendingUp,
+  Users,
+  AlertCircle,
+  Database,
+  Cpu,
+  Clock,
+  CheckCircle,
+} from 'lucide-react';
 import {
   LineChart,
   Line,
@@ -124,11 +133,15 @@ export default function MetricsDashboard() {
           <p className="text-muted-foreground">Real-time monitoring and performance analytics</p>
         </div>
         {health && (
-          <div className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
-            health.status === 'ok' ? 'bg-green-100 text-green-800' :
-            health.status === 'degraded' ? 'bg-yellow-100 text-yellow-800' :
-            'bg-red-100 text-red-800'
-          }`}>
+          <div
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+              health.status === 'ok'
+                ? 'bg-green-100 text-green-800'
+                : health.status === 'degraded'
+                  ? 'bg-yellow-100 text-yellow-800'
+                  : 'bg-red-100 text-red-800'
+            }`}
+          >
             {health.status === 'ok' ? (
               <CheckCircle className="w-5 h-5" />
             ) : (
@@ -160,7 +173,11 @@ export default function MetricsDashboard() {
           <CardContent>
             <div className="text-2xl font-bold">{avgResponseTime.toFixed(0)}ms</div>
             <p className="text-xs text-muted-foreground">
-              {avgResponseTime < 100 ? 'Excellent' : avgResponseTime < 300 ? 'Good' : 'Needs attention'}
+              {avgResponseTime < 100
+                ? 'Excellent'
+                : avgResponseTime < 300
+                  ? 'Good'
+                  : 'Needs attention'}
             </p>
           </CardContent>
         </Card>
@@ -232,12 +249,7 @@ export default function MetricsDashboard() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="responseTime"
-                  stroke="#82ca9d"
-                  strokeWidth={2}
-                />
+                <Line type="monotone" dataKey="responseTime" stroke="#82ca9d" strokeWidth={2} />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>

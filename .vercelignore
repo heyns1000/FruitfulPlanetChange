@@ -1,0 +1,86 @@
+# Vercel ignore file - exclude unnecessary files from deployment
+
+# Node modules (handled by Vercel)
+node_modules
+
+# Build artifacts
+dist
+server/public
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Development files
+*.log
+logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Temporary files
+/tmp/
+*.tmp
+.cache
+cookies.txt
+temp-*.json
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+
+# IDE files
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.iml
+
+# Test files
+coverage/
+.nyc_output/
+tests/
+
+# Documentation (optional - can be included)
+*.md
+!README.md
+
+# Git
+.git
+.gitignore
+
+# Docker
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# Kubernetes
+k8s/
+
+# Scripts (not needed for production)
+scripts/
+run-*.js
+
+# Secrets
+*.pem
+*.key
+*.cert
+*.crt
+*.p12
+*.pfx
+
+# Attached assets (large files)
+attached_assets/
+
+# Replit specific
+.replit
+replit.md
+launch.json

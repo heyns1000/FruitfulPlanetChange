@@ -1,61 +1,77 @@
-import { useParams } from "wouter"
-import { useQuery } from "@tanstack/react-query"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, TrendingUp, Users, Building, Globe, Zap, Shield, DollarSign, MapPin, Calendar, Activity, Settings, BarChart3, Truck, Pickaxe } from "lucide-react"
-import { motion } from "framer-motion"
-import { useLocation } from "wouter"
-import { MineNestAuthenticDashboard } from '@/components/mining/minenest-authentic-dashboard'
-import { MineNestAuthenticBrands } from '@/components/mining/MineNestAuthenticBrands'
+import { useParams } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  ArrowLeft,
+  TrendingUp,
+  Users,
+  Building,
+  Globe,
+  Zap,
+  Shield,
+  DollarSign,
+  MapPin,
+  Calendar,
+  Activity,
+  Settings,
+  BarChart3,
+  Truck,
+  Pickaxe,
+} from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useLocation } from 'wouter';
+import { MineNestAuthenticDashboard } from '@/components/mining/minenest-authentic-dashboard';
+import { MineNestAuthenticBrands } from '@/components/mining/MineNestAuthenticBrands';
 
 export default function SectorIndividualPage() {
-  const params = useParams()
-  const [, setLocation] = useLocation()
-  const sectorId = params.id
+  const params = useParams();
+  const [, setLocation] = useLocation();
+  const sectorId = params.id;
 
   // Fetch sector data
   const { data: sector, isLoading: sectorLoading } = useQuery({
-    queryKey: ["/api/sectors", sectorId],
+    queryKey: ['/api/sectors', sectorId],
     queryFn: async () => {
-      const response = await fetch(`/api/sectors/${sectorId}`)
-      if (!response.ok) throw new Error('Failed to fetch sector')
-      return response.json()
-    }
-  })
+      const response = await fetch(`/api/sectors/${sectorId}`);
+      if (!response.ok) throw new Error('Failed to fetch sector');
+      return response.json();
+    },
+  });
 
   // Fetch sector brands - use proper sector-specific endpoint
   const { data: brands = [], isLoading: brandsLoading } = useQuery({
-    queryKey: ["/api/brands", "sector", sectorId],
+    queryKey: ['/api/brands', 'sector', sectorId],
     queryFn: async () => {
-      const response = await fetch(`/api/brands/sector/${sectorId}`)
-      if (!response.ok) throw new Error('Failed to fetch brands')
-      return response.json()
+      const response = await fetch(`/api/brands/sector/${sectorId}`);
+      if (!response.ok) throw new Error('Failed to fetch brands');
+      return response.json();
     },
-    enabled: !!sectorId // Only fetch when sectorId is available
-  })
+    enabled: !!sectorId, // Only fetch when sectorId is available
+  });
 
   // Fetch mining-specific dashboard data if this is the mining sector
   const { data: miningData } = useQuery({
-    queryKey: ["/api/mining/dashboard"],
+    queryKey: ['/api/mining/dashboard'],
     queryFn: async () => {
-      const response = await fetch("/api/mining/dashboard")
-      if (!response.ok) throw new Error('Failed to fetch mining data')
-      return response.json()
+      const response = await fetch('/api/mining/dashboard');
+      if (!response.ok) throw new Error('Failed to fetch mining data');
+      return response.json();
     },
-    enabled: sector?.name?.includes("Mining") || sector?.emoji === "⛏️"
-  })
+    enabled: sector?.name?.includes('Mining') || sector?.emoji === '⛏️',
+  });
 
   // Fetch MineCore™ brands data
   const { data: minecoreBrands = [] } = useQuery({
-    queryKey: ["/api/mining/minecore-brands"],
+    queryKey: ['/api/mining/minecore-brands'],
     queryFn: async () => {
-      const response = await fetch("/api/mining/minecore-brands")
-      if (!response.ok) throw new Error('Failed to fetch MineCore™ brands')
-      return response.json()
+      const response = await fetch('/api/mining/minecore-brands');
+      if (!response.ok) throw new Error('Failed to fetch MineCore™ brands');
+      return response.json();
     },
-    enabled: sector?.name?.includes("Mining") || sector?.emoji === "⛏️"
-  })
+    enabled: sector?.name?.includes('Mining') || sector?.emoji === '⛏️',
+  });
 
   if (sectorLoading) {
     return (
@@ -70,7 +86,7 @@ export default function SectorIndividualPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   if (!sector) {
@@ -78,27 +94,29 @@ export default function SectorIndividualPage() {
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-white mb-4">Sector Not Found</h1>
-          <Button onClick={() => setLocation("/sectors")}>
+          <Button onClick={() => setLocation('/sectors')}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Sectors
           </Button>
         </div>
       </div>
-    )
+    );
   }
 
-  const coreBrands = brands.filter((brand: any) => !brand.parentId)
-  const subNodes = brands.filter((brand: any) => brand.parentId)
-  const isMining = sector?.name?.includes("Mining") || sector?.emoji === "⛏️"
+  const coreBrands = brands.filter((brand: any) => !brand.parentId);
+  const subNodes = brands.filter((brand: any) => brand.parentId);
+  const isMining = sector?.name?.includes('Mining') || sector?.emoji === '⛏️';
 
   return (
     <div className="min-h-screen bg-gray-900">
       {/* Header */}
-      <div className={`p-6 ${isMining ? 'bg-gradient-to-r from-orange-600 to-yellow-600' : 'bg-gradient-to-r from-blue-600 to-purple-600'}`}>
+      <div
+        className={`p-6 ${isMining ? 'bg-gradient-to-r from-orange-600 to-yellow-600' : 'bg-gradient-to-r from-blue-600 to-purple-600'}`}
+      >
         <div className="flex items-center gap-4 mb-4">
-          <Button 
-            variant="outline" 
-            onClick={() => setLocation("/sectors")}
+          <Button
+            variant="outline"
+            onClick={() => setLocation('/sectors')}
             className="text-white border-white hover:bg-white hover:text-blue-600"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -116,25 +134,33 @@ export default function SectorIndividualPage() {
             )}
           </div>
         </div>
-        
+
         {/* Sector Stats - Enhanced for Mining */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {isMining && miningData ? (
             <>
               <div className="bg-white/10 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-white">{miningData.overview.totalActiveSites}</div>
+                <div className="text-2xl font-bold text-white">
+                  {miningData.overview.totalActiveSites}
+                </div>
                 <div className="text-blue-100 text-sm">Active Mine Sites</div>
               </div>
               <div className="bg-white/10 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-white">{miningData.overview.activeDrillRigs}</div>
+                <div className="text-2xl font-bold text-white">
+                  {miningData.overview.activeDrillRigs}
+                </div>
                 <div className="text-blue-100 text-sm">Active Drill Rigs</div>
               </div>
               <div className="bg-white/10 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-white">{miningData.overview.monthlyOreYield.toLocaleString()}</div>
+                <div className="text-2xl font-bold text-white">
+                  {miningData.overview.monthlyOreYield.toLocaleString()}
+                </div>
                 <div className="text-blue-100 text-sm">Monthly Ore Yield (Tonnes)</div>
               </div>
               <div className="bg-white/10 rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-white">{miningData.overview.operationalHealth}%</div>
+                <div className="text-2xl font-bold text-white">
+                  {miningData.overview.operationalHealth}%
+                </div>
                 <div className="text-blue-100 text-sm">Operational Health</div>
               </div>
             </>
@@ -163,9 +189,7 @@ export default function SectorIndividualPage() {
 
       <div className="p-6 space-y-6">
         {/* Comprehensive MineNest™ Dashboard for Mining Sector */}
-        {isMining ? (
-          <MineNestAuthenticDashboard />
-        ) : null}
+        {isMining ? <MineNestAuthenticDashboard /> : null}
 
         {/* Original Mining Dashboard - keeping as fallback */}
         {isMining && miningData && false && (
@@ -181,19 +205,33 @@ export default function SectorIndividualPage() {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-white mb-2">{miningData.equipment.drillRigs.active}/{miningData.equipment.drillRigs.total}</div>
+                    <div className="text-3xl font-bold text-white mb-2">
+                      {miningData.equipment.drillRigs.active}/{miningData.equipment.drillRigs.total}
+                    </div>
                     <div className="text-gray-400 mb-2">Drill Rigs</div>
-                    <div className="text-green-400 text-sm">{miningData.equipment.drillRigs.utilization}% Utilization</div>
+                    <div className="text-green-400 text-sm">
+                      {miningData.equipment.drillRigs.utilization}% Utilization
+                    </div>
                   </div>
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-white mb-2">{miningData.equipment.processors.active}/{miningData.equipment.processors.total}</div>
+                    <div className="text-3xl font-bold text-white mb-2">
+                      {miningData.equipment.processors.active}/
+                      {miningData.equipment.processors.total}
+                    </div>
                     <div className="text-gray-400 mb-2">Processors</div>
-                    <div className="text-green-400 text-sm">{miningData.equipment.processors.utilization}% Utilization</div>
+                    <div className="text-green-400 text-sm">
+                      {miningData.equipment.processors.utilization}% Utilization
+                    </div>
                   </div>
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-white mb-2">{miningData.equipment.transportSystems.active}/{miningData.equipment.transportSystems.total}</div>
+                    <div className="text-3xl font-bold text-white mb-2">
+                      {miningData.equipment.transportSystems.active}/
+                      {miningData.equipment.transportSystems.total}
+                    </div>
                     <div className="text-gray-400 mb-2">Transport Systems</div>
-                    <div className="text-green-400 text-sm">{miningData.equipment.transportSystems.utilization}% Utilization</div>
+                    <div className="text-green-400 text-sm">
+                      {miningData.equipment.transportSystems.utilization}% Utilization
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -214,14 +252,21 @@ export default function SectorIndividualPage() {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {minecoreBrands.map((brand: any) => (
-                    <div key={brand.id} className="bg-gray-700 rounded-lg p-4 border border-gray-600">
+                    <div
+                      key={brand.id}
+                      className="bg-gray-700 rounded-lg p-4 border border-gray-600"
+                    >
                       <div className="flex justify-between items-start mb-3">
                         <h4 className="text-white font-semibold">{brand.name}</h4>
-                        <Badge className={`${
-                          brand.status === 'active' ? 'bg-green-500' :
-                          brand.status === 'development' ? 'bg-yellow-500' :
-                          'bg-gray-500'
-                        } text-white text-xs`}>
+                        <Badge
+                          className={`${
+                            brand.status === 'active'
+                              ? 'bg-green-500'
+                              : brand.status === 'development'
+                                ? 'bg-yellow-500'
+                                : 'bg-gray-500'
+                          } text-white text-xs`}
+                        >
                           {brand.status}
                         </Badge>
                       </div>
@@ -233,7 +278,10 @@ export default function SectorIndividualPage() {
                         </div>
                         <div className="flex justify-between items-center mt-3">
                           <span className="text-xs text-gray-500">{brand.type}</span>
-                          <Button size="sm" className="bg-orange-600 hover:bg-orange-700 text-white text-xs px-3 py-1">
+                          <Button
+                            size="sm"
+                            className="bg-orange-600 hover:bg-orange-700 text-white text-xs px-3 py-1"
+                          >
                             Core
                           </Button>
                         </div>
@@ -241,16 +289,22 @@ export default function SectorIndividualPage() {
                     </div>
                   ))}
                 </div>
-                
+
                 {/* Action Buttons */}
                 <div className="flex gap-4 mt-6">
                   <Button className="bg-green-600 hover:bg-green-700 text-white flex-1">
                     Add New Brand
                   </Button>
-                  <Button variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-700 flex-1">
+                  <Button
+                    variant="outline"
+                    className="border-gray-600 text-gray-300 hover:bg-gray-700 flex-1"
+                  >
                     Import Brands
                   </Button>
-                  <Button variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-700 flex-1">
+                  <Button
+                    variant="outline"
+                    className="border-gray-600 text-gray-300 hover:bg-gray-700 flex-1"
+                  >
                     Export Portfolio
                   </Button>
                 </div>
@@ -272,15 +326,21 @@ export default function SectorIndividualPage() {
                     <div className="text-gray-400 text-sm">VaultTrace™</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-green-400 mb-1">{miningData.compliance.environmentalCompliance}%</div>
+                    <div className="text-2xl font-bold text-green-400 mb-1">
+                      {miningData.compliance.environmentalCompliance}%
+                    </div>
                     <div className="text-gray-400 text-sm">Environmental</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-green-400 mb-1">{miningData.compliance.safetyRating}</div>
+                    <div className="text-2xl font-bold text-green-400 mb-1">
+                      {miningData.compliance.safetyRating}
+                    </div>
                     <div className="text-gray-400 text-sm">Safety Rating</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-xl font-bold text-white mb-1">{miningData.compliance.lastAudit}</div>
+                    <div className="text-xl font-bold text-white mb-1">
+                      {miningData.compliance.lastAudit}
+                    </div>
                     <div className="text-gray-400 text-sm">Last Audit</div>
                   </div>
                 </div>
@@ -299,7 +359,7 @@ export default function SectorIndividualPage() {
                 <div className="text-gray-400 text-sm">Performance</div>
               </CardContent>
             </Card>
-            
+
             <Card className="bg-gray-800 border-gray-700">
               <CardContent className="p-6 text-center">
                 <Users className="h-8 w-8 text-blue-500 mx-auto mb-2" />
@@ -307,7 +367,7 @@ export default function SectorIndividualPage() {
                 <div className="text-gray-400 text-sm">Active Users</div>
               </CardContent>
             </Card>
-            
+
             <Card className="bg-gray-800 border-gray-700">
               <CardContent className="p-6 text-center">
                 <DollarSign className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
@@ -315,7 +375,7 @@ export default function SectorIndividualPage() {
                 <div className="text-gray-400 text-sm">Revenue</div>
               </CardContent>
             </Card>
-            
+
             <Card className="bg-gray-800 border-gray-700">
               <CardContent className="p-6 text-center">
                 <Shield className="h-8 w-8 text-purple-500 mx-auto mb-2" />
@@ -327,9 +387,7 @@ export default function SectorIndividualPage() {
         )}
 
         {/* MineNest™ Authentic Brands for Mining Sector */}
-        {isMining && (
-          <MineNestAuthenticBrands />
-        )}
+        {isMining && <MineNestAuthenticBrands />}
 
         {/* Core Brands */}
         {!isMining && coreBrands.length > 0 && (
@@ -355,19 +413,26 @@ export default function SectorIndividualPage() {
                       <div className="space-y-3">
                         {brand.metadata && (
                           <div className="flex flex-wrap gap-2">
-                            {Object.entries(brand.metadata).slice(0, 3).map(([key, value]) => (
-                              <Badge key={key} variant="secondary" className="bg-blue-600 text-white text-xs">
-                                {key}: {String(value)}
-                              </Badge>
-                            ))}
+                            {Object.entries(brand.metadata)
+                              .slice(0, 3)
+                              .map(([key, value]) => (
+                                <Badge
+                                  key={key}
+                                  variant="secondary"
+                                  className="bg-blue-600 text-white text-xs"
+                                >
+                                  {key}: {String(value)}
+                                </Badge>
+                              ))}
                           </div>
                         )}
-                        
+
                         <div className="flex justify-between items-center">
-                          <div className="text-xs text-gray-400">
-                            Brand ID: {brand.id}
-                          </div>
-                          <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white">
+                          <div className="text-xs text-gray-400">Brand ID: {brand.id}</div>
+                          <Button
+                            size="sm"
+                            className="bg-purple-600 hover:bg-purple-700 text-white"
+                          >
                             Access Dashboard
                           </Button>
                         </div>
@@ -400,10 +465,17 @@ export default function SectorIndividualPage() {
                       <div className="text-white font-semibold text-sm mb-2">{node.name}</div>
                       <div className="text-gray-400 text-xs mb-3">{node.description}</div>
                       <div className="flex justify-between items-center">
-                        <Badge variant="outline" className="border-green-500 text-green-400 text-xs">
+                        <Badge
+                          variant="outline"
+                          className="border-green-500 text-green-400 text-xs"
+                        >
                           Sub-Node
                         </Badge>
-                        <Button size="sm" variant="ghost" className="text-green-400 hover:text-white hover:bg-green-600 p-1">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="text-green-400 hover:text-white hover:bg-green-600 p-1"
+                        >
                           <Zap className="h-3 w-3" />
                         </Button>
                       </div>
@@ -421,14 +493,14 @@ export default function SectorIndividualPage() {
             <CardContent className="text-center py-12">
               <Building className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-white mb-2">No Brands Yet</h3>
-              <p className="text-gray-400 mb-4">This sector doesn't have any brands configured yet.</p>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                Add First Brand
-              </Button>
+              <p className="text-gray-400 mb-4">
+                This sector doesn't have any brands configured yet.
+              </p>
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white">Add First Brand</Button>
             </CardContent>
           </Card>
         )}
       </div>
     </div>
-  )
+  );
 }

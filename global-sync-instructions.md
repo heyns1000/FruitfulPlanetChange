@@ -1,5 +1,6 @@
 # HSOMNI9000 Global Sync Instructions
-*Comprehensive Distributed Creative Ecosystem Integration Guide*
+
+_Comprehensive Distributed Creative Ecosystem Integration Guide_
 
 ## 🌐 System Overview
 
@@ -27,45 +28,45 @@ HSOMNI9000 Distributed System
 
 ```typescript
 // Core Infrastructure
-DATABASE_URL              // PostgreSQL connection
-SESSION_SECRET           // Session encryption
-REPLIT_DOMAINS          // Deployment domains
-REPL_ID                 // Replit app identifier
+DATABASE_URL; // PostgreSQL connection
+SESSION_SECRET; // Session encryption
+REPLIT_DOMAINS; // Deployment domains
+REPL_ID; // Replit app identifier
 
 // Payment Systems (VaultMesh, Fruitful)
-PAYPAL_CLIENT_ID        // PayPal integration
-PAYPAL_CLIENT_SECRET    // PayPal private key
+PAYPAL_CLIENT_ID; // PayPal integration
+PAYPAL_CLIENT_SECRET; // PayPal private key
 
 // Firebase (Omnigrid, Fruitful, SecureSign)
-VITE_FIREBASE_API_KEY           // Firebase public key
-VITE_FIREBASE_AUTH_DOMAIN       // Firebase auth domain
-VITE_FIREBASE_PROJECT_ID        // Firebase project ID
-VITE_FIREBASE_STORAGE_BUCKET    // Firebase storage
-VITE_FIREBASE_MESSAGING_SENDER_ID // Firebase messaging
-VITE_FIREBASE_APP_ID            // Firebase app ID
-VITE_FIREBASE_MEASUREMENT_ID    // Firebase analytics
+VITE_FIREBASE_API_KEY; // Firebase public key
+VITE_FIREBASE_AUTH_DOMAIN; // Firebase auth domain
+VITE_FIREBASE_PROJECT_ID; // Firebase project ID
+VITE_FIREBASE_STORAGE_BUCKET; // Firebase storage
+VITE_FIREBASE_MESSAGING_SENDER_ID; // Firebase messaging
+VITE_FIREBASE_APP_ID; // Firebase app ID
+VITE_FIREBASE_MEASUREMENT_ID; // Firebase analytics
 
 // Music Integration (Samfox, Fruitful)
-SPOTIFY_CLIENT_ID       // Spotify API access
-SPOTIFY_CLIENT_SECRET   // Spotify private key
-SPOTIFY_REDIRECT_URI    // OAuth callback
+SPOTIFY_CLIENT_ID; // Spotify API access
+SPOTIFY_CLIENT_SECRET; // Spotify private key
+SPOTIFY_REDIRECT_URI; // OAuth callback
 
 // Accounting Systems (All Apps)
-XERO_CLIENT_ID          // Xero accounting API
-XERO_CLIENT_SECRET      // Xero private key
-XERO_REDIRECT_URI       // Xero OAuth callback
+XERO_CLIENT_ID; // Xero accounting API
+XERO_CLIENT_SECRET; // Xero private key
+XERO_REDIRECT_URI; // Xero OAuth callback
 
 // Object Storage (Asset Management)
-DEFAULT_OBJECT_STORAGE_BUCKET_ID // Asset storage bucket
-PRIVATE_OBJECT_DIR              // Private files directory
-PUBLIC_OBJECT_SEARCH_PATHS      // Public asset paths
+DEFAULT_OBJECT_STORAGE_BUCKET_ID; // Asset storage bucket
+PRIVATE_OBJECT_DIR; // Private files directory
+PUBLIC_OBJECT_SEARCH_PATHS; // Public asset paths
 
 // Database Credentials
-PGHOST                  // PostgreSQL host
-PGPORT                  // PostgreSQL port
-PGUSER                  // PostgreSQL username
-PGPASSWORD              // PostgreSQL password
-PGDATABASE              // PostgreSQL database name
+PGHOST; // PostgreSQL host
+PGPORT; // PostgreSQL port
+PGUSER; // PostgreSQL username
+PGPASSWORD; // PostgreSQL password
+PGDATABASE; // PostgreSQL database name
 ```
 
 ### API Key Distribution Strategy
@@ -104,12 +105,14 @@ attached_assets/
 ### Asset Distribution Strategy
 
 **Database Schema Integration:**
+
 - `heritageDocuments`: Legal & historical documents
 - `mediaProjects`: Video & audio processing files
 - `portfolioProjects`: Creative showcase assets
 - `documentTemplates`: Reusable content templates
 
 **Access Patterns:**
+
 - **Public Assets**: Served via `/public-objects/` endpoint
 - **Private Assets**: Authenticated access via `/objects/` with ACL
 - **Cross-App Assets**: Shared via centralized object storage
@@ -119,12 +122,14 @@ attached_assets/
 ### Global Sync Hook: `client/src/hooks/useGlobalSync.ts`
 
 **Synchronization Strategy:**
+
 - **Interval**: 3-second automatic sync cycles
 - **Scope**: All critical endpoints across applications
 - **Method**: React Query cache invalidation
 - **Fallback**: Manual force-sync capability
 
 **Synchronized Endpoints:**
+
 ```typescript
 const syncEndpoints = [
   '/api/sectors',              // Brand categorization
@@ -150,7 +155,7 @@ graph TD
     B --> G[SecureSign Legal]
     B --> H[OmniGrid FAA.Zone]
     B --> I[BuildNest Development]
-    
+
     J[Global Sync Hook] --> B
     K[Shared Database] --> A
     L[Asset Storage] --> All Apps
@@ -159,6 +164,7 @@ graph TD
 ## 🚀 Deployment Instructions by Application
 
 ### 1. Fruitful (Main Ecosystem Hub)
+
 **Repository**: Current (main app)
 **Dependencies**: All API keys, complete asset access
 **Deployment Command**: `npm run dev`
@@ -166,52 +172,63 @@ graph TD
 **Database**: PostgreSQL with full schema
 
 ### 2. Samfox (Creative Studio)
+
 **Purpose**: Creative content generation and design
-**Required Assets**: 
+**Required Assets**:
+
 - `Sam_fox_logo_v02_*.jpg`
 - `Samfox_shirts_*.pdf`
 - `Bearly_*.psd`, `Chief_02_*.png`, `Monster_01_*.png`
-**API Dependencies**: Firebase, Spotify, Object Storage
-**Database Tables**: `artworks`, `studioSettings`, `portfolioProjects`
+  **API Dependencies**: Firebase, Spotify, Object Storage
+  **Database Tables**: `artworks`, `studioSettings`, `portfolioProjects`
 
 ### 3. Banimal (Toys & Charitable Giving)
+
 **Purpose**: Toy manufacturing and charity management
 **Required Assets**:
+
 - `Banimal_*` (all company assets)
 - Product design files and marketing materials
-**API Dependencies**: PayPal, Xero, Object Storage
-**Database Tables**: `banimalTransactions`, `charitableDistributions`
+  **API Dependencies**: PayPal, Xero, Object Storage
+  **Database Tables**: `banimalTransactions`, `charitableDistributions`
 
 ### 4. VaultMesh (Trading & Financial Systems)
+
 **Purpose**: Financial trading and portfolio management
 **Required Assets**: Financial documentation, security certificates
 **API Dependencies**: PayPal, Xero, Firebase
 **Database Tables**: `vaultActions`, `payments`, `financialRecords`
 
 ### 5. HotStack (Code Hosting & Infrastructure)
+
 **Purpose**: Code repository hosting and CI/CD
 **Required Assets**: Development documentation, deployment guides
 **API Dependencies**: Firebase, Object Storage
 **Database Tables**: `repositories`, `deployments`, `systemStatus`
 
 ### 6. SecureSign (Legal Document Management)
+
 **Purpose**: Legal document processing and NDA management
-**Required Assets**: 
+**Required Assets**:
+
 - `FRUITFUL_King_Price_*.pdf`
 - `Change_*.docx`
 - Legal templates and contracts
-**API Dependencies**: Firebase, Object Storage
-**Database Tables**: `legalDocuments`, `secureSignApiKeys`, `documentTemplates`
+  **API Dependencies**: Firebase, Object Storage
+  **Database Tables**: `legalDocuments`, `secureSignApiKeys`, `documentTemplates`
 
 ### 7. OmniGrid/FAA.Zone (Infrastructure Control)
+
 **Purpose**: Infrastructure monitoring and quantum protocols
 **Required Assets**:
+
 - `FAA Quantum Nexus_*.pdf`
 - `Baobab_Security_Network_Video_Ready_*.mp4`
-**API Dependencies**: All (master control)
-**Database Tables**: `sonicGridConnections`, `interstellarNodes`, `globalLogicConfigs`
+  **API Dependencies**: All (master control)
+  **Database Tables**: `sonicGridConnections`, `interstellarNodes`, `globalLogicConfigs`
 
 ### 8. BuildNest (Development & Construction)
+
 **Purpose**: Project management and development tools
 **Required Assets**: Project documentation, construction plans
 **API Dependencies**: Firebase, Xero, Object Storage
@@ -224,12 +241,14 @@ graph TD
 **Integration Manager**: `server/services/integration-manager.ts`
 
 **Monitored Services:**
+
 - PayPal (Payment Processing)
 - Firebase (Authentication & Storage)
 - Spotify (Music Integration)
 - Xero (Accounting & Financial)
 
 **Health Check Endpoints:**
+
 - `/api/services/health` - Overall system health
 - `/api/services/paypal/status` - PayPal connectivity
 - `/api/services/firebase/status` - Firebase status
@@ -261,12 +280,14 @@ graph TD
 ### Cross-Deployment Synchronization
 
 **Shared Resources:**
+
 - Single PostgreSQL database (shared across all apps)
 - Centralized object storage (shared asset access)
 - Unified authentication (Replit Auth)
 - Global API key distribution
 
 **Synchronization Points:**
+
 - Real-time data sync every 3 seconds
 - Cross-app authentication sharing
 - Shared asset management
@@ -305,12 +326,14 @@ familyMembers, heritageDocuments, familyEvents, heritageMetrics
 ## 🔐 Security & Access Control
 
 ### Authentication Flow
+
 1. **Replit Auth**: Single sign-on across all applications
 2. **Session Sharing**: Unified session management
 3. **API Key Security**: Environment-based secret management
 4. **Asset Access**: ACL-based file permissions
 
 ### Data Protection
+
 - **Database**: PostgreSQL with connection pooling
 - **Assets**: Object storage with access control
 - **API Keys**: Environment variable isolation
@@ -319,12 +342,14 @@ familyMembers, heritageDocuments, familyEvents, heritageMetrics
 ## 🚦 Monitoring & Health Checks
 
 ### System Status Monitoring
+
 - **Service Health**: Real-time API connectivity
 - **Database Status**: Connection and performance
 - **Asset Availability**: Storage system health
 - **Sync Status**: Cross-app synchronization monitoring
 
 ### Error Handling
+
 - **Graceful Degradation**: Service failure handling
 - **Retry Logic**: Automatic retry mechanisms
 - **Error Logging**: Comprehensive error tracking
@@ -333,6 +358,7 @@ familyMembers, heritageDocuments, familyEvents, heritageMetrics
 ## 🎯 Implementation Checklist
 
 ### Pre-Deployment
+
 - [ ] Environment variables configured for all services
 - [ ] Database schema synchronized across environments
 - [ ] Asset storage buckets created and configured
@@ -340,6 +366,7 @@ familyMembers, heritageDocuments, familyEvents, heritageMetrics
 - [ ] Health check endpoints verified
 
 ### Deployment Verification
+
 - [ ] All applications deploy successfully
 - [ ] Cross-app authentication working
 - [ ] Real-time sync functioning (3-second intervals)
@@ -348,6 +375,7 @@ familyMembers, heritageDocuments, familyEvents, heritageMetrics
 - [ ] Creative tools functional (Firebase, Spotify)
 
 ### Post-Deployment Monitoring
+
 - [ ] System health dashboards active
 - [ ] Performance metrics tracking
 - [ ] Error rate monitoring
