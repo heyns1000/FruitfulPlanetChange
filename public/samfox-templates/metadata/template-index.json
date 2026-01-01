@@ -1,0 +1,263 @@
+{
+  "version": "1.0.0",
+  "source": "heyns1000/samfox",
+  "integrated": "2026-01-01",
+  "integrationDate": "2026-01-01T09:54:00.000Z",
+  "description": "Complete SamFox Creative Studio template library for FruitfulPlanet payment gateway marketplace",
+  "author": "Samantha Ford (SamFox Studio)",
+  "license": "See LICENSE file in metadata folder",
+  "totalTemplates": 32,
+  "categories": {
+    "master": {
+      "description": "Master templates with complete CSS framework, 18+ color palettes, and 3 theme modes",
+      "templates": [
+        {
+          "name": "foxed_got_mobiles.html",
+          "size": "116KB",
+          "lines": 2145,
+          "description": "Master template with complete CSS framework, 18+ color palettes, 3 theme modes (Light/Dark/Hyper), 8+ canvas systems",
+          "features": [
+            "18+ Color Palettes (Seedwave, Banimal, Pastel Collection)",
+            "3 Theme Modes (Light, Dark, Hyper)",
+            "8+ Canvas Systems with animations",
+            "Zero external dependencies",
+            "Production-ready framework"
+          ]
+        },
+        {
+          "name": "foxed_got_mobiles_production.html",
+          "size": "88KB",
+          "lines": 1773,
+          "description": "Production-optimized version of master template"
+        }
+      ],
+      "assets": [
+        {
+          "name": "Madiba_mock.png",
+          "size": "547KB",
+          "description": "Signature Nelson Mandela portrait by SamFox Studio"
+        }
+      ]
+    },
+    "payment": {
+      "description": "Payment gateway and checkout templates with PayPal integration",
+      "templates": [
+        {
+          "name": "Fruitful_payment.html",
+          "size": "102KB",
+          "description": "Fruitful payment integration template with full checkout flow"
+        },
+        {
+          "name": "global_checkout_form.html",
+          "size": "78KB",
+          "description": "Universal checkout form for VaultMesh™ and ecosystem transactions"
+        },
+        {
+          "name": "global_payment_paypal_product_page.html",
+          "size": "104KB",
+          "description": "PayPal product page template with single product display"
+        },
+        {
+          "name": "global_payment_paypal_product_pages.html",
+          "size": "168KB",
+          "description": "PayPal product pages template with multiple products"
+        },
+        {
+          "name": "loop_pay.html",
+          "size": "27KB",
+          "description": "Loop payment system integration template"
+        },
+        {
+          "name": "paypal_sector_pricing_example.html",
+          "size": "~10KB",
+          "description": "Example PayPal pricing template for agriculture-biotech sector"
+        }
+      ]
+    },
+    "marketplace": {
+      "description": "Marketplace and pricing templates for Fruitful ecosystem",
+      "templates": [
+        {
+          "name": "fruitful_innovations.html",
+          "size": "140KB",
+          "description": "Fruitful Innovations main marketplace landing page"
+        },
+        {
+          "name": "merge_logic.html",
+          "size": "170KB",
+          "description": "Seedwave™ synergy hub with merge logic visualization"
+        },
+        {
+          "name": "master_license_pricing.html",
+          "size": "166KB",
+          "description": "Master license pricing structure for all ecosystem services"
+        },
+        {
+          "name": "Fruitful_crate_dance_pricing.html",
+          "size": "82KB",
+          "description": "Fruitful Crate Dance pricing and product display"
+        }
+      ]
+    },
+    "dashboards": {
+      "description": "Dashboard templates for various ecosystem applications",
+      "templates": [
+        {
+          "name": "dashboardv3.0.html",
+          "size": "61KB",
+          "description": "Latest dashboard version (v3.0) with real-time metrics"
+        },
+        {
+          "name": "spa_dashboard.html",
+          "size": "60KB",
+          "description": "FAA™ Brand Control SPA dashboard"
+        },
+        {
+          "name": "Fruitful_media_motion_sonic_dashboard.html",
+          "size": "235KB",
+          "description": "Media, motion, and sonic content management dashboard"
+        },
+        {
+          "name": "codenest_desktop_dashboard.html",
+          "size": "227KB",
+          "description": "CodeNest desktop development environment dashboard"
+        }
+      ]
+    },
+    "infrastructure": {
+      "description": "Infrastructure and core system templates",
+      "templates": [
+        {
+          "name": "global_sector_index.html",
+          "size": "228KB",
+          "description": "Complete global sector index with 48+ sectors"
+        },
+        {
+          "name": "sector_index.html",
+          "size": "198KB",
+          "description": "Master sector navigation and index"
+        },
+        {
+          "name": "omni.html",
+          "size": "76KB",
+          "description": "Omni core engines template"
+        },
+        {
+          "name": "monster_omni_core_engines_nodes_demo.html",
+          "size": "98KB",
+          "description": "Monster Omni core engines nodes demonstration"
+        },
+        {
+          "name": "hotstack.html",
+          "size": "15KB",
+          "description": "HotStack™ code hosting template"
+        }
+      ]
+    },
+    "heritage": {
+      "description": "Heritage and cultural preservation templates",
+      "templates": [
+        {
+          "name": "ancestortag_heritage_portal.html",
+          "size": "211KB",
+          "description": "AncestorTag heritage portal with cultural preservation features"
+        },
+        {
+          "name": "south_african_brands.html",
+          "size": "91KB",
+          "description": "South African brands showcase with cultural context"
+        }
+      ]
+    },
+    "components": {
+      "description": "Reusable component templates",
+      "templates": [
+        {
+          "name": "global_footer.html",
+          "size": "5KB",
+          "description": "Universal footer component"
+        },
+        {
+          "name": "global_footer_banimal.html",
+          "size": "41KB",
+          "description": "Banimal™-specific footer with soft pastel theme"
+        },
+        {
+          "name": "global_header_body_toggles_footer.html",
+          "size": "167KB",
+          "description": "Complete page template with header, body toggles, and footer"
+        },
+        {
+          "name": "securesign_api.html",
+          "size": "38KB",
+          "description": "SecureSign™ API interface component"
+        }
+      ]
+    },
+    "sectors": {
+      "description": "Sector-specific templates for various industries",
+      "templates": [
+        {
+          "name": "housing/index.html",
+          "lines": 88,
+          "description": "BuildNest™ housing sector template"
+        },
+        {
+          "name": "ritual_culture/index.html",
+          "lines": 76,
+          "description": "Ritual & Culture sector template"
+        },
+        {
+          "name": "template/index_master.html",
+          "lines": 63,
+          "description": "Master sector template for creating new sector pages"
+        }
+      ]
+    }
+  },
+  "colorPalettes": {
+    "seedwave": {
+      "primary": "#00e393",
+      "darkBg": "#0a0a0d",
+      "cardBg": "#1c1c21"
+    },
+    "banimal": {
+      "softPeach": "#fff0ed",
+      "softPink": "#f8dcdc",
+      "softLavender": "#e8e4f3",
+      "softMint": "#e0f4f1",
+      "accentBlue": "#66b2ff",
+      "accentCoral": "#ff8a80"
+    },
+    "pastel": [
+      "#eceff1",
+      "#fffde7",
+      "#e3f2fd",
+      "#e8f5e9",
+      "#fce4ec",
+      "#f3e5f5",
+      "#fff3e0",
+      "#e0f2f1",
+      "#e8eaf6",
+      "#e0f7fa"
+    ]
+  },
+  "integrationPoints": {
+    "paypal": "All payment templates include PayPal SDK integration",
+    "reactComponents": "Compatible with React template loaders in client/src/components/samfox/",
+    "serverAPI": "PayPal server functions in server/paypal/api.ts",
+    "routes": "Accessible via /api/samfox-templates/* routes"
+  },
+  "usage": {
+    "loadTemplate": "Use TemplateLoader.tsx to dynamically load any template",
+    "paymentGateway": "Use PaymentGateway.tsx wrapper for payment templates",
+    "marketplace": "Use MarketplaceFrame.tsx for marketplace template rendering",
+    "dashboards": "Use DashboardFrame.tsx for dashboard template rendering"
+  },
+  "documentation": {
+    "comprehensive": "docs/SAMFOX_INTEGRATION_COMPLETE.md",
+    "quickStart": "public/samfox-templates/README.md",
+    "integration": "public/samfox-templates/metadata/INTEGRATION.md",
+    "license": "public/samfox-templates/metadata/LICENSE"
+  }
+}
