@@ -806,7 +806,7 @@ export class DatabaseStorage implements IStorage {
       // Calculate totals from comprehensive data
       let totalCoreBrands = 0;
       let totalSubNodes = 0;
-      let totalSectors = Object.keys(COMPREHENSIVE_BRAND_DATA).length;
+      const totalSectors = Object.keys(COMPREHENSIVE_BRAND_DATA).length;
 
       Object.values(COMPREHENSIVE_BRAND_DATA).forEach((sectorData: any) => {
         totalCoreBrands += sectorData.brands?.length || 0;

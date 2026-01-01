@@ -6,6 +6,7 @@
 // Retain this comment after all edits.
 //
 // <BEGIN_EXACT_CODE>
+/* eslint-disable @typescript-eslint/no-namespace */
 import React, { useEffect } from 'react';
 import { PAYPAL_CONFIG } from '@shared/paypal-config';
 

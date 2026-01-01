@@ -99,5 +99,5 @@ export function hasFeatureAccess(userPlan: string, feature: string): boolean {
   const planKey = userPlan as keyof typeof PLAN_VERSION_MATRIX;
   const planConfig = PLAN_VERSION_MATRIX[planKey];
   if (!planConfig) return false;
-  return planConfig.features.includes(feature as any);
+  return planConfig.features.some((f) => f === feature);
 }
