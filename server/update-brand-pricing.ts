@@ -4,7 +4,7 @@
 import { DatabaseStorage } from './storage';
 
 async function updateBrandPricing() {
-  console.log('🏷️ UPDATING ALL BRAND PRICING - Applying sector pricing to 3,794 brands');
+  console.warn('🏷️ UPDATING ALL BRAND PRICING - Applying sector pricing to 3,794 brands');
 
   try {
     const storage = new DatabaseStorage();
@@ -13,7 +13,7 @@ async function updateBrandPricing() {
 
     let brandsUpdated = 0;
 
-    console.log(`🏷️ Processing ${allBrands.length} brands across ${allSectors.length} sectors...`);
+    console.warn(`🏷️ Processing ${allBrands.length} brands across ${allSectors.length} sectors...`);
 
     for (const brand of allBrands) {
       const sector = allSectors.find((s) => s.id === brand.sectorId);
@@ -50,7 +50,7 @@ async function updateBrandPricing() {
           brandsUpdated++;
 
           if (brandsUpdated % 100 === 0) {
-            console.log(`   ✅ Updated ${brandsUpdated} brands...`);
+            console.warn(`   ✅ Updated ${brandsUpdated} brands...`);
           }
         } catch (error) {
           console.error(`   ❌ Failed to update brand ${brand.name}:`, error);
@@ -58,11 +58,11 @@ async function updateBrandPricing() {
       }
     }
 
-    console.log(`\n🎉 BRAND PRICING UPDATE COMPLETE!`);
-    console.log(`==============================`);
-    console.log(`🏷️ Brands updated: ${brandsUpdated}`);
-    console.log(`📊 Total brands: ${allBrands.length}`);
-    console.log(`💰 Success rate: ${Math.round((brandsUpdated / allBrands.length) * 100)}%`);
+    console.warn(`\n🎉 BRAND PRICING UPDATE COMPLETE!`);
+    console.warn(`==============================`);
+    console.warn(`🏷️ Brands updated: ${brandsUpdated}`);
+    console.warn(`📊 Total brands: ${allBrands.length}`);
+    console.warn(`💰 Success rate: ${Math.round((brandsUpdated / allBrands.length) * 100)}%`);
 
     return {
       brandsUpdated,
@@ -79,7 +79,7 @@ async function updateBrandPricing() {
 // Execute brand pricing update
 updateBrandPricing()
   .then((result) => {
-    console.log('🏷️ Brand pricing update executed successfully!', result);
+    console.warn('🏷️ Brand pricing update executed successfully!', result);
     process.exit(0);
   })
   .catch((error) => {

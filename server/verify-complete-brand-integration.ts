@@ -4,16 +4,16 @@
 import { DatabaseStorage } from './storage';
 
 async function verifyCompleteBrandIntegration() {
-  console.log('🔍 VERIFYING COMPLETE BRAND INTEGRATION - Checking all core brands and subnodes');
+  console.warn('🔍 VERIFYING COMPLETE BRAND INTEGRATION - Checking all core brands and subnodes');
 
   try {
     const storage = new DatabaseStorage();
     const allSectors = await storage.getAllSectors();
     const allBrands = await storage.getAllBrands();
 
-    console.log(`📊 Database Status:`);
-    console.log(`   - Total sectors: ${allSectors.length}`);
-    console.log(`   - Total brands: ${allBrands.length}`);
+    console.warn(`📊 Database Status:`);
+    console.warn(`   - Total sectors: ${allSectors.length}`);
+    console.warn(`   - Total brands: ${allBrands.length}`);
 
     // Key sectors to verify with expected brand counts from comprehensive data
     const keyVerificationSectors = [
@@ -29,11 +29,11 @@ async function verifyCompleteBrandIntegration() {
       { name: 'education-youth', expectedMinBrands: 10, emoji: '🎓' },
     ];
 
-    console.log(`\n🔍 SECTOR VERIFICATION REPORT:`);
-    console.log(`===============================`);
+    console.warn(`\n🔍 SECTOR VERIFICATION REPORT:`);
+    console.warn(`===============================`);
 
     let totalVerifiedBrands = 0;
-    let sectorsWithMissingData = [];
+    const sectorsWithMissingData = [];
 
     for (const verifySpec of keyVerificationSectors) {
       const sector = allSectors.find(
@@ -51,11 +51,11 @@ async function verifyCompleteBrandIntegration() {
         totalVerifiedBrands += sectorBrands.length;
 
         if (sectorBrands.length >= verifySpec.expectedMinBrands) {
-          console.log(
+          console.warn(
             `✅ ${sector.emoji} ${sector.name}: ${sectorBrands.length} brands (${coreBrands.length} core + ${subnodes.length} subnodes) ✓`
           );
         } else {
-          console.log(
+          console.warn(
             `⚠️  ${sector.emoji} ${sector.name}: ${sectorBrands.length} brands (Expected: ${verifySpec.expectedMinBrands}+) - NEEDS INTEGRATION`
           );
           sectorsWithMissingData.push({
@@ -66,7 +66,7 @@ async function verifyCompleteBrandIntegration() {
           });
         }
       } else {
-        console.log(`❌ ${verifySpec.emoji} ${verifySpec.name}: SECTOR NOT FOUND - NEEDS CREATION`);
+        console.warn(`❌ ${verifySpec.emoji} ${verifySpec.name}: SECTOR NOT FOUND - NEEDS CREATION`);
         sectorsWithMissingData.push({
           sector: verifySpec.name,
           current: 0,
@@ -77,27 +77,27 @@ async function verifyCompleteBrandIntegration() {
       }
     }
 
-    console.log(`\n📈 INTEGRATION COMPLETENESS SUMMARY:`);
-    console.log(`====================================`);
-    console.log(`🔢 Total verified brands: ${totalVerifiedBrands}`);
-    console.log(
+    console.warn(`\n📈 INTEGRATION COMPLETENESS SUMMARY:`);
+    console.warn(`====================================`);
+    console.warn(`🔢 Total verified brands: ${totalVerifiedBrands}`);
+    console.warn(
       `🎯 Sectors fully integrated: ${keyVerificationSectors.length - sectorsWithMissingData.length}/${keyVerificationSectors.length}`
     );
 
     if (sectorsWithMissingData.length > 0) {
-      console.log(`\n⚠️  SECTORS REQUIRING ADDITIONAL INTEGRATION:`);
-      console.log(`============================================`);
+      console.warn(`\n⚠️  SECTORS REQUIRING ADDITIONAL INTEGRATION:`);
+      console.warn(`============================================`);
 
       let totalMissingBrands = 0;
       for (const missing of sectorsWithMissingData) {
-        console.log(
+        console.warn(
           `   - ${missing.sector}: Missing ${missing.gap} brands (${missing.current}/${missing.expected})`
         );
         totalMissingBrands += missing.gap;
       }
 
-      console.log(`\n🚨 TOTAL MISSING BRANDS: ${totalMissingBrands}`);
-      console.log(
+      console.warn(`\n🚨 TOTAL MISSING BRANDS: ${totalMissingBrands}`);
+      console.warn(
         `🔧 ACTION REQUIRED: Complete integration needed for full comprehensive data coverage`
       );
 
@@ -109,8 +109,8 @@ async function verifyCompleteBrandIntegration() {
         integrationComplete: false,
       };
     } else {
-      console.log(`\n🎉 ALL SECTORS FULLY INTEGRATED!`);
-      console.log(`✨ Complete brand and subnode coverage achieved`);
+      console.warn(`\n🎉 ALL SECTORS FULLY INTEGRATED!`);
+      console.warn(`✨ Complete brand and subnode coverage achieved`);
 
       return {
         totalBrands: allBrands.length,
@@ -129,9 +129,9 @@ async function verifyCompleteBrandIntegration() {
 // Execute verification
 verifyCompleteBrandIntegration()
   .then((result) => {
-    console.log('\n🔍 Brand integration verification completed!', result);
+    console.warn('\n🔍 Brand integration verification completed!', result);
     if (!result.integrationComplete) {
-      console.log('🚨 INTEGRATION INCOMPLETE - Additional brand integration required');
+      console.warn('🚨 INTEGRATION INCOMPLETE - Additional brand integration required');
     }
     process.exit(0);
   })

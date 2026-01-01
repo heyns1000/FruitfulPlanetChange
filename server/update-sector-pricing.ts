@@ -62,7 +62,7 @@ const sectorPricing = {
 };
 
 export async function updateSectorPricing() {
-  console.log('💰 Updating sector pricing with real market values...');
+  console.warn('💰 Updating sector pricing with real market values...');
 
   try {
     const allSectors = await db.select().from(sectors);
@@ -77,14 +77,14 @@ export async function updateSectorPricing() {
             price: pricingInfo.price,
             currency: 'USD',
             metadata: {
-              ...(sector.metadata as any),
+              ...(sector.metadata as Record<string, unknown>),
               tier: pricingInfo.tier,
               priceUpdated: new Date().toISOString(),
             },
           })
           .where(eq(sectors.id, sector.id));
 
-        console.log(`💰 Updated ${sector.name}: $${pricingInfo.price} USD (${pricingInfo.tier})`);
+        console.warn(`💰 Updated ${sector.name}: $${pricingInfo.price} USD (${pricingInfo.tier})`);
       } else {
         // Default pricing for unknown sectors
         await db
@@ -93,18 +93,18 @@ export async function updateSectorPricing() {
             price: '79.99',
             currency: 'USD',
             metadata: {
-              ...(sector.metadata as any),
+              ...(sector.metadata as Record<string, unknown>),
               tier: 'Standard',
               priceUpdated: new Date().toISOString(),
             },
           })
           .where(eq(sectors.id, sector.id));
 
-        console.log(`💰 Default pricing for ${sector.name}: $79.99 USD`);
+        console.warn(`💰 Default pricing for ${sector.name}: $79.99 USD`);
       }
     }
 
-    console.log('✅ Sector pricing update completed!');
+    console.warn('✅ Sector pricing update completed!');
     return true;
   } catch (error) {
     console.error('❌ Error updating sector pricing:', error);

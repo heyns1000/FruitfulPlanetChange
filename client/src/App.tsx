@@ -509,7 +509,7 @@ function AuthenticatedApp({
   // Sync URL changes to activePage state
   useEffect(() => {
     // Extract base path (handle sector routes)
-    let basePath = location;
+    const basePath = location;
 
     // Handle sector detail routes like /sector/:id or /sectors/:id
     if (location.startsWith('/sector/') || location.startsWith('/sectors/')) {
