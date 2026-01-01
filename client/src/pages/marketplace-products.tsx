@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
-import { Search, Grid3x3, List, Loader2, Package } from 'lucide-react';
+import { Search, Grid3x3, List, Loader2, Package, Home, ChevronRight, ArrowLeft, Tag } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -87,6 +87,47 @@ export default function MarketplaceProducts() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Breadcrumbs and Back Button */}
+      <div className="border-b bg-card/50 py-3">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            {/* Breadcrumb Navigation */}
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Home className="h-4 w-4" />
+              <ChevronRight className="h-4 w-4" />
+              <button
+                onClick={() => setLocation('/marketplace')}
+                className="hover:text-primary transition-colors"
+              >
+                Marketplace
+              </button>
+              <ChevronRight className="h-4 w-4" />
+              <span className="text-foreground">Products</span>
+            </div>
+
+            {/* Back Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setLocation('/marketplace')}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Marketplace
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Promotional Banner */}
+      <div className="bg-gradient-to-r from-primary/10 to-primary/5 border-b">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-center gap-2 text-sm">
+            <Tag className="h-4 w-4 text-primary" />
+            <span className="font-medium">🎉 Free Shipping on All Orders</span>
+          </div>
+        </div>
+      </div>
+
       {/* Header */}
       <div className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
