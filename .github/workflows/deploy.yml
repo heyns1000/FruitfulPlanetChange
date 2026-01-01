@@ -42,6 +42,25 @@ jobs:
           echo "Running smoke tests..."
           # Add your smoke tests here
           
+      - name: Notify ecosystem of staging deployment
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🔔 Notifying ecosystem of staging deployment..."
+          curl -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/heyns1000/codenest/dispatches" \
+            -d "{\"event_type\":\"deployment_staging\",\"client_payload\":{\"repo\":\"$GITHUB_REPOSITORY\",\"sha\":\"$GITHUB_SHA\"}}" \
+            || true
+          
+          curl -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/heyns1000/omnigrid/dispatches" \
+            -d "{\"event_type\":\"deployment_staging\",\"client_payload\":{\"repo\":\"$GITHUB_REPOSITORY\",\"sha\":\"$GITHUB_SHA\"}}" \
+            || true
+          
   deploy-production:
     name: Deploy to Production
     runs-on: ubuntu-latest
@@ -77,6 +96,25 @@ jobs:
           echo "Running smoke tests..."
           # Add your smoke tests here
           
+      - name: Notify ecosystem of production deployment
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🔔 Notifying ecosystem of production deployment..."
+          curl -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/heyns1000/codenest/dispatches" \
+            -d "{\"event_type\":\"deployment_production\",\"client_payload\":{\"repo\":\"$GITHUB_REPOSITORY\",\"sha\":\"$GITHUB_SHA\",\"tag\":\"${GITHUB_REF#refs/tags/}\"}}" \
+            || true
+          
+          curl -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/heyns1000/omnigrid/dispatches" \
+            -d "{\"event_type\":\"deployment_production\",\"client_payload\":{\"repo\":\"$GITHUB_REPOSITORY\",\"sha\":\"$GITHUB_SHA\",\"tag\":\"${GITHUB_REF#refs/tags/}\"}}" \
+            || true
+          
       - name: Notify deployment
         if: always()
         uses: 8398a7/action-slack@v3
@@ -93,6 +131,25 @@ jobs:
     environment:
       name: production
     steps:
+      - name: Notify ecosystem of rollback
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🔔 Notifying ecosystem of deployment rollback..."
+          curl -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/heyns1000/codenest/dispatches" \
+            -d "{\"event_type\":\"deployment_rollback\",\"client_payload\":{\"repo\":\"$GITHUB_REPOSITORY\",\"reason\":\"deployment_failed\"}}" \
+            || true
+          
+          curl -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/heyns1000/omnigrid/dispatches" \
+            -d "{\"event_type\":\"deployment_rollback\",\"client_payload\":{\"repo\":\"$GITHUB_REPOSITORY\",\"reason\":\"deployment_failed\"}}" \
+            || true
+      
       - name: Configure kubectl
         uses: azure/k8s-set-context@v3
         with:

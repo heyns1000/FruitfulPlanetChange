@@ -216,6 +216,18 @@ jobs:
           echo "✅ All repositories synchronized"
           echo "Total Synced: $synced / 84 (${#repos[@]} verified)"
           
+      - name: Trigger ecosystem sync workflow
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🔄 Triggering cross-repository sync..."
+          curl -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/cross-repo-sync.yml/dispatches" \
+            -d "{\"ref\":\"${GITHUB_REF#refs/heads/}\",\"inputs\":{\"force_sync\":\"true\"}}" \
+            || echo "⚠️ Cross-repo sync trigger failed (non-critical)"
+          
       - name: Generate Integration Report
         run: |
           echo "📊 Integration Status Report"
