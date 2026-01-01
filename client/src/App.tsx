@@ -73,6 +73,7 @@ import {
   useScrollBreathGlyphs,
 } from '@/components/animations/ScrollBreathGlyphs';
 import GlobalMarketplace from '@/pages/global-marketplace';
+import MarketplaceProducts from '@/pages/marketplace-products';
 import DeploymentDashboard from '@/pages/deployment-dashboard';
 
 // Map URL paths to activePage IDs for state-based routing integration
@@ -135,6 +136,7 @@ const pathToPageId: Record<string, string> = {
   '/airshow-loyalty-protocol': 'airshow-loyalty-protocol',
   '/bad-boys-noodle': 'bad-boys-noodle',
   '/global-marketplace': 'global-marketplace',
+  '/marketplace/products': 'marketplace-products',
   '/deployment-dashboard': 'deployment-dashboard',
 };
 
@@ -196,6 +198,7 @@ const pageIdToPath: Record<string, string> = {
   'airshow-loyalty-protocol': '/airshow-loyalty-protocol',
   'bad-boys-noodle': '/bad-boys-noodle',
   'global-marketplace': '/global-marketplace',
+  'marketplace-products': '/marketplace/products',
   'deployment-dashboard': '/deployment-dashboard',
 };
 
@@ -431,6 +434,8 @@ function PageRouter({ activePage }: { activePage: string }) {
       );
     case 'global-marketplace':
       return <GlobalMarketplace />;
+    case 'marketplace-products':
+      return <MarketplaceProducts />;
     case 'deployment-dashboard':
       return <DeploymentDashboard />;
     default:
