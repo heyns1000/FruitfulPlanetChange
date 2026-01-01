@@ -2,6 +2,8 @@
 
 Complete documentation for the integration of the `heyns1000/samfox` repository into `Fruitful-Global-Planet/FruitfulPlanetChange` for payment gateway marketplace functionality.
 
+> ⚠️ **CRITICAL SECURITY WARNING**: The integrated templates contain hardcoded API credentials (including sensitive secrets) from the original repository. These templates are for **reference and development only** and **MUST NOT** be deployed to production without removing all hardcoded credentials. See [`public/samfox-templates/metadata/SECURITY.md`](../public/samfox-templates/metadata/SECURITY.md) for detailed security information.
+
 ---
 
 ## 📋 Table of Contents

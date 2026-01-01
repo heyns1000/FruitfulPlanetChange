@@ -2,6 +2,8 @@
 
 Complete template library from **SamFox Creative Studio** (Samantha Ford) integrated into FruitfulPlanet ecosystem for payment gateway marketplace functionality.
 
+> ⚠️ **SECURITY WARNING**: These templates contain hardcoded API credentials from the original repository and should **NOT** be used as-is in production. See [`metadata/SECURITY.md`](metadata/SECURITY.md) for critical security information before using any template.
+
 ## 📚 Overview
 
 This directory contains **32+ production-ready HTML templates** organized by category, covering:

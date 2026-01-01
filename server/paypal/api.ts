@@ -21,10 +21,16 @@ export async function generateAccessToken(): Promise<string> {
     throw new Error('PayPal credentials not configured. Set PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET in environment variables.');
   }
 
-  // Check for sandbox credentials
-  if (clientId === 'sandbox_client_id' || clientSecret === 'sandbox_client_secret') {
+  // Validate credentials are not placeholder values
+  const invalidPrefixes = ['sandbox_', 'test_', 'placeholder_', 'your_', 'demo_'];
+  const isInvalidCredential = invalidPrefixes.some(prefix => 
+    clientId.toLowerCase().startsWith(prefix) || 
+    clientSecret.toLowerCase().startsWith(prefix)
+  );
+  
+  if (isInvalidCredential) {
     console.warn('Using placeholder PayPal credentials. Configure real credentials for production.');
-    throw new Error('PayPal sandbox credentials must be configured');
+    throw new Error('PayPal credentials must be configured with valid values');
   }
 
   const auth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
