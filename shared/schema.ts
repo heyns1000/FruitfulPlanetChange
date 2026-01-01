@@ -1531,6 +1531,57 @@ export const vaultTraceNetwork = pgTable('vault_trace_network', {
   createdAt: timestamp('created_at').defaultNow(),
 });
 
+// Marketplace Orders - Global marketplace order tracking
+export const marketplaceOrders = pgTable('marketplace_orders', {
+  id: serial('id').primaryKey(),
+  orderId: varchar('order_id').unique().notNull(),
+  userId: varchar('user_id').references(() => users.id),
+  sessionId: varchar('session_id'), // For guest checkouts
+  items: jsonb('items').$type<Array<{
+    brandId: number;
+    brandName: string;
+    quantity: number;
+    price: number;
+    sectorId?: number;
+    metadata?: any;
+  }>>().notNull(),
+  subtotal: decimal('subtotal', { precision: 10, scale: 2 }).notNull(),
+  tax: decimal('tax', { precision: 10, scale: 2 }).default('0.00'),
+  shipping: decimal('shipping', { precision: 10, scale: 2 }).default('0.00'),
+  total: decimal('total', { precision: 10, scale: 2 }).notNull(),
+  currency: text('currency').default('USD'),
+  paymentMethod: text('payment_method'), // paypal, payfast
+  paymentId: text('payment_id'), // External payment ID
+  paymentStatus: text('payment_status').notNull().default('pending'), // pending, completed, failed, refunded
+  orderStatus: text('order_status').notNull().default('pending'), // pending, processing, shipped, delivered, cancelled
+  shippingAddress: jsonb('shipping_address').$type<{
+    fullName: string;
+    address: string;
+    city: string;
+    state?: string;
+    zipCode: string;
+    country: string;
+  }>(),
+  customerEmail: varchar('customer_email'),
+  customerName: varchar('customer_name'),
+  trackingNumber: text('tracking_number'),
+  notes: text('notes'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+// Shopping Cart - Session-based cart storage
+export const cartItems = pgTable('cart_items', {
+  id: serial('id').primaryKey(),
+  userId: varchar('user_id').references(() => users.id),
+  sessionId: varchar('session_id'), // For guest users
+  brandId: integer('brand_id').notNull().references(() => brands.id),
+  quantity: integer('quantity').notNull().default(1),
+  metadata: jsonb('metadata'), // Additional cart item data
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
 // Ecosystem pulse insert schemas
 export const insertEcosystemPulseSchema = createInsertSchema(ecosystemPulses).omit({ id: true });
 export const insertPulseHistorySchema = createInsertSchema(pulseHistory).omit({ id: true });
@@ -1544,6 +1595,18 @@ export const insertVaultTraceNetworkSchema = createInsertSchema(vaultTraceNetwor
   createdAt: true,
 });
 
+// Marketplace orders and cart insert schemas
+export const insertMarketplaceOrderSchema = createInsertSchema(marketplaceOrders).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+export const insertCartItemSchema = createInsertSchema(cartItems).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Ecosystem pulse types
 export type EcosystemPulse = typeof ecosystemPulses.$inferSelect;
 export type InsertEcosystemPulse = z.infer<typeof insertEcosystemPulseSchema>;
@@ -1553,3 +1616,9 @@ export type CodeNestRepository = typeof codeNestRepositories.$inferSelect;
 export type InsertCodeNestRepository = z.infer<typeof insertCodeNestRepositorySchema>;
 export type VaultTraceNetwork = typeof vaultTraceNetwork.$inferSelect;
 export type InsertVaultTraceNetwork = z.infer<typeof insertVaultTraceNetworkSchema>;
+
+// Marketplace types
+export type MarketplaceOrder = typeof marketplaceOrders.$inferSelect;
+export type InsertMarketplaceOrder = z.infer<typeof insertMarketplaceOrderSchema>;
+export type CartItem = typeof cartItems.$inferSelect;
+export type InsertCartItem = z.infer<typeof insertCartItemSchema>;

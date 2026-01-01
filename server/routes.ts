@@ -22,6 +22,7 @@ import adminPanelRoutes from './routes/admin-panel';
 import syncRoutes from './routes/sync';
 import databaseSchemaRoutes from './routes/database-schema';
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault } from './paypal';
+import { createPayfastPayment, handlePayfastWebhook, getPayfastConfig } from './payfast';
 import { getPaypalContainers } from './routes/paypal-containers';
 import { registerIntegrationWebhook } from './routes/integration-webhook';
 import { registerBanimalPulseRoutes } from './routes/banimal-pulse';
@@ -206,6 +207,253 @@ export async function registerRoutes(app: Express): Promise<Server> {
     await capturePaypalOrder(req, res);
   });
   app.get('/api/paypal/containers', getPaypalContainers);
+
+  // ========================================
+  // PAYFAST PAYMENT ROUTES
+  // ========================================
+  app.get('/api/payfast/config', async (req, res) => {
+    await getPayfastConfig(req, res);
+  });
+
+  app.post('/api/payfast/payment', async (req, res) => {
+    await createPayfastPayment(req, res);
+  });
+
+  app.post('/api/payfast/webhook', async (req, res) => {
+    await handlePayfastWebhook(req, res);
+  });
+
+  // ========================================
+  // GLOBAL MARKETPLACE ROUTES
+  // ========================================
+  
+  // Get filtered products for marketplace
+  app.get('/api/marketplace/products', async (req, res) => {
+    try {
+      const {
+        search,
+        sectorId,
+        minPrice,
+        maxPrice,
+        integration,
+        page = '1',
+        limit = '25',
+      } = req.query;
+
+      const filters: any = {
+        page: parseInt(page as string),
+        limit: parseInt(limit as string),
+      };
+
+      if (search) filters.search = search as string;
+      if (sectorId) filters.sectorId = parseInt(sectorId as string);
+      if (minPrice) filters.minPrice = parseFloat(minPrice as string);
+      if (maxPrice) filters.maxPrice = parseFloat(maxPrice as string);
+      if (integration) filters.integration = integration as string;
+
+      const result = await storage.getFilteredBrands(filters);
+      
+      res.json({
+        products: result.brands,
+        total: result.total,
+        page: filters.page,
+        limit: filters.limit,
+        totalPages: Math.ceil(result.total / filters.limit),
+      });
+    } catch (error) {
+      console.error('Error fetching marketplace products:', error);
+      res.status(500).json({ error: 'Failed to fetch marketplace products' });
+    }
+  });
+
+  // Shopping Cart Routes
+  app.get('/api/cart', async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const sessionId = req.session.id;
+
+      const items = await storage.getCartItems(userId, sessionId);
+      res.json({ items });
+    } catch (error) {
+      console.error('Error fetching cart:', error);
+      res.status(500).json({ error: 'Failed to fetch cart' });
+    }
+  });
+
+  app.post('/api/cart/add', async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const sessionId = req.session.id;
+      const { brandId, quantity = 1, metadata } = req.body;
+
+      if (!brandId) {
+        return res.status(400).json({ error: 'Brand ID is required' });
+      }
+
+      const item = await storage.addCartItem({
+        userId,
+        sessionId: userId ? undefined : sessionId,
+        brandId: parseInt(brandId),
+        quantity,
+        metadata,
+      });
+
+      // Get updated cart count
+      const cartItems = await storage.getCartItems(userId, sessionId);
+      
+      res.json({
+        success: true,
+        item,
+        cartItemCount: cartItems.length,
+      });
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      res.status(500).json({ error: 'Failed to add item to cart' });
+    }
+  });
+
+  app.put('/api/cart/item/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { quantity } = req.body;
+
+      if (!quantity || quantity < 1) {
+        return res.status(400).json({ error: 'Valid quantity is required' });
+      }
+
+      const item = await storage.updateCartItem(parseInt(id), quantity);
+      res.json({ success: true, item });
+    } catch (error) {
+      console.error('Error updating cart item:', error);
+      res.status(500).json({ error: 'Failed to update cart item' });
+    }
+  });
+
+  app.delete('/api/cart/item/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.removeCartItem(parseInt(id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error removing cart item:', error);
+      res.status(500).json({ error: 'Failed to remove cart item' });
+    }
+  });
+
+  app.delete('/api/cart', async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const sessionId = req.session.id;
+      await storage.clearCart(userId, sessionId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error clearing cart:', error);
+      res.status(500).json({ error: 'Failed to clear cart' });
+    }
+  });
+
+  // Marketplace Orders Routes
+  app.get('/api/marketplace/orders', async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const orders = await storage.getMarketplaceOrders(userId);
+      res.json({ orders });
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      res.status(500).json({ error: 'Failed to fetch orders' });
+    }
+  });
+
+  app.get('/api/marketplace/orders/:orderId', async (req, res) => {
+    try {
+      const { orderId } = req.params;
+      const order = await storage.getMarketplaceOrder(orderId);
+      
+      if (!order) {
+        return res.status(404).json({ error: 'Order not found' });
+      }
+      
+      res.json({ order });
+    } catch (error) {
+      console.error('Error fetching order:', error);
+      res.status(500).json({ error: 'Failed to fetch order' });
+    }
+  });
+
+  app.post('/api/marketplace/orders', async (req, res) => {
+    try {
+      const userId = getUserId(req);
+      const sessionId = req.session.id;
+      const {
+        items,
+        shippingAddress,
+        paymentMethod,
+        paymentId,
+        customerEmail,
+        customerName,
+      } = req.body;
+
+      if (!items || items.length === 0) {
+        return res.status(400).json({ error: 'Order items are required' });
+      }
+
+      // Calculate totals
+      const subtotal = items.reduce(
+        (sum: number, item: any) => sum + item.price * item.quantity,
+        0
+      );
+      const tax = subtotal * 0.15; // 15% VAT (adjust as needed)
+      const shipping = 0; // Free shipping for now
+      const total = subtotal + tax + shipping;
+
+      // Generate unique order ID
+      const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
+
+      const order = await storage.createMarketplaceOrder({
+        orderId,
+        userId,
+        sessionId: userId ? undefined : sessionId,
+        items,
+        subtotal: subtotal.toString(),
+        tax: tax.toString(),
+        shipping: shipping.toString(),
+        total: total.toString(),
+        currency: 'USD',
+        paymentMethod,
+        paymentId,
+        paymentStatus: paymentId ? 'completed' : 'pending',
+        orderStatus: 'pending',
+        shippingAddress,
+        customerEmail,
+        customerName,
+      });
+
+      // Clear cart after order creation
+      await storage.clearCart(userId, sessionId);
+
+      res.status(201).json({
+        success: true,
+        order,
+        orderId: order.orderId,
+      });
+    } catch (error) {
+      console.error('Error creating order:', error);
+      res.status(500).json({ error: 'Failed to create order' });
+    }
+  });
+
+  app.patch('/api/marketplace/orders/:orderId', async (req, res) => {
+    try {
+      const { orderId } = req.params;
+      const updates = req.body;
+
+      const order = await storage.updateMarketplaceOrder(orderId, updates);
+      res.json({ success: true, order });
+    } catch (error) {
+      console.error('Error updating order:', error);
+      res.status(500).json({ error: 'Failed to update order' });
+    }
+  });
 
   // DISABLED: Heavy sync operations causing CPU bottleneck
   // const { syncComprehensiveBrandData } = await import('./comprehensive-brand-sync-clean');

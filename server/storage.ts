@@ -37,6 +37,9 @@ import {
   marketplacePackages,
   packageVersions,
   packageDownloads,
+  // Marketplace Orders and Cart Tables
+  marketplaceOrders,
+  cartItems,
   type User,
   type InsertUser,
   type Sector,
@@ -109,6 +112,11 @@ import {
   type InsertPackageVersion,
   type PackageDownload,
   type InsertPackageDownload,
+  // Marketplace Orders and Cart Types
+  type MarketplaceOrder,
+  type InsertMarketplaceOrder,
+  type CartItem,
+  type InsertCartItem,
   COMPREHENSIVE_BRAND_DATA,
 } from '@shared/schema';
 import { db } from './db';
@@ -356,6 +364,33 @@ export interface IStorage {
   // Package Downloads
   createPackageDownload(download: InsertPackageDownload): Promise<PackageDownload>;
   updatePackageDownloadCompleted(id: number, completed: boolean): Promise<void>;
+
+  // Marketplace Orders & Cart
+  getMarketplaceOrders(userId?: string): Promise<MarketplaceOrder[]>;
+  getMarketplaceOrder(orderId: string): Promise<MarketplaceOrder | undefined>;
+  createMarketplaceOrder(order: InsertMarketplaceOrder): Promise<MarketplaceOrder>;
+  updateMarketplaceOrder(
+    orderId: string,
+    updates: Partial<InsertMarketplaceOrder>
+  ): Promise<MarketplaceOrder>;
+  
+  // Cart Management
+  getCartItems(userId?: string, sessionId?: string): Promise<CartItem[]>;
+  addCartItem(item: InsertCartItem): Promise<CartItem>;
+  updateCartItem(id: number, quantity: number): Promise<CartItem>;
+  removeCartItem(id: number): Promise<void>;
+  clearCart(userId?: string, sessionId?: string): Promise<void>;
+  
+  // Brand Filtering for Marketplace
+  getFilteredBrands(filters: {
+    search?: string;
+    sectorId?: number;
+    minPrice?: number;
+    maxPrice?: number;
+    integration?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{ brands: Brand[]; total: number }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -2761,6 +2796,168 @@ export class MemStorage implements IStorage {
     }
 
     return { dependencies, dependents };
+  }
+
+  // ======================================================================
+  // MARKETPLACE ORDERS & CART METHODS
+  // ======================================================================
+
+  async getMarketplaceOrders(userId?: string): Promise<MarketplaceOrder[]> {
+    if (userId) {
+      return await db
+        .select()
+        .from(marketplaceOrders)
+        .where(eq(marketplaceOrders.userId, userId))
+        .orderBy(desc(marketplaceOrders.createdAt));
+    }
+    return await db.select().from(marketplaceOrders).orderBy(desc(marketplaceOrders.createdAt));
+  }
+
+  async getMarketplaceOrder(orderId: string): Promise<MarketplaceOrder | undefined> {
+    const [order] = await db
+      .select()
+      .from(marketplaceOrders)
+      .where(eq(marketplaceOrders.orderId, orderId));
+    return order;
+  }
+
+  async createMarketplaceOrder(order: InsertMarketplaceOrder): Promise<MarketplaceOrder> {
+    const [result] = await db.insert(marketplaceOrders).values(order).returning();
+    return result;
+  }
+
+  async updateMarketplaceOrder(
+    orderId: string,
+    updates: Partial<InsertMarketplaceOrder>
+  ): Promise<MarketplaceOrder> {
+    const [result] = await db
+      .update(marketplaceOrders)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(marketplaceOrders.orderId, orderId))
+      .returning();
+    return result;
+  }
+
+  // Cart Management
+  async getCartItems(userId?: string, sessionId?: string): Promise<CartItem[]> {
+    if (userId) {
+      return await db.select().from(cartItems).where(eq(cartItems.userId, userId));
+    } else if (sessionId) {
+      return await db.select().from(cartItems).where(eq(cartItems.sessionId, sessionId));
+    }
+    return [];
+  }
+
+  async addCartItem(item: InsertCartItem): Promise<CartItem> {
+    // Check if item already exists in cart
+    let existingItem;
+    if (item.userId) {
+      [existingItem] = await db
+        .select()
+        .from(cartItems)
+        .where(
+          sql`${cartItems.userId} = ${item.userId} AND ${cartItems.brandId} = ${item.brandId}`
+        );
+    } else if (item.sessionId) {
+      [existingItem] = await db
+        .select()
+        .from(cartItems)
+        .where(
+          sql`${cartItems.sessionId} = ${item.sessionId} AND ${cartItems.brandId} = ${item.brandId}`
+        );
+    }
+
+    if (existingItem) {
+      // Update quantity
+      const [updated] = await db
+        .update(cartItems)
+        .set({ quantity: existingItem.quantity + (item.quantity || 1), updatedAt: new Date() })
+        .where(eq(cartItems.id, existingItem.id))
+        .returning();
+      return updated;
+    }
+
+    // Insert new item
+    const [result] = await db.insert(cartItems).values(item).returning();
+    return result;
+  }
+
+  async updateCartItem(id: number, quantity: number): Promise<CartItem> {
+    const [result] = await db
+      .update(cartItems)
+      .set({ quantity, updatedAt: new Date() })
+      .where(eq(cartItems.id, id))
+      .returning();
+    return result;
+  }
+
+  async removeCartItem(id: number): Promise<void> {
+    await db.delete(cartItems).where(eq(cartItems.id, id));
+  }
+
+  async clearCart(userId?: string, sessionId?: string): Promise<void> {
+    if (userId) {
+      await db.delete(cartItems).where(eq(cartItems.userId, userId));
+    } else if (sessionId) {
+      await db.delete(cartItems).where(eq(cartItems.sessionId, sessionId));
+    }
+  }
+
+  // Brand Filtering for Marketplace
+  async getFilteredBrands(filters: {
+    search?: string;
+    sectorId?: number;
+    minPrice?: number;
+    maxPrice?: number;
+    integration?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{ brands: Brand[]; total: number }> {
+    const page = filters.page || 1;
+    const limit = filters.limit || 25;
+    const offset = (page - 1) * limit;
+
+    let query = db.select().from(brands);
+    const conditions = [];
+
+    // Search filter
+    if (filters.search) {
+      conditions.push(
+        or(
+          ilike(brands.name, `%${filters.search}%`),
+          ilike(brands.description, `%${filters.search}%`)
+        )
+      );
+    }
+
+    // Sector filter
+    if (filters.sectorId) {
+      conditions.push(eq(brands.sectorId, filters.sectorId));
+    }
+
+    // Integration filter
+    if (filters.integration && filters.integration !== 'All') {
+      conditions.push(eq(brands.integration, filters.integration));
+    }
+
+    // Apply all conditions
+    if (conditions.length > 0) {
+      query = query.where(sql`${sql.join(conditions, sql` AND `)}`);
+    }
+
+    // Get total count
+    const [{ count: totalCount }] = await db
+      .select({ count: count() })
+      .from(brands)
+      .where(conditions.length > 0 ? sql`${sql.join(conditions, sql` AND `)}` : sql`1=1`);
+
+    // Get paginated results
+    const results = await query.limit(limit).offset(offset);
+
+    return {
+      brands: results,
+      total: Number(totalCount),
+    };
   }
 }
 
