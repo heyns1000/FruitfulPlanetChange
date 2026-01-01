@@ -1,0 +1,394 @@
+name: ↔️ Bidirectional Repository Sync
+
+on:
+  repository_dispatch:
+    types:
+      - sync_from_codenest
+      - sync_from_omnigrid
+  schedule:
+    # Check for updates from other repos every 30 minutes
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+    inputs:
+      source_repo:
+        description: 'Source repository (codenest or omnigrid)'
+        required: true
+        type: choice
+        options:
+          - codenest
+          - omnigrid
+          - both
+        default: both
+      branch:
+        description: 'Branch to sync (leave empty for all)'
+        required: false
+        default: ''
+
+env:
+  ECOSYSTEM_CONFIG: '.github/ecosystem-config.json'
+
+jobs:
+  detect-upstream-changes:
+    name: 🔍 Detect Upstream Changes
+    runs-on: ubuntu-latest
+    outputs:
+      codenest_changes: ${{ steps.check.outputs.codenest_changes }}
+      omnigrid_changes: ${{ steps.check.outputs.omnigrid_changes }}
+      branches_to_sync: ${{ steps.check.outputs.branches }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Load ecosystem configuration
+        id: config
+        run: |
+          echo "📝 Loading ecosystem configuration..."
+          CODENEST_REPO=$(jq -r '.repositories[] | select(.role == "meta-aggregator") | .name' ${{ env.ECOSYSTEM_CONFIG }})
+          OMNIGRID_REPO=$(jq -r '.repositories[] | select(.role == "infrastructure") | .name' ${{ env.ECOSYSTEM_CONFIG }})
+          
+          echo "codenest_repo=$CODENEST_REPO" >> $GITHUB_OUTPUT
+          echo "omnigrid_repo=$OMNIGRID_REPO" >> $GITHUB_OUTPUT
+
+      - name: Check for upstream changes
+        id: check
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🔍 Checking for upstream changes..."
+          
+          SOURCE="${{ github.event.inputs.source_repo || 'both' }}"
+          CODENEST_REPO="${{ steps.config.outputs.codenest_repo }}"
+          OMNIGRID_REPO="${{ steps.config.outputs.omnigrid_repo }}"
+          
+          CODENEST_CHANGES=false
+          OMNIGRID_CHANGES=false
+          BRANCHES="[]"
+          
+          # Check CodeNest
+          if [[ "$SOURCE" == "codenest" ]] || [[ "$SOURCE" == "both" ]]; then
+            echo "Checking CodeNest for changes..."
+            
+            # Get branches from CodeNest
+            CODENEST_BRANCHES=$(curl -s \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/$CODENEST_REPO/branches" | \
+              jq -r '.[].name' | grep -E '^(copilot|claude|main|develop)' | jq -R -s -c 'split("\n") | map(select(length > 0))')
+            
+            if [[ "$CODENEST_BRANCHES" != "[]" ]]; then
+              CODENEST_CHANGES=true
+              BRANCHES="$CODENEST_BRANCHES"
+              echo "✅ Found changes in CodeNest"
+            fi
+          fi
+          
+          # Check OmniGrid
+          if [[ "$SOURCE" == "omnigrid" ]] || [[ "$SOURCE" == "both" ]]; then
+            echo "Checking OmniGrid for changes..."
+            
+            OMNIGRID_BRANCHES=$(curl -s \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/$OMNIGRID_REPO/branches" | \
+              jq -r '.[].name' | grep -E '^(copilot|claude|main|develop)' | jq -R -s -c 'split("\n") | map(select(length > 0))')
+            
+            if [[ "$OMNIGRID_BRANCHES" != "[]" ]]; then
+              OMNIGRID_CHANGES=true
+              # Merge with existing branches
+              BRANCHES=$(echo "$BRANCHES $OMNIGRID_BRANCHES" | jq -s 'add | unique')
+              echo "✅ Found changes in OmniGrid"
+            fi
+          fi
+          
+          echo "codenest_changes=$CODENEST_CHANGES" >> $GITHUB_OUTPUT
+          echo "omnigrid_changes=$OMNIGRID_CHANGES" >> $GITHUB_OUTPUT
+          echo "branches=$BRANCHES" >> $GITHUB_OUTPUT
+          
+          echo "📊 Summary:"
+          echo "  CodeNest has changes: $CODENEST_CHANGES"
+          echo "  OmniGrid has changes: $OMNIGRID_CHANGES"
+          echo "  Branches to sync: $BRANCHES"
+
+  sync-from-codenest:
+    name: 🦍 Sync from CodeNest
+    needs: detect-upstream-changes
+    if: needs.detect-upstream-changes.outputs.codenest_changes == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        branch: ${{ fromJson(needs.detect-upstream-changes.outputs.branches_to_sync) }}
+      fail-fast: false
+      max-parallel: 3
+    steps:
+      - name: Checkout FruitfulPlanetChange
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.branch }}
+          fetch-depth: 0
+          token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Setup Git
+        run: |
+          git config --global user.name "HSOMNI9000 Sync Bot"
+          git config --global user.email "sync-bot@fruitfulplanet.com"
+
+      - name: Load ecosystem configuration
+        id: config
+        run: |
+          CODENEST_REPO=$(jq -r '.repositories[] | select(.role == "meta-aggregator") | .name' ${{ env.ECOSYSTEM_CONFIG }})
+          echo "codenest_repo=$CODENEST_REPO" >> $GITHUB_OUTPUT
+
+      - name: Fetch CodeNest changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "📥 Fetching changes from CodeNest..."
+          REPO="${{ steps.config.outputs.codenest_repo }}"
+          BRANCH="${{ matrix.branch }}"
+          
+          # Add CodeNest as remote if not exists
+          if ! git remote | grep -q "^codenest$"; then
+            git remote add codenest "https://x-access-token:$GITHUB_TOKEN@github.com/$REPO.git"
+          fi
+          
+          git fetch codenest "$BRANCH" || {
+            echo "⚠️ Branch $BRANCH not found in CodeNest, skipping..."
+            exit 0
+          }
+          
+          echo "✅ Fetched changes from CodeNest"
+
+      - name: Compare and merge changes
+        id: merge
+        run: |
+          echo "🔄 Comparing changes..."
+          BRANCH="${{ matrix.branch }}"
+          
+          # Check if we're ahead, behind, or diverged
+          LOCAL_SHA=$(git rev-parse HEAD)
+          REMOTE_SHA=$(git rev-parse codenest/$BRANCH 2>/dev/null || echo "")
+          
+          if [[ -z "$REMOTE_SHA" ]]; then
+            echo "status=no_remote" >> $GITHUB_OUTPUT
+            echo "ℹ️ No remote branch in CodeNest"
+            exit 0
+          fi
+          
+          if [[ "$LOCAL_SHA" == "$REMOTE_SHA" ]]; then
+            echo "status=synced" >> $GITHUB_OUTPUT
+            echo "✅ Already in sync"
+            exit 0
+          fi
+          
+          # Try to merge
+          echo "🔀 Attempting to merge changes..."
+          if git merge codenest/$BRANCH --no-edit; then
+            echo "status=merged" >> $GITHUB_OUTPUT
+            echo "✅ Successfully merged changes"
+          else
+            echo "status=conflict" >> $GITHUB_OUTPUT
+            echo "⚠️ Merge conflict detected"
+            
+            # Auto-resolve with 'ours' strategy for simple conflicts
+            git merge --strategy-option=ours codenest/$BRANCH || {
+              echo "❌ Cannot auto-resolve conflict"
+              git merge --abort
+              exit 0
+            }
+            
+            echo "✅ Auto-resolved conflict with 'ours' strategy"
+          fi
+
+      - name: Push changes
+        if: steps.merge.outputs.status == 'merged'
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "📤 Pushing merged changes..."
+          git push origin ${{ matrix.branch }}
+          echo "✅ Changes pushed successfully"
+
+      - name: Create conflict resolution PR
+        if: steps.merge.outputs.status == 'conflict'
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🔀 Creating conflict resolution PR..."
+          
+          BRANCH="${{ matrix.branch }}"
+          CONFLICT_BRANCH="sync/conflict-resolution/$BRANCH-$(date +%s)"
+          
+          # Create a new branch for conflict resolution
+          git checkout -b "$CONFLICT_BRANCH"
+          git push origin "$CONFLICT_BRANCH"
+          
+          # Create PR using GitHub API
+          curl -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls" \
+            -d "{
+              \"title\":\"🔀 Resolve sync conflict: $BRANCH\",
+              \"body\":\"Automatic sync from CodeNest detected conflicts that require manual resolution.\\n\\nBranch: \`$BRANCH\`\\nSource: CodeNest\\nConflict Branch: \`$CONFLICT_BRANCH\`\",
+              \"head\":\"$CONFLICT_BRANCH\",
+              \"base\":\"$BRANCH\",
+              \"labels\":[\"conflict-resolution\",\"automated-sync\",\"needs-review\"]
+            }"
+          
+          echo "✅ Conflict resolution PR created"
+
+  sync-from-omnigrid:
+    name: 🔷 Sync from OmniGrid
+    needs: detect-upstream-changes
+    if: needs.detect-upstream-changes.outputs.omnigrid_changes == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        branch: ${{ fromJson(needs.detect-upstream-changes.outputs.branches_to_sync) }}
+      fail-fast: false
+      max-parallel: 3
+    steps:
+      - name: Checkout FruitfulPlanetChange
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.branch }}
+          fetch-depth: 0
+          token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Setup Git
+        run: |
+          git config --global user.name "HSOMNI9000 Sync Bot"
+          git config --global user.email "sync-bot@fruitfulplanet.com"
+
+      - name: Load ecosystem configuration
+        id: config
+        run: |
+          OMNIGRID_REPO=$(jq -r '.repositories[] | select(.role == "infrastructure") | .name' ${{ env.ECOSYSTEM_CONFIG }})
+          SYNC_PATTERNS=$(jq -r '.repositories[] | select(.role == "infrastructure") | .sync_patterns | join(" ")' ${{ env.ECOSYSTEM_CONFIG }})
+          
+          echo "omnigrid_repo=$OMNIGRID_REPO" >> $GITHUB_OUTPUT
+          echo "sync_patterns=$SYNC_PATTERNS" >> $GITHUB_OUTPUT
+
+      - name: Fetch OmniGrid changes (selective)
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "📥 Fetching selective changes from OmniGrid..."
+          REPO="${{ steps.config.outputs.omnigrid_repo }}"
+          BRANCH="${{ matrix.branch }}"
+          PATTERNS="${{ steps.config.outputs.sync_patterns }}"
+          
+          # Add OmniGrid as remote
+          if ! git remote | grep -q "^omnigrid$"; then
+            git remote add omnigrid "https://x-access-token:$GITHUB_TOKEN@github.com/$REPO.git"
+          fi
+          
+          git fetch omnigrid "$BRANCH" || {
+            echo "⚠️ Branch $BRANCH not found in OmniGrid, skipping..."
+            exit 0
+          }
+          
+          echo "✅ Fetched changes from OmniGrid"
+
+      - name: Selective merge from OmniGrid
+        id: merge
+        run: |
+          echo "🔄 Performing selective merge..."
+          BRANCH="${{ matrix.branch }}"
+          PATTERNS="${{ steps.config.outputs.sync_patterns }}"
+          
+          # Checkout specific paths from OmniGrid
+          for pattern in $PATTERNS; do
+            echo "📂 Syncing pattern: $pattern"
+            git checkout omnigrid/$BRANCH -- $pattern 2>/dev/null || {
+              echo "ℹ️ Pattern $pattern not found in OmniGrid"
+            }
+          done
+          
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "status=no_changes" >> $GITHUB_OUTPUT
+            echo "ℹ️ No changes to sync from OmniGrid"
+          else
+            git commit -m "chore: sync from OmniGrid (selective) - $BRANCH"
+            echo "status=committed" >> $GITHUB_OUTPUT
+            echo "✅ Changes committed"
+          fi
+
+      - name: Push changes
+        if: steps.merge.outputs.status == 'committed'
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "📤 Pushing selective sync changes..."
+          git push origin ${{ matrix.branch }}
+          echo "✅ Changes pushed successfully"
+
+  generate-sync-report:
+    name: 📊 Generate Sync Report
+    needs: [detect-upstream-changes, sync-from-codenest, sync-from-omnigrid]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate report
+        run: |
+          mkdir -p /tmp/sync-reports
+          REPORT_FILE="/tmp/sync-reports/bidirectional-sync-$(date +%Y%m%d-%H%M%S).json"
+          
+          cat > "$REPORT_FILE" << EOF
+          {
+            "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+            "workflow_run_id": "${{ github.run_id }}",
+            "trigger": "${{ github.event_name }}",
+            "codenest": {
+              "had_changes": "${{ needs.detect-upstream-changes.outputs.codenest_changes }}",
+              "sync_status": "${{ needs.sync-from-codenest.result }}"
+            },
+            "omnigrid": {
+              "had_changes": "${{ needs.detect-upstream-changes.outputs.omnigrid_changes }}",
+              "sync_status": "${{ needs.sync-from-omnigrid.result }}"
+            },
+            "branches": ${{ needs.detect-upstream-changes.outputs.branches_to_sync }}
+          }
+          EOF
+          
+          echo "📄 Sync Report:"
+          cat "$REPORT_FILE" | jq '.'
+
+      - name: Upload sync report
+        uses: actions/upload-artifact@v4
+        with:
+          name: bidirectional-sync-report-${{ github.run_id }}
+          path: /tmp/sync-reports/
+          retention-days: 30
+
+      - name: Summary
+        run: |
+          echo "╔════════════════════════════════════════════════════════════════╗"
+          echo "║         Bidirectional Synchronization Summary                 ║"
+          echo "╚════════════════════════════════════════════════════════════════╝"
+          echo ""
+          echo "⏰ Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          echo ""
+          echo "📊 Sync Results:"
+          echo "  🦍 From CodeNest: ${{ needs.sync-from-codenest.result }}"
+          echo "  🔷 From OmniGrid: ${{ needs.sync-from-omnigrid.result }}"
+          echo ""
+          echo "🌿 Branches synced: ${{ needs.detect-upstream-changes.outputs.branches_to_sync }}"
+          echo ""
+          
+          if [[ "${{ needs.sync-from-codenest.result }}" == "success" ]] && [[ "${{ needs.sync-from-omnigrid.result }}" == "success" ]]; then
+            echo "✅ Bidirectional sync completed successfully!"
+          elif [[ "${{ needs.sync-from-codenest.result }}" == "skipped" ]] && [[ "${{ needs.sync-from-omnigrid.result }}" == "skipped" ]]; then
+            echo "ℹ️ No changes detected in upstream repositories"
+          else
+            echo "⚠️ Some sync operations had issues. Check artifacts for details."
+          fi
+          
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

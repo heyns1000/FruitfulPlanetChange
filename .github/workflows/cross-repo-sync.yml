@@ -1,0 +1,364 @@
+name: 🔄 Cross-Repository Synchronization
+
+on:
+  push:
+    branches:
+      - '**'  # Trigger on all branches
+  schedule:
+    # Run every 15 minutes for continuous synchronization
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+    inputs:
+      target_branch:
+        description: 'Specific branch to sync (leave empty for all branches)'
+        required: false
+        default: ''
+      force_sync:
+        description: 'Force full synchronization'
+        required: false
+        type: boolean
+        default: false
+      sync_strategy:
+        description: 'Sync strategy'
+        required: false
+        type: choice
+        options:
+          - auto
+          - fast-forward-only
+          - merge
+        default: auto
+
+env:
+  ECOSYSTEM_CONFIG: '.github/ecosystem-config.json'
+
+jobs:
+  detect-changes:
+    name: 🔍 Detect Branch Changes
+    runs-on: ubuntu-latest
+    outputs:
+      branches_to_sync: ${{ steps.detect.outputs.branches }}
+      has_changes: ${{ steps.detect.outputs.has_changes }}
+      sync_mode: ${{ steps.detect.outputs.sync_mode }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Detect branches needing sync
+        id: detect
+        run: |
+          echo "🔍 Detecting branches to synchronize..."
+          
+          # Get target branch from input or current branch
+          if [[ -n "${{ github.event.inputs.target_branch }}" ]]; then
+            TARGET_BRANCH="${{ github.event.inputs.target_branch }}"
+            echo "branches=[\"$TARGET_BRANCH\"]" >> $GITHUB_OUTPUT
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "sync_mode=manual" >> $GITHUB_OUTPUT
+            echo "📌 Manual sync for branch: $TARGET_BRANCH"
+          elif [[ "${{ github.event_name }}" == "push" ]]; then
+            # Sync the pushed branch
+            BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+            echo "branches=[\"$BRANCH_NAME\"]" >> $GITHUB_OUTPUT
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "sync_mode=push" >> $GITHUB_OUTPUT
+            echo "📤 Push detected on branch: $BRANCH_NAME"
+          elif [[ "${{ github.event_name }}" == "schedule" ]] || [[ "${{ github.event.inputs.force_sync }}" == "true" ]]; then
+            # Sync all active branches
+            BRANCHES=$(git branch -r | grep -v HEAD | sed 's/origin\///' | grep -E '^(copilot|claude|main|develop)' | jq -R -s -c 'split("\n") | map(select(length > 0))')
+            echo "branches=$BRANCHES" >> $GITHUB_OUTPUT
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "sync_mode=scheduled" >> $GITHUB_OUTPUT
+            echo "⏰ Scheduled sync for all branches"
+          else
+            echo "branches=[]" >> $GITHUB_OUTPUT
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "sync_mode=none" >> $GITHUB_OUTPUT
+            echo "ℹ️ No sync needed"
+          fi
+
+  sync-to-codenest:
+    name: 🦍 Sync to CodeNest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        branch: ${{ fromJson(needs.detect-changes.outputs.branches_to_sync) }}
+      fail-fast: false
+      max-parallel: 5
+    steps:
+      - name: Checkout FruitfulPlanetChange
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.branch }}
+          fetch-depth: 0
+          token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Setup Git
+        run: |
+          git config --global user.name "HSOMNI9000 Sync Bot"
+          git config --global user.email "sync-bot@fruitfulplanet.com"
+
+      - name: Load ecosystem configuration
+        id: config
+        run: |
+          echo "📝 Loading ecosystem configuration..."
+          if [[ -f "${{ env.ECOSYSTEM_CONFIG }}" ]]; then
+            CODENEST_REPO=$(jq -r '.repositories[] | select(.role == "meta-aggregator") | .name' ${{ env.ECOSYSTEM_CONFIG }})
+            SYNC_STRATEGY=$(jq -r '.repositories[] | select(.role == "meta-aggregator") | .sync_strategy' ${{ env.ECOSYSTEM_CONFIG }})
+            PATH_PREFIX=$(jq -r '.repositories[] | select(.role == "meta-aggregator") | .path_prefix // ""' ${{ env.ECOSYSTEM_CONFIG }})
+            
+            echo "codenest_repo=$CODENEST_REPO" >> $GITHUB_OUTPUT
+            echo "sync_strategy=$SYNC_STRATEGY" >> $GITHUB_OUTPUT
+            echo "path_prefix=$PATH_PREFIX" >> $GITHUB_OUTPUT
+            
+            echo "✅ Target: $CODENEST_REPO"
+            echo "✅ Strategy: $SYNC_STRATEGY"
+            echo "✅ Path prefix: $PATH_PREFIX"
+          else
+            echo "❌ Configuration file not found"
+            exit 1
+          fi
+
+      - name: Check if branch exists in CodeNest
+        id: check_branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🔍 Checking if branch exists in CodeNest..."
+          REPO="${{ steps.config.outputs.codenest_repo }}"
+          BRANCH="${{ matrix.branch }}"
+          
+          # Use GitHub API to check if branch exists
+          STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/$REPO/branches/$BRANCH")
+          
+          if [[ "$STATUS_CODE" == "200" ]]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "✅ Branch exists in CodeNest"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ Branch does not exist in CodeNest (will create)"
+          fi
+
+      - name: Sync branch to CodeNest
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🔄 Syncing branch ${{ matrix.branch }} to CodeNest..."
+          
+          REPO="${{ steps.config.outputs.codenest_repo }}"
+          BRANCH="${{ matrix.branch }}"
+          BRANCH_EXISTS="${{ steps.check_branch.outputs.exists }}"
+          
+          # Get latest commit SHA from current branch
+          LATEST_SHA=$(git rev-parse HEAD)
+          echo "📌 Latest commit: $LATEST_SHA"
+          
+          if [[ "$BRANCH_EXISTS" == "false" ]]; then
+            # Create new branch in CodeNest
+            echo "🌱 Creating new branch in CodeNest..."
+            
+            # Get the default branch SHA as base
+            DEFAULT_BRANCH=$(curl -s \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/$REPO" | jq -r '.default_branch')
+            
+            BASE_SHA=$(curl -s \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/$REPO/git/ref/heads/$DEFAULT_BRANCH" | jq -r '.object.sha')
+            
+            # Create new ref
+            curl -X POST \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/$REPO/git/refs" \
+              -d "{\"ref\":\"refs/heads/$BRANCH\",\"sha\":\"$BASE_SHA\"}"
+            
+            echo "✅ Branch created in CodeNest"
+          fi
+          
+          # Trigger repository dispatch to sync changes
+          echo "📤 Triggering sync in CodeNest..."
+          curl -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/$REPO/dispatches" \
+            -d "{\"event_type\":\"sync_from_fruitful\",\"client_payload\":{\"branch\":\"$BRANCH\",\"source_repo\":\"$GITHUB_REPOSITORY\",\"source_sha\":\"$LATEST_SHA\"}}"
+          
+          echo "✅ Sync request sent to CodeNest"
+
+      - name: Record sync event
+        if: always()
+        run: |
+          echo "📊 Recording sync event..."
+          echo "Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          echo "Branch: ${{ matrix.branch }}"
+          echo "Target: CodeNest"
+          echo "Status: ${{ job.status }}"
+
+  sync-to-omnigrid:
+    name: 🔷 Sync to OmniGrid
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        branch: ${{ fromJson(needs.detect-changes.outputs.branches_to_sync) }}
+      fail-fast: false
+      max-parallel: 5
+    steps:
+      - name: Checkout FruitfulPlanetChange
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.branch }}
+          fetch-depth: 0
+          token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Setup Git
+        run: |
+          git config --global user.name "HSOMNI9000 Sync Bot"
+          git config --global user.email "sync-bot@fruitfulplanet.com"
+
+      - name: Load ecosystem configuration
+        id: config
+        run: |
+          echo "📝 Loading ecosystem configuration..."
+          if [[ -f "${{ env.ECOSYSTEM_CONFIG }}" ]]; then
+            OMNIGRID_REPO=$(jq -r '.repositories[] | select(.role == "infrastructure") | .name' ${{ env.ECOSYSTEM_CONFIG }})
+            SYNC_STRATEGY=$(jq -r '.repositories[] | select(.role == "infrastructure") | .sync_strategy' ${{ env.ECOSYSTEM_CONFIG }})
+            SYNC_PATTERNS=$(jq -r '.repositories[] | select(.role == "infrastructure") | .sync_patterns | join(",")' ${{ env.ECOSYSTEM_CONFIG }})
+            
+            echo "omnigrid_repo=$OMNIGRID_REPO" >> $GITHUB_OUTPUT
+            echo "sync_strategy=$SYNC_STRATEGY" >> $GITHUB_OUTPUT
+            echo "sync_patterns=$SYNC_PATTERNS" >> $GITHUB_OUTPUT
+            
+            echo "✅ Target: $OMNIGRID_REPO"
+            echo "✅ Strategy: $SYNC_STRATEGY (selective)"
+            echo "✅ Patterns: $SYNC_PATTERNS"
+          else
+            echo "❌ Configuration file not found"
+            exit 1
+          fi
+
+      - name: Check if branch exists in OmniGrid
+        id: check_branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🔍 Checking if branch exists in OmniGrid..."
+          REPO="${{ steps.config.outputs.omnigrid_repo }}"
+          BRANCH="${{ matrix.branch }}"
+          
+          STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/$REPO/branches/$BRANCH")
+          
+          if [[ "$STATUS_CODE" == "200" ]]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "✅ Branch exists in OmniGrid"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ Branch does not exist in OmniGrid (will create)"
+          fi
+
+      - name: Sync branch to OmniGrid (selective)
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🔄 Syncing branch ${{ matrix.branch }} to OmniGrid (selective)..."
+          
+          REPO="${{ steps.config.outputs.omnigrid_repo }}"
+          BRANCH="${{ matrix.branch }}"
+          BRANCH_EXISTS="${{ steps.check_branch.outputs.exists }}"
+          
+          # Get latest commit SHA
+          LATEST_SHA=$(git rev-parse HEAD)
+          echo "📌 Latest commit: $LATEST_SHA"
+          
+          if [[ "$BRANCH_EXISTS" == "false" ]]; then
+            echo "🌱 Creating new branch in OmniGrid..."
+            
+            DEFAULT_BRANCH=$(curl -s \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/$REPO" | jq -r '.default_branch')
+            
+            BASE_SHA=$(curl -s \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/$REPO/git/ref/heads/$DEFAULT_BRANCH" | jq -r '.object.sha')
+            
+            curl -X POST \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/$REPO/git/refs" \
+              -d "{\"ref\":\"refs/heads/$BRANCH\",\"sha\":\"$BASE_SHA\"}"
+            
+            echo "✅ Branch created in OmniGrid"
+          fi
+          
+          # Trigger selective sync via repository dispatch
+          echo "📤 Triggering selective sync in OmniGrid..."
+          curl -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/$REPO/dispatches" \
+            -d "{\"event_type\":\"selective_sync_from_fruitful\",\"client_payload\":{\"branch\":\"$BRANCH\",\"source_repo\":\"$GITHUB_REPOSITORY\",\"source_sha\":\"$LATEST_SHA\",\"patterns\":\"${{ steps.config.outputs.sync_patterns }}\"}}"
+          
+          echo "✅ Selective sync request sent to OmniGrid"
+
+      - name: Record sync event
+        if: always()
+        run: |
+          echo "📊 Recording sync event..."
+          echo "Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          echo "Branch: ${{ matrix.branch }}"
+          echo "Target: OmniGrid"
+          echo "Status: ${{ job.status }}"
+
+  sync-summary:
+    name: 📊 Sync Summary
+    needs: [detect-changes, sync-to-codenest, sync-to-omnigrid]
+    if: always() && needs.detect-changes.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate sync summary
+        run: |
+          echo "╔════════════════════════════════════════════════════════════════╗"
+          echo "║          Cross-Repository Synchronization Summary             ║"
+          echo "╚════════════════════════════════════════════════════════════════╝"
+          echo ""
+          echo "⏰ Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          echo "📌 Sync Mode: ${{ needs.detect-changes.outputs.sync_mode }}"
+          echo "🌿 Branches: ${{ needs.detect-changes.outputs.branches_to_sync }}"
+          echo ""
+          echo "📊 Results:"
+          echo "  🦍 CodeNest sync: ${{ needs.sync-to-codenest.result }}"
+          echo "  🔷 OmniGrid sync: ${{ needs.sync-to-omnigrid.result }}"
+          echo ""
+          
+          if [[ "${{ needs.sync-to-codenest.result }}" == "success" ]] && [[ "${{ needs.sync-to-omnigrid.result }}" == "success" ]]; then
+            echo "✅ All repositories synchronized successfully!"
+          else
+            echo "⚠️ Some synchronization jobs had issues. Check logs for details."
+          fi
+          
+          echo ""
+          echo "🔄 Next sync: In 15 minutes (scheduled)"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+      - name: Update sync cache
+        uses: actions/cache/save@v3
+        with:
+          path: |
+            .git
+          key: ecosystem-sync-${{ github.sha }}-${{ github.run_id }}

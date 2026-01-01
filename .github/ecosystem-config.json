@@ -1,0 +1,192 @@
+{
+  "version": "1.0.0",
+  "ecosystem": "HSOMNI9000",
+  "repositories": [
+    {
+      "name": "Fruitful-Global-Planet/FruitfulPlanetChange",
+      "role": "primary",
+      "sync_strategy": "source",
+      "description": "Main ecosystem hub - React 18 + Express monorepo",
+      "priority": 1,
+      "branch_lifecycle": {
+        "auto_create": true,
+        "auto_merge": true,
+        "auto_cleanup": true
+      }
+    },
+    {
+      "name": "heyns1000/codenest",
+      "role": "meta-aggregator",
+      "sync_strategy": "bidirectional",
+      "description": "Meta-repository aggregating 80+ repos",
+      "priority": 2,
+      "path_prefix": "repos/fruitfulplanet/",
+      "branch_lifecycle": {
+        "auto_create": true,
+        "auto_merge": false,
+        "auto_cleanup": false
+      },
+      "special_handling": {
+        "subtree_mode": true,
+        "preserve_structure": true
+      }
+    },
+    {
+      "name": "heyns1000/omnigrid",
+      "role": "infrastructure",
+      "sync_strategy": "selective",
+      "description": "Infrastructure backbone - Universal Interconnected Network",
+      "priority": 3,
+      "sync_patterns": [
+        ".github/workflows/*",
+        "shared/*",
+        "scripts/*",
+        "*.md"
+      ],
+      "exclude_patterns": [
+        "node_modules/**",
+        "dist/**",
+        ".env*",
+        "*.log"
+      ],
+      "branch_lifecycle": {
+        "auto_create": true,
+        "auto_merge": false,
+        "auto_cleanup": false
+      }
+    }
+  ],
+  "sync_configuration": {
+    "interval_minutes": 15,
+    "batch_size": 10,
+    "retry_attempts": 3,
+    "retry_delay_seconds": 30,
+    "timeout_seconds": 300,
+    "enable_parallel_sync": true,
+    "max_parallel_jobs": 5
+  },
+  "conflict_resolution": {
+    "strategy": "auto-ours-with-pr",
+    "auto_resolve_types": [
+      "whitespace",
+      "formatting",
+      "lockfile",
+      "import_order"
+    ],
+    "manual_review_types": [
+      "source_code",
+      "schema_changes",
+      "breaking_changes",
+      "api_changes"
+    ],
+    "conflict_markers": {
+      "auto_ours": true,
+      "create_pr_on_conflict": true,
+      "pr_labels": ["conflict-resolution", "needs-review", "automated-sync"]
+    }
+  },
+  "branch_patterns": {
+    "copilot/*": {
+      "sync_mode": "sync_all",
+      "priority": "high",
+      "auto_merge_on_success": true
+    },
+    "claude/*": {
+      "sync_mode": "sync_all",
+      "priority": "high",
+      "auto_merge_on_success": true
+    },
+    "main": {
+      "sync_mode": "sync_all",
+      "priority": "critical",
+      "require_approval": true,
+      "auto_merge_on_success": false
+    },
+    "develop": {
+      "sync_mode": "sync_all",
+      "priority": "high",
+      "auto_merge_on_success": true
+    },
+    "feature/*": {
+      "sync_mode": "selective",
+      "priority": "medium",
+      "auto_merge_on_success": false
+    },
+    "hotfix/*": {
+      "sync_mode": "sync_all",
+      "priority": "critical",
+      "auto_merge_on_success": true
+    }
+  },
+  "monitoring": {
+    "enable_dashboard": true,
+    "dashboard_update_frequency": "daily",
+    "health_check_interval_minutes": 5,
+    "alert_on_failure": true,
+    "metrics": {
+      "track_sync_duration": true,
+      "track_conflict_rate": true,
+      "track_success_rate": true,
+      "track_branch_count": true
+    }
+  },
+  "integrations": {
+    "seedwave": {
+      "enabled": true,
+      "pulse_interval_seconds": 9,
+      "philosophy": "water the seed 24/7"
+    },
+    "scrollbinder": {
+      "enabled": true,
+      "sync_interval_seconds": 3,
+      "protocol_version": "1.0"
+    },
+    "gorilla_mountain_fox": {
+      "enabled": true,
+      "repo_count": 84,
+      "integration_mode": "trinity_sync"
+    }
+  },
+  "security": {
+    "require_signed_commits": false,
+    "enable_branch_protection": true,
+    "require_status_checks": true,
+    "enforce_admins": false,
+    "secrets": {
+      "required": [
+        "ECOSYSTEM_SYNC_TOKEN",
+        "CODENEST_DEPLOY_KEY",
+        "OMNIGRID_DEPLOY_KEY"
+      ],
+      "optional": [
+        "SLACK_WEBHOOK",
+        "DISCORD_WEBHOOK"
+      ]
+    }
+  },
+  "notifications": {
+    "enable_slack": true,
+    "enable_discord": false,
+    "enable_github_issues": true,
+    "notify_on": {
+      "sync_failure": true,
+      "conflict_detected": true,
+      "branch_created": false,
+      "branch_merged": true,
+      "dashboard_update": true
+    }
+  },
+  "rate_limiting": {
+    "github_api_calls_per_hour": 4500,
+    "buffer_percentage": 20,
+    "enable_caching": true,
+    "cache_duration_minutes": 30
+  },
+  "rollback": {
+    "enable_automatic_rollback": true,
+    "rollback_on_failure": true,
+    "backup_before_sync": true,
+    "max_backup_age_days": 7,
+    "backup_strategy": "git_reflog"
+  }
+}

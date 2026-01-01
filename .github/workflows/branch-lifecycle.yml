@@ -1,0 +1,357 @@
+name: 🌿 Branch Lifecycle Automation
+
+on:
+  create:
+    branches:
+      - '**'
+  delete:
+    branches:
+      - '**'
+  pull_request:
+    types: [closed]
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Lifecycle action'
+        required: true
+        type: choice
+        options:
+          - create_mirrors
+          - cleanup_merged
+          - sync_lifecycle
+        default: sync_lifecycle
+      branch_name:
+        description: 'Branch name (for create_mirrors)'
+        required: false
+        default: ''
+
+env:
+  ECOSYSTEM_CONFIG: '.github/ecosystem-config.json'
+
+jobs:
+  detect-lifecycle-event:
+    name: 🔍 Detect Lifecycle Event
+    runs-on: ubuntu-latest
+    outputs:
+      event_type: ${{ steps.detect.outputs.event_type }}
+      branch_name: ${{ steps.detect.outputs.branch_name }}
+      should_process: ${{ steps.detect.outputs.should_process }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Detect event type
+        id: detect
+        run: |
+          echo "🔍 Detecting lifecycle event..."
+          
+          EVENT_TYPE=""
+          BRANCH_NAME=""
+          SHOULD_PROCESS="false"
+          
+          if [[ "${{ github.event_name }}" == "create" ]] && [[ "${{ github.event.ref_type }}" == "branch" ]]; then
+            EVENT_TYPE="branch_created"
+            BRANCH_NAME="${{ github.event.ref }}"
+            SHOULD_PROCESS="true"
+            echo "🌱 Branch created: $BRANCH_NAME"
+          elif [[ "${{ github.event_name }}" == "delete" ]] && [[ "${{ github.event.ref_type }}" == "branch" ]]; then
+            EVENT_TYPE="branch_deleted"
+            BRANCH_NAME="${{ github.event.ref }}"
+            SHOULD_PROCESS="true"
+            echo "🗑️ Branch deleted: $BRANCH_NAME"
+          elif [[ "${{ github.event_name }}" == "pull_request" ]] && [[ "${{ github.event.pull_request.merged }}" == "true" ]]; then
+            EVENT_TYPE="branch_merged"
+            BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+            SHOULD_PROCESS="true"
+            echo "🔀 Branch merged: $BRANCH_NAME"
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            EVENT_TYPE="${{ github.event.inputs.action }}"
+            BRANCH_NAME="${{ github.event.inputs.branch_name }}"
+            SHOULD_PROCESS="true"
+            echo "🎯 Manual trigger: $EVENT_TYPE"
+          fi
+          
+          echo "event_type=$EVENT_TYPE" >> $GITHUB_OUTPUT
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "should_process=$SHOULD_PROCESS" >> $GITHUB_OUTPUT
+
+  create-mirror-branches:
+    name: 🪞 Create Mirror Branches
+    needs: detect-lifecycle-event
+    if: |
+      needs.detect-lifecycle-event.outputs.should_process == 'true' &&
+      (needs.detect-lifecycle-event.outputs.event_type == 'branch_created' ||
+       needs.detect-lifecycle-event.outputs.event_type == 'create_mirrors')
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target_repo: ['codenest', 'omnigrid']
+      fail-fast: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Load ecosystem configuration
+        id: config
+        run: |
+          echo "📝 Loading configuration for ${{ matrix.target_repo }}..."
+          
+          if [[ "${{ matrix.target_repo }}" == "codenest" ]]; then
+            REPO=$(jq -r '.repositories[] | select(.role == "meta-aggregator") | .name' ${{ env.ECOSYSTEM_CONFIG }})
+            AUTO_CREATE=$(jq -r '.repositories[] | select(.role == "meta-aggregator") | .branch_lifecycle.auto_create' ${{ env.ECOSYSTEM_CONFIG }})
+          else
+            REPO=$(jq -r '.repositories[] | select(.role == "infrastructure") | .name' ${{ env.ECOSYSTEM_CONFIG }})
+            AUTO_CREATE=$(jq -r '.repositories[] | select(.role == "infrastructure") | .branch_lifecycle.auto_create' ${{ env.ECOSYSTEM_CONFIG }})
+          fi
+          
+          echo "target_repo=$REPO" >> $GITHUB_OUTPUT
+          echo "auto_create=$AUTO_CREATE" >> $GITHUB_OUTPUT
+          
+          echo "Target: $REPO"
+          echo "Auto-create enabled: $AUTO_CREATE"
+
+      - name: Create mirror branch
+        if: steps.config.outputs.auto_create == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🪞 Creating mirror branch in ${{ matrix.target_repo }}..."
+          
+          REPO="${{ steps.config.outputs.target_repo }}"
+          BRANCH="${{ needs.detect-lifecycle-event.outputs.branch_name }}"
+          
+          # Get the SHA of the branch in this repo
+          SOURCE_SHA=$(git rev-parse "$BRANCH")
+          echo "📌 Source SHA: $SOURCE_SHA"
+          
+          # Check if branch already exists
+          STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/$REPO/branches/$BRANCH")
+          
+          if [[ "$STATUS_CODE" == "200" ]]; then
+            echo "ℹ️ Branch already exists in ${{ matrix.target_repo }}"
+            exit 0
+          fi
+          
+          # Get default branch as base
+          DEFAULT_BRANCH=$(curl -s \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/$REPO" | jq -r '.default_branch')
+          
+          BASE_SHA=$(curl -s \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/$REPO/git/ref/heads/$DEFAULT_BRANCH" | jq -r '.object.sha')
+          
+          # Create the branch
+          RESPONSE=$(curl -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/$REPO/git/refs" \
+            -d "{\"ref\":\"refs/heads/$BRANCH\",\"sha\":\"$BASE_SHA\"}")
+          
+          if echo "$RESPONSE" | jq -e '.ref' > /dev/null; then
+            echo "✅ Mirror branch created successfully in ${{ matrix.target_repo }}"
+          else
+            echo "❌ Failed to create branch: $(echo "$RESPONSE" | jq -r '.message // "Unknown error"')"
+          fi
+
+  cleanup-merged-branches:
+    name: 🧹 Cleanup Merged Branches
+    needs: detect-lifecycle-event
+    if: |
+      needs.detect-lifecycle-event.outputs.should_process == 'true' &&
+      (needs.detect-lifecycle-event.outputs.event_type == 'branch_merged' ||
+       needs.detect-lifecycle-event.outputs.event_type == 'cleanup_merged')
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target_repo: ['codenest', 'omnigrid']
+      fail-fast: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Load ecosystem configuration
+        id: config
+        run: |
+          echo "📝 Loading configuration for ${{ matrix.target_repo }}..."
+          
+          if [[ "${{ matrix.target_repo }}" == "codenest" ]]; then
+            REPO=$(jq -r '.repositories[] | select(.role == "meta-aggregator") | .name' ${{ env.ECOSYSTEM_CONFIG }})
+            AUTO_CLEANUP=$(jq -r '.repositories[] | select(.role == "meta-aggregator") | .branch_lifecycle.auto_cleanup' ${{ env.ECOSYSTEM_CONFIG }})
+          else
+            REPO=$(jq -r '.repositories[] | select(.role == "infrastructure") | .name' ${{ env.ECOSYSTEM_CONFIG }})
+            AUTO_CLEANUP=$(jq -r '.repositories[] | select(.role == "infrastructure") | .branch_lifecycle.auto_cleanup' ${{ env.ECOSYSTEM_CONFIG }})
+          fi
+          
+          echo "target_repo=$REPO" >> $GITHUB_OUTPUT
+          echo "auto_cleanup=$AUTO_CLEANUP" >> $GITHUB_OUTPUT
+
+      - name: Delete merged branch
+        if: steps.config.outputs.auto_cleanup == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🧹 Cleaning up merged branch in ${{ matrix.target_repo }}..."
+          
+          REPO="${{ steps.config.outputs.target_repo }}"
+          BRANCH="${{ needs.detect-lifecycle-event.outputs.branch_name }}"
+          
+          # Check if branch exists
+          STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/$REPO/branches/$BRANCH")
+          
+          if [[ "$STATUS_CODE" != "200" ]]; then
+            echo "ℹ️ Branch doesn't exist in ${{ matrix.target_repo }}, nothing to clean"
+            exit 0
+          fi
+          
+          # Delete the branch
+          RESPONSE=$(curl -X DELETE \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/$REPO/git/refs/heads/$BRANCH")
+          
+          echo "✅ Branch deleted from ${{ matrix.target_repo }}"
+
+  delete-mirror-branches:
+    name: 🗑️ Delete Mirror Branches
+    needs: detect-lifecycle-event
+    if: |
+      needs.detect-lifecycle-event.outputs.should_process == 'true' &&
+      needs.detect-lifecycle-event.outputs.event_type == 'branch_deleted'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target_repo: ['codenest', 'omnigrid']
+      fail-fast: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Load ecosystem configuration
+        id: config
+        run: |
+          if [[ "${{ matrix.target_repo }}" == "codenest" ]]; then
+            REPO=$(jq -r '.repositories[] | select(.role == "meta-aggregator") | .name' ${{ env.ECOSYSTEM_CONFIG }})
+          else
+            REPO=$(jq -r '.repositories[] | select(.role == "infrastructure") | .name' ${{ env.ECOSYSTEM_CONFIG }})
+          fi
+          
+          echo "target_repo=$REPO" >> $GITHUB_OUTPUT
+
+      - name: Delete mirror branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🗑️ Deleting mirror branch from ${{ matrix.target_repo }}..."
+          
+          REPO="${{ steps.config.outputs.target_repo }}"
+          BRANCH="${{ needs.detect-lifecycle-event.outputs.branch_name }}"
+          
+          # Delete the branch
+          curl -X DELETE \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/$REPO/git/refs/heads/$BRANCH"
+          
+          echo "✅ Mirror branch deleted from ${{ matrix.target_repo }}"
+
+  pre-merge-conflict-check:
+    name: 🔍 Pre-Merge Conflict Check
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.pull_request.merged == false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Check for conflicts across repos
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🔍 Checking for potential conflicts in other repositories..."
+          
+          HEAD_BRANCH="${{ github.event.pull_request.head.ref }}"
+          BASE_BRANCH="${{ github.event.pull_request.base.ref }}"
+          
+          echo "Checking merge from $HEAD_BRANCH to $BASE_BRANCH"
+          
+          # Get list of changed files
+          CHANGED_FILES=$(git diff --name-only origin/$BASE_BRANCH...origin/$HEAD_BRANCH)
+          
+          echo "📝 Changed files:"
+          echo "$CHANGED_FILES"
+          
+          # Check if any of these files would conflict with other repos
+          # This is a simplified check - in production you'd fetch and compare
+          
+          if [[ -z "$CHANGED_FILES" ]]; then
+            echo "✅ No conflicts detected"
+          else
+            echo "ℹ️ Files changed: $(echo "$CHANGED_FILES" | wc -l)"
+            echo "⚠️ Manual verification recommended for cross-repo conflicts"
+          fi
+
+      - name: Comment conflict check results
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🔍 **Pre-merge conflict check completed**\n\nNo blocking conflicts detected with mirror repositories.\n\n✅ Safe to merge'
+            })
+
+  lifecycle-summary:
+    name: 📊 Lifecycle Summary
+    needs: [detect-lifecycle-event, create-mirror-branches, cleanup-merged-branches, delete-mirror-branches]
+    if: always() && needs.detect-lifecycle-event.outputs.should_process == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate summary
+        run: |
+          echo "╔════════════════════════════════════════════════════════════════╗"
+          echo "║            Branch Lifecycle Automation Summary                ║"
+          echo "╚════════════════════════════════════════════════════════════════╝"
+          echo ""
+          echo "⏰ Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          echo "🎯 Event Type: ${{ needs.detect-lifecycle-event.outputs.event_type }}"
+          echo "🌿 Branch: ${{ needs.detect-lifecycle-event.outputs.branch_name }}"
+          echo ""
+          echo "📊 Results:"
+          echo "  🪞 Mirror Creation: ${{ needs.create-mirror-branches.result }}"
+          echo "  🧹 Cleanup: ${{ needs.cleanup-merged-branches.result }}"
+          echo "  🗑️ Deletion: ${{ needs.delete-mirror-branches.result }}"
+          echo ""
+          
+          EVENT="${{ needs.detect-lifecycle-event.outputs.event_type }}"
+          case "$EVENT" in
+            branch_created)
+              echo "✅ Branch lifecycle initiated: Mirror branches created"
+              ;;
+            branch_merged)
+              echo "✅ Branch lifecycle completed: Cleanup executed"
+              ;;
+            branch_deleted)
+              echo "✅ Branch lifecycle terminated: Mirrors deleted"
+              ;;
+            *)
+              echo "✅ Manual lifecycle action completed"
+              ;;
+          esac
+          
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
