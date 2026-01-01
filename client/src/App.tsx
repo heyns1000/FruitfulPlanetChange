@@ -73,6 +73,7 @@ import {
   useScrollBreathGlyphs,
 } from '@/components/animations/ScrollBreathGlyphs';
 import GlobalMarketplace from '@/pages/global-marketplace';
+import MarketplaceHome from '@/pages/marketplace-home';
 import MarketplaceProducts from '@/pages/marketplace-products';
 import CheckoutFlow from '@/pages/checkout-flow';
 import DeploymentDashboard from '@/pages/deployment-dashboard';
@@ -210,9 +211,11 @@ function PageRouter({ activePage }: { activePage: string }) {
   console.log('📄 PageRouter called with activePage:', activePage);
   switch (activePage) {
     case 'home':
-    case 'marketplace':
       console.log('🏠 Returning PortalHome component');
       return <PortalHome />;
+    case 'marketplace':
+      console.log('🛒 Returning MarketplaceHome component');
+      return <MarketplaceHome />;
     case 'analytics':
       return (
         <div className="p-8">

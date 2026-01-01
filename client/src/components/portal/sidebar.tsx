@@ -27,6 +27,7 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
 
   const navItems = [
     { id: 'home', label: 'Portal Home', icon: '🏠' },
+    { id: 'marketplace', label: 'Marketplace', icon: '🛒', badge: '13,713+ Products' },
     {
       id: 'fruitful-crate-dance',
       label: 'Fruitful Crate Dance',
@@ -42,7 +43,6 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
     },
     { id: 'brands', label: 'Brand Elements', icon: '🧩', badge: '6,005' },
     { id: 'sectors', label: 'Sectors', icon: '🗂️', badge: `${sectors.length}` },
-    { id: 'marketplace', label: 'Marketplace', icon: '🛒' },
     { id: 'analytics', label: 'Analytics', icon: '📊' },
     { id: 'integrations', label: 'Integrations', icon: '🔌', badge: 'Extensions' },
     { id: 'settings', label: 'Settings', icon: '⚙️' },
