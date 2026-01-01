@@ -59,7 +59,7 @@ export default [
   {
     // Allow console.log in CLI scripts and seed files
     files: [
-      'server/**/seed*.ts',
+      'server/**/*seed*.ts',
       'server/**/*-seed*.ts',
       'server/**/*seeder*.ts',
       'server/**/update-*.ts',
@@ -72,7 +72,7 @@ export default [
       'server/**/ensure-*.ts',
       'server/**/final-*.ts',
       'server/**/enhanced-*.ts',
-      'server/**/audit*.ts',
+      'server/**/*audit*.ts',
       'server/**/live-*.ts',
       'scripts/**/*.ts',
     ],
