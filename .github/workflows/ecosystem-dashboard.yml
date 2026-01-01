@@ -1,0 +1,476 @@
+name: 📊 Ecosystem Health Dashboard
+
+on:
+  schedule:
+    # Daily at 00:00 UTC
+    - cron: '0 0 * * *'
+    # Also run every 6 hours for frequent updates
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      force_full_scan:
+        description: 'Force full ecosystem scan'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  ECOSYSTEM_CONFIG: '.github/ecosystem-config.json'
+  DASHBOARD_ISSUE_LABEL: 'ecosystem-dashboard'
+
+jobs:
+  collect-metrics:
+    name: 📈 Collect Ecosystem Metrics
+    runs-on: ubuntu-latest
+    outputs:
+      metrics_json: ${{ steps.collect.outputs.metrics }}
+      dashboard_data: ${{ steps.collect.outputs.dashboard_data }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Load ecosystem configuration
+        id: config
+        run: |
+          echo "📝 Loading ecosystem configuration..."
+          CODENEST_REPO=$(jq -r '.repositories[] | select(.role == "meta-aggregator") | .name' ${{ env.ECOSYSTEM_CONFIG }})
+          OMNIGRID_REPO=$(jq -r '.repositories[] | select(.role == "infrastructure") | .name' ${{ env.ECOSYSTEM_CONFIG }})
+          
+          echo "codenest_repo=$CODENEST_REPO" >> $GITHUB_OUTPUT
+          echo "omnigrid_repo=$OMNIGRID_REPO" >> $GITHUB_OUTPUT
+
+      - name: Collect branch metrics
+        id: collect
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "📊 Collecting branch metrics across ecosystem..."
+          
+          CODENEST_REPO="${{ steps.config.outputs.codenest_repo }}"
+          OMNIGRID_REPO="${{ steps.config.outputs.omnigrid_repo }}"
+          MAIN_REPO="${{ github.repository }}"
+          
+          # Initialize counters
+          TOTAL_BRANCHES=0
+          SYNCED_BRANCHES=0
+          OUT_OF_SYNC=0
+          MISSING_IN_CODENEST=0
+          MISSING_IN_OMNIGRID=0
+          
+          # Get all branches from main repo
+          echo "Fetching branches from main repo..."
+          MAIN_BRANCHES=$(git branch -r | grep -v HEAD | sed 's/origin\///' | grep -E '^(copilot|claude|main|develop)' | sort -u)
+          TOTAL_BRANCHES=$(echo "$MAIN_BRANCHES" | wc -l)
+          
+          # Initialize JSON arrays
+          echo "[]" > /tmp/out_of_sync.json
+          echo "[]" > /tmp/missing_codenest.json
+          echo "[]" > /tmp/missing_omnigrid.json
+          echo "[]" > /tmp/synced.json
+          
+          # Check each branch in other repos
+          for branch in $MAIN_BRANCHES; do
+            branch=$(echo "$branch" | tr -d '[:space:]')
+            [[ -z "$branch" ]] && continue
+            
+            echo "Checking branch: $branch"
+            
+            # Check CodeNest
+            CODENEST_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/$CODENEST_REPO/branches/$branch")
+            
+            # Check OmniGrid
+            OMNIGRID_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+              -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/$OMNIGRID_REPO/branches/$branch")
+            
+            # Categorize branch
+            if [[ "$CODENEST_STATUS" == "200" ]] && [[ "$OMNIGRID_STATUS" == "200" ]]; then
+              SYNCED_BRANCHES=$((SYNCED_BRANCHES + 1))
+              jq -n --arg b "$branch" '. + [$b]' > /tmp/temp.json
+              jq -s 'add' /tmp/synced.json /tmp/temp.json > /tmp/synced_new.json
+              mv /tmp/synced_new.json /tmp/synced.json
+            elif [[ "$CODENEST_STATUS" != "200" ]] && [[ "$OMNIGRID_STATUS" != "200" ]]; then
+              OUT_OF_SYNC=$((OUT_OF_SYNC + 1))
+              MISSING_IN_CODENEST=$((MISSING_IN_CODENEST + 1))
+              MISSING_IN_OMNIGRID=$((MISSING_IN_OMNIGRID + 1))
+              jq -n --arg b "$branch" '. + [$b]' > /tmp/temp.json
+              jq -s 'add' /tmp/out_of_sync.json /tmp/temp.json > /tmp/out_new.json
+              mv /tmp/out_new.json /tmp/out_of_sync.json
+            elif [[ "$CODENEST_STATUS" != "200" ]]; then
+              MISSING_IN_CODENEST=$((MISSING_IN_CODENEST + 1))
+              jq -n --arg b "$branch" '. + [$b]' > /tmp/temp.json
+              jq -s 'add' /tmp/missing_codenest.json /tmp/temp.json > /tmp/miss_cn_new.json
+              mv /tmp/miss_cn_new.json /tmp/missing_codenest.json
+            elif [[ "$OMNIGRID_STATUS" != "200" ]]; then
+              MISSING_IN_OMNIGRID=$((MISSING_IN_OMNIGRID + 1))
+              jq -n --arg b "$branch" '. + [$b]' > /tmp/temp.json
+              jq -s 'add' /tmp/missing_omnigrid.json /tmp/temp.json > /tmp/miss_og_new.json
+              mv /tmp/miss_og_new.json /tmp/missing_omnigrid.json
+            fi
+          done
+          
+          # Calculate sync percentage
+          SYNC_PERCENTAGE=0
+          if [[ $TOTAL_BRANCHES -gt 0 ]]; then
+            SYNC_PERCENTAGE=$(echo "scale=2; $SYNCED_BRANCHES * 100 / $TOTAL_BRANCHES" | bc)
+          fi
+          
+          # Generate metrics JSON
+          METRICS=$(jq -n \
+            --arg ts "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+            --argjson total "$TOTAL_BRANCHES" \
+            --argjson synced "$SYNCED_BRANCHES" \
+            --argjson out_sync "$OUT_OF_SYNC" \
+            --argjson miss_cn "$MISSING_IN_CODENEST" \
+            --argjson miss_og "$MISSING_IN_OMNIGRID" \
+            --argjson sync_pct "$SYNC_PERCENTAGE" \
+            '{
+              timestamp: $ts,
+              total_branches: $total,
+              synced_branches: $synced,
+              out_of_sync: $out_sync,
+              missing_in_codenest: $miss_cn,
+              missing_in_omnigrid: $miss_og,
+              sync_percentage: $sync_pct
+            }')
+          
+          echo "metrics=$METRICS" >> $GITHUB_OUTPUT
+          
+          # Generate dashboard data
+          DASHBOARD_DATA=$(jq -n \
+            --argjson metrics "$METRICS" \
+            --slurpfile synced /tmp/synced.json \
+            --slurpfile out_sync /tmp/out_of_sync.json \
+            --slurpfile miss_cn /tmp/missing_codenest.json \
+            --slurpfile miss_og /tmp/missing_omnigrid.json \
+            '{
+              metrics: $metrics,
+              synced_branches: $synced[0],
+              out_of_sync_branches: $out_sync[0],
+              missing_in_codenest: $miss_cn[0],
+              missing_in_omnigrid: $miss_og[0]
+            }')
+          
+          echo "dashboard_data<<EOF" >> $GITHUB_OUTPUT
+          echo "$DASHBOARD_DATA" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+          echo "✅ Metrics collection complete"
+          echo "$METRICS" | jq '.'
+
+  collect-workflow-metrics:
+    name: 📊 Collect Workflow Metrics
+    runs-on: ubuntu-latest
+    outputs:
+      workflow_stats: ${{ steps.stats.outputs.workflow_stats }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Collect workflow statistics
+        id: stats
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "📊 Collecting workflow statistics..."
+          
+          # Get workflow runs from last 24 hours
+          SINCE=$(date -u -d '24 hours ago' +"%Y-%m-%dT%H:%M:%SZ")
+          
+          # Fetch workflow runs
+          RUNS=$(curl -s \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/runs?created=>=$SINCE&per_page=100")
+          
+          TOTAL_RUNS=$(echo "$RUNS" | jq '.workflow_runs | length')
+          SUCCESSFUL_RUNS=$(echo "$RUNS" | jq '[.workflow_runs[] | select(.conclusion == "success")] | length')
+          FAILED_RUNS=$(echo "$RUNS" | jq '[.workflow_runs[] | select(.conclusion == "failure")] | length')
+          
+          SUCCESS_RATE=0
+          if [[ $TOTAL_RUNS -gt 0 ]]; then
+            SUCCESS_RATE=$(echo "scale=2; $SUCCESSFUL_RUNS * 100 / $TOTAL_RUNS" | bc)
+          fi
+          
+          WORKFLOW_STATS=$(jq -n \
+            --argjson total "$TOTAL_RUNS" \
+            --argjson success "$SUCCESSFUL_RUNS" \
+            --argjson failed "$FAILED_RUNS" \
+            --argjson rate "$SUCCESS_RATE" \
+            '{
+              total_runs: $total,
+              successful_runs: $success,
+              failed_runs: $failed,
+              success_rate: $rate
+            }')
+          
+          echo "workflow_stats=$WORKFLOW_STATS" >> $GITHUB_OUTPUT
+          echo "✅ Workflow statistics collected"
+          echo "$WORKFLOW_STATS" | jq '.'
+
+  generate-dashboard:
+    name: 📝 Generate Dashboard Report
+    needs: [collect-metrics, collect-workflow-metrics]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create dashboard markdown
+        id: dashboard
+        run: |
+          METRICS='${{ needs.collect-metrics.outputs.metrics_json }}'
+          WORKFLOW_STATS='${{ needs.collect-workflow-metrics.outputs.workflow_stats }}'
+          DASHBOARD_DATA='${{ needs.collect-metrics.outputs.dashboard_data }}'
+          
+          TIMESTAMP=$(echo "$METRICS" | jq -r '.timestamp')
+          TOTAL_BRANCHES=$(echo "$METRICS" | jq -r '.total_branches')
+          SYNCED_BRANCHES=$(echo "$METRICS" | jq -r '.synced_branches')
+          OUT_OF_SYNC=$(echo "$METRICS" | jq -r '.out_of_sync')
+          SYNC_PCT=$(echo "$METRICS" | jq -r '.sync_percentage')
+          MISSING_CN=$(echo "$METRICS" | jq -r '.missing_in_codenest')
+          MISSING_OG=$(echo "$METRICS" | jq -r '.missing_in_omnigrid')
+          
+          TOTAL_RUNS=$(echo "$WORKFLOW_STATS" | jq -r '.total_runs')
+          SUCCESS_RUNS=$(echo "$WORKFLOW_STATS" | jq -r '.successful_runs')
+          FAILED_RUNS=$(echo "$WORKFLOW_STATS" | jq -r '.failed_runs')
+          SUCCESS_RATE=$(echo "$WORKFLOW_STATS" | jq -r '.success_rate')
+          
+          # Generate status emoji
+          if (( $(echo "$SYNC_PCT >= 99" | bc -l) )); then
+            STATUS="🟢 Excellent"
+          elif (( $(echo "$SYNC_PCT >= 95" | bc -l) )); then
+            STATUS="🟡 Good"
+          elif (( $(echo "$SYNC_PCT >= 90" | bc -l) )); then
+            STATUS="🟠 Fair"
+          else
+            STATUS="🔴 Needs Attention"
+          fi
+          
+          # Create markdown report
+          cat > /tmp/dashboard.md << EOF
+          # 🌐 HSOMNI9000 Ecosystem Health Dashboard
+          
+          **Last Updated:** $TIMESTAMP  
+          **Overall Status:** $STATUS
+          
+          ---
+          
+          ## 📊 Branch Synchronization Status
+          
+          | Metric | Value |
+          |--------|-------|
+          | **Total Branches** | $TOTAL_BRANCHES |
+          | **Fully Synced** | $SYNCED_BRANCHES ✅ |
+          | **Out of Sync** | $OUT_OF_SYNC ⚠️ |
+          | **Sync Percentage** | ${SYNC_PCT}% |
+          
+          ### 🎯 Sync Coverage by Repository
+          
+          | Repository | Missing Branches |
+          |------------|-----------------|
+          | 🦍 CodeNest | $MISSING_CN |
+          | 🔷 OmniGrid | $MISSING_OG |
+          
+          ---
+          
+          ## 🤖 Automation Health (Last 24 Hours)
+          
+          | Metric | Value |
+          |--------|-------|
+          | **Total Workflow Runs** | $TOTAL_RUNS |
+          | **Successful Runs** | $SUCCESS_RUNS ✅ |
+          | **Failed Runs** | $FAILED_RUNS ❌ |
+          | **Success Rate** | ${SUCCESS_RATE}% |
+          
+          ---
+          
+          ## 🌿 Branch Details
+          
+          EOF
+          
+          # Add synced branches
+          SYNCED_LIST=$(echo "$DASHBOARD_DATA" | jq -r '.synced_branches[]?' 2>/dev/null || echo "")
+          if [[ -n "$SYNCED_LIST" ]] && [[ "$SYNCED_LIST" != "null" ]]; then
+            echo "### ✅ Fully Synchronized Branches" >> /tmp/dashboard.md
+            echo "" >> /tmp/dashboard.md
+            echo "$SYNCED_LIST" | while read branch; do
+              [[ -z "$branch" ]] && continue
+              echo "- \`$branch\`" >> /tmp/dashboard.md
+            done
+            echo "" >> /tmp/dashboard.md
+          fi
+          
+          # Add out-of-sync branches
+          OUT_SYNC_LIST=$(echo "$DASHBOARD_DATA" | jq -r '.out_of_sync_branches[]?' 2>/dev/null || echo "")
+          if [[ -n "$OUT_SYNC_LIST" ]] && [[ "$OUT_SYNC_LIST" != "null" ]]; then
+            echo "### ⚠️ Out of Sync (Missing in Both Repos)" >> /tmp/dashboard.md
+            echo "" >> /tmp/dashboard.md
+            echo "$OUT_SYNC_LIST" | while read branch; do
+              [[ -z "$branch" ]] && continue
+              echo "- \`$branch\` - **Action Required**" >> /tmp/dashboard.md
+            done
+            echo "" >> /tmp/dashboard.md
+          fi
+          
+          # Add missing in CodeNest
+          MISS_CN_LIST=$(echo "$DASHBOARD_DATA" | jq -r '.missing_in_codenest[]?' 2>/dev/null || echo "")
+          if [[ -n "$MISS_CN_LIST" ]] && [[ "$MISS_CN_LIST" != "null" ]]; then
+            echo "### 🦍 Missing in CodeNest" >> /tmp/dashboard.md
+            echo "" >> /tmp/dashboard.md
+            echo "$MISS_CN_LIST" | while read branch; do
+              [[ -z "$branch" ]] && continue
+              echo "- \`$branch\`" >> /tmp/dashboard.md
+            done
+            echo "" >> /tmp/dashboard.md
+          fi
+          
+          # Add missing in OmniGrid
+          MISS_OG_LIST=$(echo "$DASHBOARD_DATA" | jq -r '.missing_in_omnigrid[]?' 2>/dev/null || echo "")
+          if [[ -n "$MISS_OG_LIST" ]] && [[ "$MISS_OG_LIST" != "null" ]]; then
+            echo "### 🔷 Missing in OmniGrid" >> /tmp/dashboard.md
+            echo "" >> /tmp/dashboard.md
+            echo "$MISS_OG_LIST" | while read branch; do
+              [[ -z "$branch" ]] && continue
+              echo "- \`$branch\`" >> /tmp/dashboard.md
+            done
+            echo "" >> /tmp/dashboard.md
+          fi
+          
+          # Add footer
+          cat >> /tmp/dashboard.md << EOF
+          
+          ---
+          
+          ## 🔄 Integration Status
+          
+          ### Seedwave Philosophy
+          **Status:** 🌊 Active - Water the seed 24/7  
+          **Pulse Interval:** 9 seconds  
+          
+          ### ScrollBinder Protocol
+          **Status:** 📜 Active  
+          **Sync Interval:** 3 seconds  
+          
+          ### Gorilla Mountain Fox Trinity
+          **Status:** 🦍🏔️🦊 Operational  
+          **Repo Count:** 84  
+          
+          ---
+          
+          ## 📈 Recommendations
+          
+          EOF
+          
+          if (( $(echo "$SYNC_PCT < 95" | bc -l) )); then
+            echo "- ⚠️ **Sync percentage below target** - Run manual reconciliation" >> /tmp/dashboard.md
+          fi
+          
+          if [[ $OUT_OF_SYNC -gt 0 ]]; then
+            echo "- 🔄 **Out-of-sync branches detected** - Trigger cross-repo sync workflow" >> /tmp/dashboard.md
+          fi
+          
+          if (( $(echo "$SUCCESS_RATE < 90" | bc -l) )); then
+            echo "- 🔧 **Workflow success rate low** - Review failed workflow logs" >> /tmp/dashboard.md
+          fi
+          
+          if (( $(echo "$SYNC_PCT >= 99" | bc -l) )) && (( $(echo "$SUCCESS_RATE >= 95" | bc -l) )); then
+            echo "- ✅ **All systems optimal** - No action required" >> /tmp/dashboard.md
+          fi
+          
+          cat >> /tmp/dashboard.md << EOF
+          
+          ---
+          
+          **Dashboard Auto-Generated:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")  
+          **Next Update:** In 6 hours
+          
+          > This dashboard is automatically updated by the Ecosystem Health Dashboard workflow.  
+          > To force an update, trigger the workflow manually.
+          EOF
+          
+          echo "✅ Dashboard markdown generated"
+          cat /tmp/dashboard.md
+
+      - name: Find or create dashboard issue
+        id: issue
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const dashboardContent = fs.readFileSync('/tmp/dashboard.md', 'utf8');
+            
+            // Search for existing dashboard issue
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: '${{ env.DASHBOARD_ISSUE_LABEL }}',
+              state: 'open'
+            });
+            
+            let issueNumber;
+            
+            if (issues.data.length > 0) {
+              // Update existing issue
+              issueNumber = issues.data[0].number;
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body: dashboardContent
+              });
+              console.log(`Updated existing dashboard issue #${issueNumber}`);
+            } else {
+              // Create new issue
+              const newIssue = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '📊 Ecosystem Health Dashboard',
+                body: dashboardContent,
+                labels: ['${{ env.DASHBOARD_ISSUE_LABEL }}', 'automation', 'documentation']
+              });
+              issueNumber = newIssue.data.number;
+              console.log(`Created new dashboard issue #${issueNumber}`);
+            }
+            
+            return issueNumber;
+
+      - name: Upload dashboard artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecosystem-dashboard-${{ github.run_id }}
+          path: /tmp/dashboard.md
+          retention-days: 90
+
+  summary:
+    name: 📋 Workflow Summary
+    needs: [collect-metrics, collect-workflow-metrics, generate-dashboard]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print summary
+        run: |
+          echo "╔════════════════════════════════════════════════════════════════╗"
+          echo "║          Ecosystem Health Dashboard - Run Complete            ║"
+          echo "╚════════════════════════════════════════════════════════════════╝"
+          echo ""
+          echo "⏰ Timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          echo ""
+          echo "📊 Job Results:"
+          echo "  Metrics Collection: ${{ needs.collect-metrics.result }}"
+          echo "  Workflow Stats: ${{ needs.collect-workflow-metrics.result }}"
+          echo "  Dashboard Generation: ${{ needs.generate-dashboard.result }}"
+          echo ""
+          echo "✅ Dashboard updated successfully"
+          echo "📌 Check the pinned 'Ecosystem Health Dashboard' issue for details"
+          echo ""
+          echo "🔄 Next update: In 6 hours"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
