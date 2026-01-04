@@ -162,6 +162,34 @@ jobs:
             echo "❌ Failed to create branch: $(echo "$RESPONSE" | jq -r '.message // "Unknown error"')"
           fi
 
+      - name: Sync new branch with main
+        if: steps.config.outputs.auto_create == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🔄 Syncing newly created branch with main..."
+          
+          BRANCH="${{ needs.detect-lifecycle-event.outputs.branch_name }}"
+          
+          # Trigger keep-branches-ahead workflow for this specific branch
+          curl -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/dispatches" \
+            -d '{
+              "event_type": "trigger_branch_sync",
+              "client_payload": {
+                "triggered_by": "branch-lifecycle",
+                "event": "branch_created",
+                "branch": "'"$BRANCH"'",
+                "workflow_run_id": "${{ github.run_id }}",
+                "timestamp": "'"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'"
+              }
+            }'
+          
+          echo "✅ Triggered keep-branches-ahead sync for $BRANCH"
+          echo "ℹ️ Branch will be synced with latest main to ensure it's ahead"
+
   cleanup-merged-branches:
     name: 🧹 Cleanup Merged Branches
     needs: detect-lifecycle-event
