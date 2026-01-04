@@ -392,3 +392,35 @@ jobs:
           fi
           
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+  trigger-branch-ahead-sync:
+    name: 🚀 Trigger Keep-Branches-Ahead Sync
+    needs: [sync-from-codenest, sync-from-omnigrid]
+    if: always() && (needs.sync-from-codenest.result == 'success' || needs.sync-from-omnigrid.result == 'success')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Trigger keep-branches-ahead workflow
+        env:
+          GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🚀 Triggering keep-branches-ahead workflow..."
+          
+          # Trigger the workflow using repository_dispatch
+          curl -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/dispatches" \
+            -d '{
+              "event_type": "trigger_branch_sync",
+              "client_payload": {
+                "triggered_by": "bidirectional-sync",
+                "workflow_run_id": "${{ github.run_id }}",
+                "timestamp": "'"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'"
+              }
+            }'
+          
+          echo "✅ Keep-branches-ahead workflow triggered successfully"
+          echo "ℹ️ This ensures all branches stay ahead of main after bidirectional sync"

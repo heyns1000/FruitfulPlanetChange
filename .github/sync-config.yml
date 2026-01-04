@@ -1,0 +1,93 @@
+# Branch Synchronization Configuration
+# Centralized configuration for all branch sync behaviors across the HSOMNI9000 ecosystem
+
+sync:
+  # Patterns for branches to keep ahead of main
+  branch_patterns:
+    - 'copilot/*'
+    - 'claude/*'
+    - 'feature/*'
+    - 'fix/*'
+    - 'hotfix/*'
+    - 'develop'
+  
+  # Branches to exclude from auto-sync
+  exclude_branches:
+    - 'main'
+    - 'gh-pages'
+    - 'production'
+  
+  # Auto-merge settings
+  auto_merge:
+    enabled: true
+    strategy: 'merge'  # or 'rebase'
+    create_conflict_pr: true
+    preserve_history: true  # use --no-ff
+  
+  # Schedule settings
+  schedule:
+    cron: '0 */2 * * *'  # Every 2 hours
+    max_parallel: 5
+  
+  # Conflict resolution
+  conflict_resolution:
+    # Files that can be auto-resolved using 'theirs' strategy
+    auto_resolve_patterns:
+      - 'package-lock.json'
+      - 'pnpm-lock.yaml'
+      - 'yarn.lock'
+      - '*.lock'
+      - 'Cargo.lock'
+      - 'Gemfile.lock'
+      - 'composer.lock'
+    strategy: 'theirs'  # for auto-resolvable files
+    
+    # PR settings for manual conflict resolution
+    conflict_pr:
+      title_prefix: '🔀 Resolve merge conflict:'
+      labels:
+        - 'conflict-resolution'
+        - 'automated-sync'
+        - 'needs-review'
+      auto_assign: true
+      add_workflow_link: true
+
+# Integration with existing ecosystem workflows
+integrations:
+  bidirectional_sync:
+    enabled: true
+    trigger_after_sync: true
+  
+  branch_lifecycle:
+    enabled: true
+    sync_new_branches: true
+  
+  ecosystem_dashboard:
+    enabled: true
+    report_sync_status: true
+
+# Monitoring and reporting
+monitoring:
+  generate_reports: true
+  report_format: 'json'
+  retention_days: 30
+  include_statistics: true
+  
+  notifications:
+    github_summary: true
+    create_issues_on_failure: false
+    notify_on_conflict: true
+
+# Git configuration
+git:
+  user:
+    name: 'HSOMNI9000 Sync Bot'
+    email: 'sync-bot@fruitfulplanet.com'
+  
+  commit_message_format: 'chore(sync): merge main into {branch}'
+  
+  # Merge options
+  merge_options:
+    no_ff: true  # Preserve branch history
+    no_commit: false
+    strategy: 'recursive'
