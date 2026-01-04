@@ -344,63 +344,29 @@ jobs:
           # Push the conflict branch
           git push origin "$CONFLICT_BRANCH"
           
-          # Prepare PR body
-          PR_BODY="## 🔀 Automatic Sync Conflict Resolution Needed
-
-**Branch:** \`$BRANCH\`  
-**Source:** \`main\`  
-**Conflict Branch:** \`$CONFLICT_BRANCH\`  
-**Workflow Run:** [View Details](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-
-### ⚠️ Merge Conflicts Detected
-
-The automated sync from \`main\` to \`$BRANCH\` detected conflicts that require manual resolution.
-
-**Conflicted Files:**
-\`\`\`
-$CONFLICTED_FILES
-\`\`\`
-
-### 📋 Resolution Steps
-
-1. Checkout this conflict resolution branch:
-   \`\`\`bash
-   git fetch origin $CONFLICT_BRANCH
-   git checkout $CONFLICT_BRANCH
-   \`\`\`
-
-2. Merge main and resolve conflicts:
-   \`\`\`bash
-   git merge origin/main
-   # Resolve conflicts in your editor
-   git add .
-   git commit -m \"chore: resolve merge conflicts from main\"
-   \`\`\`
-
-3. Push and merge this PR:
-   \`\`\`bash
-   git push origin $CONFLICT_BRANCH
-   \`\`\`
-
-4. Once merged, the original branch will be updated automatically.
-
-### 🤖 Automated by HSOMNI9000 Sync Bot
-Part of the Enhanced Branch Synchronization System"
+          # Create PR title and body
+          PR_TITLE="Resolve merge conflict: $BRANCH from main"
           
           # Create PR using GitHub API
-          PR_RESPONSE=$(curl -X POST \
+          curl -X POST \
             -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/${{ github.repository }}/pulls" \
-            -d "{
-              \"title\":\"🔀 Resolve merge conflict: $BRANCH ← main\",
-              \"body\":$(echo "$PR_BODY" | jq -Rs .),
-              \"head\":\"$CONFLICT_BRANCH\",
-              \"base\":\"$BRANCH\",
-              \"draft\":false
-            }")
+            -d @- <<JSONEOF
+          {
+            "title": "🔀 $PR_TITLE",
+            "body": "## 🔀 Automatic Sync Conflict Resolution Needed\n\n**Branch:** \`$BRANCH\`\n**Source:** \`main\`\n**Conflict Branch:** \`$CONFLICT_BRANCH\`\n**Workflow Run:** [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\n### ⚠️ Merge Conflicts Detected\n\nThe automated sync from \`main\` to \`$BRANCH\` detected conflicts that require manual resolution.\n\n**Conflicted Files:** $CONFLICTED_FILES\n\n### 📋 Resolution Steps\n\n1. Checkout this conflict resolution branch\n2. Merge main and resolve conflicts\n3. Push and merge this PR\n\n### 🤖 Automated by HSOMNI9000 Sync Bot",
+            "head": "$CONFLICT_BRANCH",
+            "base": "$BRANCH",
+            "draft": false
+          }
+          JSONEOF
           
-          PR_NUMBER=$(echo "$PR_RESPONSE" | jq -r '.number // empty')
+          PR_NUMBER=$(curl -s \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls" | \
+            jq -r ".[] | select(.head.ref == \"$CONFLICT_BRANCH\") | .number" | head -1)
           
           if [[ -n "$PR_NUMBER" ]]; then
             echo "✅ Conflict resolution PR #$PR_NUMBER created successfully"
@@ -414,7 +380,7 @@ Part of the Enhanced Branch Synchronization System"
             
             echo "🏷️ Labels added to PR #$PR_NUMBER"
           else
-            echo "❌ Failed to create PR: $(echo "$PR_RESPONSE" | jq -r '.message // "Unknown error"')"
+            echo "❌ Failed to create or find PR"
             exit 1
           fi
 
