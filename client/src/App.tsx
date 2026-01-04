@@ -4,6 +4,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { ThemeProvider } from '@/components/ui/theme-provider';
+import { CartProvider } from '@/components/shopping-cart/useCart';
 import { useEffect } from 'react';
 import InternPortalNestPage from '@/pages/intern-portalnest';
 import BanimalIntegrationPage from '@/pages/banimal-integration';
@@ -487,21 +488,23 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" storageKey="seedwave-ui-theme">
         <TooltipProvider>
-          <div
-            id="main-app-wrapper"
-            style={{
-              minHeight: '100vh',
-              backgroundColor: '#ffffff',
-              width: '100%',
-              position: 'relative',
-              display: 'block',
-              visibility: 'visible',
-              zIndex: 1,
-            }}
-          >
-            <AuthenticatedApp activePage={activePage} setActivePage={setActivePage} />
-            <Toaster />
-          </div>
+          <CartProvider>
+            <div
+              id="main-app-wrapper"
+              style={{
+                minHeight: '100vh',
+                backgroundColor: '#ffffff',
+                width: '100%',
+                position: 'relative',
+                display: 'block',
+                visibility: 'visible',
+                zIndex: 1,
+              }}
+            >
+              <AuthenticatedApp activePage={activePage} setActivePage={setActivePage} />
+              <Toaster />
+            </div>
+          </CartProvider>
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
