@@ -1,5 +1,47 @@
 # GitHub Workflows Documentation
 
+## Quick Start
+
+The workflows are **ready to use** with default permissions. Auto-merge is **enabled** by default.
+
+### Zero-Configuration Setup
+
+Workflows now use `GITHUB_TOKEN` with write permissions automatically. No additional setup required for:
+- ✅ Keeping branches ahead of main (every 2 hours)
+- ✅ Auto-merging main into feature branches
+- ✅ Creating PRs for conflicts
+- ✅ Cleaning up merged branches
+
+### Advanced Setup (Cross-Repository Sync)
+
+For syncing with codenest and omnigrid, see [TOKEN_SETUP.md](./TOKEN_SETUP.md).
+
+## Auto-Merge Configuration
+
+Auto-merge is **enabled** in `.github/sync-config.yml`:
+
+```yaml
+auto_merge:
+  enabled: true
+  strategy: 'merge'
+  create_conflict_pr: true
+  preserve_history: true
+```
+
+All branches matching patterns in `branch_patterns` will be automatically kept ahead of `main`.
+
+## Monitoring
+
+- **Dashboard:** Check Actions tab for workflow runs
+- **Reports:** Download artifacts from workflow runs (30-day retention)
+- **Summary:** View GitHub Actions summary after each run
+
+## Troubleshooting
+
+See [TOKEN_SETUP.md](./TOKEN_SETUP.md#troubleshooting) for common issues and solutions.
+
+---
+
 ## Overview
 
 This directory contains GitHub Actions workflows that automate branch synchronization, lifecycle management, and ecosystem coordination for the HSOMNI9000 FruitfulPlanet ecosystem.
