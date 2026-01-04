@@ -29,6 +29,14 @@ import { registerBanimalPulseRoutes } from './routes/banimal-pulse';
 import registerMarketplacePackagesRoutes from './routes/marketplace-packages';
 import { createLogger } from './middleware/logging';
 import type { Request } from 'express';
+import {
+  getCart,
+  addToCart,
+  updateCartItem,
+  removeFromCart,
+  clearCart,
+  checkout
+} from './cart-api';
 
 const logger = createLogger('routes');
 
@@ -98,6 +106,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
   registerBanimalPulseRoutes(app);
   // Register marketplace packages routes (Phase 3)
   registerMarketplacePackagesRoutes(app);
+
+  // ========================================
+  // SHOPPING CART API ROUTES
+  // ========================================
+
+  // Get or create cart for user/session
+  app.get('/api/cart', getCart);
+
+  // Add item to cart
+  app.post('/api/cart/items', addToCart);
+
+  // Update cart item quantity
+  app.patch('/api/cart/items/:itemId', updateCartItem);
+
+  // Remove item from cart
+  app.delete('/api/cart/items/:itemId', removeFromCart);
+
+  // Clear entire cart
+  app.delete('/api/cart', clearCart);
+
+  // Checkout - convert cart to order
+  app.post('/api/cart/checkout', checkout);
 
   // ========================================
   // INTERACTIVE SECTOR MAPPING SYSTEM ROUTES

@@ -1,16 +1,6 @@
-import express, { type Request, Response, NextFunction } from 'express';
-import { registerRoutes } from './routes';
-import { setupVite, serveStatic, log } from './vite';
-import { seedDatabase } from './seed-data';
-import { seedLegalDocuments } from './seed-legal';
-import { seedAllMiningBrands } from './mining-brands-seeder';
-import { updateSectorPricing } from './update-sector-pricing';
-import { seedComprehensiveBrands } from './comprehensive-brand-seeder';
-import { seedMineNestComprehensive } from './minenest-comprehensive-seeder';
-import { seedEcosystemPulseData } from './seed-ecosystem-pulse';
-import { storage } from './storage';
 import express, { type Request, Response, NextFunction } from "express";
 import { z } from "zod";
+import session from "express-session";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { seedDatabase } from "./seed-data";
@@ -19,8 +9,16 @@ import { seedAllMiningBrands } from "./mining-brands-seeder";
 import { updateSectorPricing } from "./update-sector-pricing";
 import { seedComprehensiveBrands } from "./comprehensive-brand-seeder";
 import { seedMineNestComprehensive } from "./minenest-comprehensive-seeder";
+import { seedEcosystemPulseData } from "./seed-ecosystem-pulse";
 import { storage } from "./storage";
 import { createLogger } from "./middleware/logging";
+import {
+  apiLimiter,
+  corsOptions,
+  securityHeaders,
+  requestLogger,
+  errorLogger
+} from "./security-middleware";
 
 const logger = createLogger('server');
 
@@ -72,8 +70,30 @@ try {
 }
 
 const app = express();
+
+// Security middleware - apply early in the middleware chain
+app.use(securityHeaders);
+app.use(corsOptions);
+app.use(requestLogger);
+
+// Session configuration for cart (guest and user)
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'fallback-dev-secret-change-in-production',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+  }
+}));
+
+// Body parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Apply rate limiting to API routes
+app.use('/api/', apiLimiter);
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -129,13 +149,8 @@ app.use((req, res, next) => {
     }
   }
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || 'Internal Server Error';
-
-    res.status(status).json({ message });
-    throw err;
-  });
+  // Error handling middleware - must be last
+  app.use(errorLogger);
 
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route

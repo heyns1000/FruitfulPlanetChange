@@ -6,6 +6,8 @@ import { SystemStatus } from './system-status';
 import type { Sector } from '@shared/schema';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PulseIndicator, RippleButton, SparkleEffect } from '@/components/ui/micro-interactions';
+import { CartIcon } from '@/components/shopping-cart/CartIcon';
+import { CartDrawer } from '@/components/shopping-cart/CartDrawer';
 
 interface SidebarProps {
   activePage: string;
@@ -19,6 +21,7 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
     if (setActivePage) setActivePage(page);
   };
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const { theme, toggleTheme, toggleHyperMode, isHyperMode } = useTheme();
 
   const { data: sectors = [] } = useQuery<Sector[]>({
@@ -211,6 +214,9 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
             </h2>
           </div>
           <div className="flex items-center gap-2">
+            {/* Shopping Cart */}
+            <CartIcon onClick={() => setCartOpen(true)} />
+
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
@@ -494,6 +500,9 @@ export function Sidebar({ activePage, onPageChange, setActivePage }: SidebarProp
           onClick={() => setIsMobileOpen(false)}
         />
       )}
+
+      {/* Shopping Cart Drawer */}
+      <CartDrawer open={cartOpen} onOpenChange={setCartOpen} />
     </>
   );
 }
