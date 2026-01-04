@@ -1,0 +1,54 @@
+name: 🔍 Validate Workflows
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+      - '.github/sync-config.yml'
+      - '.github/ecosystem-config.json'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  validate-yaml:
+    name: Validate YAML Syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Validate workflow files
+        run: |
+          echo "Validating workflow YAML files..."
+          
+          for file in .github/workflows/*.yml .github/workflows/*.yaml; do
+            if [ -f "$file" ]; then
+              echo "Checking $file..."
+              # Use GitHub's action to validate
+              if ! python3 -c "import yaml; yaml.safe_load(open('$file'))"; then
+                echo "::error::Invalid YAML in $file"
+                exit 1
+              fi
+            fi
+          done
+          
+          echo "✅ All workflow files are valid"
+      
+      - name: Validate sync-config.yml
+        run: |
+          echo "Validating sync-config.yml..."
+          if ! python3 -c "import yaml; yaml.safe_load(open('.github/sync-config.yml'))"; then
+            echo "::error::Invalid YAML in sync-config.yml"
+            exit 1
+          fi
+          echo "✅ sync-config.yml is valid"
+      
+      - name: Validate ecosystem-config.json
+        run: |
+          echo "Validating ecosystem-config.json..."
+          if ! python3 -c "import json; json.load(open('.github/ecosystem-config.json'))"; then
+            echo "::error::Invalid JSON in ecosystem-config.json"
+            exit 1
+          fi
+          echo "✅ ecosystem-config.json is valid"

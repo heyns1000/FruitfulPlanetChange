@@ -1,5 +1,10 @@
 name: 🔄 Keep Branches Ahead of Main
 
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
 on:
   schedule:
     # Run every 2 hours
@@ -207,6 +212,9 @@ jobs:
     needs: check-branch-status
     if: needs.check-branch-status.outputs.branches_count != '0'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     strategy:
       matrix:
         branch: ${{ fromJson(needs.check-branch-status.outputs.branches_to_sync) }}
@@ -244,12 +252,19 @@ jobs:
             echo "result=success" >> $GITHUB_OUTPUT
             echo "✅ Successfully merged main into $BRANCH"
             
-            # Push the changes
-            if git push origin "$BRANCH"; then
+            # Push the changes with better error handling
+            if git push origin "$BRANCH" 2>&1 | tee /tmp/push.log; then
               echo "📤 Changes pushed successfully"
             else
+              PUSH_ERROR=$(cat /tmp/push.log)
               echo "result=push_failed" >> $GITHUB_OUTPUT
               echo "❌ Failed to push changes"
+              
+              # Check for permission errors
+              if echo "$PUSH_ERROR" | grep -q "403\|denied\|Permission"; then
+                echo "::error::Permission denied. Please ensure ECOSYSTEM_SYNC_TOKEN is configured with 'repo' and 'workflow' scopes, or that GITHUB_TOKEN has write permissions."
+                echo "::error::See setup guide: .github/TOKEN_SETUP.md#troubleshooting"
+              fi
               exit 1
             fi
           else

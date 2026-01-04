@@ -1,5 +1,9 @@
 name: 🌿 Branch Lifecycle Automation
 
+permissions:
+  contents: write
+  pull-requests: write
+
 on:
   create:
     branches:
