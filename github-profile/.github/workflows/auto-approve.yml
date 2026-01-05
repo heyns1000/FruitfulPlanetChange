@@ -1,0 +1,33 @@
+name: Auto-Approve PRs
+
+permissions:
+  pull-requests: write
+  contents: write
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  auto-approve:
+    name: Auto-Approve with automerge label
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'automerge')
+    
+    steps:
+      - name: Auto-approve PR
+        uses: hmarr/auto-approve-action@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ **Auto-approved** by FAA Actuary Mastery™ workflow\n\n🚀 Ready for auto-merge on green status'
+            })

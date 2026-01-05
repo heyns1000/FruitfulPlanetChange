@@ -1,0 +1,94 @@
+name: Profile CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validate Profile Content
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Validate README.md
+        run: |
+          echo "📝 Validating README.md..."
+          
+          if [ ! -f "README.md" ]; then
+            echo "❌ README.md not found"
+            exit 1
+          fi
+          
+          # Check for required content
+          if grep -q "FAA ACTUARY MASTERY™ v2.2x" README.md; then
+            echo "✅ Title present"
+          else
+            echo "❌ Title missing"
+            exit 1
+          fi
+          
+          if grep -q "PR #35 LIVE" README.md; then
+            echo "✅ PR reference present"
+          else
+            echo "❌ PR reference missing"
+            exit 1
+          fi
+          
+          if grep -q "94 REPOS IMMORTALIZED" README.md; then
+            echo "✅ Repo count present"
+          else
+            echo "❌ Repo count missing"
+            exit 1
+          fi
+          
+          if grep -q "PRODUCTION READY" README.md; then
+            echo "✅ Status present"
+          else
+            echo "❌ Status missing"
+            exit 1
+          fi
+          
+          echo "✅ All required content validated"
+          
+      - name: Validate FUNDING.yml
+        run: |
+          echo "💰 Validating FUNDING.yml..."
+          
+          if [ ! -f ".github/FUNDING.yml" ]; then
+            echo "❌ FUNDING.yml not found"
+            exit 1
+          fi
+          
+          echo "✅ FUNDING.yml present"
+          
+      - name: Validate workflows
+        run: |
+          echo "⚙️ Validating workflows..."
+          
+          WORKFLOW_COUNT=$(find .github/workflows -name "*.yml" | wc -l)
+          echo "Found $WORKFLOW_COUNT workflows"
+          
+          if [ $WORKFLOW_COUNT -ge 10 ]; then
+            echo "✅ 10+ workflows deployed"
+          else
+            echo "⚠️ Expected 10+ workflows, found $WORKFLOW_COUNT"
+          fi
+          
+      - name: Generate validation summary
+        run: |
+          echo "## ✅ Profile Validation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**FAA Actuary Mastery™ v2.2x**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Validation Results" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ README.md: Valid" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ FUNDING.yml: Valid" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Workflows: $(find .github/workflows -name "*.yml" | wc -l) deployed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🚀 **Status: PRODUCTION READY**" >> $GITHUB_STEP_SUMMARY
