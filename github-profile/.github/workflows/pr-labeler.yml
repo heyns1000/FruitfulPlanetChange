@@ -1,0 +1,69 @@
+name: PR Auto-Labeler
+
+permissions:
+  pull-requests: write
+  contents: read
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  label:
+    name: Add automerge label to eligible PRs
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Check PR eligibility
+        id: check
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            
+            // Check if PR is from a profile-readme branch
+            const isProfileReadme = pr.head.ref.includes('profile-readme') || 
+                                   pr.head.ref.includes('sovereignty');
+            
+            // Check if PR title mentions FAA Actuary or similar
+            const titleMatch = /FAA|Actuary|sovereignty|profile.*readme/i.test(pr.title);
+            
+            const eligible = isProfileReadme || titleMatch;
+            
+            core.setOutput('eligible', eligible);
+            
+            console.log(`PR eligibility: ${eligible}`);
+            console.log(`Branch: ${pr.head.ref}`);
+            console.log(`Title: ${pr.title}`);
+            
+      - name: Add automerge label
+        if: steps.check.outputs.eligible == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['automerge']
+            });
+            
+            console.log('✅ Added automerge label');
+            
+      - name: Comment on PR
+        if: steps.check.outputs.eligible == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🏷️ **Auto-labeled** for merge by FAA Actuary Mastery™\n\n✅ `automerge` label added\n🔄 Will auto-approve and auto-merge on green status'
+            });

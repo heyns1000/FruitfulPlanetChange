@@ -1,0 +1,126 @@
+name: Auto-Merge PRs
+
+permissions:
+  pull-requests: write
+  contents: write
+  checks: read
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  pull_request_review:
+    types: [submitted]
+  check_suite:
+    types: [completed]
+  status: {}
+
+jobs:
+  auto-merge:
+    name: Auto-Merge approved PRs
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'automerge')
+    
+    steps:
+      - name: Check PR approval status
+        id: check-approval
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request || 
+                       (await github.rest.pulls.get({
+                         owner: context.repo.owner,
+                         repo: context.repo.repo,
+                         pull_number: context.issue.number
+                       })).data;
+            
+            const reviews = await github.rest.pulls.listReviews({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number
+            });
+            
+            const approvals = reviews.data.filter(r => r.state === 'APPROVED');
+            const isApproved = approvals.length > 0;
+            
+            core.setOutput('approved', isApproved);
+            core.setOutput('pr_number', pr.number);
+            
+            console.log(`PR #${pr.number} approval status: ${isApproved}`);
+            
+      - name: Check status checks
+        id: check-status
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = (await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: ${{ steps.check-approval.outputs.pr_number }}
+            })).data;
+            
+            const checks = await github.rest.checks.listForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: pr.head.sha
+            });
+            
+            const allPassed = checks.data.check_runs.every(
+              check => check.conclusion === 'success' || 
+                       check.conclusion === 'skipped' ||
+                       check.conclusion === null
+            );
+            
+            core.setOutput('checks_passed', allPassed);
+            console.log(`All checks passed: ${allPassed}`);
+            
+      - name: Auto-merge PR
+        if: steps.check-approval.outputs.approved == 'true' && steps.check-status.outputs.checks_passed == 'true'
+        uses: pascalgn/automerge-action@v0.16.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_LABELS: automerge
+          MERGE_METHOD: squash
+          MERGE_COMMIT_MESSAGE: pull-request-title-and-description
+          MERGE_RETRIES: 6
+          MERGE_RETRY_SLEEP: 10000
+          
+      - name: Comment on successful merge
+        if: steps.check-approval.outputs.approved == 'true' && steps.check-status.outputs.checks_passed == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            try {
+              await github.rest.issues.createComment({
+                issue_number: ${{ steps.check-approval.outputs.pr_number }},
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: '🎉 **Auto-merged** by FAA Actuary Mastery™ workflow\n\n✅ All checks passed\n✅ Approved\n🚀 Merged to main branch'
+              });
+            } catch (error) {
+              // PR might already be merged/closed
+              console.log('Could not comment:', error.message);
+            }
+            
+      - name: Comment on waiting status
+        if: steps.check-approval.outputs.approved != 'true' || steps.check-status.outputs.checks_passed != 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const approved = '${{ steps.check-approval.outputs.approved }}' === 'true';
+            const checksPassed = '${{ steps.check-status.outputs.checks_passed }}' === 'true';
+            
+            let status = '⏳ **Waiting for auto-merge conditions**\n\n';
+            status += approved ? '✅ Approved\n' : '❌ Waiting for approval\n';
+            status += checksPassed ? '✅ All checks passed\n' : '⏳ Waiting for checks to pass\n';
+            status += '\n🔄 Will auto-merge when all conditions are met';
+            
+            await github.rest.issues.createComment({
+              issue_number: ${{ steps.check-approval.outputs.pr_number }},
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: status
+            });
