@@ -97,6 +97,7 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+          submodules: false  # Explicitly disable automatic submodule updates
 
       - name: Load ecosystem configuration
         id: config
@@ -308,6 +309,7 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+          submodules: false  # Explicitly disable automatic submodule updates
 
       - name: Check for conflicts across repos
         env:
