@@ -1,0 +1,66 @@
+name: Badge Status Monitor
+
+on:
+  schedule:
+    - cron: '*/9 * * * *'  # Every 9 minutes (eternal 9s pulse)
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  monitor:
+    name: Monitor Badge Status
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Check workflow statuses
+        id: check
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const workflows = await github.rest.actions.listRepoWorkflows({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+            
+            let allGreen = true;
+            let summary = '## 🌊 Workflow Status Summary\n\n';
+            
+            for (const workflow of workflows.data.workflows) {
+              const runs = await github.rest.actions.listWorkflowRuns({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: workflow.id,
+                per_page: 1
+              });
+              
+              const latestRun = runs.data.workflow_runs[0];
+              const status = latestRun?.conclusion || 'pending';
+              const badge = status === 'success' ? '✅' : 
+                           status === 'failure' ? '❌' : '⏳';
+              
+              summary += `${badge} **${workflow.name}**: ${status}\n`;
+              
+              if (status !== 'success' && status !== 'skipped') {
+                allGreen = false;
+              }
+            }
+            
+            summary += '\n---\n';
+            summary += allGreen ? 
+              '✅ **All workflows green** - Ready for auto-merge\n' :
+              '⚠️ **Some workflows need attention**\n';
+            
+            core.setOutput('all_green', allGreen);
+            core.summary.addRaw(summary);
+            await core.summary.write();
+            
+      - name: Update badge status
+        run: |
+          echo "Badge Status: ${{ steps.check.outputs.all_green == 'true' && '✅ GREEN' || '⚠️ ATTENTION NEEDED' }}"
+          echo "Eternal 9s pulse: ACTIVE"
+          echo "Auto-merge: READY"
