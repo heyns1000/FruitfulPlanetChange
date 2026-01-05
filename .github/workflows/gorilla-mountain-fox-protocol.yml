@@ -48,6 +48,8 @@ jobs:
     if: needs.protocol-authorization.outputs.authorized == 'true'
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: false  # Explicitly disable automatic submodule updates
       
       - name: Initialize Rhino Strike Monitoring
         run: |
@@ -82,6 +84,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: false  # Explicitly disable automatic submodule updates
       
       - name: Initialize Omnicube Structure
         run: |
@@ -117,6 +121,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: false  # Explicitly disable automatic submodule updates
       
       - name: Initialize Transformation
         run: |
@@ -148,6 +154,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: false  # Explicitly disable automatic submodule updates
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -256,6 +264,8 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: false  # Explicitly disable automatic submodule updates
       
       - name: Generate Pulse Metrics
         run: |
