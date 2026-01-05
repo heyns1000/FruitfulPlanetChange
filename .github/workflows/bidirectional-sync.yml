@@ -46,6 +46,43 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+          submodules: false  # Explicitly disable automatic submodule updates
+
+      - name: Check for submodule configuration
+        id: check_submodules
+        continue-on-error: true
+        run: |
+          echo "🔍 Checking for submodule configuration..."
+          
+          if [[ -f ".gitmodules" ]]; then
+            echo "📋 .gitmodules file found, validating..."
+            echo "has_submodules=true" >> $GITHUB_OUTPUT
+            
+            # Validate submodule URLs
+            while IFS= read -r line; do
+              if [[ "$line" =~ ^[[:space:]]*url[[:space:]]*=[[:space:]]*(.+)$ ]]; then
+                URL="${BASH_REMATCH[1]}"
+                echo "  Checking URL: $URL"
+                
+                # Validate URL format
+                if [[ "$URL" =~ ^(https://|git@) ]]; then
+                  echo "  ✅ Valid URL format"
+                else
+                  echo "  ⚠️ Warning: Potentially invalid URL format"
+                fi
+              fi
+            done < .gitmodules
+          else
+            echo "ℹ️ No .gitmodules file found"
+            echo "has_submodules=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Check for orphaned submodule config
+          if git config --file .git/config --get-regexp submodule >/dev/null 2>&1; then
+            echo "⚠️ Warning: Submodule config exists in .git/config but no .gitmodules file"
+            echo "  This may cause issues. Attempting to clean up..."
+            git config --file .git/config --remove-section submodule 2>/dev/null || true
+          fi
 
       - name: Load ecosystem configuration
         id: config
@@ -134,11 +171,47 @@ jobs:
           ref: ${{ matrix.branch }}
           fetch-depth: 0
           token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+          submodules: false  # Explicitly disable automatic submodule updates
 
       - name: Setup Git
         run: |
           git config --global user.name "HSOMNI9000 Sync Bot"
           git config --global user.email "sync-bot@fruitfulplanet.com"
+
+      - name: Validate repository state
+        id: validate
+        continue-on-error: true
+        run: |
+          echo "🔍 Validating repository state..."
+          
+          # Check for submodule issues
+          if [[ -f ".gitmodules" ]]; then
+            echo "📋 Submodules detected, checking configuration..."
+            
+            # Validate each submodule URL
+            while IFS= read -r line; do
+              if [[ "$line" =~ ^[[:space:]]*url[[:space:]]*=[[:space:]]*(.+)$ ]]; then
+                URL="${BASH_REMATCH[1]}"
+                echo "  Validating URL: $URL"
+                
+                # Check if URL is accessible (basic validation)
+                if [[ "$URL" =~ ^https:// ]]; then
+                  # For HTTPS URLs, check format
+                  if [[ "$URL" =~ ^https://[^/]+/[^/]+/.+\.git$ ]] || [[ "$URL" =~ ^https://[^/]+/[^/]+/[^/]+$ ]]; then
+                    echo "  ✅ URL format valid"
+                  else
+                    echo "  ⚠️ URL format may be invalid: $URL"
+                  fi
+                elif [[ "$URL" =~ ^git@ ]]; then
+                  echo "  ℹ️ SSH URL detected: $URL"
+                fi
+              fi
+            done < .gitmodules
+          else
+            echo "ℹ️ No submodules configured"
+          fi
+          
+          echo "✅ Repository state validation complete"
 
       - name: Load ecosystem configuration
         id: config
@@ -262,11 +335,47 @@ jobs:
           ref: ${{ matrix.branch }}
           fetch-depth: 0
           token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+          submodules: false  # Explicitly disable automatic submodule updates
 
       - name: Setup Git
         run: |
           git config --global user.name "HSOMNI9000 Sync Bot"
           git config --global user.email "sync-bot@fruitfulplanet.com"
+
+      - name: Validate repository state
+        id: validate
+        continue-on-error: true
+        run: |
+          echo "🔍 Validating repository state for OmniGrid sync..."
+          
+          # Check for submodule issues
+          if [[ -f ".gitmodules" ]]; then
+            echo "📋 Submodules detected, checking configuration..."
+            
+            # Validate each submodule URL
+            while IFS= read -r line; do
+              if [[ "$line" =~ ^[[:space:]]*url[[:space:]]*=[[:space:]]*(.+)$ ]]; then
+                URL="${BASH_REMATCH[1]}"
+                echo "  Validating URL: $URL"
+                
+                # Check if URL is accessible (basic validation)
+                if [[ "$URL" =~ ^https:// ]]; then
+                  # For HTTPS URLs, check format
+                  if [[ "$URL" =~ ^https://[^/]+/[^/]+/.+\.git$ ]] || [[ "$URL" =~ ^https://[^/]+/[^/]+/[^/]+$ ]]; then
+                    echo "  ✅ URL format valid"
+                  else
+                    echo "  ⚠️ URL format may be invalid: $URL"
+                  fi
+                elif [[ "$URL" =~ ^git@ ]]; then
+                  echo "  ℹ️ SSH URL detected: $URL"
+                fi
+              fi
+            done < .gitmodules
+          else
+            echo "ℹ️ No submodules configured"
+          fi
+          
+          echo "✅ Repository state validation complete"
 
       - name: Load ecosystem configuration
         id: config
@@ -340,6 +449,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          submodules: false  # Explicitly disable automatic submodule updates
 
       - name: Generate report
         run: |
@@ -406,6 +517,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          submodules: false  # Explicitly disable automatic submodule updates
 
       - name: Trigger keep-branches-ahead workflow
         env:
