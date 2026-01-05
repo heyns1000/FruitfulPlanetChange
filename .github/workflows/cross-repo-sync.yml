@@ -45,6 +45,68 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+          submodules: false  # Explicitly disable automatic submodule updates
+
+      - name: Check for submodule configuration
+        id: check_submodules
+        continue-on-error: true
+        run: |
+          echo "🔍 Checking for submodule configuration..."
+          
+          if [[ -f ".gitmodules" ]]; then
+            echo "📋 .gitmodules file found, validating..."
+            echo "has_submodules=true" >> $GITHUB_OUTPUT
+            
+            # Validate submodule URLs
+            while IFS= read -r line; do
+              if [[ "$line" =~ ^[[:space:]]*url[[:space:]]*=[[:space:]]*(.+)$ ]]; then
+                URL="${BASH_REMATCH[1]}"
+                echo "  Checking URL: $URL"
+                
+                # Validate URL format
+                if [[ "$URL" =~ ^(https://|git@) ]]; then
+                  echo "  ✅ Valid URL format"
+                else
+                  echo "  ⚠️ Warning: Potentially invalid URL format"
+                fi
+              fi
+            done < .gitmodules
+          else
+            echo "ℹ️ No .gitmodules file found"
+            echo "has_submodules=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Check for orphaned submodule config
+          if git config --file .git/config --get-regexp submodule >/dev/null 2>&1; then
+            echo "⚠️ Warning: Submodule config exists in .git/config but no .gitmodules file"
+            echo "  This may cause issues. Attempting to clean up..."
+            git config --file .git/config --remove-section submodule 2>/dev/null || true
+          fi
+
+      - name: Initialize submodules (if needed)
+        if: steps.check_submodules.outputs.has_submodules == 'true'
+        continue-on-error: true
+        run: |
+          echo "🔄 Initializing submodules..."
+          
+          # Try to initialize submodules with error handling
+          if git submodule init; then
+            echo "✅ Submodule initialization successful"
+            
+            # Attempt to update submodules
+            if git submodule update --init --recursive --depth 1 2>&1 | tee /tmp/submodule_update.log; then
+              echo "✅ Submodule update successful"
+            else
+              echo "⚠️ Warning: Submodule update failed, continuing without submodules"
+              echo "Error log:"
+              cat /tmp/submodule_update.log || true
+              
+              # Clean up failed submodule state
+              git submodule deinit --all -f 2>/dev/null || true
+            fi
+          else
+            echo "⚠️ Warning: Submodule initialization failed, continuing without submodules"
+          fi
 
       - name: Detect branches needing sync
         id: detect
@@ -96,11 +158,58 @@ jobs:
           ref: ${{ matrix.branch }}
           fetch-depth: 0
           token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+          submodules: false  # Explicitly disable automatic submodule updates
 
       - name: Setup Git
         run: |
           git config --global user.name "HSOMNI9000 Sync Bot"
           git config --global user.email "sync-bot@fruitfulplanet.com"
+
+      - name: Validate repository state
+        id: validate
+        continue-on-error: true
+        run: |
+          echo "🔍 Validating repository state..."
+          
+          # Check for submodule issues
+          if [[ -f ".gitmodules" ]]; then
+            echo "📋 Submodules detected, checking configuration..."
+            
+            # Validate each submodule URL
+            while IFS= read -r line; do
+              if [[ "$line" =~ ^[[:space:]]*url[[:space:]]*=[[:space:]]*(.+)$ ]]; then
+                URL="${BASH_REMATCH[1]}"
+                echo "  Validating URL: $URL"
+                
+                # Check if URL is accessible (basic validation)
+                if [[ "$URL" =~ ^https:// ]]; then
+                  # For HTTPS URLs, check format
+                  if [[ "$URL" =~ ^https://[^/]+/[^/]+/.+\.git$ ]] || [[ "$URL" =~ ^https://[^/]+/[^/]+/[^/]+$ ]]; then
+                    echo "  ✅ URL format valid"
+                  else
+                    echo "  ⚠️ URL format may be invalid: $URL"
+                  fi
+                elif [[ "$URL" =~ ^git@ ]]; then
+                  echo "  ℹ️ SSH URL detected: $URL"
+                fi
+              fi
+            done < .gitmodules
+            
+            echo "has_submodules=true" >> $GITHUB_OUTPUT
+          else
+            echo "ℹ️ No submodules configured"
+            echo "has_submodules=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Verify git state is clean
+          if git status --porcelain | grep -q '^'; then
+            echo "⚠️ Working directory has uncommitted changes"
+            git status --short
+          else
+            echo "✅ Working directory is clean"
+          fi
+          
+          echo "✅ Repository state validation complete"
 
       - name: Load ecosystem configuration
         id: config
@@ -125,6 +234,7 @@ jobs:
 
       - name: Check if branch exists in CodeNest
         id: check_branch
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
@@ -141,12 +251,16 @@ jobs:
           if [[ "$STATUS_CODE" == "200" ]]; then
             echo "exists=true" >> $GITHUB_OUTPUT
             echo "✅ Branch exists in CodeNest"
-          else
+          elif [[ "$STATUS_CODE" == "404" ]]; then
             echo "exists=false" >> $GITHUB_OUTPUT
             echo "ℹ️ Branch does not exist in CodeNest (will create)"
+          else
+            echo "exists=unknown" >> $GITHUB_OUTPUT
+            echo "⚠️ Unable to determine branch status (HTTP $STATUS_CODE)"
           fi
 
       - name: Sync branch to CodeNest
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
@@ -155,6 +269,12 @@ jobs:
           REPO="${{ steps.config.outputs.codenest_repo }}"
           BRANCH="${{ matrix.branch }}"
           BRANCH_EXISTS="${{ steps.check_branch.outputs.exists }}"
+          
+          # Skip if branch status is unknown
+          if [[ "$BRANCH_EXISTS" == "unknown" ]]; then
+            echo "⚠️ Skipping sync due to unknown branch status"
+            exit 0
+          fi
           
           # Get latest commit SHA from current branch
           LATEST_SHA=$(git rev-parse HEAD)
@@ -221,11 +341,58 @@ jobs:
           ref: ${{ matrix.branch }}
           fetch-depth: 0
           token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+          submodules: false  # Explicitly disable automatic submodule updates
 
       - name: Setup Git
         run: |
           git config --global user.name "HSOMNI9000 Sync Bot"
           git config --global user.email "sync-bot@fruitfulplanet.com"
+
+      - name: Validate repository state
+        id: validate
+        continue-on-error: true
+        run: |
+          echo "🔍 Validating repository state for OmniGrid sync..."
+          
+          # Check for submodule issues
+          if [[ -f ".gitmodules" ]]; then
+            echo "📋 Submodules detected, checking configuration..."
+            
+            # Validate each submodule URL
+            while IFS= read -r line; do
+              if [[ "$line" =~ ^[[:space:]]*url[[:space:]]*=[[:space:]]*(.+)$ ]]; then
+                URL="${BASH_REMATCH[1]}"
+                echo "  Validating URL: $URL"
+                
+                # Check if URL is accessible (basic validation)
+                if [[ "$URL" =~ ^https:// ]]; then
+                  # For HTTPS URLs, check format
+                  if [[ "$URL" =~ ^https://[^/]+/[^/]+/.+\.git$ ]] || [[ "$URL" =~ ^https://[^/]+/[^/]+/[^/]+$ ]]; then
+                    echo "  ✅ URL format valid"
+                  else
+                    echo "  ⚠️ URL format may be invalid: $URL"
+                  fi
+                elif [[ "$URL" =~ ^git@ ]]; then
+                  echo "  ℹ️ SSH URL detected: $URL"
+                fi
+              fi
+            done < .gitmodules
+            
+            echo "has_submodules=true" >> $GITHUB_OUTPUT
+          else
+            echo "ℹ️ No submodules configured"
+            echo "has_submodules=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Verify git state is clean
+          if git status --porcelain | grep -q '^'; then
+            echo "⚠️ Working directory has uncommitted changes"
+            git status --short
+          else
+            echo "✅ Working directory is clean"
+          fi
+          
+          echo "✅ Repository state validation complete"
 
       - name: Load ecosystem configuration
         id: config
@@ -250,6 +417,7 @@ jobs:
 
       - name: Check if branch exists in OmniGrid
         id: check_branch
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
@@ -265,12 +433,16 @@ jobs:
           if [[ "$STATUS_CODE" == "200" ]]; then
             echo "exists=true" >> $GITHUB_OUTPUT
             echo "✅ Branch exists in OmniGrid"
-          else
+          elif [[ "$STATUS_CODE" == "404" ]]; then
             echo "exists=false" >> $GITHUB_OUTPUT
             echo "ℹ️ Branch does not exist in OmniGrid (will create)"
+          else
+            echo "exists=unknown" >> $GITHUB_OUTPUT
+            echo "⚠️ Unable to determine branch status (HTTP $STATUS_CODE)"
           fi
 
       - name: Sync branch to OmniGrid (selective)
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
@@ -279,6 +451,12 @@ jobs:
           REPO="${{ steps.config.outputs.omnigrid_repo }}"
           BRANCH="${{ matrix.branch }}"
           BRANCH_EXISTS="${{ steps.check_branch.outputs.exists }}"
+          
+          # Skip if branch status is unknown
+          if [[ "$BRANCH_EXISTS" == "unknown" ]]; then
+            echo "⚠️ Skipping sync due to unknown branch status"
+            exit 0
+          fi
           
           # Get latest commit SHA
           LATEST_SHA=$(git rev-parse HEAD)
