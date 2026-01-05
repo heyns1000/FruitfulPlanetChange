@@ -24,6 +24,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: false  # Explicitly disable automatic submodule updates
 
       # ========================================================
       #

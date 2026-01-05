@@ -31,6 +31,7 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+          submodules: false  # Explicitly disable automatic submodule updates
 
       - name: Load ecosystem configuration
         id: config
@@ -173,6 +174,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          submodules: false  # Explicitly disable automatic submodule updates
 
       - name: Collect workflow statistics
         id: stats
@@ -222,6 +225,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          submodules: false  # Explicitly disable automatic submodule updates
 
       - name: Create dashboard markdown
         id: dashboard

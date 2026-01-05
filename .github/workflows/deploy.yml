@@ -17,6 +17,8 @@ jobs:
       url: https://staging.fruitfulplanet.example.com
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: false  # Explicitly disable automatic submodule updates
       
       - name: Configure kubectl
         uses: azure/k8s-set-context@v3
@@ -71,6 +73,8 @@ jobs:
     needs: []
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: false  # Explicitly disable automatic submodule updates
       
       - name: Configure kubectl
         uses: azure/k8s-set-context@v3

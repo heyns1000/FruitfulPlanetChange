@@ -43,6 +43,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          submodules: false  # Explicitly disable automatic submodule updates
 
       - name: Detect event type
         id: detect
@@ -210,6 +212,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          submodules: false  # Explicitly disable automatic submodule updates
 
       - name: Load ecosystem configuration
         id: config
@@ -270,6 +274,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          submodules: false  # Explicitly disable automatic submodule updates
 
       - name: Load ecosystem configuration
         id: config
