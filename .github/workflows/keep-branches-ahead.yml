@@ -54,6 +54,7 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+          submodules: false  # Explicitly disable automatic submodule updates
 
       - name: Detect active branches
         id: detect
@@ -147,6 +148,7 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+          submodules: false  # Explicitly disable automatic submodule updates
 
       - name: Check which branches are behind main
         id: check
@@ -229,6 +231,7 @@ jobs:
           ref: ${{ matrix.branch }}
           fetch-depth: 0
           token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+          submodules: false  # Explicitly disable automatic submodule updates
 
       - name: Setup Git
         run: |
@@ -325,6 +328,7 @@ jobs:
           ref: ${{ matrix.branch }}
           fetch-depth: 0
           token: ${{ secrets.ECOSYSTEM_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+          submodules: false  # Explicitly disable automatic submodule updates
 
       - name: Setup Git
         run: |
